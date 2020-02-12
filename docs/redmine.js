@@ -1,0 +1,1 @@
+../public/assets/js/redmine.js
