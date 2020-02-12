@@ -89,15 +89,15 @@ window.App || (
         window.localStorage.setItem('sentToServer', sent ? '1' : '0');
       }
       date() {
-        fetch(this.url.date, { method: 'post' })
-        .then(res => res.text())
+        fetch(this.url.date, { method: 'get' })
+        .then(res => res.headers.get('date'))
         .then(res => ({ html: res, element: document.querySelector('#date') || {} }))
         .catch(e => e.message)
         .then(obj => (o => o)(obj).element.innerHTML = obj.html);
       }
       interval() {
         this.url = {
-          date: '/date',
+          date: '/robots.txt',
         };
         setTimeout(() => this.setInterval(), 2200);
       }
