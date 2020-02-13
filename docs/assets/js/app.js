@@ -91,7 +91,7 @@ window.App || (
       date() {
         fetch(`${this.url.date}?v=${new Date().getTime()}`, { method: 'get' })
         .then(res => res.headers.get('date'))
-        .then(gmt => new Date(gmt).toLocaleString())
+        .then(gmt => new Date(gmt).toLocaleString().replace(/\//g, '-'))
         .then(res => ({ html: res, element: document.querySelector('#date') || {} }))
         .catch(e => e.message)
         .then(obj => (o => o)(obj).element.innerHTML = obj.html);
