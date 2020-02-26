@@ -89,7 +89,7 @@ window.App || (
         window.localStorage.setItem('sentToServer', sent ? '1' : '0');
       }
       date() {
-        fetch(`${this.url.date}?v=${new Date().getTime()}`, { method: 'get' })
+        fetch(`${this.url.date}?v=${new Date().getTime()}`, { method: 'head' })
         .then(res => res.headers.get('date'))
         .then(gmt => new Date(gmt).toLocaleString().replace(/\//g, '-'))
         .then(res => ({ html: res, element: document.querySelector('#date') || {} }))
