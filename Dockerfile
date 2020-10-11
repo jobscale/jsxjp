@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y openssl
 COPY . .
 RUN rm -fr html \
  && ln -sfn public html \
+ && cp nginx.conf /etc/nginx/nginx.conf \
  && cp default.conf /etc/nginx/conf.d \
  && . ssl-keygen \
  && openssl dhparam 256 > tls/dhparam.pem
