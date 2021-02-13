@@ -25,16 +25,16 @@ html, body {
   text-align: center;
 }
 .title {
-  font-size: 6vw;
+  font-size: 5vw;
   letter-spacing: .3vw;
 }
 .links > a {
   color: #222;
   padding: 0 1vw;
-  font-size: 3vw;
+  font-size: 2vw;
   letter-spacing: .3vw;
   text-decoration: none;
-  text-transform: uppercase;
+/* text-transform: uppercase; */
 }
 .m-b-md {
   height: 12vh;
