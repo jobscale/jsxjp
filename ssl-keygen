@@ -5,8 +5,8 @@ country=JA
 state=Osaka
 locality=Osaka
 organizational=jsx.jp
-unit=Developpers
-common=jsx.jp,*.jsx.jp,*.in.jsx.jp,*.secret.jsx.jp,*.aws.jsx.jp,*.gcp.jsx.jp
+unit=CE
+common=jsx.jp,*.jsx.jp,*.secure.jsx.jp
 fname=wildcard.jsx.jp
 days=3656
 
