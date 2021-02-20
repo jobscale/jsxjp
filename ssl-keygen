@@ -6,9 +6,9 @@ state=Osaka
 locality=Osaka
 organizational=jsx.jp
 unit=Developpers
-common=*.jsx.jp
+common=jsx.jp,*.jsx.jp,*.in.jsx.jp,*.secret.jsx.jp,*.aws.jsx.jp,*.gcp.jsx.jp
 fname=wildcard.jsx.jp
-days=3655
+days=3656
 
 rm -fr $directory
 mkdir $directory
