@@ -1,6 +1,18 @@
 /* global document window fetch Common firebase */
 /* eslint-disable no-unused-expressions */
 window.App || (
+  Object(Date).prototype.toLocaleString = function () {
+    const dt = this;
+    const d = {
+      Y: dt.getFullYear(),
+      m: `0${dt.getMonth() + 1}`.slice(-2),
+      d: `0${dt.getDate()}`.slice(-2),
+      H: `0${dt.getHours()}`.slice(-2),
+      M: `0${dt.getMinutes()}`.slice(-2),
+      S: `0${dt.getSeconds()}`.slice(-2),
+    };
+    return `${d.Y}-${d.m}-${d.d} ${d.H}:${d.M}:${d.S}`;
+  };
   window.Common && (() => {
     class App extends Common {
       constructor() {
@@ -89,12 +101,12 @@ window.App || (
         window.localStorage.setItem('sentToServer', sent ? '1' : '0');
       }
       date() {
-        fetch(`${this.url.date}?v=${new Date().getTime()}`, { method: 'head' })
+        fetch(`${this.url.date}?v=${Date.now()}`, { method: 'head' })
         .then(res => res.headers.get('date'))
-        .then(gmt => new Date(gmt).toLocaleString().replace(/\//g, '-'))
-        .then(res => ({ html: res, element: document.querySelector('#date') || {} }))
-        .catch(e => e.message)
-        .then(obj => (o => o)(obj).element.innerHTML = obj.html);
+        .then(gmt => new Date(gmt).toLocaleString())
+        .then(dt => ({ dt, element: document.querySelector('#date') }))
+        .then(obj => obj.element.textContent = obj.dt)
+        .catch(e => e.message);
       }
       interval() {
         this.url = {
