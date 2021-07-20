@@ -1,14 +1,14 @@
-/* global self importScripts firebase */
-/* eslint-disable no-restricted-globals */
+/* eslint-env browser */
 importScripts('/service-worker.js');
 importScripts('https://www.gstatic.com/firebasejs/5.8.3/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/5.8.3/firebase-messaging.js');
+
 class FireBase {
   constructor() {
-    /* eslint-disable no-console */
-    this.logger = console; /* eslint-enable no-console */
+    this.logger = console;
     this.initApp();
   }
+
   initApp() {
     const config = {
       apiKey: 'AIzaSyAlGETt2oe_9zfGwuzdvKzNK9pdqrQqwgA',
@@ -33,4 +33,5 @@ class FireBase {
     });
   }
 }
-(() => new FireBase())();
+
+new FireBase();

@@ -1,124 +1,96 @@
-/* global document window fetch Common firebase */
-/* eslint-disable no-unused-expressions */
-window.App || (
-  window.Common && (() => {
-    Object(Date).prototype.toLocaleString = function () {
-      const dt = this;
-      const d = {
-        Y: dt.getFullYear(),
-        m: `0${dt.getMonth() + 1}`.slice(-2),
-        d: `0${dt.getDate()}`.slice(-2),
-        H: `0${dt.getHours()}`.slice(-2),
-        M: `0${dt.getMinutes()}`.slice(-2),
-        S: `0${dt.getSeconds()}`.slice(-2),
-      };
-      return `${d.Y}-${d.m}-${d.d} ${d.H}:${d.M}:${d.S}`;
+/* eslint-env browser */
+class App extends Common {
+  constructor() {
+    super();
+    const apiKey = 'BDCduUmCdNdkNov_rwvGTDLC7ez8fmREbdx4rS205xN4-wI9WMvhQ72o2HfkXZUbXWTDZRsA68qEV1aBa8dLuC0';
+    const config = {
+      apiKey: 'AIzaSyAlGETt2oe_9zfGwuzdvKzNK9pdqrQqwgA',
+      authDomain: 'notification-aaa.firebaseapp.com',
+      databaseURL: 'https://notification-aaa.firebaseio.com',
+      projectId: 'notification-aaa',
+      storageBucket: 'notification-aaa.appspot.com',
+      messagingSenderId: '592002215665',
     };
-    class App extends Common {
-      constructor() {
-        super();
-        const apiKey = 'BDCduUmCdNdkNov_rwvGTDLC7ez8fmREbdx4rS205xN4-wI9WMvhQ72o2HfkXZUbXWTDZRsA68qEV1aBa8dLuC0';
-        const config = {
-          apiKey: 'AIzaSyAlGETt2oe_9zfGwuzdvKzNK9pdqrQqwgA',
-          authDomain: 'notification-aaa.firebaseapp.com',
-          databaseURL: 'https://notification-aaa.firebaseio.com',
-          projectId: 'notification-aaa',
-          storageBucket: 'notification-aaa.appspot.com',
-          messagingSenderId: '592002215665',
-        };
-        firebase.initializeApp(config);
-        this.messaging = firebase.messaging();
-        this.messaging.usePublicVapidKey(apiKey);
-        this.swEvent();
+    firebase.initializeApp(config);
+    this.messaging = firebase.messaging();
+    this.messaging.usePublicVapidKey(apiKey);
+    this.swEvent();
+    this.checkToken();
+  }
+
+  swEvent() {
+    this.messaging.onTokenRefresh(() => {
+      this.messaging.getToken().then((refreshedToken) => {
+        logger.log('Token refreshed.');
+        this.setTokenSentToServer(false);
+        this.sendTokenToServer(refreshedToken);
         this.checkToken();
-        this.interval();
+      }).catch(err => {
+        logger.log('Unable to retrieve refreshed token ', err);
+      });
+    });
+    this.messaging.onMessage(payload => {
+      logger.log('Message received. ', payload);
+    });
+  }
+
+  checkToken() {
+    this.messaging.getToken().then(currentToken => {
+      if (currentToken) {
+        this.sendTokenToServer(currentToken);
+      } else {
+        logger.log('No Instance ID token available. Request permission to generate one.');
+        this.requestPermission();
+        this.setTokenSentToServer(false);
       }
-      swEvent() {
-        this.messaging.onTokenRefresh(() => {
-          this.messaging.getToken().then((refreshedToken) => {
-            this.logger.log('Token refreshed.');
-            this.setTokenSentToServer(false);
-            this.sendTokenToServer(refreshedToken);
-            this.checkToken();
-          }).catch(err => {
-            this.logger.log('Unable to retrieve refreshed token ', err);
-          });
-        });
-        this.messaging.onMessage(payload => {
-          this.logger.log('Message received. ', payload);
-        });
-      }
-      checkToken() {
-        this.messaging.getToken().then(currentToken => {
-          if (currentToken) {
-            this.sendTokenToServer(currentToken);
-          } else {
-            this.logger.log('No Instance ID token available. Request permission to generate one.');
-            this.requestPermission();
-            this.setTokenSentToServer(false);
-          }
-        }).catch(err => {
-          this.logger.log('An error occurred while retrieving token. ', err);
-          this.setTokenSentToServer(false);
-        });
-      }
-      sendTokenToServer(currentToken) {
-        if (!this.isTokenSentToServer()) {
-          this.logger.log(`Sending token to server... ${currentToken}`);
-          // TODO(developer): Send the current token to your server.
-          this.setTokenSentToServer(true);
-        } else {
-          this.logger.log(
-            'Token already sent to server so won\'t send it again unless it changes',
-          );
-        }
-      }
-      requestPermission() {
-        this.logger.log('Requesting permission...');
-        this.messaging.requestPermission().then(() => {
-          this.logger.log('Notification permission granted.');
-        }).catch(err => {
-          this.logger.log('Unable to get permission to notify.', err);
-        });
-      }
-      deleteToken() {
-        this.messaging.getToken().then(currentToken => {
-          this.messaging.deleteToken(currentToken).then(() => {
-            this.logger.log('Token deleted.');
-            this.setTokenSentToServer(false);
-            this.checkToken();
-          }).catch(err => {
-            this.logger.log('Unable to delete token. ', err);
-          });
-        }).catch(err => {
-          this.logger.log('Error retrieving Instance ID token. ', err);
-        });
-      }
-      isTokenSentToServer() {
-        return window.localStorage.getItem('sentToServer') === '1';
-      }
-      setTokenSentToServer(sent) {
-        window.localStorage.setItem('sentToServer', sent ? '1' : '0');
-      }
-      date() {
-        fetch(`${this.url.date}?v=${Date.now()}`, { method: 'head' })
-        .then(res => res.headers.get('date'))
-        .then(gmt => new Date(gmt).toLocaleString())
-        .then(dt => ({ dt, element: document.querySelector('#date') }))
-        .then(obj => obj.element.textContent = obj.dt)
-        .catch(e => e.message);
-      }
-      interval() {
-        this.url = {
-          date: '/robots.txt',
-        };
-        setTimeout(() => this.setInterval(), 2200);
-      }
-      setInterval() {
-        setInterval(() => this.date(), 1000);
-      }
+    }).catch(err => {
+      logger.log('An error occurred while retrieving token. ', err);
+      this.setTokenSentToServer(false);
+    });
+  }
+
+  sendTokenToServer(currentToken) {
+    if (!this.isTokenSentToServer()) {
+      logger.log(`Sending token to server... ${currentToken}`);
+      // TODO(developer): Send the current token to your server.
+      this.setTokenSentToServer(true);
+    } else {
+      logger.log(
+        'Token already sent to server so won\'t send it again unless it changes',
+      );
     }
-    window.App = App;
-    return new App();
-  })()
-) || (() => { throw new Error('bad'); })();
+  }
+
+  requestPermission() {
+    logger.log('Requesting permission...');
+    this.messaging.requestPermission().then(() => {
+      logger.log('Notification permission granted.');
+    }).catch(err => {
+      logger.log('Unable to get permission to notify.', err);
+    });
+  }
+
+  deleteToken() {
+    this.messaging.getToken().then(currentToken => {
+      this.messaging.deleteToken(currentToken).then(() => {
+        logger.log('Token deleted.');
+        this.setTokenSentToServer(false);
+        this.checkToken();
+      }).catch(err => {
+        logger.log('Unable to delete token. ', err);
+      });
+    }).catch(err => {
+      logger.log('Error retrieving Instance ID token. ', err);
+    });
+  }
+
+  isTokenSentToServer() {
+    return window.localStorage.getItem('sentToServer') === '1';
+  }
+
+  setTokenSentToServer(sent) {
+    window.localStorage.setItem('sentToServer', sent ? '1' : '0');
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => new App());

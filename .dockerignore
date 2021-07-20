@@ -5,6 +5,8 @@
 *.log
 **/*.service
 .idea/
+.vscode/
 .git/
+.github/
 .dockerignore
 .gitignore

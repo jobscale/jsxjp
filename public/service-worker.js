@@ -1,14 +1,13 @@
-/* global self Request fetch caches */
+/* eslint-env browser */
 class ServiceWorker {
   constructor() {
-    /* eslint-disable no-console */
-    this.logger = console; /* eslint-enable no-console */
-    /* eslint-disable no-restricted-globals */
-    this.self = self; /* eslint-enable no-restricted-globals */
+    this.logger = console;
+    this.self = self;
     this.url = 'https://jsx.jp';
     this.offlinePage = new Request('/');
     this.initEvent();
   }
+
   initEvent() {
     this.addEventListener('activate', event => {
       this.logger.info('activate', event);
@@ -71,8 +70,10 @@ class ServiceWorker {
       return cache.put(this.offlinePage, event);
     }));
   }
+
   addEventListener(type, listener) {
     this.self.addEventListener(type, listener);
   }
 }
-(() => new ServiceWorker())();
+
+new ServiceWorker();

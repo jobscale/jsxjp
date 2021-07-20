@@ -1,3 +1,4 @@
+/* eslint-env browser */
 class Loader {
   action() {
     const templates = document.querySelectorAll('div[id^=template-]');
@@ -7,6 +8,7 @@ class Loader {
       template.append(fragment.content);
     });
   }
+
   trigger() {
     fetch('template.html')
     .then(res => res.text())
@@ -16,4 +18,5 @@ class Loader {
     });
   }
 }
-document.addEventListener('DOMContentLoaded', () => new Loader().trigger());
+
+window.addEventListener('DOMContentLoaded', () => new Loader().trigger());
