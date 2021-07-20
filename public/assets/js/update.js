@@ -18,7 +18,7 @@ class Update extends Common {
     .then(gmt => {
       this.self.stack.push(Math.floor((performance.now() - params.begin) * 10));
       if (this.self.stack.length > 20) this.self.stack.shift();
-      this.self.span.textContent = this.self.stack.reduce((...s) => s[0] + s[1], 0) / this.self.stack.length;
+      this.self.span.textContent = Math.floor(this.self.stack.reduce((...s) => s[0] + s[1], 0) / this.self.stack.length);
       this.self.date.textContent = new Date(gmt).toLocaleString();
     })
     .catch(e => this.self.span.textContent = e.message);
