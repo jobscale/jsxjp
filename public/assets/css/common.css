@@ -25,19 +25,21 @@ html, body {
   text-align: center;
 }
 .title {
-  font-size: 5vw;
+  font-size: calc((5vw + 5vh) / 2);
   letter-spacing: .3vw;
+  margin-bottom: calc((1vw + 1vh) / 2);
+  padding-bottom: calc((1vw + 1vh) / 2);
+}
+.content > .links {
+  padding-top: calc((3vw + 3vh) / 2);
 }
 .links > a {
   color: #222;
   padding: 0 1vw;
-  font-size: 2vw;
+  font-size: calc((2vw + 2vh) / 2);
   letter-spacing: .3vw;
   text-decoration: none;
-/* text-transform: uppercase; */
-}
-.m-b-md {
-  height: 12vh;
+  /* text-transform: uppercase; */
 }
 .anim-bound {
   -webkit-animation: bounce-text 2s infinite cubic-bezier(0.245, 0.325, 0.67, 1.51);
