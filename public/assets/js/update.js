@@ -41,7 +41,9 @@ class Update extends Common {
   }
 
   play() {
+    if (this.latest && (this.latest + 60000) > Date.now()) return;
     this.self.sound.play();
+    this.latest = Date.now();
   }
 }
 
