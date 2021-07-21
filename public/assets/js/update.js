@@ -31,6 +31,7 @@ class Update extends Common {
       stack: [],
       span: document.querySelector('#span'),
       date: document.querySelector('#date'),
+      sound: new Howl({ src: ['/assets/mp3/warning1.mp3'] }),
     };
     setTimeout(() => this.setInterval(), 998);
   }
@@ -40,7 +41,7 @@ class Update extends Common {
   }
 
   play() {
-    new Howl({ src: ['/assets/mp3/warning1.mp3'] }).play();
+    this.self.sound.play();
   }
 }
 
