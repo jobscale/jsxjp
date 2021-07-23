@@ -30,8 +30,8 @@ html, body {
   margin-bottom: calc((1vw + 1vh) / 2);
   padding-bottom: calc((1vw + 1vh) / 2);
 }
-.content > .links {
-  padding-top: calc((3vw + 3vh) / 2);
+.m-b-md {
+  padding-bottom: calc((3vw + 3vh) / 2);
 }
 .links > a {
   color: #222;
