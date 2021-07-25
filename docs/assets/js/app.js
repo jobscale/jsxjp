@@ -1,6 +1,7 @@
 /* eslint-env browser */
 class App extends Common {
   constructor(parent) {
+    super();
     this.parent = parent;
   }
   trigger(event) {
