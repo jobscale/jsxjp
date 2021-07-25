@@ -14,7 +14,7 @@ class Update extends Common {
       begin: performance.now(),
       warn: setTimeout(() => this.play(), 2000),
     };
-    fetch(...params.req)
+    return fetch(...params.req)
     .then(res => res.headers.get('date'))
     .then(gmt => {
       clearTimeout(params.warn);
