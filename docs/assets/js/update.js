@@ -2,10 +2,10 @@
 class Update extends Common {
   constructor() {
     super();
-    this.interval();
+    setTimeout(() => this.interval(), 200);
   }
 
-  date() {
+  updateDate() {
     const params = {
       req: [
         `/robots.txt?v=${Date.now()}`,
@@ -24,6 +24,15 @@ class Update extends Common {
       this.self.date.textContent = new Date(gmt).toLocaleString();
     })
     .catch(e => this.self.span.textContent = e.message);
+  }
+
+  date() {
+    if (this.busy) return;
+    this.busy = true;
+    this.updateDate()
+    .then(() => {
+      delete this.busy;
+    );
   }
 
   interval() {
