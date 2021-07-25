@@ -32,7 +32,7 @@ class Update extends Common {
     this.updateDate()
     .then(() => {
       delete this.busy;
-    );
+    )};
   }
 
   interval() {
