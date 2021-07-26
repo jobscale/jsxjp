@@ -1,13 +1,13 @@
 /* eslint-env browser */
 class App extends Common {
-  constructor(parent) {
+  constructor(name) {
     super();
-    this.parent = parent;
+    this.name = name;
   }
   trigger(event) {
-    logger.info(this.parent, event);
+    logger.info(this.name, event);
   }
 }
 
-window.addEventListener('DOMContentLoaded', new App('window').trigger);
-document.addEventListener('DOMContentLoaded', new App('document').trigger);
+document.addEventListener('DOMContentLoaded', event => new App('document').trigger(event));
+window.addEventListener('DOMContentLoaded', event => new App('window').trigger(event));

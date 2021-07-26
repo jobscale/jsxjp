@@ -25,7 +25,7 @@ class Update extends Common {
       document.querySelector('#date')
       .textContent = new Date(gmt).toLocaleString();
     })
-    .catch(e => this.self.span.textContent = e.message);
+    .catch(e => document.querySelector('#span').textContent = e.message);
   }
 
   date() {
