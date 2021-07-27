@@ -42,11 +42,12 @@ class Update extends Common {
       stack: [],
       sound: new Howl({ src: ['/assets/mp3/warning1.mp3'] }),
     };
-    setTimeout(() => this.setInterval(), 998);
-  }
-
-  setInterval() {
-    setInterval(() => this.date(), 998);
+    this.self.sound.once('load', () => {
+      const delay = 1000 - Date.now() % 1000;
+      setTimeout(() => {
+        setInterval(() => this.date(), 1000);
+      }, delay);
+    });
   }
 
   play() {
