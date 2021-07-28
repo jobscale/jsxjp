@@ -52,7 +52,8 @@ class Update extends Common {
 
   play() {
     if (this.latest && (this.latest + 60000) > Date.now()) return;
-    this.self.sound.play();
+    const actions = ['alert play sound.', this.self.sound.play()];
+    logger.info(...actions)
     this.latest = Date.now();
   }
 }
