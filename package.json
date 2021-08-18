@@ -1,0 +1,34 @@
+{
+  "name": "jsxjp",
+  "private": true,
+  "version": "0.0.1",
+  "description": "node express ejs template SSR MVC",
+  "author": "jobscale <jobscale@users.noreply.github.com>",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "lint": "eslint . && ejslint app/views",
+    "test": "npm run lint"
+  },
+  "dependencies": {
+    "@jobscale/core": "0.0.3",
+    "@jobscale/slack": "0.0.2",
+    "cookie-parser": "^1.4.5",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "http-errors": "^1.8.0",
+    "joi": "^17.4.1",
+    "jws": "^4.0.0"
+  },
+  "devDependencies": {
+    "ejs-lint": "^1.2.0",
+    "eslint": "^7.30.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.23.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jobscale/jsxjp.git"
+  },
+  "license": "MIT"
+}

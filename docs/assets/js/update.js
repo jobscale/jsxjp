@@ -2,7 +2,18 @@
 class Update extends Common {
   constructor() {
     super();
+    setTimeout(() => this.trigger(), 200);
     setTimeout(() => this.interval(), 200);
+  }
+
+  trigger() {
+    const access = document.querySelector('#access');
+    access.textContent = '[click]';
+    access.addEventListener('click', event => this.action(event), { once: true });
+  }
+
+  action(event) {
+    event.target.textContent = 'hello';
   }
 
   updateDate() {
@@ -20,12 +31,12 @@ class Update extends Common {
       clearTimeout(params.warn);
       this.self.stack.push(Math.floor((performance.now() - params.begin) * 10));
       if (this.self.stack.length > 20) this.self.stack.shift();
-      document.querySelector('#span')
+      document.querySelector('#time-span')
       .textContent = Math.floor(this.self.stack.reduce((...s) => s[0] + s[1], 0) / this.self.stack.length);
       document.querySelector('#date')
       .textContent = new Date(gmt).toLocaleString();
     })
-    .catch(e => document.querySelector('#span').textContent = e.message);
+    .catch(e => document.querySelector('#time-span').textContent = e.message);
   }
 
   date() {

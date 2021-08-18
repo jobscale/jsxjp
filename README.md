@@ -9,6 +9,6 @@ main() {
   }
   delayOpen &
   docker build . -t local/jsxjp
-  docker run --rm --name jsxjp -p 3000:80 -it local/jsxjp
+  docker run --rm --name jsxjp -p 3000:3000 -it local/jsxjp
 } && main
 ```

@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Reset User</title>
+  <link rel="stylesheet" href="/css/form.css">
+  <script type="text/javascript" src="/js/user/reset.js"></script>
+  <%- include('../menu/head') %>
+</head>
+<body>
+  <main>
+    <h1 class=title>Reset User</h1>
+    <section class="intro">
+      <form name="form" class="login">
+        <p>
+          <label for="login">User:</label>
+          <input type="text" id="login" placeholder="user">
+        </p>
+        <p>
+          <label for="password">Password:</label>
+          <input type="password" id="password" placeholder="password">
+        </p>
+        <p>
+          <label for="confirm">Confirm:</label>
+          <input type="password" id="confirm" placeholder="password">
+        </p>
+        <p class="register-submit">
+          <button type="submit" class="register-button">Register</button>
+        </p>
+        <div class="center error" id="status"></div>
+      </form>
+    </section>
+  </main>
+  <%- include('../menu/body') %>
+</body>
+</html>

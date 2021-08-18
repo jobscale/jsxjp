@@ -1,6 +1,7 @@
-FROM nginx:alpine
-WORKDIR /usr/share/nginx
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY default.conf /etc/nginx/conf.d/default.conf
-COPY public html
-RUN chown -R nginx. html
+FROM node:buster-slim
+SHELL ["bash", "-c"]
+WORKDIR /home/node
+COPY . .
+RUN npm i --production && chown -R node. . && mv db.example db
+USER node
+CMD ["npm", "start"]
