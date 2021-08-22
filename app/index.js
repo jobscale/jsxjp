@@ -28,13 +28,13 @@ class App {
     this.set('etag', false);
     this.set('x-powered-by', false);
     this.use((req, res, next) => {
-      const origin = req.headers.origin || `${req.protocol}://${req.headers.host}`;
+      const { headers, protocol } = req;
+      const origin = headers.origin || `${headers['x-forwarded-proto'] || protocol}://${headers.host}`;
       res.header('Access-Control-Allow-Origin', `${origin}`);
       res.header('Access-Control-Allow-Methods', 'GET, POST, HEAD');
       res.header('Access-Control-Allow-Headers', 'Content-Type');
-      res.header('X-Headers', JSON.stringify(req.headers));
-      res.header('X-Process', JSON.stringify(process.env));
-      res.header('X-Server', 'acl-ingress-k8s');
+      res.header('X-Backend-Host', process.env.HOSTNAME);
+      res.header('X-Server', 'acl-tanpo-k8s');
       next();
     });
   }
