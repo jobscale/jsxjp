@@ -40,7 +40,7 @@ class App {
   }
 
   usePublic() {
-    this.use(express.static(path.resolve(__dirname, '../public')));
+    this.use(express.static(path.resolve(__dirname, '../docs')));
   }
 
   useLogging() {

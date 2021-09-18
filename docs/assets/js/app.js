@@ -9,5 +9,4 @@ class App extends Common {
   }
 }
 
-document.addEventListener('DOMContentLoaded', event => new App('document').trigger(event));
 window.addEventListener('DOMContentLoaded', event => new App('window').trigger(event));

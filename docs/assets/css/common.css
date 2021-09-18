@@ -1,7 +1,9 @@
-* { overflow: hidden; }
+* {
+  overflow: hidden;
+}
 html, body {
   color: #222;
-  background-color: #999;
+  background-color: #888;
   height: 100vh;
   margin: 0;
 }
@@ -18,28 +20,39 @@ html, body {
 }
 .top-right {
   position: absolute;
-  right: 4vw;
   top: 3vh;
+  right: 4vw;
 }
 .content {
   text-align: center;
 }
 .title {
-  font-size: calc((5vw + 5vh) / 2);
-  letter-spacing: .3vw;
-  margin-bottom: calc((1vw + 1vh) / 2);
-  padding-bottom: calc((1vw + 1vh) / 2);
+  font-size: calc((5vh + 5vw) / 2);
+  letter-spacing: calc((.3vh + .3vw) / 2);
+  margin-bottom: calc((1vh + 1vw) / 2);
+  padding-bottom: calc((1vh + 1vw) / 2);
 }
 .m-b-md {
-  padding-bottom: calc((3vw + 3vh) / 2);
+  padding-bottom: calc((3vh + 3vw) / 2);
+}
+.links {
+  padding: 1vh 5vw;
 }
 .links > a {
   color: #222;
-  padding: 0 1vw;
-  font-size: calc((2vw + 2vh) / 2);
-  letter-spacing: .3vw;
+  padding: 1vh 1vw;
+  font-size: calc((2vh + 2vw) / 2);
+  letter-spacing: calc((.3vh + .3vw) / 2);
   text-decoration: none;
   /* text-transform: uppercase; */
+}
+#time-span {
+  min-width: 20vw;
+  display: inline-grid;
+  text-align: right;
+}
+.worm span {
+  padding: .3vh .3vw;
 }
 .anim-bound {
   -webkit-animation: bounce-text 2s infinite cubic-bezier(0.245, 0.325, 0.67, 1.51);
@@ -60,9 +73,4 @@ html, body {
   100% {
     font-size: 7vw;
   }
-}
-#time-span {
-  min-width: 20vw;
-  display: inline-grid;
-  text-align: right;
 }
