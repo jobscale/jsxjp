@@ -25,8 +25,8 @@ class Update extends Common {
 
   updateSpan(begin) {
     const { stack } = this.self;
-    stack.push(Math.floor((performance.now() - begin) * 10));
-    if (stack.length > 60) stack.shift();
+    stack.unshift(Math.floor((performance.now() - begin) * 10));
+    if (stack.length > 60) stack.length = 60;
     document.querySelector('#time-span')
     .textContent = Math.floor(stack.reduce((...s) => s[0] + s[1], 0) / stack.length);
   }
@@ -56,6 +56,8 @@ class Update extends Common {
     if (this.self.busy) {
       busy.textContent = `${this.self.busy} 🍺`;
       this.self.busy++;
+      const { stack } = this.self;
+      if (stack.length > 10) stack.length = 10;
       return;
     }
     this.self.busy = 1;
