@@ -23,15 +23,15 @@ class Update extends Common {
     });
   }
 
-  updateSpan(begin) {
+  updateSpan() {
     const { stack } = this.self;
-    stack.unshift(Math.floor((performance.now() - begin) * 10));
     if (stack.length > 60) stack.length = 60;
     document.querySelector('#time-span')
     .textContent = Math.floor(stack.reduce((...s) => s[0] + s[1], 0) / stack.length);
   }
 
   updateDate() {
+    const { stack } = this.self;
     const params = {
       req: [
         `/robots.txt?v=${Date.now()}`,
@@ -46,7 +46,8 @@ class Update extends Common {
       clearTimeout(params.warn);
       document.querySelector('#date')
       .textContent = new Date(gmt).toLocaleString();
-      this.updateSpan(params.begin);
+      stack.unshift(Math.floor((performance.now() - params.begin) * 10));
+      this.updateSpan();
     })
     .catch(e => document.querySelector('#time-span').textContent = e.message);
   }
@@ -57,7 +58,8 @@ class Update extends Common {
       busy.textContent = `${this.self.busy} 🍺`;
       this.self.busy++;
       const { stack } = this.self;
-      if (stack.length > 10) stack.length = 10;
+      stack[0] += 10000;
+      this.updateSpan();
       return;
     }
     this.self.busy = 1;
