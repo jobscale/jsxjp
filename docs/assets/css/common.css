@@ -59,6 +59,9 @@ html, body {
   display: inline-grid;
   text-align: right;
 }
+.worm {
+  font-size: calc((1.5vh + 1.5vw) / 2);
+}
 .worm span {
   padding: .3vh .3vw;
 }
