@@ -46,7 +46,7 @@ class Update extends Common {
       clearTimeout(params.warn);
       document.querySelector('#date')
       .textContent = new Date(gmt).toLocaleString();
-      stack.unshift(Math.floor((performance.now() - params.begin) * 10));
+      stack.unshift((Math.floor((performance.now() - params.begin) * 10)) / 10);
       this.updateSpan();
     })
     .catch(e => document.querySelector('#time-span').textContent = e.message);
@@ -58,7 +58,8 @@ class Update extends Common {
       busy.textContent = `${this.self.busy} 🍺`;
       this.self.busy++;
       const { stack } = this.self;
-      stack[0] += 10000;
+      if (stack.length > 10) stack.length = 10;
+      stack[0] += 1000;
       this.updateSpan();
       return;
     }
