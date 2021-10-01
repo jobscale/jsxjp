@@ -27,7 +27,7 @@ class Update extends Common {
     const { stack } = this.self;
     if (stack.length > 60) stack.length = 60;
     document.querySelector('#time-span')
-    .textContent = Math.floor(stack.reduce((...s) => s[0] + s[1], 0) / stack.length);
+    .textContent = Math.floor(stack.reduce((...s) => s[0] + s[1], 0) / `${stack.length}.0`);
   }
 
   updateDate() {
