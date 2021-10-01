@@ -46,7 +46,7 @@ class Update extends Common {
       clearTimeout(params.warn);
       document.querySelector('#date')
       .textContent = new Date(gmt).toLocaleString();
-      stack.unshift((Math.floor((performance.now() - params.begin) * 10)) / 10);
+      stack.unshift((Math.floor((performance.now() - params.begin) * 10)) / 10.0);
       this.updateSpan();
     })
     .catch(e => document.querySelector('#time-span').textContent = e.message);
