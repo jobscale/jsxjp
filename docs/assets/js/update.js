@@ -2,7 +2,7 @@
 class Update extends Common {
   constructor() {
     super();
-    this.self = { stack: [] };
+    this.self = { stack: [0] };
     setTimeout(() => this.interval(), 0);
     setTimeout(() => this.trigger(), 1000);
   }
