@@ -9,11 +9,13 @@
   <title>jsx.jp</title>
   <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="/assets/css/common.css">
+  <link rel="stylesheet" href="/assets/css/svelte-app.css">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
   <script defer src="/assets/js/common.js"></script>
   <script defer src="/assets/js/app.js"></script>
   <script defer src="/assets/js/update.js"></script>
   <script defer src="/assets/js/loader.js"></script>
+  <script defer src="/assets/js/svelte-app.js"></script>
 </head>
 <body>
   <div class="flex-center position-ref full-height">
@@ -22,12 +24,17 @@
       <a href="/user/register">Register</a>
     </div>
     <div class="content">
-      <div class="title">
-        <div>welcome home</div>
-      </div>
-      <div class="title">
-        <span id="access"></span>
-        <span id="time-span">guest</span>
+      <div class="section">
+        <div class="area">
+          <div class="title">
+            <div>welcome</div>
+          </div>
+          <div class="title">
+            <span id="access"></span>
+            <span id="time-span">guest</span>
+          </div>
+        </div>
+        <div class="area" id="svelte-app"></div>
       </div>
       <div class="title m-b-md">
         <div id='date'>☃</div>

@@ -23,6 +23,19 @@ html, body {
   display: flex;
   justify-content: center;
 }
+.section {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+.area {
+  margin: 0 1vw;
+  padding: 0 1vw;
+}
+#svelte-app {
+  width: calc((16vw + 16vh) / 2);
+  height: 100%;
+}
 .position-ref {
   position: relative;
 }
