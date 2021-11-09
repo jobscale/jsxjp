@@ -38,7 +38,10 @@ html, body {
 }
 #busy-ts {
   color: #04d;
-  padding: 0 1vw;
+  padding: 0.3vh 1vw;
+}
+#busy {
+  padding: 0.3vh 1vw;
 }
 .position-ref {
   position: relative;
