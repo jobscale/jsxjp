@@ -36,6 +36,10 @@ html, body {
   width: calc((16vw + 16vh) / 2);
   height: 100%;
 }
+#busy-ts {
+  color: #04d;
+  padding: 0 1vw;
+}
 .position-ref {
   position: relative;
 }

@@ -88,6 +88,8 @@ class Update extends Common {
     const play = () => this.self.sound && this.self.sound.play();
     const actions = ['alert play sound.', this.latest, play()];
     logger.info(...actions)
+    const busyTs = document.querySelector('#busy-ts');
+    busyTs.textContent = new Date(this.latest).toLocaleTimeString();
   }
 }
 
