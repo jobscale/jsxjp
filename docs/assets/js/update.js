@@ -54,7 +54,7 @@ class Update extends Common {
   }
 
   checkDate() {
-    const busy = document.querySelector('#busy');
+    const busy = document.querySelector('#busy > span');
     if (this.self.busy) {
       busy.textContent = `${this.self.busy} 🍺`;
       this.self.busy++;
@@ -88,7 +88,7 @@ class Update extends Common {
     const play = () => this.self.sound && this.self.sound.play();
     const actions = ['alert play sound.', this.latest, play()];
     logger.info(...actions)
-    const busyTs = document.querySelector('#busy-ts');
+    const busyTs = document.querySelector('#busy-ts > span');
     busyTs.textContent = new Date(this.latest).toLocaleTimeString();
   }
 }
