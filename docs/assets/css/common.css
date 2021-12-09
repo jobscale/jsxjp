@@ -85,7 +85,7 @@ html, body {
   padding: .3vh .3vw;
 }
 .inline-scroll {
-  max-width: 92vw;
+  max-width: 84vw;
   display: inline-block;
   overflow-x: auto;
 }
