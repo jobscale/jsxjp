@@ -1,10 +1,10 @@
-const { Route } = require('./route');
-const { apiRoute } = require('./apiRoute');
-const { authRoute } = require('./authRoute');
-const { accountRoute } = require('./accountRoute');
-const { userRoute } = require('./userRoute');
-const { templateRoute } = require('./templateRoute');
-const { topController } = require('../controllers/topController');
+const { Route } = require('../route');
+const { apiRoute } = require('../api/route');
+const { authRoute } = require('../auth/route');
+const { accountRoute } = require('../account/route');
+const { userRoute } = require('../user/route');
+const { templateRoute } = require('../template/route');
+const { topController } = require('./controller');
 
 class TopRoute extends Route {
   constructor() {

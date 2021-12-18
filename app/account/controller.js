@@ -1,5 +1,5 @@
-const { Controller } = require('./controller');
-const { accountService } = require('../services/accountService');
+const { Controller } = require('../controller');
+const { accountService } = require('./service');
 
 class AccountController extends Controller {
   password(req, res) {

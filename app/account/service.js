@@ -1,8 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
-const { Service } = require('./service');
-const { authModel } = require('../models/auth');
+const { Service } = require('../service');
+const { authModel } = require('../auth/model');
 
 const loader = require;
 const db = {

@@ -1,5 +1,5 @@
-const { Route } = require('./route');
-const { templateController } = require('../controllers/templateController');
+const { Route } = require('../route');
+const { templateController } = require('./controller');
 
 class TemplateRoute extends Route {
   constructor() {

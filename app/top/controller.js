@@ -1,5 +1,5 @@
-const { Controller } = require('./controller');
-const { topService } = require('../services/topService');
+const { Controller } = require('../controller');
+const { topService } = require('./service');
 
 class TopController extends Controller {
   page(req, res) {

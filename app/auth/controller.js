@@ -1,4 +1,4 @@
-const { authService } = require('../services/authService');
+const { authService } = require('./service');
 
 class AuthController {
   index(req, res) {
@@ -12,7 +12,7 @@ class AuthController {
     const { login, password } = req.body;
     authService.login({ login, password })
     .then(token => {
-      const expires = new Date(Date.now() + (23 * 60 * 60 * 1000));
+      const expires = new Date(Date.now() + (12 * 60 * 60 * 1000));
       res.cookie('token', token, { expires, httpOnly: true });
       const { href } = req.cookies;
       res.cookie('href', '');

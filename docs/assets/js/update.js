@@ -1,4 +1,6 @@
 /* eslint-env browser */
+/* global Common, Howl */
+/* eslint-disable no-return-assign */
 class Update extends Common {
   constructor() {
     super();
@@ -79,7 +81,7 @@ class Update extends Common {
   interval() {
     setTimeout(() => {
       setInterval(() => this.checkDate(), 1000);
-    }, 1000 - Date.now() % 1000);
+    }, 1000 - (Date.now() % 1000));
   }
 
   play() {
@@ -87,7 +89,7 @@ class Update extends Common {
     this.latest = Date.now();
     const play = () => this.self.sound && this.self.sound.play();
     const actions = ['alert play sound.', this.latest, play()];
-    logger.info(...actions)
+    logger.info(...actions);
     const busyTs = document.querySelector('#busy-ts > span');
     busyTs.textContent = new Date(this.latest).toLocaleTimeString();
   }

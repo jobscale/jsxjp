@@ -1,6 +1,6 @@
-const { Route } = require('./route');
-const { apiController } = require('../controllers/apiController');
-const { apiValidation } = require('../validations/apiValidation');
+const { Route } = require('../route');
+const { apiController } = require('./controller');
+const { apiValidation } = require('./validation');
 
 class ApiRoute extends Route {
   constructor() {

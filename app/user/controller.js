@@ -1,6 +1,6 @@
 const path = require('path');
-const { Controller } = require('./controller');
-const { userService } = require('../services/userService');
+const { Controller } = require('../controller');
+const { userService } = require('./service');
 
 class UserController extends Controller {
   async page(req, res) {

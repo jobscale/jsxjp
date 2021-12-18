@@ -1,5 +1,5 @@
 const { Slack } = require('@jobscale/slack');
-const { Service } = require('./service');
+const { Service } = require('../service');
 
 class ApiService extends Service {
   slack(rest) {

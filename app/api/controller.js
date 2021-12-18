@@ -1,4 +1,4 @@
-const { apiService } = require('../services/apiService');
+const { apiService } = require('./service');
 
 class ApiController {
   slack(req, res) {

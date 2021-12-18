@@ -3,7 +3,7 @@ const createError = require('http-errors');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 require('@jobscale/core');
-const { topRoute } = require('./routes/topRoute');
+const { topRoute } = require('./top/route');
 
 class App {
   constructor() {
@@ -28,13 +28,11 @@ class App {
     this.set('etag', false);
     this.set('x-powered-by', false);
     this.use((req, res, next) => {
-      const { headers, protocol } = req;
-      const origin = headers.origin || `${headers['x-forwarded-proto'] || protocol}://${headers.host}`;
+      const origin = req.headers.origin || `${req.protocol}://${req.headers.host}`;
       res.header('Access-Control-Allow-Origin', `${origin}`);
       res.header('Access-Control-Allow-Methods', 'GET, POST, HEAD');
       res.header('Access-Control-Allow-Headers', 'Content-Type');
-      res.header('X-Backend-Host', process.env.HOSTNAME);
-      res.header('X-Server', 'acl-tanpo-k8s');
+      res.header('Server', 'acl-ingress-k8s');
       next();
     });
   }

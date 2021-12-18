@@ -1,6 +1,6 @@
-const { Route } = require('./route');
-const { accountController } = require('../controllers/accountController');
-const { accountValidation } = require('../validations/accountValidation');
+const { Route } = require('../route');
+const { accountController } = require('./controller');
+const { accountValidation } = require('./validation');
 
 class AccountRoute extends Route {
   constructor() {

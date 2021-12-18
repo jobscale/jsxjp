@@ -1,6 +1,6 @@
-const { Route } = require('./route');
-const { authController } = require('../controllers/authController');
-const { authValidation } = require('../validations/authValidation');
+const { Route } = require('../route');
+const { authController } = require('./controller');
+const { authValidation } = require('./validation');
 
 class AuthRoute extends Route {
   constructor() {

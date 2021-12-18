@@ -1,4 +1,4 @@
-const { Service } = require('./service');
+const { Service } = require('../service');
 
 class TopService extends Service {
 }

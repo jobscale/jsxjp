@@ -1,5 +1,5 @@
-const { Controller } = require('./controller');
-const { templateService } = require('../services/templateService');
+const { Controller } = require('../controller');
+const { templateService } = require('./service');
 
 class TemplateController extends Controller {
   load(req, res) {

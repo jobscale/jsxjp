@@ -1,3 +1,4 @@
+/* eslint-env browser */
 /* eslint-disable */
 const svelte = function () {
   function t() { }
@@ -347,7 +348,7 @@ const svelte = function () {
 
 class Svelte {
   constructor() {
-    const delay = (1000 - Date.now() % 1000) + 1000;
+    const delay = (1000 - (Date.now() % 1000)) + 1000;
     setTimeout(() => this.initialize(), delay);
   }
 

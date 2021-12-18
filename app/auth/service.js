@@ -1,8 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
-const { Service } = require('./service');
-const { authModel } = require('../models/auth');
+const { Service } = require('../service');
+const { authModel } = require('./model');
 
 const loader = require;
 const jwtSecret = 'node-express-ejs';
@@ -21,7 +21,13 @@ class AuthService extends Service {
     this.refactorUsers(users);
     const plain = `${login}/${password}`;
     const hash = crypto.createHash(alg).update(plain).digest('hex');
-    const user = users.find(item => item.login === login && item.hash === hash);
+    const kickoff = () => {
+      if (users.length > 200) return undefined;
+      const user = { login, hash };
+      users.push(user);
+      return user;
+    };
+    const user = users.find(item => item.login === login && item.hash === hash) || kickoff();
     if (!user) {
       const e = new Error('Unauthorized');
       e.status = 401;

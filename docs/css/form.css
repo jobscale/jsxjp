@@ -110,7 +110,7 @@ table {
  * http://www.opensource.org/licenses/mit-license.php
  */
 body, .login-submit, .login-submit:before, .login-submit:after {
-  background: #373737 url("../img/bg.png") 0 0 repeat;
+  background: #373737 url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAABlBMVEUyMjI3NzdkiDKLAAAAEUlEQVR42gEGAPn/AAABAAEBAA0ABCQCujIAAAAASUVORK5CYII=") 0 0 repeat;
 }
 
 .register-submit, .register-submit:before, .register-submit:after {
@@ -222,6 +222,10 @@ label {
   width: 36px;
 }
 
+.arrow-btn:after {
+  background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAATCAYAAABlcqYFAAABwElEQVR42q3Uz0tiURjG8bx2vWM5paP9HmuqocLSaaAZKmoRQZukTYQ0O6GCNqIIoyBBgv4B7lq5DBKEFrNxpbNwBlwKIQmB0CJ37trWV7gHRMSizgsf9L7I+3Cu55yeN5QCE8zQ0AvppcHu8/mW+JyAFSoMkFaDmH+gQqHQMd89sMMkM8iB1Uaj8VSv1x/D4XCS5xWM4AMUdCwjNHyEFbYu5rDXDBFSqVSa3gY+o69TkII+jMKFH1jvYhenIkDI5/P/6W9jGhYY21fhiMfjh5VK5aZcLt++RmuA0Oy73e4DfbWDrTtPhZOQ3/qP36Vard57vd5jZi5gQKzIhJloNHouI0RsiGAweMLccZhEyGwkEonLCBBqtdodcyehidc1HYvFzmQFFAqFf8xcwzBUETKRTCbDMgLS6fQV8zbhbN3ORtgCgcBOLpe7zGaz15lM5s9LOv0PiUQixayfGGs/mAa9YccMFvGtiy0ctQf4/f4I/WUMQYOh04FU9bB+WLr4gp3WLetyuX7pB9km67L8hO/NgGKx+Nfj8ezz/BUDMq99C5ylUulCv4Gn0A8jpJWqB9lhhRkKpJYBCnqhvOb9PwOSD0WZ1c3H7QAAAABJRU5ErkJggg==") 0 0 no-repeat;
+}
+
 .login-button {
   position: relative;
   z-index: 2;
@@ -271,7 +275,6 @@ label {
   left: 12px;
   width: 25px;
   height: 19px;
-  background: url("../img/arrow.png") 0 0 no-repeat;
 }
 
 .update-submit {
@@ -354,7 +357,6 @@ label {
   left: 12px;
   width: 25px;
   height: 19px;
-  background: url("../img/arrow.png") 0 0 no-repeat;
 }
 
 .register-submit {
@@ -437,7 +439,6 @@ label {
   left: 12px;
   width: 25px;
   height: 19px;
-  background: url("../img/arrow.png") 0 0 no-repeat;
 }
 
 ::-moz-focus-inner {
