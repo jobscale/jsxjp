@@ -1,13 +1,21 @@
 /* eslint-env browser */
-class Password {
+/* global App */
+class Password extends App {
   password(event) {
     event.preventDefault();
+    this.loading();
+    this.passwordInternal()
+    .catch(e => logger.error(e))
+    .then(() => this.loading(false));
+  }
+
+  async passwordInternal() {
     const password = document.querySelector('#password').value;
     const confirm = document.querySelector('#confirm').value;
     const status = document.querySelector('#status');
     if (password !== confirm) {
       status.textContent = 'Mismatch Confirmation';
-      return;
+      return undefined;
     }
     status.textContent = '';
     const params = ['/account/password', {
@@ -18,7 +26,7 @@ class Password {
       },
       body: JSON.stringify({ password }),
     }];
-    fetch(...params)
+    return fetch(...params)
     .then(res => {
       status.textContent = `${res.status} ${res.statusText}`;
       if (res.status !== 200) {
