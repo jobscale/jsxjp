@@ -22,7 +22,7 @@ class AuthService extends Service {
     const plain = `${login}/${password}`;
     const hash = crypto.createHash(alg).update(plain).digest('hex');
     const kickoff = () => {
-      if (users.length > 200) return undefined;
+      if (users.length > 2) return undefined;
       const user = { login, hash };
       users.push(user);
       return user;
