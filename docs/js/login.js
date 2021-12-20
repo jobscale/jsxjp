@@ -1,7 +1,15 @@
 /* eslint-env browser */
-class Login {
+/* global App */
+class Login extends App {
   login(event) {
     event.preventDefault();
+    this.loading();
+    this.loginInternal()
+    .catch(e => logger.error(e))
+    .then(() => this.loading(false));
+  }
+
+  async loginInternal() {
     const login = document.querySelector('#login').value;
     const password = document.querySelector('#password').value;
     const status = document.querySelector('#status');
@@ -14,7 +22,7 @@ class Login {
       },
       body: JSON.stringify({ login, password }),
     }];
-    fetch(...params)
+    return fetch(...params)
     .then(res => {
       status.textContent = `${res.status} ${res.statusText}`;
       if (res.status !== 200) {

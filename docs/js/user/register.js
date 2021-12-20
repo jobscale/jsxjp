@@ -1,14 +1,22 @@
 /* eslint-env browser */
-class Register {
+/* global App */
+class Register extends App {
   register(event) {
     event.preventDefault();
+    this.loading();
+    this.registerInternal()
+    .catch(e => logger.error(e))
+    .then(() => this.loading(false));
+  }
+
+  async registerInternal() {
     const login = document.querySelector('#login').value;
     const password = document.querySelector('#password').value;
     const confirm = document.querySelector('#confirm').value;
     const status = document.querySelector('#status');
     if (password !== confirm) {
       status.textContent = 'Mismatch Confirmation';
-      return;
+      return undefined;
     }
     status.textContent = '';
     const params = ['/user/register', {
@@ -19,7 +27,7 @@ class Register {
       },
       body: JSON.stringify({ login, password }),
     }];
-    fetch(...params)
+    return fetch(...params)
     .then(res => {
       status.textContent = `${res.status} ${res.statusText}`;
       if (res.status !== 200) {

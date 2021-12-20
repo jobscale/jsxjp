@@ -1,14 +1,22 @@
 /* eslint-env browser */
-class Reset {
+/* global App */
+class Reset extends App {
   reset(event) {
     event.preventDefault();
+    this.loading();
+    this.resetInternal()
+    .catch(e => logger.error(e))
+    .then(() => this.loading(false));
+  }
+
+  async resetInternal() {
     const login = document.querySelector('#login').value;
     const password = document.querySelector('#password').value;
     const confirm = document.querySelector('#confirm').value;
     const status = document.querySelector('#status');
     if (password !== confirm) {
       status.textContent = 'Mismatch Confirmation';
-      return;
+      return undefined;
     }
     status.textContent = '';
     const params = ['/user/reset', {
@@ -19,7 +27,7 @@ class Reset {
       },
       body: JSON.stringify({ login, password }),
     }];
-    fetch(...params)
+    return fetch(...params)
     .then(res => {
       status.textContent = `${res.status} ${res.statusText}`;
       if (res.status !== 200) {
