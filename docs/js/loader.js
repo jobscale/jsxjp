@@ -37,7 +37,7 @@ class Loader {
         },
         body: JSON.stringify({ id: placeholder.id }),
       }];
-      fetch(...params)
+      this.fetch(...params)
       .then(res => res.text())
       .then(template => {
         document.body.innerHTML += template;

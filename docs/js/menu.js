@@ -10,12 +10,12 @@ class Menu extends App {
     event.preventDefault();
     this.loading();
     this.logoutInternal()
-    .catch(e => logger.error(e))
-    .then(() => this.loading(false));
+    .catch(e => logger.error(e.message))
+    .then(() => this.loading(true));
   }
 
   async logoutInternal() {
-    return fetch('/auth/logout', {
+    return this.fetch('/auth/logout', {
       method: 'post',
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
