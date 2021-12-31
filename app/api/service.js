@@ -12,6 +12,7 @@ class ApiService extends Service {
   async hostname() {
     return {
       hostname: os.hostname(),
+      ip: await fetch('https://inet-ip.info/ip').then(res => res.text()).catch(e => e.message),
     };
   }
 
