@@ -3,9 +3,10 @@
 class Reset extends App {
   reset(event) {
     event.preventDefault();
-    this.loading();
+    const see = this.loading();
     this.resetInternal()
     .catch(e => logger.error(e.message))
+    .then(() => see)
     .then(() => this.loading(true));
   }
 

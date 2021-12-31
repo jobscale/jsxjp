@@ -3,9 +3,10 @@
 class Register extends App {
   register(event) {
     event.preventDefault();
-    this.loading();
+    const see = this.loading();
     this.registerInternal()
     .catch(e => logger.error(e.message))
+    .then(() => see)
     .then(() => this.loading(true));
   }
 

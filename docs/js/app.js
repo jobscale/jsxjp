@@ -10,6 +10,7 @@ class App {
   loading(hide) {
     document.querySelector('#loading')
     .classList[hide ? 'add' : 'remove']('hide');
+    return this.wait(1000);
   }
 
   fetch(url, options) {
@@ -18,5 +19,11 @@ class App {
       redirect: 'error',
     };
     return fetch(url, customOptions);
+  }
+
+  wait(milliseconds) {
+    return new Promise(resolve => {
+      setTimeout(resolve, milliseconds);
+    });
   }
 }

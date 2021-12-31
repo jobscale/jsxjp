@@ -8,9 +8,10 @@ class Menu extends App {
 
   logout(event) {
     event.preventDefault();
-    this.loading();
+    const see = this.loading();
     this.logoutInternal()
     .catch(e => logger.error(e.message))
+    .then(() => see)
     .then(() => this.loading(true));
   }
 
@@ -28,7 +29,7 @@ class Menu extends App {
   }
 
   trigger() {
-    document.logout = this.logoutInternal;
+    document.logout = () => this.logoutInternal();
     document.querySelector('#logout')
     .addEventListener('click', event => this.logout(event));
     document.querySelector('.nav-trigger')

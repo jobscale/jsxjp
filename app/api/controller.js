@@ -11,6 +11,16 @@ class ApiController {
       res.status(e.status).json({ message: e.message });
     });
   }
+
+  hostname(req, res) {
+    apiService.hostname()
+    .then(result => res.json(result))
+    .catch(e => {
+      logger.info({ message: e.toString() });
+      if (!e.status) e.status = 500;
+      res.status(e.status).json({ message: e.message });
+    });
+  }
 }
 
 module.exports = {

@@ -3,9 +3,10 @@
 class Login extends App {
   login(event) {
     event.preventDefault();
-    this.loading();
+    const see = this.loading();
     this.loginInternal()
     .catch(e => logger.error(e.message))
+    .then(() => see)
     .then(() => this.loading(true));
   }
 

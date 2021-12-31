@@ -6,6 +6,7 @@ class ApiRoute extends Route {
   constructor() {
     super();
     this.post('/slack', apiValidation.slack, apiController.slack);
+    this.post('/hostname', apiController.hostname);
   }
 }
 

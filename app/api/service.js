@@ -8,6 +8,12 @@ class ApiService extends Service {
     .then(res => ({ ...res, ts: Date.now() }));
   }
 
+  async hostname() {
+    return {
+      hostname: process.env.HOSTNAME,
+    };
+  }
+
   async allowInsecure(use) {
     if (use === false) delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
     else process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';

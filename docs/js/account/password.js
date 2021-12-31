@@ -3,9 +3,10 @@
 class Password extends App {
   password(event) {
     event.preventDefault();
-    this.loading();
+    const see = this.loading();
     this.passwordInternal()
     .catch(e => logger.error(e.message))
+    .then(() => see)
     .then(() => this.loading(true));
   }
 
