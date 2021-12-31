@@ -4,7 +4,7 @@
 class Update extends Common {
   constructor() {
     super();
-    this.self = { stack: [0] };
+    this.self = { stack: [] };
     setTimeout(() => this.interval(), 0);
     setTimeout(() => this.trigger(), 1000);
   }
@@ -27,8 +27,9 @@ class Update extends Common {
 
   updateSpan() {
     const { stack } = this.self;
+    if (!stack.length) return;
     if (stack.length > 60) stack.length = 60;
-    const span = Math.floor(stack.reduce((...s) => s[0] + s[1], 0)) / stack.length;
+    const span = Math.floor(stack.reduce((a, b) => a + b, 0.0)) / stack.length;
     document.querySelector('#time-span')
     .textContent = span.toFixed(1);
   }
@@ -62,7 +63,8 @@ class Update extends Common {
       this.self.busy++;
       const { stack } = this.self;
       if (stack.length > 10) stack.length = 10;
-      stack[0] += 1000;
+      if (!stack.length) stack.push(1000.0);
+      else stack[0] += 1000;
       this.updateSpan();
       return;
     }
