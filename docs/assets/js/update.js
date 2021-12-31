@@ -23,7 +23,7 @@ class Update extends Common {
     this.self.sound.once('load', () => {
       event.target.textContent = '☃';
     });
-    fetch('/api/hostname', {
+    fetch('/ex-api/hostname', {
       method: 'post',
     })
     .then(res => res.json())

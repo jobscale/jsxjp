@@ -9,6 +9,7 @@ const { topController } = require('./controller');
 class TopRoute extends Route {
   constructor() {
     super();
+    this.use('/ex-api', apiRoute.router);
     this.use('/api', apiRoute.router);
     this.use('', authRoute.router);
     this.use('/account', accountRoute.router);
