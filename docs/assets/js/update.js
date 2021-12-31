@@ -26,11 +26,17 @@ class Update extends Common {
     fetch('/ex-api/hostname', {
       method: 'post',
     })
-    .then(res => res.json())
-    .then(({ hostname }) => {
-      document.querySelector('#welcome').textContent = `welcome ${hostname}`;
+    .then(res => {
+      const { headers } = res;
+      const key = ['x-host', 'x-server', 'x-served-by', 'server'].find(name => headers.get(name));
+      if (key) return headers.get(key);
+      if (!res.ok) return 'unknown';
+      return res.json().then(({ hostname }) => hostname);
     })
-    .catch(e => logger.warn(e.message));
+    .catch(e => logger.warn(e.message))
+    .then(host => {
+      document.querySelector('#welcome').textContent = `${host}`;
+    });
   }
 
   updateSpan() {
