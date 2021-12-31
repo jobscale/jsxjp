@@ -1,3 +1,4 @@
+const os = require('os');
 const { Slack } = require('@jobscale/slack');
 const { Service } = require('../service');
 
@@ -10,7 +11,7 @@ class ApiService extends Service {
 
   async hostname() {
     return {
-      hostname: process.env.HOSTNAME,
+      hostname: os.hostname(),
     };
   }
 
