@@ -23,6 +23,15 @@ class Update extends Common {
     this.self.sound.once('load', () => {
       event.target.textContent = '☃';
     });
+    fetch('/api/hostname', {
+      method: 'post',
+      'accept-content': 'application/json',
+    })
+    .then(res => res.json())
+    .then(({ hostname }) => {
+      document.querySelector('#welcome').textContent = `welcome ${hostname}`;
+    })
+    .catch(e => logger.warn(e.message));
   }
 
   updateSpan() {
