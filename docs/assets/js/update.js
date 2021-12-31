@@ -25,7 +25,6 @@ class Update extends Common {
     });
     fetch('/api/hostname', {
       method: 'post',
-      'accept-content': 'application/json',
     })
     .then(res => res.json())
     .then(({ hostname }) => {
