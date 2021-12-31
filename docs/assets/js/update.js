@@ -27,11 +27,10 @@ class Update extends Common {
       method: 'post',
     })
     .then(res => {
+      if (res.ok) return res.json().then(({ hostname }) => hostname);
       const { headers } = res;
       const key = ['x-host', 'x-server', 'x-served-by', 'server'].find(name => headers.get(name));
-      if (key) return headers.get(key);
-      if (!res.ok) return 'unknown';
-      return res.json().then(({ hostname }) => hostname);
+      return headers.get(key);
     })
     .catch(e => logger.warn(e.message))
     .then(host => {
