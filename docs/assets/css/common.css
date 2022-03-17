@@ -110,3 +110,21 @@ html, body {
     font-size: 7vw;
   }
 }
+#powered {
+  position: fixed;
+  color: white;
+  font-family: 'Tangerine';
+  font-size:300%;
+  right: 0.5em;
+  bottom: 0.5em;
+  border-radius: 0.5em;
+  text-decoration: none;
+  padding: 0.5em 0.5em 0.3em 0.8em;
+  opacity: 0.5;
+}
+#powered:hover {
+  opacity: 1;
+  background-color: #222;
+  text-decoration: overline dotted pink;
+  text-shadow: 5px 5px 5px darkblue;
+}
