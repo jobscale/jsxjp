@@ -1,6 +1,7 @@
 const Joi = require('joi');
+const { Validation } = require('../validation');
 
-class ApiValidation {
+class ApiValidation extends Validation {
   slack(req, res, next) {
     const { body } = req;
     const { error } = Joi.object({

@@ -1,6 +1,8 @@
+const dayjs = require('dayjs');
 const { authService } = require('./service');
+const { Controller } = require('../controller');
 
-class AuthController {
+class AuthController extends Controller {
   index(req, res) {
     authService.now()
     .then((now) => {
@@ -12,10 +14,9 @@ class AuthController {
     const { login, password } = req.body;
     authService.login({ login, password })
     .then(token => {
-      const expires = new Date(Date.now() + (12 * 60 * 60 * 1000));
-      res.cookie('token', token, { expires, httpOnly: true });
+      this.cookie(res, 'token', token, dayjs().add(12, 'hour'));
       const { href } = req.cookies;
-      res.cookie('href', '');
+      this.cookie(res, 'href', '', dayjs().add(10, 'second'));
       const ignore = [undefined, '/auth', '/favicon.ico', ''];
       res.json({ href: ignore.indexOf(href) === -1 ? href : '/' });
     })
@@ -27,7 +28,7 @@ class AuthController {
   }
 
   logout(req, res) {
-    res.cookie('token', '');
+    this.cookie(res, 'token', '', dayjs().add(10, 'second'));
     res.end();
   }
 
@@ -37,8 +38,7 @@ class AuthController {
     .then(() => next())
     .catch(e => {
       logger.info({ message: e.toString() });
-      const expires = new Date(Date.now() + (60 * 60 * 1000));
-      res.cookie('href', req.originalUrl, { expires, httpOnly: true });
+      this.cookie(res, 'href', req.originalUrl, dayjs().add(5, 'minute'));
       res.redirect('/auth');
     });
   }

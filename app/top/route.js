@@ -9,13 +9,34 @@ const { topController } = require('./controller');
 class TopRoute extends Route {
   constructor() {
     super();
-    this.use('/ex-api', apiRoute.router);
-    this.use('/api', apiRoute.router);
-    this.use('', authRoute.router);
-    this.use('/account', accountRoute.router);
-    this.use('/user', userRoute.router);
-    this.use('/template', templateRoute.router);
-    this.get('', topController.page);
+    this.use(
+      '/ex-api',
+      (...args) => apiRoute.router(...args),
+    );
+    this.use(
+      '/api',
+      (...args) => apiRoute.router(...args),
+    );
+    this.use(
+      '',
+      (...args) => authRoute.router(...args),
+    );
+    this.use(
+      '/account',
+      (...args) => accountRoute.router(...args),
+    );
+    this.use(
+      '/user',
+      (...args) => userRoute.router(...args),
+    );
+    this.use(
+      '/template',
+      (...args) => templateRoute.router(...args),
+    );
+    this.get(
+      '',
+      (...args) => topController.page(...args),
+    );
   }
 }
 

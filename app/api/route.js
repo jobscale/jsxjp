@@ -5,8 +5,15 @@ const { apiValidation } = require('./validation');
 class ApiRoute extends Route {
   constructor() {
     super();
-    this.post('/slack', apiValidation.slack, apiController.slack);
-    this.post('/hostname', apiController.hostname);
+    this.post(
+      '/slack',
+      (...args) => apiValidation.slack(...args),
+      (...args) => apiController.slack(...args),
+    );
+    this.post(
+      '/hostname',
+      (...args) => apiController.hostname(...args),
+    );
   }
 }
 

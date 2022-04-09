@@ -5,11 +5,28 @@ const { userValidation } = require('./validation');
 class UserRoute extends Route {
   constructor() {
     super();
-    this.get('', userController.page);
-    this.get('/register', userController.page);
-    this.post('/register', userValidation.register, userController.register);
-    this.get('/reset', userController.page);
-    this.post('/reset', userValidation.reset, userController.reset);
+    this.get(
+      '',
+      (...args) => userController.page(...args),
+    );
+    this.get(
+      '/register',
+      (...args) => userController.page(...args),
+    );
+    this.post(
+      '/register',
+      (...args) => userValidation.register(...args),
+      (...args) => userController.register(...args),
+    );
+    this.get(
+      '/reset',
+      (...args) => userController.page(...args),
+    );
+    this.post(
+      '/reset',
+      (...args) => userValidation.reset(...args),
+      (...args) => userController.reset(...args),
+    );
   }
 }
 

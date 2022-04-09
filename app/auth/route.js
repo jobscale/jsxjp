@@ -5,10 +5,23 @@ const { authValidation } = require('./validation');
 class AuthRoute extends Route {
   constructor() {
     super();
-    this.get('/auth', authController.index);
-    this.post('/auth/login', authValidation.login, authController.login);
-    this.use('', authController.verify);
-    this.post('/auth/logout', authController.logout);
+    this.get(
+      '/auth',
+      (...args) => authController.index(...args),
+    );
+    this.post(
+      '/auth/login',
+      (...args) => authValidation.login(...args),
+      (...args) => authController.login(...args),
+    );
+    this.use(
+      '',
+      (...args) => authController.verify(...args),
+    );
+    this.post(
+      '/auth/logout',
+      (...args) => authController.logout(...args),
+    );
   }
 }
 

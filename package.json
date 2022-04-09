@@ -18,6 +18,7 @@
     "@jobscale/core": "^0.0.13",
     "@jobscale/slack": "^0.0.4",
     "cookie-parser": "^1.4.6",
+    "dayjs": "^1.11.0",
     "ejs": "^3.1.6",
     "express": "^4.17.2",
     "http-errors": "^2.0.0",

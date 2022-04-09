@@ -5,8 +5,15 @@ const { accountValidation } = require('./validation');
 class AccountRoute extends Route {
   constructor() {
     super();
-    this.get('/password', accountController.password);
-    this.post('/password', accountValidation.password, accountController.password);
+    this.get(
+      '/password',
+      (...args) => accountController.password(...args),
+    );
+    this.post(
+      '/password',
+      (...args) => accountValidation.password(...args),
+      (...args) => accountController.password(...args),
+    );
   }
 }
 

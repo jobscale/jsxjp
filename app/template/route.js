@@ -4,7 +4,10 @@ const { templateController } = require('./controller');
 class TemplateRoute extends Route {
   constructor() {
     super();
-    this.post('', templateController.load);
+    this.post(
+      '',
+      (...args) => templateController.load(...args),
+    );
   }
 }
 
