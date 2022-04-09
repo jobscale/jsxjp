@@ -11,9 +11,12 @@
     "lint:fix": "eslint . --fix && ejslint app/views --fix",
     "test": "npm run lint"
   },
+  "pre-commit": [
+    "test"
+  ],
   "dependencies": {
-    "@jobscale/core": "0.0.10",
-    "@jobscale/slack": "0.0.3",
+    "@jobscale/core": "^0.0.13",
+    "@jobscale/slack": "^0.0.4",
     "cookie-parser": "^1.4.6",
     "ejs": "^3.1.6",
     "express": "^4.17.2",
@@ -23,9 +26,10 @@
   },
   "devDependencies": {
     "ejs-lint": "^1.2.1",
-    "eslint": "^8.5.0",
+    "eslint": "^8.7.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.25.3"
+    "eslint-plugin-import": "^2.25.4",
+    "pre-commit": "^1.2.2"
   },
   "repository": {
     "type": "git",

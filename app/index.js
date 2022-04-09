@@ -1,3 +1,4 @@
+const os = require('os');
 const path = require('path');
 const createError = require('http-errors');
 const express = require('express');
@@ -33,6 +34,7 @@ class App {
       res.header('Access-Control-Allow-Methods', 'GET, POST, HEAD');
       res.header('Access-Control-Allow-Headers', 'Content-Type');
       res.header('Server', 'acl-ingress-k8s');
+      res.header('X-Backend-Host', os.hostname());
       next();
     });
   }

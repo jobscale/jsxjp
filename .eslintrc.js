@@ -2,7 +2,7 @@ module.exports = {
   extends: 'airbnb-base',
   globals: {
     logger: 'readonly',
-    promise: 'readonly',
+    spawn: 'readonly',
     fetch: 'readonly',
   },
   rules: {

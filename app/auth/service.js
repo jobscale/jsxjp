@@ -49,7 +49,7 @@ class AuthService extends Service {
   }
 
   async verify(token) {
-    if (!authModel.verify(token, jwtSecret)) throw new Error('Unauthorized');
+    if (!authModel.verify(token || '', jwtSecret)) throw new Error('Unauthorized');
   }
 }
 
