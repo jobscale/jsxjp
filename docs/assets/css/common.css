@@ -67,7 +67,8 @@ html, body {
 }
 .links > a {
   color: #222;
-  padding: 1vh 1vw;
+  margin: 0.2em;
+  display: inline-block;
   font-size: calc((2vh + 2vw) / 2);
   letter-spacing: calc((.3vh + .3vw) / 2);
   text-decoration: none;
