@@ -1,48 +1,23 @@
-const { Server } = require('_http_server');
 const { App } = require('./app');
 
-class HttpServer extends Server {
-  listen(port) {
-    super.listen(port);
-    this.on('error', e => this.onError(e));
-    this.on('listening', () => this.onListening());
-  }
-
-  onError(e) {
-    if (e.syscall !== 'listen') {
-      throw e;
-    }
-    switch (e.code) {
-    case 'EACCES':
-      logger.error('pipe requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      logger.error('port already in use');
-      process.exit(1);
-      break;
-    default:
-      throw e;
-    }
-  }
-
-  onListening() {
-    const bind = this.address();
-    bind.ts = new Date().toLocaleString();
-    logger.info(bind);
-  }
-}
-
 const main = () => {
-  const app = new App();
-  const handle = app.start();
+  const prom = {};
+  prom.pending = new Promise(resolve => { prom.resolve = resolve; });
+  const app = new App().start();
   const options = {
     host: '0.0.0.0',
     port: process.env.PORT || 3000,
   };
-  new HttpServer(handle).listen(options);
+  app.listen(options, () => {
+    logger.info(JSON.stringify({
+      Server: 'Started',
+      'Listen on': `http://127.0.0.1:${options.port}`,
+    }, null, 2));
+    prom.resolve(app);
+  });
+  return prom.pending;
 };
 
 module.exports = {
-  main: main(),
+  server: main(),
 };

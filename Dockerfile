@@ -1,7 +1,8 @@
-FROM node:buster-slim
+FROM node:lts-buster-slim
 SHELL ["bash", "-c"]
 WORKDIR /home/node
-COPY . .
-RUN npm i --production && chown -R node. . && mv db.example db
 USER node
+COPY --chown=node:staff package.json package.json
+RUN npm i --omit=dev && mv db.example db
+COPY --chown=node:staff . .
 CMD ["npm", "start"]
