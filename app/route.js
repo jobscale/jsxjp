@@ -4,9 +4,9 @@ const { authRoute } = require('./auth/route');
 const { accountRoute } = require('./account/route');
 const { userRoute } = require('./user/route');
 const { templateRoute } = require('./template/route');
-const { topController } = require('./controller');
+const { controller } = require('./controller');
 
-class TopRoute {
+class Route {
   constructor() {
     const router = Router();
     router.use(
@@ -31,13 +31,13 @@ class TopRoute {
     );
     router.get(
       '',
-      (...args) => topController.page(...args),
+      (...args) => controller.page(...args),
     );
     this.router = router;
   }
 }
 
 module.exports = {
-  TopRoute,
-  topRoute: new TopRoute(),
+  Route,
+  route: new Route(),
 };

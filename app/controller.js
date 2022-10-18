@@ -1,8 +1,8 @@
-const { topService } = require('./service');
+const { service } = require('./service');
 
-class TopController {
+class Controller {
   page(req, res) {
-    topService.now()
+    service.now()
     .then(now => {
       res.render('', { now });
     });
@@ -10,6 +10,6 @@ class TopController {
 }
 
 module.exports = {
-  TopController,
-  topController: new TopController(),
+  Controller,
+  controller: new Controller(),
 };

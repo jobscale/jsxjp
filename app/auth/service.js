@@ -12,6 +12,10 @@ const db = {
 const alg = 'sha512';
 
 class AuthService {
+  async now() {
+    return new Date().toISOString();
+  }
+
   login(rest) {
     const { login, password } = rest;
     const ts = new Date().toLocaleString();

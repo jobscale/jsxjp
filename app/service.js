@@ -1,7 +1,10 @@
-class TopService {
+class Service {
+  async now() {
+    return new Date().toISOString();
+  }
 }
 
 module.exports = {
-  TopService,
-  topService: new TopService(),
+  Service,
+  service: new Service(),
 };

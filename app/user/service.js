@@ -10,6 +10,10 @@ const db = {
 const alg = 'sha512';
 
 class UserService {
+  async now() {
+    return new Date().toISOString();
+  }
+
   findAll() {
     return userModel.findAll();
   }
