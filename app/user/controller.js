@@ -1,8 +1,7 @@
 const path = require('path');
-const { Controller } = require('../controller');
 const { userService } = require('./service');
 
-class UserController extends Controller {
+class UserController {
   async page(req, res) {
     const { url } = req;
     const view = path.join('user', url);

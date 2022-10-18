@@ -1,7 +1,6 @@
-const { Controller } = require('../controller');
 const { templateService } = require('./service');
 
-class TemplateController extends Controller {
+class TemplateController {
   load(req, res) {
     const { id } = req.body;
     templateService.now()

@@ -1,27 +1,28 @@
-const { Route } = require('../route');
+const { Router } = require('express');
 const { authController } = require('./controller');
 const { authValidation } = require('./validation');
 
-class AuthRoute extends Route {
+class AuthRoute {
   constructor() {
-    super();
-    this.get(
+    const router = Router();
+    router.get(
       '/auth',
       (...args) => authController.index(...args),
     );
-    this.post(
+    router.post(
       '/auth/login',
       (...args) => authValidation.login(...args),
       (...args) => authController.login(...args),
     );
-    this.use(
+    router.use(
       '',
       (...args) => authController.verify(...args),
     );
-    this.post(
+    router.post(
       '/auth/logout',
       (...args) => authController.logout(...args),
     );
+    this.router = router;
   }
 }
 

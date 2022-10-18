@@ -1,7 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
-const { Service } = require('../service');
 const { authModel } = require('../auth/model');
 
 const loader = require;
@@ -10,7 +9,7 @@ const db = {
 };
 const alg = 'sha512';
 
-class AccountService extends Service {
+class AccountService {
   async password(rest) {
     const { password, token } = rest;
     const iam = authModel.decode(token);

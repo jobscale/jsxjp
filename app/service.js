@@ -1,9 +1,7 @@
-class Service {
-  now() {
-    return Promise.resolve(new Date());
-  }
+class TopService {
 }
 
 module.exports = {
-  Service,
+  TopService,
+  topService: new TopService(),
 };

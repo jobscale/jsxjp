@@ -1,14 +1,14 @@
 {
   "name": "jsxjp",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "node express ejs template SSR MVC",
   "author": "jobscale <jobscale@users.noreply.github.com>",
+  "license": "MIT",
   "main": "index.js",
   "scripts": {
     "start": "node .",
-    "lint": "eslint . && ejslint app/views",
-    "lint:fix": "eslint . --fix && ejslint app/views --fix",
+    "lint": "eslint . --fix && ejslint app/views",
     "test": "npm run lint"
   },
   "pre-commit": [
@@ -35,6 +35,5 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jobscale/jsxjp.git"
-  },
-  "license": "MIT"
+  }
 }

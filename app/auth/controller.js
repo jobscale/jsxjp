@@ -1,8 +1,7 @@
 const dayjs = require('dayjs');
 const { authService } = require('./service');
-const { Controller } = require('../controller');
 
-class AuthController extends Controller {
+class AuthController {
   index(req, res) {
     authService.now()
     .then((now) => {
@@ -40,6 +39,14 @@ class AuthController extends Controller {
       logger.info({ message: e.toString() });
       this.cookie(res, 'href', req.originalUrl, dayjs().add(5, 'minute'));
       res.redirect('/auth');
+    });
+  }
+
+  cookie(res, key, value, expires) {
+    res.cookie(key, value, {
+      expires: new Date(expires),
+      httpOnly: true,
+      secure: true,
     });
   }
 }

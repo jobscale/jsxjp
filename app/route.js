@@ -1,18 +1,43 @@
 const { Router } = require('express');
+const { apiRoute } = require('./api/route');
+const { authRoute } = require('./auth/route');
+const { accountRoute } = require('./account/route');
+const { userRoute } = require('./user/route');
+const { templateRoute } = require('./template/route');
+const { topController } = require('./controller');
 
-class Route {
+class TopRoute {
   constructor() {
-    this.router = Router();
-    this.handle = (...args) => this.router(...args);
-    this.use = (...args) => this.router.use(...args);
-    this.get = (...args) => this.router.get(...args);
-    this.post = (...args) => this.router.post(...args);
-    this.put = (...args) => this.router.put(...args);
-    this.delete = (...args) => this.router.delete(...args);
-    this.patch = (...args) => this.router.patch(...args);
+    const router = Router();
+    router.use(
+      '/api',
+      (...args) => apiRoute.router(...args),
+    );
+    router.use(
+      '',
+      (...args) => authRoute.router(...args),
+    );
+    router.use(
+      '/account',
+      (...args) => accountRoute.router(...args),
+    );
+    router.use(
+      '/user',
+      (...args) => userRoute.router(...args),
+    );
+    router.use(
+      '/template',
+      (...args) => templateRoute.router(...args),
+    );
+    router.get(
+      '',
+      (...args) => topController.page(...args),
+    );
+    this.router = router;
   }
 }
 
 module.exports = {
-  Route,
+  TopRoute,
+  topRoute: new TopRoute(),
 };

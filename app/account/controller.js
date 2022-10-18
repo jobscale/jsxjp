@@ -1,7 +1,6 @@
-const { Controller } = require('../controller');
 const { accountService } = require('./service');
 
-class AccountController extends Controller {
+class AccountController {
   password(req, res) {
     const { method, body } = req;
     const { password } = body;

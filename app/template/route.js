@@ -1,13 +1,14 @@
-const { Route } = require('../route');
+const { Router } = require('express');
 const { templateController } = require('./controller');
 
-class TemplateRoute extends Route {
+class TemplateRoute {
   constructor() {
-    super();
-    this.post(
+    const router = Router();
+    router.post(
       '',
       (...args) => templateController.load(...args),
     );
+    this.router = router;
   }
 }
 

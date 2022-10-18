@@ -1,13 +1,15 @@
-class Controller {
-  cookie(res, key, value, expires) {
-    res.cookie(key, value, {
-      expires: new Date(expires),
-      httpOnly: true,
-      secure: true,
+const { topService } = require('./service');
+
+class TopController {
+  page(req, res) {
+    topService.now()
+    .then(now => {
+      res.render('', { now });
     });
   }
 }
 
 module.exports = {
-  Controller,
+  TopController,
+  topController: new TopController(),
 };

@@ -1,7 +1,6 @@
 const Joi = require('joi');
-const { Validation } = require('../validation');
 
-class UserValidation extends Validation {
+class UserValidation {
   register(req, res, next) {
     const { error } = Joi.object({
       login: Joi.string().alphanum().max(30),

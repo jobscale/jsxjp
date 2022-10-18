@@ -1,7 +1,6 @@
 const { apiService } = require('./service');
-const { Controller } = require('../controller');
 
-class ApiController extends Controller {
+class ApiController {
   slack(req, res) {
     const { body } = req;
     apiService.slack(body)

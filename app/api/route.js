@@ -1,19 +1,20 @@
-const { Route } = require('../route');
+const { Router } = require('express');
 const { apiController } = require('./controller');
 const { apiValidation } = require('./validation');
 
-class ApiRoute extends Route {
+class ApiRoute {
   constructor() {
-    super();
-    this.post(
+    const router = Router();
+    router.post(
       '/slack',
       (...args) => apiValidation.slack(...args),
       (...args) => apiController.slack(...args),
     );
-    this.post(
+    router.post(
       '/hostname',
       (...args) => apiController.hostname(...args),
     );
+    this.router = router;
   }
 }
 

@@ -1,8 +1,7 @@
 const os = require('os');
 const { Slack } = require('@jobscale/slack');
-const { Service } = require('../service');
 
-class ApiService extends Service {
+class ApiService {
   slack(rest) {
     return this.fetchEnv()
     .then(env => new Slack(env).send(rest))

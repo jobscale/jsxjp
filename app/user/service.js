@@ -1,7 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
-const { Service } = require('../service');
 const { userModel } = require('./model');
 
 const loader = require;
@@ -10,7 +9,7 @@ const db = {
 };
 const alg = 'sha512';
 
-class UserService extends Service {
+class UserService {
   findAll() {
     return userModel.findAll();
   }

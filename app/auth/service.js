@@ -1,7 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
-const { Service } = require('../service');
 const { authModel } = require('./model');
 
 const loader = require;
@@ -12,7 +11,7 @@ const db = {
 };
 const alg = 'sha512';
 
-class AuthService extends Service {
+class AuthService {
   login(rest) {
     const { login, password } = rest;
     const ts = new Date().toLocaleString();

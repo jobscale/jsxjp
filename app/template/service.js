@@ -1,6 +1,4 @@
-const { Service } = require('../service');
-
-class TemplateService extends Service {
+class TemplateService {
 }
 
 module.exports = {
