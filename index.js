@@ -1,6 +1,33 @@
 const { App } = require('./app');
+const { database } = require('./config/database');
+const User = require('./app/models/User');
+const { createHash } = require('./app/user');
 
-const main = () => {
+const sampleUsers = () => {
+  const loader = require;
+  const sample = loader('./db/list-user.json');
+  return Promise.all(sample.users.map(user => {
+    const { login } = user;
+    const hash = user.hash || createHash(`${login}/${'default'}`);
+    return User.create({ login, hash });
+  }));
+};
+
+const syncDB = async () => {
+  await database.authenticate();
+  await database.sync();
+  await User.findAll({
+    raw: true,
+    attributes: ['login'],
+  })
+  .then(users => {
+    if (users.length !== 0) return [];
+    return sampleUsers();
+  });
+};
+
+const main = async () => {
+  const dbSync = syncDB();
   const prom = {};
   prom.pending = new Promise(resolve => { prom.resolve = resolve; });
   const app = new App().start();
@@ -15,7 +42,7 @@ const main = () => {
     }, null, 2));
     prom.resolve(app);
   });
-  return prom.pending;
+  return Promise.all([prom.pending, dbSync]);
 };
 
 module.exports = {

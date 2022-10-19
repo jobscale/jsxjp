@@ -134,3 +134,8 @@ div.s-content h3.partial-head {
 div.s-content span.small {
   font-size: 2.4vw;
 }
+
+.horizontal {
+  display: flex;
+  justify-content: space-between;
+}

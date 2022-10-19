@@ -16,7 +16,9 @@ class AuthController {
       this.cookie(res, 'token', token, dayjs().add(12, 'hour'));
       const { href } = req.cookies;
       this.cookie(res, 'href', '', dayjs().add(10, 'second'));
-      const ignore = [undefined, '/auth', '/favicon.ico', ''];
+      const ignore = [
+        '/auth', '/account/password', '/favicon.ico', '', undefined,
+      ];
       res.json({ href: ignore.indexOf(href) === -1 ? href : '/' });
     })
     .catch(e => {

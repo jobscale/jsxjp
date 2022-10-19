@@ -28,5 +28,5 @@ class Auth {
 
 module.exports = {
   Auth,
-  authModel: new Auth(),
+  auth: new Auth(),
 };

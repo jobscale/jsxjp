@@ -1,13 +1,6 @@
-const path = require('path');
-const fs = require('fs');
-const crypto = require('crypto');
-const { userModel } = require('./model');
-
-const loader = require;
-const db = {
-  users: path.resolve(__dirname, '../../db/users.json'),
-};
-const alg = 'sha512';
+const createHttpError = require('http-errors');
+const User = require('../models/User');
+const { createHash } = require('.');
 
 class UserService {
   async now() {
@@ -15,41 +8,45 @@ class UserService {
   }
 
   findAll() {
-    return userModel.findAll();
+    return User.findAll({
+      raw: true,
+      attributes: ['login', 'lastLogin'],
+      order: ['login'],
+    });
   }
 
   async register(rest) {
     const { login, password } = rest;
-    delete loader.cache[db.users];
-    const { users } = loader(db.users);
-    const exist = users.find(user => user.login === login);
-    if (exist) {
-      const e = new Error('User Already Exists');
-      e.status = 400;
-      throw e;
-    }
-    const plain = `${login}/${password}`;
-    const hash = crypto.createHash(alg).update(plain).digest('hex');
-    users.push({ login, hash });
-    fs.writeFileSync(db.users, JSON.stringify({ users }, null, 2));
-    return { login };
+    await User.findOne({
+      raw: true,
+      attributes: ['login'],
+      where: {
+        login,
+      },
+    })
+    .then(user => {
+      if (user) throw createHttpError(400);
+    })
+    .then(() => {
+      const hash = createHash(`${login}/${password}`);
+      return User.create({
+        login, hash,
+      });
+    })
+    .then(user => ({ login: user.login }));
   }
 
   async reset(rest) {
     const { login, password } = rest;
-    delete loader.cache[db.users];
-    const { users } = loader(db.users);
-    const exist = users.find(user => user.login === login);
-    if (!exist) {
-      const e = new Error('User Not Found');
-      e.status = 400;
-      throw e;
-    }
-    const plain = `${login}/${password}`;
-    const hash = crypto.createHash(alg).update(plain).digest('hex');
-    exist.hash = hash;
-    fs.writeFileSync(db.users, JSON.stringify({ users }, null, 2));
-    return { login: exist.login };
+    const hash = createHash(`${login}/${password}`);
+    return User.update({
+      hash,
+    }, {
+      where: {
+        login,
+      },
+    })
+    .then(() => ({ login }));
   }
 }
 

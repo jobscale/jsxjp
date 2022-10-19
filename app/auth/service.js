@@ -1,15 +1,9 @@
-const path = require('path');
-const fs = require('fs');
-const crypto = require('crypto');
-const { authModel } = require('./model');
+const createHttpError = require('http-errors');
+const User = require('../models/User');
+const { auth } = require('.');
+const { createHash } = require('../user');
 
-const loader = require;
 const jwtSecret = 'node-express-ejs';
-const hashKey = 'AS2P8AcBedZ';
-const db = {
-  users: path.resolve(__dirname, '../../db/users.json'),
-};
-const alg = 'sha512';
 
 class AuthService {
   async now() {
@@ -18,42 +12,34 @@ class AuthService {
 
   login(rest) {
     const { login, password } = rest;
-    const ts = new Date().toLocaleString();
-    delete loader.cache[db.users];
-    const { users } = loader(db.users);
-    this.refactorUsers(users);
-    const plain = `${login}/${password}`;
-    const hash = crypto.createHash(alg).update(plain).digest('hex');
-    const kickoff = () => {
-      if (users.length > 2) return undefined;
-      const user = { login, hash };
-      users.push(user);
+    const ts = new Date().toISOString();
+    const hash = createHash(`${login}/${password}`);
+    return User.findOne({
+      raw: true,
+      attributes: ['login', 'lastLogin'],
+      where: {
+        login, hash,
+      },
+    })
+    .then(user => {
+      if (!user) throw createHttpError(401);
+      user.lastLogin = ts;
       return user;
-    };
-    const user = users.find(item => item.login === login && item.hash === hash) || kickoff();
-    if (!user) {
-      const e = new Error('Unauthorized');
-      e.status = 401;
-      throw e;
-    }
-    user.lastLogin = ts;
-    fs.writeFileSync(db.users, JSON.stringify({ users }, null, 2));
-    const token = authModel.sign({ login, ts }, jwtSecret);
-    return Promise.resolve(token);
-  }
-
-  refactorUsers(users) {
-    users.forEach(user => {
-      if (user.hash) return;
-      const plain = `${user.login}/${user.password || hashKey}`;
-      user.hash = crypto.createHash(alg).update(plain).digest('hex');
-      delete user.password;
+    })
+    .then(user => User.update(user, {
+      where: {
+        login, hash,
+      },
+    }))
+    .then(() => {
+      const token = auth.sign({ login, ts }, jwtSecret);
+      return token;
     });
   }
 
   async verify(token) {
-    if (!token) throw new Error('Bad Request');
-    if (!authModel.verify(token, jwtSecret)) throw new Error('Unauthorized');
+    if (!token) throw createHttpError(400);
+    if (!auth.verify(token, jwtSecret)) throw createHttpError(403);
   }
 }
 

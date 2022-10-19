@@ -82,6 +82,8 @@ jobs:
           free -h
           df -h .
           grep MH /proc/cpuinfo
+          pwd
+          ls -la
           GIP=$(curl -s https://inet-ip.info/ip)
           echo "Global: $GIP"
           DATA=$(echo "${{ steps.meta.outputs.labels }}" | sed -z -e 's/\n/\\n/g')

@@ -13,9 +13,14 @@
     <h1>List of User</h1>
     <hr>
     <div><ol type="I"><%
-      users.forEach(user => {
-        %><li><%= user.login %></li><%
-      })
+      users.forEach(user => {%>
+        <li>
+          <ol class="horizontal">
+            <li><%= user.login %></li>
+            <li><%= user.lastLogin ? new Date(user.lastLogin).toLocaleString() : '-' %></li>
+          </ol>
+        </li>
+      <%})
     %></ol></div>
   </div>
   <%- include('../menu/body') %>

@@ -1,6 +1,6 @@
 const os = require('os');
 const path = require('path');
-const createError = require('http-errors');
+const createHttpError = require('http-errors');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 require('@jobscale/core');
@@ -70,12 +70,12 @@ class App {
     app.use((req, res) => {
       const template = 'error/default';
       if (req.method === 'GET') {
-        const e = createError(404);
+        const e = createHttpError(404);
         res.locals.e = e;
         res.status(e.status).render(template);
         return;
       }
-      const e = createError(501);
+      const e = createHttpError(501);
       res.status(e.status).json({ message: e.message });
     });
   }
