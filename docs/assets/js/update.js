@@ -28,7 +28,7 @@ class Update extends Common {
     })
     .then(res => {
       const { headers } = res;
-      const key = ['x-host', 'x-backend-host', 'x-server', 'x-served-by', 'server'].find(name => headers.get(name));
+      const key = ['x-backend-host', 'x-host', 'x-server', 'x-served-by', 'server'].find(name => headers.get(name));
       return headers.get(key);
     })
     .catch(e => logger.warn(e.message))
