@@ -27,9 +27,8 @@ class Update extends Common {
       method: 'post',
     })
     .then(res => {
-      if (res.ok) return res.json().then(({ hostname }) => hostname);
       const { headers } = res;
-      const key = ['x-host', 'x-server', 'x-served-by', 'server'].find(name => headers.get(name));
+      const key = ['x-host', 'x-backend-host', 'x-server', 'x-served-by', 'server'].find(name => headers.get(name));
       return headers.get(key);
     })
     .catch(e => logger.warn(e.message))
