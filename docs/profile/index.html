@@ -31,12 +31,13 @@
     }
 
     .button {
-      width: 140px;
-      height: 140px;
+      width: 3em;
+      height: 3em;
+      padding: 0.1em;
       background-color: #ef8;
       border: none;
-      border-radius: 75px;
-      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+      border-radius: 1.5em;
+      box-shadow: 0 0.1em 0.1em rgba(186, 229, 137, 0.4);
       transition: all 0.3s ease 0s;
       cursor: pointer;
       outline: none;
@@ -44,7 +45,7 @@
 
     .button:hover {
       background-color: #2EE59D;
-      box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+      box-shadow: 0 0.2em 1em rgba(46, 229, 157, 0.4);
     }
 
     .container {
@@ -57,7 +58,6 @@
       font-weight: normal;
       font-family: 'Lato';
       font-size: 4rem;
-      padding-right: 10px;
     }
 
     .title small {
@@ -71,12 +71,11 @@
 
     .comment {
       font-family: 'Open Sans Condensed';
-      margin: 10px;
       font-size: 1rem;
     }
 
     .mail {
-      margin: 10px 0 0 0;
+      margin: 1em 0 0 0;
       font-family: 'Tangerine';
       font-size: 3rem;
       font-weight: normal;
@@ -98,21 +97,31 @@
     .spacer {
       min-height: 2rem;
     }
+
+    .link {
+      display:flex;
+      justify-content: space-evenly;
+    }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <div class="content">
-      <div class="title">O<small> kutan <strong>i</strong></small></div>
-      <div class="comment">I just want to have fun.</div>
-      <div class="spacer"></div>
-      <div class="mail">shigeki<small> @ </small>jsx.jp</div>
-      <div class="phone"><small>0</small>8<small>0-44</small>8<small>0-00</small>8<small>0</small></div>
-      <div class="spacer"></div>
-      <a href="tel:"><button class="button"><img width="100px" height="100px" src="/img/okutani.png"></button></a>
+    <div class="title">O<small> kutan <strong>i</strong></small></div>
+    <div class="comment">I just want to have fun.</div>
+    <div class="spacer"></div>
+    <div class="mail">shigeki<small> @ </small>jsx.jp</div>
+    <div class="phone"><small>0</small>8<small>0-44</small>8<small>0-00</small>8<small>0</small></div>
+    <div class="spacer"></div>
+
+    <div class="link">
+      <a href="tel:"><button class="button">
+        <img width="100%" src="/img/okutani.png">
+      </button></a>
+      <a href="tel:"><button class="button">
+        <img width="100%" src="/img/okutani.svg">
+      </button></a>
     </div>
   </div>
-
 </body>
 </html>
