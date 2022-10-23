@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -eu
+
+{
+  docker build . -t jsxjp:local \
+  && docker run --rm --name jsxjp --network vnet \
+  -v $PWD/docs:/home/node/docs \
+  -p 3000:3000 -it jsxjp:local
+}
