@@ -1,9 +1,8 @@
-/* eslint-env browser */
-/* global Common, Howl */
+/* global Howl */
 /* eslint-disable no-return-assign */
-class Update extends Common {
+
+class Update {
   constructor() {
-    super();
     this.self = { stack: [] };
     setTimeout(() => this.interval(), 0);
     setTimeout(() => this.trigger(), 1000);
@@ -31,7 +30,7 @@ class Update extends Common {
       const key = ['x-backend-host', 'x-host', 'x-server', 'x-served-by', 'server'].find(name => headers.get(name));
       return headers.get(key);
     })
-    .catch(e => logger.warn(e.message))
+    .catch(e => (o => o)(console).warn(e.message))
     .then(host => {
       document.querySelector('#welcome').textContent = `${host}`;
     });
@@ -103,7 +102,7 @@ class Update extends Common {
     this.latest = Date.now();
     const play = () => this.self.sound && this.self.sound.play();
     const actions = ['alert play sound.', this.latest, play()];
-    logger.info(...actions);
+    (o => o)(console).info(...actions);
     const busyTs = document.querySelector('#busy-ts > span');
     busyTs.textContent = new Date(this.latest).toLocaleTimeString();
   }

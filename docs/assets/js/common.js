@@ -1,13 +1,9 @@
-/* eslint-env browser */
-/* eslint-disable no-unused-vars */
 class Common {
   constructor() {
     this.singleton();
   }
 
   singleton() {
-    if (window.logger) return;
-    window.logger = window.console;
     // eslint-disable-next-line func-names
     Object(Date).prototype.toLocaleString = function () {
       const dt = this;
@@ -23,3 +19,5 @@ class Common {
     };
   }
 }
+
+window.addEventListener('DOMContentLoaded', event => new Common(event));

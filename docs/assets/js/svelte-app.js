@@ -1,4 +1,3 @@
-/* eslint-env browser */
 /* eslint-disable
   no-shadow,
   no-unused-expressions,

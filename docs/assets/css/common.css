@@ -1,9 +1,24 @@
 * {
   overflow: hidden;
 }
+
+.dark-scheme {
+  color-scheme: dark;
+}
+
+.light-scheme {
+  color-scheme: light;
+}
+
+.button {
+  padding: 1em;
+  cursor: pointer;
+  border: 1px solid #888;
+  border-radius: 1em 1.5em;
+  display: inline-block;
+}
+
 html, body {
-  color: #222;
-  background-color: #888;
   height: 100vh;
   margin: 0;
 }
@@ -63,10 +78,10 @@ html, body {
   padding-bottom: calc((3vh + 3vw) / 2);
 }
 .links {
-  padding: 1vh 5vw;
+  margin: 1vh 5vw;
 }
 .links > a {
-  color: #222;
+  color: #888;
   margin: 0.2em;
   display: inline-block;
   font-size: calc((2vh + 2vw) / 2);
@@ -111,11 +126,11 @@ html, body {
     font-size: 7vw;
   }
 }
+
 #powered {
   position: fixed;
-  color: white;
   font-family: 'Tangerine';
-  font-size:300%;
+  font-size: 300%;
   right: 0.5em;
   bottom: 0.5em;
   border-radius: 0.5em;
@@ -123,9 +138,27 @@ html, body {
   padding: 0.5em 0.5em 0.3em 0.8em;
   opacity: 0.5;
 }
+
+.light-scheme #powered {
+  color: white;
+  background-color: #888;
+}
+
+.dark-scheme #powered {
+  color: black;
+  background-color: #888;
+}
+
 #powered:hover {
-  opacity: 1;
-  background-color: #222;
   text-decoration: overline dotted pink;
-  text-shadow: 5px 5px 5px darkblue;
+  text-shadow: 5px 5px 5px #666;
+  opacity: 1;
+}
+
+.light-scheme #powered:hover {
+  background-color: #222;
+}
+
+.dark-scheme #powered:hover {
+  background-color: #ccc;
 }

@@ -1,35 +1,66 @@
 svg.svelte-1xs85ek {
   width: 100%;
-  height: 100%
+  height: 100%;
 }
 
-.clock-face.svelte-1xs85ek {
+.light-scheme .clock-face.svelte-1xs85ek {
   stroke: #333;
-  fill: #aaa
+  fill: #ccc;
+}
+
+.dark-scheme .clock-face.svelte-1xs85ek {
+  stroke: #ccc;
+  fill: #333;
 }
 
 .minor.svelte-1xs85ek {
-  stroke: #777;
   stroke-width: 0.5;
 }
 
+.light-scheme .minor.svelte-1xs85ek {
+  stroke: #777;
+}
+
+.dark-scheme .minor.svelte-1xs85ek {
+  stroke: #777;
+}
+
 .major.svelte-1xs85ek {
+  stroke-width: 1;
+}
+
+.light-scheme .major.svelte-1xs85ek {
   stroke: #333;
-  stroke-width: 1
 }
 
-.hour.svelte-1xs85ek {
-  stroke: #333
+.dark-scheme .major.svelte-1xs85ek {
+  stroke: #aaa;
 }
 
-.minute.svelte-1xs85ek {
-  stroke: #666
+.light-scheme .hour.svelte-1xs85ek {
+  stroke: #333;
 }
 
-.second.svelte-1xs85ek,.second-counterweight.svelte-1xs85ek {
-  stroke: rgb(180,0,0)
+.dark-scheme .hour.svelte-1xs85ek {
+  stroke: #aaa;
+}
+
+.light-scheme .minute.svelte-1xs85ek {
+  stroke: #333;
+}
+
+.dark-scheme .minute.svelte-1xs85ek {
+  stroke: #aaa;
+}
+
+.light-scheme .second.svelte-1xs85ek,.second-counterweight.svelte-1xs85ek {
+  stroke: rgb(180,0,0);
+}
+
+.dark-scheme .second.svelte-1xs85ek,.second-counterweight.svelte-1xs85ek {
+  stroke: rgb(180,0,0);
 }
 
 .second-counterweight.svelte-1xs85ek {
-  stroke-width: 3
+  stroke-width: 3;
 }

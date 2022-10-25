@@ -1,4 +1,3 @@
-/* eslint-env browser */
 class Loader {
   action() {
     const templates = document.querySelectorAll('div[id^=template-]');

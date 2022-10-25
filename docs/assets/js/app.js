@@ -1,14 +1,18 @@
-/* eslint-env browser */
-/* global Common */
-class App extends Common {
-  constructor(name) {
-    super();
-    this.name = name;
+class App {
+  constructor() {
+    setTimeout(() => this.trigger(), 1000);
   }
 
-  trigger(event) {
-    logger.info(this.name, event);
+  trigger() {
+    document.querySelector('#change-scheme')
+    .addEventListener('click', event => this.action(event));
+  }
+
+  action() {
+    const html = document.querySelector('html');
+    html.classList.toggle('dark-scheme');
+    html.classList.toggle('light-scheme');
   }
 }
 
-window.addEventListener('DOMContentLoaded', event => new App('window').trigger(event));
+window.addEventListener('DOMContentLoaded', event => new App(event));
