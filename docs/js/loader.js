@@ -1,4 +1,3 @@
-/* eslint-env browser */
 class Loader {
   action(placeholder) {
     const inline = placeholder.id.replace(/template/, 'inline');

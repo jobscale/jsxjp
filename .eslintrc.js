@@ -1,9 +1,7 @@
 module.exports = {
   extends: 'airbnb-base',
-  globals: {
-    logger: 'readonly',
-    spawn: 'readonly',
-    fetch: 'readonly',
+  env: {
+    browser: true,
   },
   rules: {
     indent: ['error', 2, { MemberExpression: 0 }],

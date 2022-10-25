@@ -1,4 +1,4 @@
-/* eslint-env browser */
+/* global logger */
 /* global App */
 class Reset extends App {
   reset(event) {

@@ -1,4 +1,4 @@
-/* eslint-env browser */
+/* global logger */
 /* global App */
 class Login extends App {
   login(event) {

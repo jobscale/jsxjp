@@ -1,4 +1,4 @@
-/* eslint-env browser */
+/* global logger */
 /* global App */
 class Menu extends App {
   navigation(event) {

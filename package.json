@@ -15,7 +15,7 @@
     "test"
   ],
   "dependencies": {
-    "@jobscale/core": "^0.0.18",
+    "@jobscale/logger": "^0.0.7",
     "@jobscale/slack": "^0.0.4",
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.11.5",

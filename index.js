@@ -1,3 +1,4 @@
+const { logger } = require('@jobscale/logger');
 const { App } = require('./app');
 const { database } = require('./config/database');
 const User = require('./app/models/User');
