@@ -7,5 +7,6 @@ set -eu
   --network vnet \
   -p 3000:3000 \
   -v $PWD/docs:/home/node/docs \
+  -v $PWD/app/views:/home/node/app/views \
   -it tanpo:local
 }

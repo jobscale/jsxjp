@@ -22,7 +22,7 @@ class Update {
     this.self.sound.once('load', () => {
       event.target.textContent = '☃';
     });
-    fetch('/hostname', {
+    fetch('/favicon.ico', {
       method: 'post',
     })
     .then(res => {
