@@ -2,8 +2,10 @@
 set -eu
 
 {
-  docker build . -t jsxjp:local \
-  && docker run --rm --name jsxjp --network vnet \
+  docker build . -t tanpo:local \
+  && docker run --rm --name tanpo \
+  --network vnet \
+  -p 3000:3000 \
   -v $PWD/docs:/home/node/docs \
-  -p 3000:3000 -it jsxjp:local
+  -it tanpo:local
 }

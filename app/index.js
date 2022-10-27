@@ -24,7 +24,8 @@ class App {
     app.set('etag', false);
     app.set('x-powered-by', false);
     app.use((req, res, next) => {
-      const origin = req.headers.origin || `${req.protocol}://${req.headers.host}`;
+      const referer = req.headers.referer && req.headers.referer.match(/https?:\/\/[a-z0-9.:]+/g);
+      const origin = req.headers.origin || (referer && referer[0]) || `${req.protocol}://${req.headers.host}`;
       res.header('Access-Control-Allow-Origin', `${origin}`);
       res.header('Access-Control-Allow-Methods', 'GET, POST, HEAD');
       res.header('Access-Control-Allow-Headers', 'Content-Type');
