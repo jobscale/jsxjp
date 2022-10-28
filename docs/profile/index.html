@@ -1,127 +1,39 @@
 <!doctype html>
-<html>
+<html class="dark-scheme">
 <head>
   <meta name="description" content="my profile card site with laravel5. powerd by jsx.jp">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome</title>
   <link rel="shortcut icon" href="favicon.ico">
+  <link href="/assets/css/profile.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Tangerine" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" type="text/css">
-
-  <style>
-    :root {
-      color-scheme: dark;
-    }
-
-    * {
-      font-size: 4vmin;
-    }
-
-    html {
-      height: 100%;
-    }
-
-    body {
-      margin: 0;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .button {
-      width: 3em;
-      height: 3em;
-      padding: 0.1em;
-      background-color: #ef8;
-      border: none;
-      border-radius: 1.5em;
-      box-shadow: 0 0.1em 0.1em rgba(186, 229, 137, 0.4);
-      transition: all 0.3s ease 0s;
-      cursor: pointer;
-      outline: none;
-    }
-
-    .button:hover {
-      background-color: #2EE59D;
-      box-shadow: 0 0.2em 1em rgba(46, 229, 157, 0.4);
-    }
-
-    .container {
-      text-align: center;
-      display: table-cell;
-      vertical-align: middle;
-    }
-
-    .title {
-      font-weight: normal;
-      font-family: 'Lato';
-      font-size: 4rem;
-    }
-
-    .title small {
-      font-size: 3rem;
-    }
-
-    .title strong {
-      font-size: 2rem;
-      font-weight: Ultra-Bold;
-    }
-
-    .comment {
-      font-family: 'Open Sans Condensed';
-      font-size: 1rem;
-    }
-
-    .mail {
-      margin: 1em 0 0 0;
-      font-family: 'Tangerine';
-      font-size: 3rem;
-      font-weight: normal;
-    }
-
-    .mail small {
-      font-size: 2rem;
-    }
-
-    .phone {
-      font-family: 'Tangerine';
-      font-size: 1.8rem;
-    }
-
-    .phone small {
-      font-size: 1.6rem;
-    }
-
-    .spacer {
-      min-height: 2rem;
-    }
-
-    .link {
-      display:flex;
-      justify-content: space-evenly;
-    }
-  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.prod.min.js"></script>
 </head>
 
 <body>
-  <div class="container">
-    <div class="title">O<small> kutan <strong>i</strong></small></div>
-    <div class="comment">I just want to have fun.</div>
-    <div class="spacer"></div>
-    <div class="mail">shigeki<small> @ </small>jsx.jp</div>
-    <div class="phone"><small>0</small>8<small>0-44</small>8<small>0-00</small>8<small>0</small></div>
-    <div class="spacer"></div>
-
-    <div class="link">
-      <a href="tel:"><button class="button">
-        <img width="100%" src="/img/okutani.png">
-      </button></a>
-      <a href="tel:"><button class="button">
-        <img width="100%" src="/img/okutani.svg">
-      </button></a>
+  <div id="app">
+    <div class="container">
+      <section>
+        <div class="title">O<small> kutan <strong>i</strong></small></div>
+        <div class="comment">I just want to have fun.</div>
+        <div class="spacer"></div>
+        <div class="mail">shigeki<small> @ </small>jsx.jp</div>
+        <div class="phone"><small>0</small>8<small>0-44</small>8<small>0-00</small>8<small>0</small></div>
+        <div class="spacer"></div>
+      </section>
+      <section>
+        <button class="command" @click="onColorScheme">Color Scheme</button>
+      </section>
     </div>
   </div>
+  <script src="/assets/js/profile.js"></script>
+  <section class="circle-area">
+    <div class="link">
+      <a href="tel:"><button class="circle-button"><img src="/assets/img/okutan.svg"></button></a>
+      <a href="tel:"><button class="circle-button"><img src="/assets/img/okutani.svg"></button></a>
+    </div>
+  </section>
 </body>
 </html>

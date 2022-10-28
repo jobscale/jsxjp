@@ -1,5 +1,8 @@
 module.exports = {
   extends: 'airbnb-base',
+  globals: {
+    Vue: 'readonly',
+  },
   env: {
     browser: true,
   },

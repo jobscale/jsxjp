@@ -1,0 +1,137 @@
+* {
+  font-size: 4vmin;
+  border: none;
+  background: transparent;
+}
+
+.dark-scheme {
+  color-scheme: dark;
+}
+
+.light-scheme {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+}
+
+#app {
+  height: 100%;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button {
+  cursor: pointer;
+  background-color: #888;
+}
+
+.dark-scheme button {
+  color-scheme: light;
+}
+
+.light-scheme button {
+  color-scheme: dark;
+}
+
+.dark-scheme button:hover {
+  color-scheme: dark;
+}
+
+.light-scheme button:hover {
+  color-scheme: light;
+}
+
+.command {
+  font-size: 0.5em;
+  border-radius: 0.5em;
+  border: 1px solid #888;
+  padding: 0.2em 0.5em;
+}
+
+.circle-area {
+  margin: 20em 0 1em 0;
+}
+
+.circle-button {
+  width: 2em;
+  height: 2em;
+  padding: 0.1em;
+  background-color: #ef8;
+  border: none;
+  border-radius: 1.5em;
+  box-shadow: 0 0.1em 0.1em rgba(186, 229, 137, 0.4);
+  transition: all 0.3s ease 0s;
+  outline: none;
+}
+
+.circle-button:hover {
+  background-color: #2EE59D;
+  box-shadow: 0 0.2em 1em rgba(46, 229, 157, 0.4);
+}
+
+.circle-button img {
+  width: 100%;
+}
+
+.container {
+  text-align: center;
+}
+
+.title {
+  font-weight: normal;
+  font-family: 'Lato';
+  font-size: 4rem;
+}
+
+.title small {
+  font-size: 3rem;
+}
+
+.title strong {
+  font-size: 2rem;
+  font-weight: Ultra-Bold;
+}
+
+.comment {
+  font-family: 'Open Sans Condensed';
+  font-size: 1rem;
+}
+
+.mail {
+  margin: 1em 0 0 0;
+  font-family: 'Tangerine';
+  font-size: 3rem;
+  font-weight: normal;
+}
+
+.mail small {
+  font-size: 2rem;
+}
+
+hr {
+  border: 1px solid #888;
+}
+
+.phone {
+  font-family: 'Tangerine';
+  font-size: 1.8rem;
+  margin-top: 0.3em;
+}
+
+.phone small {
+  font-size: 1.6rem;
+}
+
+.spacer {
+  min-height: 2rem;
+}
+
+.link {
+  display:flex;
+  justify-content: space-evenly;
+}
