@@ -1,5 +1,6 @@
 * {
   overflow: hidden;
+  font-size: 2.2vmin;
 }
 
 .dark-scheme {
@@ -10,18 +11,22 @@
   color-scheme: light;
 }
 
+body {
+  height: 100vh;
+  margin: 0;
+  padding: 0.6;
+  opacity: 0.7;
+}
+
 .button {
-  padding: 1em;
+  font-size: 0.8em;
+  padding: 0.5em 1em;
   cursor: pointer;
   border: 1px solid #888;
   border-radius: 1em 1.5em;
   display: inline-block;
 }
 
-html, body {
-  height: 100vh;
-  margin: 0;
-}
 *::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -44,12 +49,13 @@ html, body {
   justify-content: center;
 }
 .area {
-  margin: 0 1vw;
-  padding: 0 1vw;
+  margin: 0.5em;
+  padding: 0.5em;
 }
 #svelte-app {
-  width: calc((16vw + 16vh) / 2);
+  width: 8em;
   height: 100%;
+  margin: 0.2em 2em;
 }
 #busy-ts {
   color: #04d;
@@ -62,30 +68,36 @@ html, body {
 }
 .top-right {
   position: absolute;
-  top: 3vh;
-  right: 4vw;
+  top: 1em;
+  right: 2em;
 }
 .content {
   text-align: center;
 }
 .title {
-  font-size: calc((5vh + 5vw) / 2);
-  letter-spacing: calc((.3vh + .3vw) / 2);
-  margin-bottom: calc((1vh + 1vw) / 2);
-  padding-bottom: calc((1vh + 1vw) / 2);
+  letter-spacing: 0.2em;
+  margin-bottom: 0.5em;
+  padding-bottom: 0.5em;
+}
+.title * {
+  font-size: 2em;
 }
 .m-b-md {
-  padding-bottom: calc((3vh + 3vw) / 2);
+  padding-bottom: 0.2em;
+}
+.link-area {
+  max-width: 33em;
+  margin: 0.6em auto;
 }
 .links {
-  margin: 1vh 5vw;
+  display: inline-block;
 }
 .links > a {
   color: #888;
   margin: 0.2em;
   display: inline-block;
-  font-size: calc((2vh + 2vw) / 2);
-  letter-spacing: calc((.3vh + .3vw) / 2);
+  font-size: 0.8em;
+  letter-spacing: 0.1em;
   text-decoration: none;
   /* text-transform: uppercase; */
 }
@@ -95,7 +107,7 @@ html, body {
   text-align: right;
 }
 .worm {
-  font-size: calc((1.5vh + 1.5vw) / 2);
+  font-size: 0.6em;
 }
 .worm span {
   padding: .3vh .3vw;
@@ -112,25 +124,25 @@ html, body {
 }
 @-webkit-keyframes bounce-text {
   60% {
-    font-size: 7vw;
+    font-size: 0.8em;
   }
   100% {
-    font-size: 7vw;
+    font-size: 1em;
   }
 }
 @keyframes bounce-text {
   60% {
-    font-size: 7vw;
+    font-size: 0.8em;
   }
   100% {
-    font-size: 7vw;
+    font-size: 1em;
   }
 }
 
 #powered {
   position: fixed;
   font-family: 'Tangerine';
-  font-size: 300%;
+  font-size: 2em;
   right: 0.5em;
   bottom: 0.5em;
   border-radius: 0.5em;
