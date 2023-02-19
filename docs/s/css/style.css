@@ -49,18 +49,22 @@ hr.footer {
 }
 
 .loading {
-  position: fix;
+  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000;
+  opacity: 0.5;
 }
 
 .loader {
   position: relative;
   width: 21em;
   height: 21em;
-  background-color: #000;
   filter: blur(0.2em) contrast(2);
   -webkit-animation: loaderSpin 16s infinite linear;
           animation: loaderSpin 16s infinite linear;

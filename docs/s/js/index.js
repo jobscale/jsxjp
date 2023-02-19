@@ -3,7 +3,6 @@ const logger = console;
 Vue.createApp({
   data() {
     return {
-      id: undefined,
       url: '',
       shorten: '',
       loading: false,
