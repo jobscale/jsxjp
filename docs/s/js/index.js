@@ -5,7 +5,7 @@ Vue.createApp({
     return {
       id: undefined,
       url: '',
-      shorten: 'https://jsx.jp/s/',
+      shorten: '',
     };
   },
 

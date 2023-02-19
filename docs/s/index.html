@@ -17,7 +17,7 @@
           >
         </section>
         <section>
-          <button :disabled="url.length < 20" @click="generate" class="button">↓ Shorten ↓</button>
+          <button :disabled="url.length < 20 || shorten" @click="generate" class="button">↓ Shorten ↓</button>
         </section>
         <section>
           <input class="output" type="search" :readonly="true"
