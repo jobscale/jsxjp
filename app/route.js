@@ -15,6 +15,10 @@ class Route {
       (...args) => apiRoute.router(...args),
     );
     router.use(
+      '/s',
+      (...args) => shortenRoute.router(...args),
+    );
+    router.use(
       '',
       (...args) => authRoute.router(...args),
     );
@@ -29,10 +33,6 @@ class Route {
     router.use(
       '/template',
       (...args) => templateRoute.router(...args),
-    );
-    router.use(
-      '/s',
-      (...args) => shortenRoute.router(...args),
     );
     router.get(
       '',
