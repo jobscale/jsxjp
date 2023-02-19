@@ -1,40 +1,39 @@
 const createHttpError = require('http-errors');
-const User = require('../models/User');
+const { Deta } = require('deta');
 const { auth } = require('.');
 const { createHash } = require('../user');
 
+const { ENV, DETA_PROJECT_KEY } = process.env;
+
+const deta = Deta(DETA_PROJECT_KEY);
+const db = deta.Base(`${ENV}-user`);
+
 const jwtSecret = 'node-express-ejs';
 
-class AuthService {
+class Service {
   async now() {
     return new Date().toISOString();
   }
 
-  login(rest) {
+  async login(rest) {
     const { login, password } = rest;
+    if (!login || !password) throw createHttpError(400);
     const ts = new Date().toISOString();
     const hash = createHash(`${login}/${password}`);
-    return User.findOne({
-      raw: true,
-      attributes: ['login', 'lastLogin'],
-      where: {
-        login, hash,
-      },
+    return db.fetch({
+      login, hash, active: true,
     })
-    .then(user => {
+    .then(({ items: [user] }) => {
       if (!user) throw createHttpError(401);
       user.lastLogin = ts;
       return user;
     })
-    .then(user => User.update(user, {
-      where: {
-        login, hash,
-      },
-    }))
-    .then(() => {
-      const token = auth.sign({ login, ts }, jwtSecret);
-      return token;
-    });
+    .then(user => {
+      const { key } = user;
+      delete user.key;
+      return db.update(user, key);
+    })
+    .then(() => auth.sign({ login, ts }, jwtSecret));
   }
 
   async verify(token) {
@@ -44,6 +43,6 @@ class AuthService {
 }
 
 module.exports = {
-  AuthService,
-  authService: new AuthService(),
+  Service,
+  service: new Service(),
 };

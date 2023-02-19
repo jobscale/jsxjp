@@ -1,7 +1,7 @@
-class TemplateService {
+class Service {
 }
 
 module.exports = {
-  TemplateService,
-  templateService: new TemplateService(),
+  Service,
+  service: new Service(),
 };

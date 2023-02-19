@@ -1,7 +1,7 @@
 const { logger } = require('@jobscale/logger');
-const { apiService } = require('./service');
+const { service: apiService } = require('./service');
 
-class ApiController {
+class Controller {
   slack(req, res) {
     const { body } = req;
     apiService.slack(body)
@@ -25,6 +25,6 @@ class ApiController {
 }
 
 module.exports = {
-  ApiController,
-  apiController: new ApiController(),
+  Controller,
+  controller: new Controller(),
 };

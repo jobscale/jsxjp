@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-class AccountValidation {
+class Validation {
   password(req, res, next) {
     const { error } = Joi.object({
       password: Joi.string().min(6).max(30),
@@ -14,6 +14,6 @@ class AccountValidation {
 }
 
 module.exports = {
-  AccountValidation,
-  accountValidation: new AccountValidation(),
+  Validation,
+  validation: new Validation(),
 };

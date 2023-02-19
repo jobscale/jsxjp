@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-class ApiValidation {
+class Validation {
   slack(req, res, next) {
     const { body } = req;
     const { error } = Joi.object({
@@ -18,6 +18,6 @@ class ApiValidation {
 }
 
 module.exports = {
-  ApiValidation,
-  apiValidation: new ApiValidation(),
+  Validation,
+  validation: new Validation(),
 };

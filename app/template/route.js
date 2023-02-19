@@ -1,7 +1,7 @@
 const { Router } = require('express');
-const { templateController } = require('./controller');
+const { controller: templateController } = require('./controller');
 
-class TemplateRoute {
+class Route {
   constructor() {
     const router = Router();
     router.post(
@@ -13,6 +13,6 @@ class TemplateRoute {
 }
 
 module.exports = {
-  TemplateRoute,
-  templateRoute: new TemplateRoute(),
+  Route,
+  route: new Route(),
 };

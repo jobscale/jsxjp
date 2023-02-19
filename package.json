@@ -7,7 +7,7 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "start": "node .",
+    "start": "eval $(cat .env) node .",
     "lint": "eslint . --fix && ejslint app/views --fix",
     "test": "npm run lint"
   },
@@ -19,6 +19,7 @@
     "@jobscale/slack": "^0.0.4",
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.11.5",
+    "deta": "^1.1.0",
     "ejs": "^3.1.8",
     "express": "^4.18.2",
     "http-errors": "^2.0.0",

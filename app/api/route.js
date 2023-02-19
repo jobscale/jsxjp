@@ -1,8 +1,8 @@
 const { Router } = require('express');
-const { apiController } = require('./controller');
-const { apiValidation } = require('./validation');
+const { controller: apiController } = require('./controller');
+const { validation: apiValidation } = require('./validation');
 
-class ApiRoute {
+class Route {
   constructor() {
     const router = Router();
     router.post(
@@ -19,6 +19,6 @@ class ApiRoute {
 }
 
 module.exports = {
-  ApiRoute,
-  apiRoute: new ApiRoute(),
+  Route,
+  route: new Route(),
 };

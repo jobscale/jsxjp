@@ -1,8 +1,8 @@
 const { Router } = require('express');
-const { accountController } = require('./controller');
-const { accountValidation } = require('./validation');
+const { controller: accountController } = require('./controller');
+const { validation: accountValidation } = require('./validation');
 
-class AccountRoute {
+class Route {
   constructor() {
     const router = Router();
     router.get(
@@ -19,6 +19,6 @@ class AccountRoute {
 }
 
 module.exports = {
-  AccountRoute,
-  accountRoute: new AccountRoute(),
+  Route,
+  route: new Route(),
 };

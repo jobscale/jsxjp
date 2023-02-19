@@ -1,29 +1,34 @@
 const createHttpError = require('http-errors');
+const { Deta } = require('deta');
 const { auth } = require('../auth');
 const { createHash } = require('../user');
-const User = require('../models/User');
 
-class AccountService {
+const { ENV, DETA_PROJECT_KEY } = process.env;
+
+const deta = Deta(DETA_PROJECT_KEY);
+const db = deta.Base(`${ENV}-user`);
+
+class Service {
   async password(rest) {
     const { password, token } = rest;
+    if (!token || !password) throw createHttpError(400);
     const { login } = auth.decode(token);
-    return User.findOne({
-      raw: true,
-      attributes: ['login'],
-      where: { login },
+    if (!login) throw createHttpError(400);
+    return db.fetch({
+      login, active: true,
     })
-    .then(user => {
+    .then(({ items: [user] }) => {
       if (!user) throw createHttpError(400);
       user.hash = createHash(`${login}/${password}`);
-      return User.update(user, {
-        where: { login },
-      });
-    })
-    .then(() => ({ login }));
+      const { key } = user;
+      delete user.key;
+      return db.update(user, key)
+      .then(() => user);
+    });
   }
 }
 
 module.exports = {
-  AccountService,
-  accountService: new AccountService(),
+  Service,
+  service: new Service(),
 };

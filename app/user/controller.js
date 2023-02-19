@@ -1,8 +1,8 @@
 const path = require('path');
 const { logger } = require('@jobscale/logger');
-const { userService } = require('./service');
+const { service: userService } = require('./service');
 
-class UserController {
+class Controller {
   async page(req, res) {
     const { url } = req;
     const view = path.join('user', url);
@@ -25,7 +25,7 @@ class UserController {
     const { login, password } = req.body;
     userService.register({ login, password })
     .then(user => {
-      res.json({ user });
+      res.json({ login: user.login });
     })
     .catch(e => {
       logger.info({ message: e.toString() });
@@ -38,7 +38,7 @@ class UserController {
     const { login, password } = req.body;
     userService.reset({ login, password })
     .then(user => {
-      res.json({ user });
+      res.json({ login: user.login });
     })
     .catch(e => {
       logger.info({ message: e.toString() });
@@ -49,6 +49,6 @@ class UserController {
 }
 
 module.exports = {
-  UserController,
-  userController: new UserController(),
+  Controller,
+  controller: new Controller(),
 };

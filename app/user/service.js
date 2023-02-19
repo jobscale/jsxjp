@@ -1,56 +1,50 @@
 const createHttpError = require('http-errors');
-const User = require('../models/User');
+const { Deta } = require('deta');
 const { createHash } = require('.');
 
-class UserService {
+const { ENV, DETA_PROJECT_KEY } = process.env;
+
+const deta = Deta(DETA_PROJECT_KEY);
+const db = deta.Base(`${ENV}-user`);
+
+class Service {
   async now() {
     return new Date().toISOString();
   }
 
   findAll() {
-    return User.findAll({
-      raw: true,
-      attributes: ['login', 'lastLogin'],
-      order: ['login'],
-    });
+    return db.fetch({ active: true })
+    .then(({ items }) => items);
   }
 
   async register(rest) {
     const { login, password } = rest;
-    await User.findOne({
-      raw: true,
-      attributes: ['login'],
-      where: {
-        login,
-      },
-    })
-    .then(user => {
-      if (user) throw createHttpError(400);
-    })
-    .then(() => {
-      const hash = createHash(`${login}/${password}`);
-      return User.create({
-        login, hash,
-      });
-    })
-    .then(user => ({ login: user.login }));
+    if (!login || !password) throw createHttpError(400);
+    await db.fetch({ login })
+    .then(({ items }) => {
+      if (items.length) throw createHttpError(400);
+    });
+    const hash = createHash(`${login}/${password}`);
+    return db.put({
+      login, hash, active: true,
+    });
   }
 
   async reset(rest) {
     const { login, password } = rest;
-    const hash = createHash(`${login}/${password}`);
-    return User.update({
-      hash,
-    }, {
-      where: {
-        login,
-      },
-    })
-    .then(() => ({ login }));
+    if (!login || !password) throw createHttpError(400);
+    return db.fetch({ login })
+    .then(({ items: [user] }) => {
+      if (!user) throw createHttpError(400);
+      user.hash = createHash(`${login}/${password}`);
+      const { key } = user;
+      delete user.key;
+      return db.update(user, key);
+    });
   }
 }
 
 module.exports = {
-  UserService,
-  userService: new UserService(),
+  Service,
+  service: new Service(),
 };

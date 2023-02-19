@@ -1,8 +1,8 @@
 const dayjs = require('dayjs');
 const { logger } = require('@jobscale/logger');
-const { authService } = require('./service');
+const { service: authService } = require('./service');
 
-class AuthController {
+class Controller {
   index(req, res) {
     authService.now()
     .then((now) => {
@@ -55,6 +55,6 @@ class AuthController {
 }
 
 module.exports = {
-  AuthController,
-  authController: new AuthController(),
+  Controller,
+  controller: new Controller(),
 };

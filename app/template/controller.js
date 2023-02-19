@@ -1,6 +1,6 @@
-const { templateService } = require('./service');
+const { service: templateService } = require('./service');
 
-class TemplateController {
+class Controller {
   load(req, res) {
     const { id } = req.body;
     templateService.now()
@@ -12,6 +12,6 @@ class TemplateController {
 }
 
 module.exports = {
-  TemplateController,
-  templateController: new TemplateController(),
+  Controller,
+  controller: new Controller(),
 };

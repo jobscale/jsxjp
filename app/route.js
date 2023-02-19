@@ -1,9 +1,9 @@
 const { Router } = require('express');
-const { apiRoute } = require('./api/route');
-const { authRoute } = require('./auth/route');
-const { accountRoute } = require('./account/route');
-const { userRoute } = require('./user/route');
-const { templateRoute } = require('./template/route');
+const { route: apiRoute } = require('./api/route');
+const { route: authRoute } = require('./auth/route');
+const { route: accountRoute } = require('./account/route');
+const { route: userRoute } = require('./user/route');
+const { route: templateRoute } = require('./template/route');
 const { controller } = require('./controller');
 
 class Route {

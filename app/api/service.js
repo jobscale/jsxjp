@@ -1,7 +1,7 @@
 const os = require('os');
 const { Slack } = require('@jobscale/slack');
 
-class ApiService {
+class Service {
   slack(rest) {
     return this.fetchEnv()
     .then(env => new Slack(env).send(rest))
@@ -46,6 +46,6 @@ class ApiService {
 }
 
 module.exports = {
-  ApiService,
-  apiService: new ApiService(),
+  Service,
+  service: new Service(),
 };

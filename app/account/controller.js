@@ -1,6 +1,6 @@
-const { accountService } = require('./service');
+const { service: accountService } = require('./service');
 
-class AccountController {
+class Controller {
   password(req, res) {
     const { method, body } = req;
     const { password } = body;
@@ -11,8 +11,7 @@ class AccountController {
     const { token } = req.cookies;
     accountService.password({ password, token })
     .then(user => {
-      const { login } = user;
-      res.json({ login });
+      res.json({ login: user.login });
     })
     .catch(e => {
       if (!e.status) e.status = 503;
@@ -22,6 +21,6 @@ class AccountController {
 }
 
 module.exports = {
-  AccountController,
-  accountController: new AccountController(),
+  Controller,
+  controller: new Controller(),
 };

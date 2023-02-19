@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-class UserValidation {
+class Validation {
   register(req, res, next) {
     const { error } = Joi.object({
       login: Joi.string().alphanum().max(30),
@@ -27,6 +27,6 @@ class UserValidation {
 }
 
 module.exports = {
-  UserValidation,
-  userValidation: new UserValidation(),
+  Validation,
+  validation: new Validation(),
 };
