@@ -4,6 +4,7 @@ const { route: authRoute } = require('./auth/route');
 const { route: accountRoute } = require('./account/route');
 const { route: userRoute } = require('./user/route');
 const { route: templateRoute } = require('./template/route');
+const { route: shortenRoute } = require('./shorten/route');
 const { controller } = require('./controller');
 
 class Route {
@@ -28,6 +29,10 @@ class Route {
     router.use(
       '/template',
       (...args) => templateRoute.router(...args),
+    );
+    router.use(
+      '/s',
+      (...args) => shortenRoute.router(...args),
     );
     router.get(
       '',

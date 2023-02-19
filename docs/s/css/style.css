@@ -1,0 +1,49 @@
+:root {
+  --font-size: 3vmin;
+}
+
+.dark-scheme {
+  color-scheme: dark;
+}
+
+.light-scheme {
+  color-scheme: light;
+}
+
+* {
+  font-size: var(--font-size);
+  background-color: transparent;
+  border-radius: 0.5em;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  text-align: center;
+}
+
+.input, .output, .button {
+  padding: 0.2em 0.5em;
+  margin: 0.2em;
+  border: 1px solid #888;
+}
+
+.input {
+  width: 80vw;
+}
+
+.output {
+  width: 14em;
+}
+
+hr.footer {
+  border: 1px solid #888;
+  margin-top: 6em;
+}
