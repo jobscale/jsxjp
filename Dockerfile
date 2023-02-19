@@ -4,7 +4,6 @@ WORKDIR /home/node
 USER node
 COPY --chown=node:staff package.json .
 RUN npm i --omit=dev
-COPY --chown=node:staff  db.example db
 COPY --chown=node:staff  docs docs
 COPY --chown=node:staff  app app
 COPY --chown=node:staff  index.js .
