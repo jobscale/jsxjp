@@ -41,6 +41,7 @@ body {
 
 .output {
   width: 14em;
+  font-size: 0.9em;
 }
 
 hr.footer {
