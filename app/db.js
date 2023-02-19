@@ -1,23 +1,9 @@
-const os = require('os');
-const { Slack } = require('@jobscale/slack');
+const { Deta } = require('deta');
 const { fetch } = require('@jobscale/fetch');
 
 const { PARTNER_HOST } = process.env;
 
-class Service {
-  slack(rest) {
-    return this.fetchEnv()
-    .then(env => new Slack(env).send(rest))
-    .then(res => ({ ...res, ts: Date.now() }));
-  }
-
-  async hostname() {
-    return {
-      hostname: os.hostname(),
-      ip: await fetch.get('https://inet-ip.info/ip').catch(e => e.message),
-    };
-  }
-
+class DB {
   async allowInsecure(use) {
     if (use === false) delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
     else process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -34,7 +20,7 @@ class Service {
     }
     const Cookie = 'X-AUTH=X0X0X0X0X0X0X0X';
     const request = [
-      `${params.host}/slack.env.json`,
+      `${params.host}/db.env.json`,
       { headers: { Cookie } },
     ];
     return this.allowInsecure()
@@ -45,9 +31,25 @@ class Service {
       return this.cache.env;
     });
   }
+
+  async getDetaKey() {
+    const { DETA_PROJECT_KEY } = process.env;
+    if (DETA_PROJECT_KEY) return DETA_PROJECT_KEY;
+    return this.fetchEnv()
+    .then(env => env.DETA_PROJECT_KEY);
+  }
+
+  async connectDB() {
+    if (!this.cache) this.cache = {};
+    if (this.cache.db) return this.cache.db;
+    const { ENV } = process.env;
+    const detaKey = await this.getDetaKey();
+    const deta = Deta(detaKey);
+    this.cache.db = deta.Base(`${ENV || 'dev'}-user`);
+    return this.cache.db;
+  }
 }
 
 module.exports = {
-  Service,
-  service: new Service(),
+  connection: () => new DB().connectDB(),
 };

@@ -1,18 +1,14 @@
 const createHttpError = require('http-errors');
-const { Deta } = require('deta');
 const { createHash } = require('.');
-
-const { ENV, DETA_PROJECT_KEY } = process.env;
-
-const deta = Deta(DETA_PROJECT_KEY);
-const db = deta.Base(`${ENV}-user`);
+const { connection } = require('../db');
 
 class Service {
   async now() {
     return new Date().toISOString();
   }
 
-  findAll() {
+  async findAll() {
+    const db = await connection();
     return db.fetch({ active: true })
     .then(({ items }) => items);
   }
@@ -20,6 +16,7 @@ class Service {
   async register(rest) {
     const { login, password } = rest;
     if (!login || !password) throw createHttpError(400);
+    const db = await connection();
     await db.fetch({ login })
     .then(({ items }) => {
       if (items.length) throw createHttpError(400);
@@ -33,6 +30,7 @@ class Service {
   async reset(rest) {
     const { login, password } = rest;
     if (!login || !password) throw createHttpError(400);
+    const db = await connection();
     return db.fetch({ login })
     .then(({ items: [user] }) => {
       if (!user) throw createHttpError(400);

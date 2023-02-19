@@ -1,12 +1,7 @@
 const createHttpError = require('http-errors');
-const { Deta } = require('deta');
 const { auth } = require('.');
 const { createHash } = require('../user');
-
-const { ENV, DETA_PROJECT_KEY } = process.env;
-
-const deta = Deta(DETA_PROJECT_KEY);
-const db = deta.Base(`${ENV}-user`);
+const { connection } = require('../db');
 
 const jwtSecret = 'node-express-ejs';
 
@@ -20,6 +15,7 @@ class Service {
     if (!login || !password) throw createHttpError(400);
     const ts = new Date().toISOString();
     const hash = createHash(`${login}/${password}`);
+    const db = await connection();
     return db.fetch({
       login, hash, active: true,
     })

@@ -1,12 +1,7 @@
 const createHttpError = require('http-errors');
-const { Deta } = require('deta');
 const { auth } = require('../auth');
 const { createHash } = require('../user');
-
-const { ENV, DETA_PROJECT_KEY } = process.env;
-
-const deta = Deta(DETA_PROJECT_KEY);
-const db = deta.Base(`${ENV}-user`);
+const { connection } = require('../db');
 
 class Service {
   async password(rest) {
@@ -14,6 +9,7 @@ class Service {
     if (!token || !password) throw createHttpError(400);
     const { login } = auth.decode(token);
     if (!login) throw createHttpError(400);
+    const db = await connection();
     return db.fetch({
       login, active: true,
     })
