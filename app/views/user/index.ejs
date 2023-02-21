@@ -16,8 +16,19 @@
       users.forEach(user => {%>
         <li>
           <ol class="horizontal">
-            <li><%= user.login %></li>
-            <li><%= user.lastLogin ? new Date(user.lastLogin).toLocaleString() : '-' %></li>
+            <% if (user.html) { %>
+              <li><%= user.html %></li>
+              <li>
+                <%= user.count || 0 %><br>
+                <%= user.lastAccess ? new Date(user.lastAccess).toISOString().replace(/T/, ' ').replace(/\..+$/, ' GMT') : '-' %>
+              </li>
+            <% } else { %>
+              <li><%= user.login %></li>
+              <li>
+                <%= user.active ? 'allow' : 'blocked' %><br>
+                <%= user.lastLogin ? new Date(user.lastLogin).toISOString().replace(/T/, ' ').replace(/\..+$/, ' GMT') : '-' %>
+              </li>
+            <% } %>
           </ol>
         </li>
       <%})

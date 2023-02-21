@@ -14,20 +14,17 @@ class Service {
     const { login, password } = rest;
     if (!login || !password) throw createHttpError(400);
     const ts = new Date().toISOString();
-    const hash = createHash(`${login}/${password}`);
     const db = await connection();
     return db.fetch({
-      login, hash, active: true,
+      login,
+      hash: createHash(`${login}/${password}`),
+      active: true,
     })
     .then(({ items: [user] }) => {
       if (!user) throw createHttpError(401);
-      user.lastLogin = ts;
-      return user;
-    })
-    .then(user => {
-      const { key } = user;
-      delete user.key;
-      return db.update(user, key);
+      return db.update({
+        lastLogin: ts,
+      }, user.key);
     })
     .then(() => auth.sign({ login, ts }, jwtSecret));
   }

@@ -6,7 +6,11 @@ class Service {
     const { html } = rest;
     if (!html) throw createHttpError(400);
     const db = await connection();
-    return db.put({ html })
+    return db.put({
+      html,
+      registerAt: new Date().toISOString(),
+      count: 0,
+    })
     .then(({ key: id }) => ({ id }));
   }
 
@@ -14,6 +18,10 @@ class Service {
     const { id: key } = rest;
     const db = await connection();
     return db.get(key)
+    .then(data => db.update({
+      lastAccess: new Date().toISOString(),
+      count: parseInt(data.count, 10) || 1,
+    }, data.key))
     .then(({ html }) => ({ html }));
   }
 }

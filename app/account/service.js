@@ -15,10 +15,9 @@ class Service {
     })
     .then(({ items: [user] }) => {
       if (!user) throw createHttpError(400);
-      user.hash = createHash(`${login}/${password}`);
-      const { key } = user;
-      delete user.key;
-      return db.update(user, key)
+      return db.update({
+        hash: createHash(`${login}/${password}`),
+      }, user.key)
       .then(() => user);
     });
   }
