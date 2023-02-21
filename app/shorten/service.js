@@ -20,7 +20,7 @@ class Service {
     return db.get(key)
     .then(data => db.update({
       lastAccess: new Date().toISOString(),
-      count: parseInt(data.count, 10) || 1,
+      count: (parseInt(data.count, 10) || 0) + 1,
     }, data.key).then(() => data))
     .then(({ html }) => ({ html }));
   }
