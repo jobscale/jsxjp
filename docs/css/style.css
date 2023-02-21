@@ -139,3 +139,30 @@ div.s-content span.small {
   display: flex;
   justify-content: space-between;
 }
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background-color: #444;
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.max-half {
+  max-width: 65%;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.right {
+  text-align: right;
+}
+
+.small {
+  font-size: 0.6em;
+}

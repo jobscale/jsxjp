@@ -28,13 +28,17 @@ body {
 }
 
 *::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-  background-color: #666;
+  width: 6px;
+  height: 6px;
+  background-color: #444;
+  border-radius: 3px;
 }
+
 *::-webkit-scrollbar-thumb {
-    background: #333;
+  background: #888;
+  border-radius: 3px;
 }
+
 .full-height {
   height: 100vh;
 }
