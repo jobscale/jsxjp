@@ -17,8 +17,7 @@ class Service {
       if (!user) throw createHttpError(400);
       return db.update({
         hash: createHash(`${login}/${password}`),
-      }, user.key)
-      .then(() => user);
+      }, user.key).then(() => user);
     });
   }
 }

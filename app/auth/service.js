@@ -24,7 +24,7 @@ class Service {
       if (!user) throw createHttpError(401);
       return db.update({
         lastLogin: ts,
-      }, user.key);
+      }, user.key).then(() => user);
     })
     .then(() => auth.sign({ login, ts }, jwtSecret));
   }

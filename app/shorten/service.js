@@ -21,7 +21,7 @@ class Service {
     .then(data => db.update({
       lastAccess: new Date().toISOString(),
       count: parseInt(data.count, 10) || 1,
-    }, data.key))
+    }, data.key).then(() => data))
     .then(({ html }) => ({ html }));
   }
 }
