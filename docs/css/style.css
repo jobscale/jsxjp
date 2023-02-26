@@ -141,6 +141,7 @@ div.s-content span.small {
 }
 
 .remove-button {
+  font-size: 0.7em;
   border: 1px solid #f77;
   border-radius: 0.3em;
   padding: 0 0.3em;

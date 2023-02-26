@@ -46,6 +46,19 @@ class Controller {
       res.status(e.status).json({ message: e.message });
     });
   }
+
+  remove(req, res) {
+    const { id } = req.body;
+    userService.remove({ id })
+    .then(item => {
+      res.json({ deletedAt: item.deletedAt });
+    })
+    .catch(e => {
+      logger.info({ message: e.toString() });
+      if (!e.status) e.status = 503;
+      res.status(e.status).json({ message: e.message });
+    });
+  }
 }
 
 module.exports = {

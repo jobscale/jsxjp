@@ -11,7 +11,7 @@ class Service {
       if (item) return item;
       return db.put({
         html,
-        deletedAt: '',
+        deletedAt: 0,
         registerAt: new Date().toISOString(),
         count: 0,
       });
@@ -33,19 +33,6 @@ class Service {
       count: (parseInt(data.count, 10) || 0) + 1,
     }, data.key).then(() => data))
     .then(({ html }) => ({ html }));
-  }
-
-  async remove(rest) {
-    const { id: key } = rest;
-    const db = await connection();
-    return db.get(key)
-    .then(data => {
-      if (!data) throw createHttpError(400);
-      return data;
-    })
-    .then(data => db.update({
-      deletedAt: new Date().toISOString(),
-    }, data.key));
   }
 }
 

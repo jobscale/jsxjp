@@ -18,7 +18,7 @@ class Service {
     return db.fetch({
       login,
       hash: createHash(`${login}/${password}`),
-      deletedAt: '',
+      deletedAt: 0,
     })
     .then(({ items: [item] }) => {
       if (!item) throw createHttpError(401);

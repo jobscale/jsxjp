@@ -6,6 +6,7 @@
   <link rel='stylesheet' href='/css/style.css' />
   <link rel="stylesheet" href="/css/form.css">
   <%- include('../menu/head') %>
+  <script type="text/javascript" src="/js/user/remove.js"></script>
 </head>
 <body>
   <div class="s-content">
@@ -18,18 +19,18 @@
           <ol class="horizontal">
             <% if (item.html) { %>
               <li class="li-left"><%= item.html %></li>
-              <li class="li-center right small">
-                <%= item.count || 0 %> <%= item.deletedAt ? 'allow' : 'blocked' %><br>
-                <%= item.lastAccess ? new Date(item.lastAccess).toISOString().replace(/T/, ' ').replace(/\..+$/, ' GMT') : '-' %>
+              <li class="li-center right small" title="<%= item.deletedAt %>">
+                <%= item.count || 0 %> <%= item.deletedAt ? 'blocked' : 'allow' %><br>
+                <%= item.lastAccess %>
               </li>
             <% } else { %>
               <li class="li-left"><%= item.login %></li>
               <li class="li-center right small">
-                <%= item.deletedAt ? 'allow' : 'blocked' %><br>
-                <%= item.lastAccess ? new Date(item.lastAccess).toISOString().replace(/T/, ' ').replace(/\..+$/, ' GMT') : '-' %>
+                <%= item.deletedAt ? 'blocked' : 'allow' %><br>
+                <%= item.lastAccess %>
               </li>
             <% } %>
-            <li class="li-right"><a class="remove-button" data-id="<% item.key %>">DEL</a></li>
+            <li class="li-right"><a class="remove-button" data-id="<%= item.key %>">DEL</a></li>
           </ol>
         </li>
       <%})

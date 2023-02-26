@@ -11,7 +11,7 @@ class Service {
     if (!login) throw createHttpError(400);
     const db = await connection();
     return db.fetch({
-      login, deletedAt: '',
+      login, deletedAt: 0,
     })
     .then(({ items: [item] }) => {
       if (!item) throw createHttpError(400);

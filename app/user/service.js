@@ -1,4 +1,5 @@
 const createHttpError = require('http-errors');
+const dayjs = require('dayjs');
 const { createHash } = require('.');
 const { connection } = require('../db');
 
@@ -10,7 +11,16 @@ class Service {
   async findAll() {
     const db = await connection();
     return db.fetch()
-    .then(({ items }) => items);
+    .then(({ items }) => items
+    .map(item => {
+      item.lastAccess = item.lastAccess ? dayjs(item.lastAccess).add(9, 'hours').toISOString()
+      .replace(/T/, ' ')
+      .replace(/\..*$/, '') : '-';
+      item.deletedAt = item.deletedAt ? dayjs(item.deletedAt).add(9, 'hours').toISOString()
+      .replace(/T/, ' ')
+      .replace(/\..*$/, '') : undefined;
+      return item;
+    }));
   }
 
   async register(rest) {
@@ -22,7 +32,7 @@ class Service {
       if (item) throw createHttpError(400);
       return db.put({
         login,
-        deletedAt: '',
+        deletedAt: 0,
         registerAt: new Date().toISOString(),
         hash: createHash(`${login}/${password}`),
       });
@@ -40,6 +50,19 @@ class Service {
         hash: createHash(`${login}/${password}`),
       }, item.key).then(() => item);
     });
+  }
+
+  async remove(rest) {
+    const { id: key } = rest;
+    const db = await connection();
+    return db.get(key)
+    .then(data => {
+      if (!data) throw createHttpError(400);
+      return data;
+    })
+    .then(data => db.update({
+      deletedAt: new Date().getTime(),
+    }, data.key));
   }
 }
 

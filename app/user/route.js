@@ -17,6 +17,10 @@ router.post(
   (...args) => userValidation.reset(...args),
   (...args) => userController.reset(...args),
 );
+router.post(
+  '/remove',
+  (...args) => userController.remove(...args),
+);
 
 module.exports = {
   route: { router },
