@@ -18,13 +18,13 @@ class Service {
     return db.fetch({
       login,
       hash: createHash(`${login}/${password}`),
-      active: true,
+      deletedAt: '',
     })
-    .then(({ items: [user] }) => {
-      if (!user) throw createHttpError(401);
+    .then(({ items: [item] }) => {
+      if (!item) throw createHttpError(401);
       return db.update({
-        lastLogin: ts,
-      }, user.key).then(() => user);
+        lastAccess: ts,
+      }, item.key).then(() => item);
     })
     .then(() => auth.sign({ login, ts }, jwtSecret));
   }

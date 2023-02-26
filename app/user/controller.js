@@ -12,7 +12,7 @@ class Controller {
     switch (view) {
     case 'user/':
       options.title = 'Users';
-      options.users = await userService.findAll();
+      options.items = await userService.findAll();
       res.render(view, options);
       break;
     default:
@@ -24,8 +24,8 @@ class Controller {
   register(req, res) {
     const { login, password } = req.body;
     userService.register({ login, password })
-    .then(user => {
-      res.json({ login: user.login });
+    .then(item => {
+      res.json({ login: item.login });
     })
     .catch(e => {
       logger.info({ message: e.toString() });
@@ -37,8 +37,8 @@ class Controller {
   reset(req, res) {
     const { login, password } = req.body;
     userService.reset({ login, password })
-    .then(user => {
-      res.json({ login: user.login });
+    .then(item => {
+      res.json({ login: item.login });
     })
     .catch(e => {
       logger.info({ message: e.toString() });

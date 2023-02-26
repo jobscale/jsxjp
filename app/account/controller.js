@@ -10,8 +10,8 @@ class Controller {
     }
     const { token } = req.cookies;
     accountService.password({ password, token })
-    .then(user => {
-      res.json({ login: user.login });
+    .then(item => {
+      res.json({ login: item.login });
     })
     .catch(e => {
       if (!e.status) e.status = 503;

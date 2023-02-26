@@ -10,10 +10,7 @@ class Service {
   async findAll() {
     const db = await connection();
     return db.fetch()
-    .then(({ items }) => items.map(item => {
-      delete item.key;
-      return item;
-    }));
+    .then(({ items }) => items);
   }
 
   async register(rest) {
@@ -21,12 +18,13 @@ class Service {
     if (!login || !password) throw createHttpError(400);
     const db = await connection();
     return db.fetch({ login })
-    .then(({ items: [user] }) => {
-      if (user) throw createHttpError(400);
+    .then(({ items: [item] }) => {
+      if (item) throw createHttpError(400);
       return db.put({
         login,
+        deletedAt: '',
+        registerAt: new Date().toISOString(),
         hash: createHash(`${login}/${password}`),
-        active: true,
       });
     });
   }
@@ -36,11 +34,11 @@ class Service {
     if (!login || !password) throw createHttpError(400);
     const db = await connection();
     return db.fetch({ login })
-    .then(({ items: [user] }) => {
-      if (!user) throw createHttpError(400);
+    .then(({ items: [item] }) => {
+      if (!item) throw createHttpError(400);
       return db.update({
         hash: createHash(`${login}/${password}`),
-      }, user.key).then(() => user);
+      }, item.key).then(() => item);
     });
   }
 }

@@ -11,13 +11,13 @@ class Service {
     if (!login) throw createHttpError(400);
     const db = await connection();
     return db.fetch({
-      login, active: true,
+      login, deletedAt: '',
     })
-    .then(({ items: [user] }) => {
-      if (!user) throw createHttpError(400);
+    .then(({ items: [item] }) => {
+      if (!item) throw createHttpError(400);
       return db.update({
         hash: createHash(`${login}/${password}`),
-      }, user.key).then(() => user);
+      }, item.key).then(() => item);
     });
   }
 }

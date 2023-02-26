@@ -140,6 +140,14 @@ div.s-content span.small {
   justify-content: space-between;
 }
 
+.remove-button {
+  border: 1px solid #f77;
+  border-radius: 0.3em;
+  padding: 0 0.3em;
+  margin: 0 0.3em;
+  cursor: pointer;
+}
+
 *::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -152,11 +160,19 @@ div.s-content span.small {
   border-radius: 3px;
 }
 
-.max-half {
-  max-width: 65%;
+.li-left {
+  width: 65%;
   white-space: nowrap;
   overflow-x: auto;
   overflow-y: hidden;
+}
+
+.li-center {
+  width: 25%;
+}
+
+.li-right {
+  width: 10%;
 }
 
 .right {

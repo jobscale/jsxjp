@@ -13,22 +13,23 @@
     <h1>List of User</h1>
     <hr>
     <div><ol type="I"><%
-      users.forEach(user => {%>
+      items.forEach(item => {%>
         <li>
           <ol class="horizontal">
-            <% if (user.html) { %>
-              <li class="max-half"><%= user.html %></li>
-              <li class="right small">
-                <%= user.count || 0 %><br>
-                <%= user.lastAccess ? new Date(user.lastAccess).toISOString().replace(/T/, ' ').replace(/\..+$/, ' GMT') : '-' %>
+            <% if (item.html) { %>
+              <li class="li-left"><%= item.html %></li>
+              <li class="li-center right small">
+                <%= item.count || 0 %> <%= item.deletedAt ? 'allow' : 'blocked' %><br>
+                <%= item.lastAccess ? new Date(item.lastAccess).toISOString().replace(/T/, ' ').replace(/\..+$/, ' GMT') : '-' %>
               </li>
             <% } else { %>
-              <li class="max-half"><%= user.login %></li>
-              <li class="right small">
-                <%= user.active ? 'allow' : 'blocked' %><br>
-                <%= user.lastLogin ? new Date(user.lastLogin).toISOString().replace(/T/, ' ').replace(/\..+$/, ' GMT') : '-' %>
+              <li class="li-left"><%= item.login %></li>
+              <li class="li-center right small">
+                <%= item.deletedAt ? 'allow' : 'blocked' %><br>
+                <%= item.lastAccess ? new Date(item.lastAccess).toISOString().replace(/T/, ' ').replace(/\..+$/, ' GMT') : '-' %>
               </li>
             <% } %>
+            <li class="li-right"><a class="remove-button" data-id="<% item.key %>">DEL</a></li>
           </ol>
         </li>
       <%})
