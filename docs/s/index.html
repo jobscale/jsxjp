@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/style.css" />
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.prod.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.3.0/css/all.css">
     <title>Shorten - jsx.jp</title>
   </head>
 
@@ -22,17 +23,16 @@
           </small>
         </div>
         <section>
-          <input class="input" type="search" maxlength="2048" placeholder="URL"
-            v-model="url"
-          >
+          <form @submit.prevent="onSubmit">
+            <input v-model="url" class="input" type="search" maxlength="2048" placeholder="URL">
+            <button :disabled="url.length < 20 || shorten.length > 0" type="submit" class="button">↓ Shorten ↓</button>
+          </form>
         </section>
-        <section>
-          <button :disabled="url.length < 20 || shorten.length > 0" @click="generate" class="button">↓ Shorten ↓</button>
-        </section>
-        <section>
-          <input class="output" type="search" :readonly="true"
-            v-model="shorten"
-          >
+        <section ref="clipboard">
+          <input v-model="shorten" class="output" type="search" :readonly="true">
+          <button @click="onCopyToClipboard" class="fast" :disabled="!shorten.length">
+            <i class="fa-regular fa-clone"></i>
+          </button>
         </section>
         <hr class="footer">
         <section>

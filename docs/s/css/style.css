@@ -46,6 +46,14 @@ small, small > * {
   border: 1px solid #888;
 }
 
+button:enabled {
+  cursor: pointer;
+}
+
+button.fast {
+  border: 0;
+}
+
 .input {
   width: 80vw;
 }
@@ -53,6 +61,11 @@ small, small > * {
 .output {
   width: 15em;
   font-size: 0.9em;
+}
+
+.try-action {
+  color: darkorchid;
+  font-size: 1.2em;
 }
 
 hr.footer {
