@@ -38,10 +38,10 @@ Vue.createApp({
       .then(() => {
         const icons = this.$refs.clipboard.querySelectorAll('input, i');
         this.$refs.clipboard.classList.add('try-action');
-        icons.forEach(icon => icon.add('fa-beat-fade'));
+        icons.forEach(icon => icon.classList.add('fa-beat-fade'));
         setTimeout(() => {
           this.$refs.clipboard.classList.remove('try-action');
-          icons.forEach(icon => icon.remove('fa-beat-fade'));
+          icons.forEach(icon => icon.classList.remove('fa-beat-fade'));
         }, 2500);
         logger.debug('Copied to clipboard');
       })
