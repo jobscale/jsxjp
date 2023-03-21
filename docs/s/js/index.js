@@ -37,7 +37,11 @@ Vue.createApp({
       navigator.clipboard.writeText(this.shorten)
       .then(() => {
         this.$refs.clipboard.classList.add('try-action');
-        setTimeout(() => this.$refs.clipboard.classList.remove('try-action'), 1500);
+        this.$refs.clipboard.classList.add('fa-beat-fade');
+        setTimeout(() => {
+          this.$refs.clipboard.classList.remove('try-action');
+          this.$refs.clipboard.classList.remove('fa-beat-fade');
+        }, 2500);
         logger.debug('Copied to clipboard');
       })
       .catch(e => logger.error(e.message));

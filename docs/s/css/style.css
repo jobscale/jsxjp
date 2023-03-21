@@ -63,7 +63,7 @@ button.fast {
   font-size: 0.9em;
 }
 
-.try-action {
+.try-action * {
   color: darkorchid;
   font-size: 1.2em;
 }
