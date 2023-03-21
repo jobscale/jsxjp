@@ -25,6 +25,10 @@ body {
   justify-content: center;
 }
 
+main {
+  display: inline-block;
+}
+
 .container {
   text-align: center;
 }
@@ -64,7 +68,7 @@ button.fast {
 }
 
 .try-action * {
-  color: darkorchid;
+  color: cyan;
 }
 
 hr.footer {

@@ -28,11 +28,13 @@
             <button :disabled="url.length < 20 || shorten.length > 0" type="submit" class="button">↓ Shorten ↓</button>
           </form>
         </section>
-        <section ref="clipboard">
-          <input v-model="shorten" class="output" type="search" :readonly="true">
-          <button @click="onCopyToClipboard" class="fast" :disabled="!shorten.length">
-            <i class="fa-regular fa-clone"></i>
-          </button>
+        <section>
+          <main ref="clipboard">
+            <input v-model="shorten" class="output" type="search" :readonly="true">
+            <button @click="onCopyToClipboard" class="fast" :disabled="!shorten.length">
+              <i class="fa-regular fa-clone"></i>
+            </button>
+          </main>
         </section>
         <hr class="footer">
         <section>
