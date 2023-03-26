@@ -17,10 +17,10 @@ class Update {
   }
 
   action(event) {
-    event.target.textContent = 'loading...';
+    event.currentTarget.textContent = 'loading...';
     this.self.sound = new Howl({ src: ['/assets/mp3/warning1.mp3'] });
     this.self.sound.once('load', () => {
-      event.target.textContent = '☃';
+      event.currentTarget.textContent = '☃';
     });
     fetch('/favicon.ico', {
       method: 'post',

@@ -4,7 +4,7 @@ class Remove extends App {
   remove(event) {
     event.preventDefault();
     this.loading();
-    this.removeInternal(event.target)
+    this.removeInternal(event.currentTarget)
     .catch(e => logger.error(e.message));
   }
 
