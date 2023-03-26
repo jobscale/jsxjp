@@ -23,7 +23,7 @@ class Remove extends App {
   }
 
   trigger() {
-    document.querySelectorAll('.remove-button')
+    document.querySelectorAll('.btn-remove')
     .forEach(el => el.addEventListener('click', event => this.remove(event)));
   }
 }

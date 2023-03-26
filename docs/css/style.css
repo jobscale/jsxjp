@@ -140,13 +140,15 @@ div.s-content span.small {
   justify-content: space-between;
 }
 
-.remove-button {
-  font-size: 0.7em;
-  border: 1px solid #f77;
-  border-radius: 0.3em;
-  padding: 0 0.3em;
-  margin: 0 0.3em;
+.button {
   cursor: pointer;
+  background: initial;
+  border: 0;
+  font-size: 0.8em;
+}
+
+.btn-remove {
+  color: #833;
 }
 
 *::-webkit-scrollbar {
@@ -173,7 +175,7 @@ div.s-content span.small {
 }
 
 .li-right {
-  width: 10%;
+  width: 7%;
 }
 
 .right {

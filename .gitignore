@@ -71,3 +71,4 @@ db/
 package-lock.json
 
 .space
+.vercel

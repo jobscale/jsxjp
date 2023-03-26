@@ -3,6 +3,12 @@ const dayjs = require('dayjs');
 const { createHash } = require('.');
 const { connection } = require('../db');
 
+const showDate = (date, defaultValue) => {
+  return date ? dayjs(date).add(9, 'hours').toISOString()
+  .replace(/T/, ' ')
+  .replace(/\..*$/, '') : defaultValue;
+};
+
 class Service {
   async now() {
     return new Date().toISOString();
@@ -13,12 +19,9 @@ class Service {
     return db.fetch()
     .then(({ items }) => items
     .map(item => {
-      item.lastAccess = item.lastAccess ? dayjs(item.lastAccess).add(9, 'hours').toISOString()
-      .replace(/T/, ' ')
-      .replace(/\..*$/, '') : '-';
-      item.deletedAt = item.deletedAt ? dayjs(item.deletedAt).add(9, 'hours').toISOString()
-      .replace(/T/, ' ')
-      .replace(/\..*$/, '') : undefined;
+      item.registerAt = showDate(item.registerAt, '-');
+      item.lastAccess = showDate(item.lastAccess, '-');
+      item.deletedAt = showDate(item.deletedAt);
       return item;
     }));
   }

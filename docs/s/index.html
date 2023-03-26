@@ -24,14 +24,16 @@
         </div>
         <section>
           <form @submit.prevent="onSubmit">
-            <input v-model="url" class="input" type="search" maxlength="2048" placeholder="URL">
-            <button :disabled="url.length < 20 || shorten.length > 0" type="submit" class="button">↓ Shorten ↓</button>
+            <input v-model="url" class="input" type="search" maxlength="2048" placeholder="URL"><br>
+            <button :disabled="url.length < 20 || shorten.length > 0" type="submit" :class="url.length >= 20 ? 'fa-beat' : ''">
+              <i class="fa-regular fa-down-left-and-up-right-to-center fa-rotate-45 fa-size-big"></i>
+            </button>
           </form>
         </section>
         <section>
           <main ref="clipboard">
             <input v-model="shorten" class="output" type="search" :readonly="true">
-            <button @click="onCopyToClipboard" class="fast" :disabled="!shorten.length">
+            <button @click="onCopyToClipboard" :disabled="!shorten.length">
               <i class="fa-regular fa-clone"></i>
             </button>
           </main>
