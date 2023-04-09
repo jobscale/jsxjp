@@ -140,6 +140,15 @@ div.s-content span.small {
   justify-content: space-between;
 }
 
+button {
+  background: initial;
+  border: 0;
+}
+
+button:enabled {
+  cursor: pointer;
+}
+
 .button {
   cursor: pointer;
   background: initial;
