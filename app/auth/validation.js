@@ -1,9 +1,10 @@
 const Joi = require('joi');
+const { login } = require('../policy');
 
 class Validation {
   login(req, res, next) {
     const { error } = Joi.object({
-      login: Joi.string().alphanum().max(30),
+      login: Joi.string().pattern(login).max(30),
       password: Joi.string().max(30),
     }).validate(req.body);
     if (error) {
