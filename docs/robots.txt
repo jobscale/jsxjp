@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /assets/
+Disallow: /contents/
+
+User-agent: *
+Allow: /
+
+Sitemap: https://jsx.jp/sitemap.txt

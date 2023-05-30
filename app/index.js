@@ -106,11 +106,11 @@ class App {
   }
 
   start() {
-    this.useView();
     this.useParser();
     this.useHeader();
     this.usePublic();
     this.useLogging();
+    this.useView();
     this.useRoute();
     this.notfoundHandler();
     this.errorHandler();
