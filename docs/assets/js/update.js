@@ -51,7 +51,7 @@ class Update {
     const { stack } = this.self;
     const params = {
       req: [
-        `/robots.txt?v=${Date.now()}`,
+        `/timestamp?v=${Date.now()}`,
         { method: 'head' },
       ],
       begin: performance.now(),
