@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome</title>
   <link rel="shortcut icon" href="favicon.ico">
-  <link href="/assets/css/profile.css" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Tangerine" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet" type="text/css">
+  <link href="/assets/css/profile.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Tangerine" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet">
+  <link href="https://site-assets.fontawesome.com/releases/v6.3.0/css/all.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.prod.min.js"></script>
 </head>
 
@@ -24,7 +25,9 @@
         <div class="spacer"></div>
       </section>
       <section>
-        <button class="command" @click="onColorScheme">Color Scheme</button>
+        <button class="command" @click="onColorScheme">
+          <i class="fa-solid fa-bagel"></i>
+        </button>
       </section>
     </div>
   </div>
