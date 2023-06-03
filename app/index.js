@@ -33,8 +33,7 @@ class App {
       res.header('Access-Control-Allow-Headers', 'Content-Type');
       res.header('Server', 'acl-ingress-k8s');
       res.header('X-Backend-Host', os.hostname());
-      if (XDG_SESSION_DESKTOP !== 'cinnamon')
-      res.header('Content-Security-Policy', "default-src 'none'; base-uri 'none'; form-action 'self' https:; connect-src https: wss:; font-src 'self' data: https:; frame-src 'self' https:; frame-ancestors 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-eval'; script-src-elem 'self' https:; style-src 'self' 'unsafe-inline' https:; prefetch-src 'self'; manifest-src 'self'");
+      if (XDG_SESSION_DESKTOP !== 'cinnamon') res.header('Content-Security-Policy', "default-src 'none'; base-uri 'none'; form-action 'self' https:; connect-src https: wss:; font-src 'self' data: https:; frame-src 'self' https:; frame-ancestors 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-eval'; script-src-elem 'self' https:; style-src 'self' 'unsafe-inline' https:; prefetch-src 'self'; manifest-src 'self'");
       res.header('Permissions-Policy', 'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()');
       res.header('Referrer-Policy', 'strict-origin-when-cross-origin');
       res.header('Strict-Transport-Security', 'max-age=31536000; includeSubdomains; preload');

@@ -3,11 +3,9 @@ const dayjs = require('dayjs');
 const { createHash } = require('.');
 const { connection } = require('../db');
 
-const showDate = (date, defaultValue) => {
-  return date ? dayjs(date).add(9, 'hours').toISOString()
-  .replace(/T/, ' ')
-  .replace(/\..*$/, '') : defaultValue;
-};
+const showDate = (date, defaultValue) => (date ? dayjs(date).add(9, 'hours').toISOString()
+.replace(/T/, ' ')
+.replace(/\..*$/, '') : defaultValue);
 
 class Service {
   async now() {

@@ -9,7 +9,8 @@ class Service {
     return db.fetch({ html })
     .then(({ items: [item] }) => {
       if (item) return item;
-      const regExp = new RegExp('^https://raw.githubusercontent.com/jobscale/_/main/infra/(.+)');
+      const pattern = '^https://raw.githubusercontent.com/jobscale/_/main/infra/(.+)';
+      const regExp = new RegExp(pattern);
       const [, key] = html.match(regExp) || [];
       return db.put({
         key,

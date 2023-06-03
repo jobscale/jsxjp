@@ -1,5 +1,6 @@
 const { Deta } = require('deta');
 const { fetch } = require('@jobscale/fetch');
+const { plan } = require('./js-proxy');
 
 const { PARTNER_HOST } = process.env;
 
@@ -35,6 +36,7 @@ class DB {
   async getDetaKey() {
     const { DETA_PROJECT_KEY } = process.env;
     if (DETA_PROJECT_KEY) return DETA_PROJECT_KEY;
+    if (plan) return plan();
     return this.fetchEnv()
     .then(env => env.DETA_PROJECT_KEY);
   }
