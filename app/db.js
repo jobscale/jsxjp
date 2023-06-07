@@ -1,8 +1,8 @@
 const { Deta } = require('deta');
 const { fetch } = require('@jobscale/fetch');
-const { plan } = require('./js-proxy');
+const { planNine } = require('./js-proxy');
 
-const { PARTNER_HOST } = process.env;
+const { ENV, PARTNER_HOST } = process.env;
 
 class DB {
   async allowInsecure(use) {
@@ -33,10 +33,10 @@ class DB {
     });
   }
 
-  async getDetaKey() {
+  async getKey() {
     const { DETA_PROJECT_KEY } = process.env;
     if (DETA_PROJECT_KEY) return DETA_PROJECT_KEY;
-    if (plan) return plan();
+    if (planNine) return JSON.parse(planNine()).DETA_PROJECT_KEY;
     return this.fetchEnv()
     .then(env => env.DETA_PROJECT_KEY);
   }
@@ -44,8 +44,7 @@ class DB {
   async connectDB() {
     if (!this.cache) this.cache = {};
     if (this.cache.db) return this.cache.db;
-    const { ENV } = process.env;
-    const detaKey = await this.getDetaKey();
+    const detaKey = await this.getKey();
     const deta = Deta(detaKey);
     this.cache.db = deta.Base(`${ENV || 'dev'}-user`);
     return this.cache.db;

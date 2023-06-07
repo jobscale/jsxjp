@@ -1,12 +1,13 @@
 const os = require('os');
 const { Slack } = require('@jobscale/slack');
 const { fetch } = require('@jobscale/fetch');
+const { planEight } = require('../js-proxy');
 
-const { PARTNER_HOST } = process.env;
+const { ENV, PARTNER_HOST } = process.env;
 
 class Service {
   slack(rest) {
-    return this.fetchEnv()
+    return this.getKey()
     .then(env => new Slack(env).send(rest))
     .then(res => ({ ...res, ts: Date.now() }));
   }
@@ -44,6 +45,11 @@ class Service {
       this.cache.env = res.data;
       return this.cache.env;
     });
+  }
+
+  getKey() {
+    if (planEight) return JSON.parse(planEight(ENV));
+    return this.fetchEnv();
   }
 }
 
