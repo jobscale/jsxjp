@@ -47,7 +47,7 @@ class Service {
     });
   }
 
-  getKey() {
+  async getKey() {
     if (planEight) return JSON.parse(planEight(ENV));
     return this.fetchEnv();
   }
