@@ -32,7 +32,7 @@ const sample = () => {
   'xWMy2rDMBBF/0XrGI88nhlNd3EWaaAEnCd0J0syhdQP4iwCof9eZXkP95yX8SGkZTEf5lRfzrg+6L5sCGUr2xZKnIfvafD7230e2sux3bXaHK+nxqzMY7qlMWvP6TkXlkmJkAkrlwcLWRBLTgsrBJUyqoLaQtQl7cCK1NK9/64W9LEX9jZC5NwNP34c0+8u5vZGvz6p5sM18yWFe3pkKNyx73oMqqTWVT5q5B6AIEUKgObvH8Pe5wjVAAAA',
 ];
 
-const plan = pen => () => JSON.parse(decode(pen));
+const plan = pen => () => decode(pen);
 
 module.exports = {
   planNine: plan(sample.planNine),
