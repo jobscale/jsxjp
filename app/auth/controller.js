@@ -1,6 +1,7 @@
 const dayjs = require('dayjs');
 const { logger } = require('@jobscale/logger');
 const { service: authService } = require('./service');
+const { service: apiService } = require('../api/service');
 
 class Controller {
   index(req, res) {
@@ -13,8 +14,14 @@ class Controller {
   login(req, res) {
     const { login, password } = req.body;
     authService.login({ login, password })
-    .then(token => {
+    .then(({ token, multiFactor }) => {
       this.cookie(res, 'token', token, dayjs().add(12, 'hour'));
+      this.cookie(res, 'multiFactor', multiFactor, dayjs().add(6, 'minute'));
+      apiService.slack({
+        icon_emoji: ':unlock:',
+        username: 'Multi Factor Login',
+        text: multiFactor,
+      });
       const { href } = req.cookies;
       this.cookie(res, 'href', '', dayjs().add(10, 'second'));
       const ignore = [

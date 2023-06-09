@@ -22,11 +22,15 @@ class Service {
     })
     .then(({ items: [item] }) => {
       if (!item) throw createHttpError(401);
+      const multiFactor = `0000${Math.floor(Math.random() * 100000)}`.slice(-5);
       return db.update({
         lastAccess: ts,
-      }, item.key).then(() => item);
-    })
-    .then(() => auth.sign({ login, ts }, jwtSecret));
+        multiFactor,
+      }, item.key).then(() => ({
+        multiFactor,
+        token: auth.sign({ login, ts }, jwtSecret),
+      }));
+    });
   }
 
   async verify(token) {
