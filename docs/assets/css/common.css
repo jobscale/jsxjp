@@ -110,16 +110,18 @@ button:enabled {
   text-decoration: none;
   /* text-transform: uppercase; */
 }
-.worm {
-  font-size: 0.6em;
+
+.volume {
+  min-width: 16em;
   display: flex;
   justify-content: space-around;
 }
 .worm span {
+  font-size: 0.9em;
   padding: 1em 1em;
 }
 .inline-scroll {
-  max-width: 84vw;
+  max-width: 28em;
   display: inline-block;
   overflow-x: auto;
 }

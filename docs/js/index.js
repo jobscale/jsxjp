@@ -4,7 +4,7 @@ const logger = console;
 Vue.createApp({
   data() {
     return {
-      actionText: '[⛄ click 🍻]',
+      actionText: '[⛄ 🍻]',
       welcomeText: 'welcome',
       spanText: 'guest',
       dateText: '☃',
