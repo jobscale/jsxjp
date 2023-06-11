@@ -6,7 +6,7 @@ Vue.createApp({
   },
 
   mounted() {
-    logger.info(123);
+    logger.info('profile');
   },
 
   methods: {
