@@ -107,10 +107,10 @@ Vue.createApp({
 
     checkDate() {
       if (this.busy) {
-        this.busyText = `${this.busy} 🍺`;
-        this.busy++;
-        this.busyList.unshift(0);
+        if (this.busy === 1) this.busyList.unshift(1);
         this.busyList[0]++;
+        this.busy++;
+        this.busyText = `${this.busy} 🍺`;
         if (this.stack.length > 10) this.stack.length = 10;
         if (!this.stack.length) this.stack.push(1000.0);
         else this.stack[0] += 1000;
