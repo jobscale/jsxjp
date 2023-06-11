@@ -65,17 +65,13 @@ button:enabled {
   margin: 0.5em;
   padding: 0.5em;
 }
+
 #svelte-app {
   width: 8em;
   height: 100%;
   margin: 0.2em 2em;
 }
-#busy-ts {
-  color: #04d;
-}
-#busy {
-  color: #732;
-}
+
 .position-ref {
   position: relative;
 }
@@ -114,21 +110,24 @@ button:enabled {
   text-decoration: none;
   /* text-transform: uppercase; */
 }
-#time-span {
-  min-width: 20vw;
-  display: inline-grid;
-  text-align: right;
-}
 .worm {
   font-size: 0.6em;
+  display: flex;
+  justify-content: space-around;
 }
 .worm span {
-  padding: .3vh .3vw;
+  padding: 1em 1em;
 }
 .inline-scroll {
   max-width: 84vw;
   display: inline-block;
   overflow-x: auto;
+}
+.busy-ts {
+  color: #04d;
+}
+.busy {
+  color: #732;
 }
 
 .anim-bound {
