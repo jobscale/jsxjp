@@ -89,7 +89,7 @@ button:enabled {
   padding-bottom: 0.5em;
 }
 .title * {
-  font-size: 2em;
+  font-size: 1.7em;
 }
 .m-b-md {
   padding-bottom: 0.2em;
@@ -116,20 +116,20 @@ button:enabled {
   display: flex;
   justify-content: space-around;
 }
-.worm span {
-  font-size: 0.9em;
-  padding: 1em 1em;
-}
 .inline-scroll {
   max-width: 28em;
   display: inline-block;
   overflow-x: auto;
 }
+.worm span {
+  font-size: 0.9em;
+  padding: 1em 1em;
+}
 .busy-ts {
   color: #04d;
 }
 .busy {
-  color: #732;
+  color: #932;
 }
 
 .anim-bound {
