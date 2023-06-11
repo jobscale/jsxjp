@@ -109,7 +109,7 @@ Vue.createApp({
       if (this.busy) {
         this.busyText = `${this.busy} 🍺`;
         this.busy++;
-        this.busyList.push(0);
+        this.busyList.unshift(0);
         this.busyList[0]++;
         if (this.stack.length > 10) this.stack.length = 10;
         if (!this.stack.length) this.stack.push(1000.0);
