@@ -107,7 +107,10 @@ Vue.createApp({
 
     checkDate() {
       if (this.busy) {
-        if (this.busy === 1) this.busyList.unshift(1);
+        if (this.busy === 1) {
+          this.busyList.unshift(1);
+          this.busyTime = new Date().toLocaleTimeString();
+        }
         this.busyList[0]++;
         this.busy++;
         this.busyText = `${this.busy} 🍺`;
@@ -137,7 +140,6 @@ Vue.createApp({
       const play = () => this.sound && this.sound.play();
       const actions = ['alert play sound.', this.latest, play()];
       logger.info(...actions);
-      this.busyTime = new Date(this.latest).toLocaleTimeString();
     },
   },
 }).mount('#app');

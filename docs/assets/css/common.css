@@ -123,7 +123,7 @@ button:enabled {
 }
 .worm span {
   font-size: 0.9em;
-  padding: 1em 1em;
+  padding: 0.2em 0.2em;
 }
 .busy-ts {
   color: #04d;

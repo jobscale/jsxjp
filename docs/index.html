@@ -42,7 +42,9 @@
       <div class="worm">
         <span class="inline-scroll"><span class="busy-ts">{{ busyTime }}</span></span>
         <span class="inline-scroll"><span class="busy">{{ busyText }}</span></span>
-        <span class="inline-scroll"><span>{{ busyList.join(' ') }}</span></span>
+        <span class="inline-scroll">
+          <span v-for="num of busyList">{{ num }}</span>
+        </span>
       </div>
       <div class="link-area">
         <div class="links">
