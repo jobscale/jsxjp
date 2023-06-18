@@ -15,9 +15,8 @@
     "test"
   ],
   "dependencies": {
-    "@jobscale/fetch": "^0.0.3",
     "@jobscale/logger": "^0.1.0",
-    "@jobscale/slack": "^0.0.6",
+    "@jobscale/slack": "^0.1.0",
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.11.8",
     "deta": "^1.1.0",
@@ -29,7 +28,7 @@
   },
   "devDependencies": {
     "ejs-lint": "^2.0.0",
-    "eslint": "^8.42.0",
+    "eslint": "^8.43.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.27.5",
     "pre-commit": "^1.2.2"

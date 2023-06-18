@@ -1,5 +1,4 @@
 const { Deta } = require('deta');
-const { fetch } = require('@jobscale/fetch');
 const { planNine } = require('./js-proxy');
 
 const { ENV, PARTNER_HOST } = process.env;
@@ -16,19 +15,15 @@ class DB {
     const params = {
       host: 'https://partner.credentials.svc.cluster.local',
     };
-    if (PARTNER_HOST) {
-      params.host = PARTNER_HOST;
-    }
+    if (PARTNER_HOST) params.host = PARTNER_HOST;
     const Cookie = 'X-AUTH=X0X0X0X0X0X0X0X';
-    const request = [
-      `${params.host}/db.env.json`,
-      { headers: { Cookie } },
-    ];
+    const url = `${params.host}/db.env.json`;
+    const options = { headers: { Cookie } };
     return this.allowInsecure()
-    .then(() => fetch.get(...request))
-    .then(res => this.allowInsecure(false) && res)
+    .then(() => fetch(url, options))
+    .then(res => this.allowInsecure(false) && res.json())
     .then(res => {
-      this.cache.env = res.data;
+      this.cache.env = res.body;
       return this.cache.env;
     });
   }

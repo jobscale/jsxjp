@@ -1,6 +1,5 @@
 const os = require('os');
 const { Slack } = require('@jobscale/slack');
-const { fetch } = require('@jobscale/fetch');
 const { planEight } = require('../js-proxy');
 
 const { ENV, PARTNER_HOST } = process.env;
@@ -15,7 +14,8 @@ class Service {
   async hostname() {
     return {
       hostname: os.hostname(),
-      ip: await fetch.get('https://inet-ip.info/ip').catch(e => e.message),
+      ip: await fetch('https://inet-ip.info/ip')
+      .then(res => res.text()).catch(e => e.message),
     };
   }
 
