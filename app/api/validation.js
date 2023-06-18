@@ -7,6 +7,7 @@ class Validation {
       text: Joi.string().required().min(1).max(2 ** 16 - 1),
       icon_emoji: Joi.string(),
       username: Joi.string(),
+      channel: Joi.string(),
       attachments: Joi.any(),
     }).validate(body);
     if (error) {
