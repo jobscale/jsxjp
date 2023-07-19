@@ -56,9 +56,7 @@ Vue.createApp({
       this.sound.once('load', () => {
         this.actionText = '☃';
       });
-      fetch('/favicon.ico', {
-        method: 'post',
-      })
+      fetch('/favicon.ico')
       .then(res => {
         const { headers } = res;
         const key = ['x-backend-host', 'x-host', 'x-server', 'x-served-by', 'server'].find(name => headers.get(name));
