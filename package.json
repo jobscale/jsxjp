@@ -17,6 +17,7 @@
   "dependencies": {
     "@jobscale/logger": "^0.1.0",
     "@jobscale/slack": "^0.1.0",
+    "aws-serverless-express": "^3.4.0",
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.11.8",
     "deta": "^1.1.0",

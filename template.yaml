@@ -1,0 +1,123 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Parameters:
+  Env:
+    Type: String
+    Default: dev
+    AllowedValues:
+    - dev
+    - prod
+  StageName:
+    Type: String
+    Default: v1
+    AllowedValues:
+    - v1
+    - v2
+
+Mappings:
+  EnvMap:
+    develop:
+      Env: develop
+
+Resources:
+  PathLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${AWS::StackName}-path
+      CodeUri: .
+      Handler: lambda.handler
+      MemorySize: 128
+      Timeout: 10
+      Runtime: nodejs18.x
+      Tags:
+        Env: !Sub ${Env}
+      Environment:
+        Variables:
+          ENV: !Sub ${Env}
+
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      Name: !Sub ${AWS::StackName}-http-api
+      StageName: !Ref StageName
+      Tags:
+        Env: !Sub ${Env}
+      StageVariables:
+        StageVar: !Ref StageName
+      FailOnWarnings: true
+      AccessLogSettings:
+        DestinationArn: !GetAtt AccessLogs.Arn
+        Format: '
+          {
+            "accountId":"$context.accountId",
+            "requestTime":"$context.requestTime",
+            "requestId":"$context.requestId",
+            "ip":"$context.identity.sourceIp",
+            "userAgent":"$context.identity.userAgent",
+            "httpMethod":"$context.httpMethod",
+            "resourcePath":"$context.path",
+            "status":"$context.status",
+            "protocol":"$context.protocol",
+            "responseLength":"$context.responseLength",
+            "integrationErrorMessage":"$context.integrationErrorMessage",
+            "integrationStatus":"$context.integration.status",
+            "integrationLatency":"$context.integration.latency",
+            "integrationError":"$context.integration.error",
+            "authorizerPrincipalId":"$context.authorizer.principalId",
+            "body":"$context.authorizer.body",
+            "authorizerError":"$context.authorizer.error",
+            "responseType":"$context.error.responseType",
+            "message":"$context.error.message"
+          }'
+
+  PathLambdaRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: $default
+      Target: !Sub integrations/${PathLambdaIntegration}
+
+  PathLambdaIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref HttpApi
+      ConnectionType: INTERNET
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: POST
+      IntegrationUri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${PathLambda}/invocations
+      CredentialsArn: !GetAtt LambdaProxyRole.Arn
+      TimeoutInMillis: 20000
+      PayloadFormatVersion: '1.0'
+
+  LambdaProxyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      RoleName: !Sub ${AWS::StackName}-apigw-lambda-proxy-role
+      AssumeRolePolicyDocument: {"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"apigateway.amazonaws.com"},"Action":"sts:AssumeRole"}]}
+      MaxSessionDuration: 3600
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+      - arn:aws:iam::aws:policy/AWSLambda_FullAccess
+
+  AccessLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /apigateway/${AWS::StackName}-http-api-accessLog
+      RetentionInDays: 90
+
+  PathLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${AWS::StackName}-path
+      RetentionInDays: 90
+
+Outputs:
+  HttpApiUrl:
+    Description: URL of your API endpoint
+    Value:
+      Fn::Sub: https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/${StageName}/
+  HttpApiId:
+    Description: Api id of HttpApi
+    Value:
+      Ref: HttpApi

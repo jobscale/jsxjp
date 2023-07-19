@@ -1,0 +1,21 @@
+version = 0.1
+
+[dev]
+[dev.deploy]
+[dev.deploy.parameters]
+stack_name = "dev-jsxjp"
+s3_prefix = "dev-jsxjp"
+s3_bucket = "sam-deploy-jsxjp"
+region = "us-east-1"
+capabilities = "CAPABILITY_NAMED_IAM"
+parameter_overrides = "StageName=\"v1\" Env=\"dev\""
+
+[prod]
+[prod.deploy]
+[prod.deploy.parameters]
+stack_name = "prod-jsxjp"
+s3_prefix = "prod-jsxjp"
+s3_bucket = "sam-deploy-jsxjp"
+region = "us-east-1"
+capabilities = "CAPABILITY_NAMED_IAM"
+parameter_overrides = "StageName=\"v1\" Env=\"prod\""

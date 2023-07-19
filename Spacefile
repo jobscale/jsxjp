@@ -3,5 +3,5 @@ v: 0
 micros:
   - name: jsxjp
     src: .
-    engine: nodejs16
+    engine: nodejs18
     primary: true

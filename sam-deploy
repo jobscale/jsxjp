@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -eu
+
+ENV=$1
+
+{
+  sam build
+  sam deploy --config-env ${ENV}
+} 2>&1 | tee deploy-${ENV}-$(date +%s%3N).log
