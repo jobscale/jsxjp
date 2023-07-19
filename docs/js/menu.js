@@ -1,6 +1,13 @@
 /* global logger */
-/* global App */
-class Menu extends App {
+
+const wait = ms => new Promise(resolve => { setTimeout(resolve, ms); });
+const loading = hide => {
+  document.querySelector('#loading')
+  .classList[hide ? 'add' : 'remove']('hide');
+  return wait(1000);
+}
+
+class Menu {
   navigation(event) {
     event.preventDefault();
     document.body.classList.toggle('nav-open');
@@ -8,15 +15,15 @@ class Menu extends App {
 
   logout(event) {
     event.preventDefault();
-    const see = this.loading();
+    const see = loading();
     this.logoutInternal()
     .catch(e => logger.error(e.message))
     .then(() => see)
-    .then(() => this.loading(true));
+    .then(() => loading(true));
   }
 
   async logoutInternal() {
-    return this.fetch('/auth/logout', {
+    return fetch('/auth/logout', {
       method: 'post',
       headers: {
         'Content-Type': 'application/json; charset=utf-8',

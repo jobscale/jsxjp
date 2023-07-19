@@ -1,13 +1,20 @@
 /* global logger */
-/* global App */
-class Login extends App {
+
+const wait = ms => new Promise(resolve => { setTimeout(resolve, ms); });
+const loading = hide => {
+  document.querySelector('#loading')
+  .classList[hide ? 'add' : 'remove']('hide');
+  return wait(1000);
+}
+
+class Login {
   login(event) {
     event.preventDefault();
-    const see = this.loading();
+    const see = loading();
     this.loginInternal()
     .catch(e => logger.error(e.message))
     .then(() => see)
-    .then(() => this.loading(true));
+    .then(() => loading(true));
   }
 
   async loginInternal() {
@@ -23,7 +30,7 @@ class Login extends App {
       },
       body: JSON.stringify({ login, password }),
     }];
-    return this.fetch(...params)
+    return fetch(...params)
     .then(res => {
       status.textContent = `${res.status} ${res.statusText}`;
       if (res.status !== 200) {

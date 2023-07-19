@@ -1,9 +1,16 @@
 /* global logger */
-/* global App */
-class Remove extends App {
+
+const wait = ms => new Promise(resolve => { setTimeout(resolve, ms); });
+const loading = hide => {
+  document.querySelector('#loading')
+  .classList[hide ? 'add' : 'remove']('hide');
+  return wait(1000);
+}
+
+class Remove {
   remove(event) {
     event.preventDefault();
-    this.loading();
+    loading();
     this.removeInternal(event.currentTarget)
     .catch(e => logger.error(e.message));
   }
@@ -18,7 +25,7 @@ class Remove extends App {
       },
       body: JSON.stringify({ id }),
     }];
-    return this.fetch(...params)
+    return fetch(...params)
     .then(() => document.location.reload());
   }
 
