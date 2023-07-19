@@ -1,20 +1,23 @@
 /* global logger */
 
-const wait = ms => new Promise(resolve => { setTimeout(resolve, ms); });
-const loading = hide => {
-  document.querySelector('#loading')
-  .classList[hide ? 'add' : 'remove']('hide');
-  return wait(1000);
-}
-
 class Login {
+  wait(ms) {
+    new Promise(resolve => { setTimeout(resolve, ms); });
+  }
+
+  loading(hide) {
+    document.querySelector('#loading')
+    .classList[hide ? 'add' : 'remove']('hide');
+    return this.wait(1000);
+  }
+
   login(event) {
     event.preventDefault();
-    const see = loading();
+    const see = this.loading();
     this.loginInternal()
     .catch(e => logger.error(e.message))
     .then(() => see)
-    .then(() => loading(true));
+    .then(() => this.loading(true));
   }
 
   async loginInternal() {

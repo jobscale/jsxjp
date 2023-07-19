@@ -1,16 +1,19 @@
 /* global logger */
 
-const wait = ms => new Promise(resolve => { setTimeout(resolve, ms); });
-const loading = hide => {
-  document.querySelector('#loading')
-  .classList[hide ? 'add' : 'remove']('hide');
-  return wait(1000);
-}
-
 class Remove {
+  wait(ms) {
+    new Promise(resolve => { setTimeout(resolve, ms); });
+  }
+
+  loading(hide) {
+    document.querySelector('#loading')
+    .classList[hide ? 'add' : 'remove']('hide');
+    return this.wait(1000);
+  }
+
   remove(event) {
     event.preventDefault();
-    loading();
+    this.loading();
     this.removeInternal(event.currentTarget)
     .catch(e => logger.error(e.message));
   }

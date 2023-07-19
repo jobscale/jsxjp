@@ -1,5 +1,5 @@
+/* global logger */
 /* global Howl */
-const logger = console;
 
 Vue.createApp({
   data() {
