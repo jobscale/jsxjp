@@ -20,9 +20,13 @@ body {
   margin: 0;
   padding: 0;
   height: 100vh;
+}
+
+#app {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 100%;
 }
 
 main {
@@ -31,6 +35,7 @@ main {
 
 .container {
   text-align: center;
+  max-width: 100%;
 }
 
 .description {
@@ -79,6 +84,148 @@ button:enabled {
 .try-action * {
   color: cyan;
 }
+
+.horizontal {
+  display: flex;
+  justify-content: space-between;
+}
+
+section {
+  margin: 0 auto;
+}
+
+
+
+/* list */
+.list-wrapper, .list-wrapper * {
+  font-size: 0.5rem;
+}
+.list-wrapper {
+  position: relative;
+}
+.flex-div {
+  display: inline-flex;
+  min-width: 50em;
+  flex-wrap: wrap;
+  margin: 4em auto;
+  max-width: 100%;
+}
+.pos-abs {
+  display: inline-block;
+  margin: 0.5em;
+}
+.pos-abs.personal {
+  left: 6em;
+}
+.pos-abs.read {
+  left: 14em;
+}
+.small {
+  font-size: 0.8em;
+}
+.tag {
+  color: #eee;
+  padding: 0.4em 1em;
+  width: fit-content;
+  border-radius: 1em;
+}
+.tag::before {
+  content: "#";
+  margin-right: 2px;
+  opacity: 0.3;
+}
+.work,
+.note:has(.work) {
+  --tagColor: #875;
+}
+.personal,
+.note:has(.personal) {
+  --tagColor: #579;
+}
+.read,
+.note:has(.read) {
+  --tagColor: #858;
+}
+.work,
+.personal,
+.read {
+  background-color: var(--tagColor);
+}
+label:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+label div {
+  opacity: 0.3;
+}
+#work-box + label div,
+#personal-box + label div,
+#read-box + label div {
+  border: 1px solid var(--tagColor);
+  position: absolute;
+  top: 0;
+  display: inline-flex;
+}
+#work-box:checked + label div,
+#personal-box:checked + label div,
+#read-box:checked + label div {
+  opacity: 1;
+}
+
+.note {
+  border: 1px solid #777;
+  box-sizing: border-box;
+  line-height: 1.5;
+  border-radius: 0.5em;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 4px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 300ms ease-in-out 0s;
+}
+.note:hover {
+  border: 14px solid var(--tagColor);
+}
+.note::selection {
+  opacity: 1;
+}
+.one-line {
+  overflow: scroll hidden;
+  height: 2.7em;
+  font-size: 0.8em;
+  white-space: nowrap;
+}
+.inb {
+  font-size: 0.8em;
+  padding: 0 0.8em;
+}
+#work-box ~ .note:has(.work),
+#personal-box ~ .note:has(.personal),
+#read-box ~ .note:has(.read) {
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  border-width: 0;
+}
+#work-box:checked ~ .note:has(.work),
+#personal-box:checked ~ .note:has(.personal),
+#read-box:checked ~ .note:has(.read) {
+  width: 32%;
+  height: 11em;
+  padding: 0.3em;
+  margin: 0.3em;
+  opacity: 1;
+  border-width: 1px;
+}
+input[type="checkbox"] {
+  display: none;
+}
+/* list */
+
+
 
 .loading {
   position: fixed;
