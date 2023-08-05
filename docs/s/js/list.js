@@ -5,6 +5,13 @@ Vue.createApp({
     return {
       loading: true,
       items: [],
+      confirmation: {
+        ok: () => {},
+        cancel: () => {},
+        title: undefined,
+        message: undefined,
+        show: false,
+      },
     };
   },
 
@@ -29,7 +36,7 @@ Vue.createApp({
       .then(({ rows }) => {
         const tag = item => {
           if (!item.html) return 'personal';
-          return item.html.match(/github/) ? 'github' : 'work';
+          return item.html.match(/github/) ? 'github' : 'shorten';
         };
         this.items = rows.map(item => ({
           ...item,
@@ -38,6 +45,23 @@ Vue.createApp({
       })
       .catch(e => logger.error(e.message))
       .then(() => setTimeout(() => { this.loading = false; }, 1000));
+    },
+
+    onRemove(event) {
+      const { target: { parentElement: el } } = event;
+      const { id } = el.dataset;
+      logger.info({ id });
+      this.confirmation.title = 'Are you remove this item?';
+      this.confirmation.message = `Be trying to remove item "${id}".<br>Are you sure?`;
+      this.confirmation.ok = () => {
+        logger.info({ run: 'OK' });
+        this.confirmation.show = false;
+      };
+      this.confirmation.cancel = () => {
+        logger.info({ run: 'Cancel' });
+        this.confirmation.show = false;
+      };
+      this.confirmation.show = true;
     },
 
     onColorScheme() {

@@ -103,31 +103,44 @@ section {
   color: #833;
 }
 
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background-color: #444;
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
 
 
-/* list */
+
+/* list-wrapper */
 .list-wrapper, .list-wrapper * {
   font-size: 0.5rem;
 }
 .list-wrapper {
   position: relative;
+  width: 99vw;
 }
 .flex-div {
   display: inline-flex;
   min-width: 50em;
   flex-wrap: wrap;
   margin: 4em auto;
-  max-width: 100%;
+  width: 100%;
 }
 .pos-abs {
   display: inline-block;
   margin: 0.5em;
 }
 .pos-abs.personal {
-  left: 6em;
+  left: 8em;
 }
 .pos-abs.github {
-  left: 14em;
+  left: 16em;
 }
 .note .btn-area {
   display: flex;
@@ -149,8 +162,8 @@ section {
   margin-right: 2px;
   opacity: 0.3;
 }
-.tag.work::after {
-  content: "Word";
+.tag.shorten::after {
+  content: "Shorten";
   margin-left: 2px;
 }
 .tag.personal::after {
@@ -161,8 +174,8 @@ section {
   content: "GitHub";
   margin-left: 2px;
 }
-.work,
-.note:has(.work) {
+.shorten,
+.note:has(.shorten) {
   --tagColor: #875;
 }
 .personal,
@@ -173,7 +186,7 @@ section {
 .note:has(.github) {
   --tagColor: #858;
 }
-.work,
+.shorten,
 .personal,
 .github {
   background-color: var(--tagColor);
@@ -185,17 +198,17 @@ label:hover {
 label div {
   opacity: 0.3;
 }
-#work-box + label div,
+#shorten-box + label div,
 #personal-box + label div,
-#read-box + label div {
+#github-box + label div {
   border: 1px solid var(--tagColor);
   position: absolute;
   top: 0;
   display: inline-flex;
 }
-#work-box:checked + label div,
+#shorten-box:checked + label div,
 #personal-box:checked + label div,
-#read-box:checked + label div {
+#github-box:checked + label div {
   opacity: 1;
 }
 
@@ -227,9 +240,9 @@ label div {
   font-size: 0.8em;
   padding: 0 0.8em;
 }
-#work-box ~ .note:has(.work),
+#shorten-box ~ .note:has(.shorten),
 #personal-box ~ .note:has(.personal),
-#read-box ~ .note:has(.github) {
+#github-box ~ .note:has(.github) {
   width: 0;
   height: 0;
   padding: 0;
@@ -237,9 +250,9 @@ label div {
   opacity: 0;
   border-width: 0;
 }
-#work-box:checked ~ .note:has(.work),
+#shorten-box:checked ~ .note:has(.shorten),
 #personal-box:checked ~ .note:has(.personal),
-#read-box:checked ~ .note:has(.github) {
+#github-box:checked ~ .note:has(.github) {
   width: 32%;
   height: 11em;
   padding: 0.3em;
@@ -250,8 +263,34 @@ label div {
 input[type="checkbox"] {
   display: none;
 }
-/* list */
+/* list-wrapper */
 
+
+/* confirmation-container */
+.confirmation {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  opacity: 0.8;
+}
+.confirmation-button {
+  display: flex;
+  justify-content: space-evenly;
+}
+.confirmation-button button {
+  border: 1px solid #888;
+  color: #fff;
+  border-radius: 5px;
+}
+/* confirmation-container */
 
 
 .loading {

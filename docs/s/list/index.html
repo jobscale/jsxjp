@@ -21,16 +21,16 @@
         <section>
           <div class="list-wrapper">
             <div class="flex-div">
-              <input type="checkbox" id="work-box" checked />
-              <label for="work-box">
-                <div class="pos-abs tag work"></div>
+              <input type="checkbox" id="shorten-box" checked />
+              <label for="shorten-box">
+                <div class="pos-abs tag shorten"></div>
               </label>
               <input type="checkbox" id="personal-box" checked />
               <label for="personal-box">
                 <div class="pos-abs tag personal"></div>
               </label>
-              <input type="checkbox" id="read-box" checked />
-              <label for="read-box">
+              <input type="checkbox" id="github-box" checked />
+              <label for="github-box">
                 <div class="pos-abs tag github"></div>
               </label>
 
@@ -50,7 +50,10 @@
                   <a v-if="item.html && !item.deletedAt" :href="`/s/${item.id}`" target="_blank">
                     <i class="fa-regular fa-up-right-from-square fa-bounce"></i>
                   </a>
-                  <button v-if="!item.deletedAt" class="button btn-remove" :data-id="item.id">
+                  <button v-if="!item.deletedAt" class="button" :data-id="item.id">
+                    <i class="fa-light fa-pen-nib"></i>
+                  </button>
+                  <button v-if="!item.deletedAt" @click.prepend="onRemove" class="button btn-remove" :data-id="item.id">
                     <i class="fa-regular fa-trash-can fa-fade"></i>
                   </button>
                 </div>
@@ -64,6 +67,19 @@
           </button>
         </section>
         <footer style="text-align:right;margin:0.5em;"><a href="https://jsx.jp" target="_blank">powered by jsx.jp</a></footer>
+      </div>
+      <div v-show="confirmation.show" class="confirmation">
+        <div class="confirmation-container">
+          <div class="confirmation-body">
+            <div class="confirmation-title">{{ confirmation.title }}</div>
+            <div class="confirmation-message" v-html="confirmation.message"></div>
+          </div>
+          <hr>
+          <div class="confirmation-button">
+            <button @click="confirmation.ok" class="btn-ok">OK</button>
+            <button @click="confirmation.cancel" class="btn-cancel">Cancel</button>
+          </div>
+        </div>
       </div>
       <div v-show="loading" class="loading">
         <div class="loader">
