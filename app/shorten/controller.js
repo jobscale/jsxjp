@@ -29,6 +29,16 @@ class Controller {
     })
     .catch(e => res.status(500).json({ message: e.message }));
   }
+
+  find(req, res) {
+    const { id } = req.body;
+
+    service.find({ id })
+    .then((rows) => {
+      res.json({ rows });
+    })
+    .catch(e => res.status(500).json({ message: e.message }));
+  }
 }
 
 module.exports = {

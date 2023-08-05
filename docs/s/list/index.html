@@ -23,96 +23,40 @@
             <div class="flex-div">
               <input type="checkbox" id="work-box" checked />
               <label for="work-box">
-                <div class="tag work pos-abs">Work</div>
+                <div class="pos-abs tag work"></div>
               </label>
               <input type="checkbox" id="personal-box" checked />
               <label for="personal-box">
-                <div class="tag personal pos-abs">Personal</div>
+                <div class="pos-abs tag personal"></div>
               </label>
               <input type="checkbox" id="read-box" checked />
               <label for="read-box">
-                <div class="tag read pos-abs">Read</div>
+                <div class="pos-abs tag github"></div>
               </label>
 
-              <div class="note">
-                <div>Fix the icons in the Design System</div>
+              <div v-for="item of items" class="note">
+                <div>{{ item.id }}</div>
                 <div>
-                  <span class="inb">2023-08-05 23:59:59</span><span class="inb">2023-08-05 23:59:59</span>
+                  <span class="inb">{{ item.registerAt }}</span><span class="inb">{{ item.lastAccess }}</span>
                 </div>
                 <div>
-                  <span class="inb">allow</span><span class="inb">1024</span>
+                  <span class="inb">{{ item.deletedAt || 'Allow' }}</span><span class="inb">{{ item.count }}</span>
                 </div>
                 <div class="one-line">
-                  https://www.google.com/search?q=word-break%3A+keep-all%3B&oq=&gs_lcrp=EgZjaHJvbWUqCQgAECMYJxjqAjIJCAAQIxgnGOoCMgkIARAjGCcY6gIyCQgCECMYJxjqAjIJCAMQIxgnGOoCMgkIBBAjGCcY6gIyCQgFECMYJxjqAjIJCAYQIxgnGOoCMgkIBxAjGCcY6gLSAQ43NDM1MzQzNjlqMGoxNagCCLACAQ&sourceid=chrome&ie=UTF-8
+                  {{ item.html || item.login }}
                 </div>
-                <div class="small tag work">Work</div>
-              </div>
-              <div class="note">
-                Buttons are missing hover & active states
-                <div class="tag work">Work</div>
-              </div>
-              <div class="note">
-                Map all the buttons and links in the new system
-                <div class="tag work">Work</div>
-              </div>
-              <div class="note">
-                Buy eggs on your way home
-                <div class="tag personal">Personal</div>
-              </div>
-              <div class="note">
-                Call the hospital
-                <div class="tag personal">Personal</div>
-              </div>
-              <div class="note">
-                Kafka on the Shore / Haruki Murakami
-                <div class="tag read">Read</div>
-              </div>
-              <div class="note">
-                Atomic Habits / James Clear
-                <div class="tag read">Read</div>
-              </div>
-              <div class="note">
-                The Design Of Everyday Things / Don Norman
-                <div class="tag read">Read</div>
-              </div>
-              <div class="note">
-                Add comments to your code
-                <div class="tag work">Work</div>
-              </div>
-              <div class="note">
-                Pay your electricity bill
-                <div class="tag personal">Personal</div>
-              </div>
-              <div class="note">
-                After Steve / Tripp Mickle
-                <div class="tag read">Read</div>
-              </div>
-              <div class="note">
-                Don't forget about the wedding
-                <div class="tag personal">Personal</div>
-              </div>
-              <div class="note">
-                Send the client's brief to the freelancer
-                <div class="tag work">Work</div>
-              </div>
-              <div class="note">
-                GIT Commit
-                <div class="tag work">Work</div>
-              </div>
-              <div class="note">
-                Send baby photos to the photos place
-                <div class="tag personal">Personal</div>
+                <div class="btn-area">
+                  <div class="tag" :class="item.tag"></div>
+                  <a v-if="item.html && !item.deletedAt" :href="`/s/${item.id}`" target="_blank">
+                    <i class="fa-regular fa-up-right-from-square fa-bounce"></i>
+                  </a>
+                  <button v-if="!item.deletedAt" class="button btn-remove" :data-id="item.id">
+                    <i class="fa-regular fa-trash-can fa-fade"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </section>
-        <section>
-          <main ref="clipboard">
-            <input v-model="shorten" class="output" type="search" :readonly="true">
-            <button @click="onCopyToClipboard" :disabled="!shorten.length">
-              <i class="fa-regular fa-clone"></i>
-            </button>
-          </main>
         </section>
         <section>
           <button @click="onColorScheme" class="button">

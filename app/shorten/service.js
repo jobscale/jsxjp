@@ -1,5 +1,10 @@
 const createHttpError = require('http-errors');
+const dayjs = require('dayjs');
 const { connection } = require('../db');
+
+const showDate = (date, defaultValue) => (date ? dayjs(date).add(9, 'hours').toISOString()
+.replace(/T/, ' ')
+.replace(/\..*$/, '') : defaultValue);
 
 class Service {
   async register(rest) {
@@ -21,6 +26,20 @@ class Service {
       });
     })
     .then(({ key: id }) => ({ id }));
+  }
+
+  async find({ id: key }) {
+    const db = await connection();
+    return db.fetch({ key })
+    .then(({ items }) => items
+    .map(item => {
+      item.registerAt = showDate(item.registerAt, '-');
+      item.lastAccess = showDate(item.lastAccess, '-');
+      item.deletedAt = showDate(item.deletedAt);
+      item.id = item.key;
+      delete item.key;
+      return item;
+    }));
   }
 
   async redirect(rest) {
