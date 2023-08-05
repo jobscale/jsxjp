@@ -173,17 +173,24 @@ button:enabled {
 }
 
 .li-left {
-  width: 65%;
   white-space: nowrap;
   overflow-x: auto;
   overflow-y: hidden;
 }
 
-.li-center {
+.li-1 {
+  width: 20%;
+}
+
+.li-2 {
+  width: 70%;
+}
+
+.li-3 {
   width: 25%;
 }
 
-.li-right {
+.li-4 {
   width: 7%;
 }
 
