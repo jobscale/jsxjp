@@ -50,11 +50,13 @@ Vue.createApp({
     onRemove(event) {
       const { target: { parentElement: el } } = event;
       const { id } = el.dataset;
+      el.parentElement.parentElement.style = 'opacity: 0.3';
       logger.info({ id });
       this.confirmation.title = 'Are you remove this item?';
       this.confirmation.message = `Be trying to remove item "${id}".<br>Are you sure?`;
       this.confirmation.ok = () => {
         logger.info({ run: 'OK' });
+        this.removeId({ id });
         this.confirmation.show = false;
       };
       this.confirmation.cancel = () => {
@@ -62,6 +64,22 @@ Vue.createApp({
         this.confirmation.show = false;
       };
       this.confirmation.show = true;
+    },
+
+    removeId({ id }) {
+      this.loading = true;
+      const params = ['../remove', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      }];
+      fetch(...params)
+      .then(res => {
+        if (res.status !== 200) throw new Error(res.statusText);
+        return res.json();
+      })
+      .catch(e => logger.error(e.message))
+      .then(() => this.onFind());
     },
 
     onColorScheme() {
