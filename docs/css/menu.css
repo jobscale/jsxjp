@@ -1,33 +1,17 @@
 /********************************
-Global Styles
-********************************/
-
-body {
-  box-sizing: border-box;
-  font-family: sans-serif;
-  line-height: 1;
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  background: #233245;
-}
-
-
-/********************************
 Main Project
 ********************************/
 
-main {
+.nav-main {
   position: relative;
   z-index: 1;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
   /*Change to Auto if there is more content*/
   box-shadow: 0 0 50px #000;
   transition: transform .5s;
 }
 
-.nav-open main {
+.nav-open .nav-main {
   transform: scale(.8);
 }
 
@@ -47,6 +31,7 @@ Hamburger menu
   color: transparent;
   white-space: nowrap;
   text-indent: 100%;
+  cursor: pointer;
 }
 
 .nav-trigger span,
@@ -55,7 +40,7 @@ Hamburger menu
   position: absolute;
   width: 36px;
   height: 4px;
-  background: #f6f8f8;
+  background: #666;
 }
 
 .nav-trigger span {
@@ -83,7 +68,7 @@ Hamburger menu
 .nav-trigger:hover span,
 .nav-trigger:hover span::before,
 .nav-trigger:hover span::after {
-  background: white;
+  background: #4cc;
 }
 
 .nav-open .nav-trigger span::before,
@@ -108,7 +93,7 @@ Hamburger menu
 Overlay
 ********************************/
 
-.overlay {
+.nav-overlay {
   position: fixed;
   z-index: 2;
   top: 0;
@@ -121,7 +106,7 @@ Overlay
   transition: opacity .5s, visibility .5s;
 }
 
-.nav-open .overlay {
+.nav-open .nav-overlay {
   opacity: .6;
   visibility: visible;
 }
@@ -139,7 +124,7 @@ Navigation
   top: 0;
   right: 0;
   padding: 2vw 5vw;
-  background-color: hsla(60, 6%, 35%, .95);
+  background-color: hsla(60, 6%, 35%, .88);
   overflow: auto;
   transform: translateZ(0);
   transform: translateX(100%);

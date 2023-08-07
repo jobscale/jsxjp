@@ -13,4 +13,4 @@ class Menu {
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => new Menu().trigger());
+setTimeout(() => new Menu().trigger(), 1000);

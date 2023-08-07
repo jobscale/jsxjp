@@ -13,7 +13,6 @@
 * {
   font-size: var(--font-size);
   background-color: transparent;
-  border-radius: 0.5em;
 }
 
 body {
@@ -61,6 +60,10 @@ button:enabled {
 .button {
   padding: 0.2em 0.5em;
   margin: 0.2em;
+}
+
+input {
+  border-radius: 0.5em;
 }
 
 .input, .output {

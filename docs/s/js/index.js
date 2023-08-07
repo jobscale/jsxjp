@@ -9,7 +9,22 @@ Vue.createApp({
     };
   },
 
+  mounted() {
+    this.initMenu();
+  },
+
   methods: {
+    initMenu() {
+      fetch('/menu')
+      .then(res => res.text())
+      .then(html => {
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        document.head.append(...div.querySelectorAll('link, script'));
+        document.body.append(...div.querySelectorAll('.nav-trigger, .nav-container, .nav-overlay'));
+      });
+    },
+
     onSubmit() {
       if (this.url.length < 20) return;
       this.loading = true;

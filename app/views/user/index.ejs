@@ -10,32 +10,34 @@
   <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.3.0/css/all.css">
 </head>
 <body>
-  <div class="s-content">
-    <%- include('../partial/header') %>
-    <h1>List of User</h1>
-    <hr>
-    <div><ol type="I"><%
-      items.forEach(item => {%>
-        <li>
-          <ol class="horizontal">
-            <li class="li-left li-1 small"><%= item.key %></li>
-            <li class="li-left li-2 small"><%= item.html || item.login %></li>
-            <li class="li-3 right small" title="<%= item.deletedAt || item.registerAt %>">
-              <%= item.count || undefined %> <%= item.deletedAt ? 'blocked' : 'allow' %><br>
-              <%= item.lastAccess %>
-            </li>
-            <li class="li-4">
-              <% if (!item.deletedAt) { %>
-                <button class="button btn-remove" data-id="<%= item.key %>">
-                  <i class="fa-regular fa-trash-can fa-fade"></i>
-                </button>
-              <% } %>
-            </li>
-          </ol>
-        </li>
-      <%})
-    %></ol></div>
-  </div>
+  <main class="nav-main">
+    <div class="s-content">
+      <%- include('../partial/header') %>
+      <h1>List of User</h1>
+      <hr>
+      <div><ol type="I"><%
+        items.forEach(item => {%>
+          <li>
+            <ol class="horizontal">
+              <li class="li-left li-1 small"><%= item.key %></li>
+              <li class="li-left li-2 small"><%= item.html || item.login %></li>
+              <li class="li-3 right small" title="<%= item.deletedAt || item.registerAt %>">
+                <%= item.count || undefined %> <%= item.deletedAt ? 'blocked' : 'allow' %><br>
+                <%= item.lastAccess %>
+              </li>
+              <li class="li-4">
+                <% if (!item.deletedAt) { %>
+                  <button class="button btn-remove" data-id="<%= item.key %>">
+                    <i class="fa-regular fa-trash-can fa-fade"></i>
+                  </button>
+                <% } %>
+              </li>
+            </ol>
+          </li>
+        <%})
+      %></ol></div>
+    </div>
+  </main>
   <%- include('../menu/body') %>
 </body>
 </html>

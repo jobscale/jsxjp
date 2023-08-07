@@ -16,10 +16,22 @@ Vue.createApp({
   },
 
   mounted() {
+    this.initMenu();
     this.onFind();
   },
 
   methods: {
+    initMenu() {
+      fetch('/menu')
+      .then(res => res.text())
+      .then(html => {
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        document.head.append(...div.querySelectorAll('link, script'));
+        document.body.append(...div.querySelectorAll('.nav-trigger, .nav-container, .nav-overlay'));
+      });
+    },
+
     onFind(rest) {
       const { id } = rest || {};
       this.loading = true;

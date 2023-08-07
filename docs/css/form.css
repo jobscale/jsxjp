@@ -129,15 +129,15 @@ table {
  * http://www.opensource.org/licenses/mit-license.php
  */
 body, .login-submit, .login-submit:before, .login-submit:after {
-  background: #373737;
+  background: #333;
 }
 
 .register-submit, .register-submit:before, .register-submit:after {
-  background: #233245;
+  background: #333;
 }
 
 .update-submit, .update-submit:before, .update-submit:after {
-  background: #233245;
+  background: #333;
 }
 
 body {
