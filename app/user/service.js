@@ -53,8 +53,7 @@ class Service {
     });
   }
 
-  async remove(rest) {
-    const { id: key } = rest;
+  async remove({ key }) {
     const db = await connection();
     return db.get(key)
     .then(data => {

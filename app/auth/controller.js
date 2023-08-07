@@ -38,7 +38,7 @@ class Controller {
 
   logout(req, res) {
     this.cookie(res, 'token', '', dayjs().add(10, 'second'));
-    res.end();
+    res.redirect('/auth');
   }
 
   verify(req, res, next) {

@@ -11,7 +11,7 @@ router.post(
   (...args) => authController.login(...args),
 );
 router.use('', (...args) => authController.verify(...args));
-router.post('/auth/logout', (...args) => authController.logout(...args));
+router.get('/auth/logout', (...args) => authController.logout(...args));
 
 module.exports = {
   route: { router },

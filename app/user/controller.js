@@ -48,8 +48,8 @@ class Controller {
   }
 
   remove(req, res) {
-    const { id } = req.body;
-    userService.remove({ id })
+    const { id: key } = req.body;
+    userService.remove({ key })
     .then(item => {
       res.json({ deletedAt: item.deletedAt });
     })
