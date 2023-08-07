@@ -31,9 +31,19 @@ class Controller {
   }
 
   find(req, res) {
-    const { id } = req.body;
+    const { id: key } = req.body;
 
-    service.find({ id })
+    service.find({ key })
+    .then((rows) => {
+      res.json({ rows });
+    })
+    .catch(e => res.status(500).json({ message: e.message }));
+  }
+
+  remove(req, res) {
+    const { id: key } = req.body;
+
+    service.remove({ key })
     .then((rows) => {
       res.json({ rows });
     })

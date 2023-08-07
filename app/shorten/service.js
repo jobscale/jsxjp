@@ -28,7 +28,7 @@ class Service {
     .then(({ key: id }) => ({ id }));
   }
 
-  async find({ id: key }) {
+  async find({ key }) {
     const db = await connection();
     return db.fetch({ key })
     .then(({ items }) => items
@@ -40,6 +40,18 @@ class Service {
       delete item.key;
       return item;
     }));
+  }
+
+  async remove({ key }) {
+    const db = await connection();
+    return db.get(key)
+    .then(data => {
+      if (!data) throw createHttpError(400);
+      return data;
+    })
+    .then(data => db.update({
+      deletedAt: new Date().getTime(),
+    }, data.key));
   }
 
   async redirect(rest) {
