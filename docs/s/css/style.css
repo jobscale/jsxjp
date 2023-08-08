@@ -33,7 +33,7 @@ main {
 }
 
 .hide {
-  display: none;
+  visibility: hidden;
 }
 
 .container {

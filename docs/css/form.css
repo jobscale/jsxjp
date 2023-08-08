@@ -107,7 +107,7 @@ table {
 }
 
 .hide {
-  display: none;
+  visibility: hidden;
 }
 
 #loading {

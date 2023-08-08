@@ -2,7 +2,7 @@ html, body {
   margin: 0;
 }
 .hide {
-  display: none;
+  visibility: hidden;
 }
 .content, .content * {
   font-size: 3vw;
