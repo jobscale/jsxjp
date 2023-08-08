@@ -16,19 +16,20 @@ Vue.createApp({
   },
 
   mounted() {
-    this.initMenu();
+    this.sign();
     this.onFind();
   },
 
   methods: {
-    initMenu() {
-      fetch('/menu')
-      .then(res => res.text())
-      .then(html => {
-        const div = document.createElement('div');
-        div.innerHTML = html;
-        document.head.append(...div.querySelectorAll('link, script'));
-        document.body.append(...div.querySelectorAll('.nav-trigger, .nav-container, .nav-overlay'));
+    sign() {
+      fetch('/auth/sign', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ href: '/s/list' }),
+      })
+      .then(res => {
+        if (res.status === 200) return;
+        document.location.href = '/auth';
       });
     },
 

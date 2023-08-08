@@ -5,10 +5,6 @@ const { validation: accountValidation } = require('./validation');
 class Route {
   constructor() {
     const router = Router();
-    router.get(
-      '/password',
-      (...args) => accountController.password(...args),
-    );
     router.post(
       '/password',
       (...args) => accountValidation.password(...args),

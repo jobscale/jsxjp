@@ -5,38 +5,17 @@ Vue.createApp({
     return {
       login: '',
       password: '',
-      confirm: '',
       statusText: '',
       loading: false,
     };
   },
 
-  mounted() {
-    this.sign();
-  },
-
   methods: {
-    sign() {
-      fetch('/auth/sign', {
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ href: '/user/register' }),
-      })
-      .then(res => {
-        if (res.status === 200) return;
-        document.location.href = '/auth';
-      });
-    },
-
     onSubmit() {
-      const { login, password, confirm } = this;
-      if (password !== confirm) {
-        this.statusText = 'Mismatch Confirmation';
-        return;
-      }
+      const { login, password } = this;
       this.statusText = '';
       this.loading = true;
-      const params = ['/user/register', {
+      const params = ['/auth/login', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ login, password }),
@@ -48,6 +27,10 @@ Vue.createApp({
           res.json().then(({ message }) => {
             this.statusText += message;
             throw new Error(res.statusText);
+          });
+        } else {
+          res.json().then(({ href }) => {
+            document.location.href = href;
           });
         }
       })

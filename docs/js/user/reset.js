@@ -1,62 +1,63 @@
 /* global logger */
 
-class Reset {
-  wait(ms) {
-    return new Promise(resolve => { setTimeout(resolve, ms); });
-  }
+Vue.createApp({
+  data() {
+    return {
+      login: '',
+      password: '',
+      confirm: '',
+      statusText: '',
+      loading: false,
+    };
+  },
 
-  loading(hide) {
-    document.querySelector('#loading')
-    .classList[hide ? 'add' : 'remove']('hide');
-    return this.wait(1000);
-  }
+  mounted() {
+    this.sign();
+  },
 
-  reset(event) {
-    event.preventDefault();
-    const see = this.loading();
-    this.resetInternal()
-    .catch(e => logger.error(e.message))
-    .then(() => see)
-    .then(() => this.loading(true));
-  }
+  methods: {
+    sign() {
+      fetch('/auth/sign', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ href: '/user/reset' }),
+      })
+      .then(res => {
+        if (res.status === 200) return;
+        document.location.href = '/auth';
+      });
+    },
 
-  async resetInternal() {
-    const login = document.querySelector('#login').value;
-    const password = document.querySelector('#password').value;
-    const confirm = document.querySelector('#confirm').value;
-    const status = document.querySelector('#status');
-    if (password !== confirm) {
-      status.textContent = 'Mismatch Confirmation';
-      return undefined;
-    }
-    status.textContent = '';
-    const params = ['/user/reset', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        credentials: 'omit',
-      },
-      body: JSON.stringify({ login, password }),
-    }];
-    return fetch(...params)
-    .then(res => {
-      status.textContent = `${res.status} ${res.statusText}`;
-      if (res.status !== 200) {
-        res.json()
-        .then(json => {
-          status.textContent += ` (${json.message})`;
-        });
+    onSubmit() {
+      const { login, password, confirm } = this;
+      if (password !== confirm) {
+        this.statusText = 'Mismatch Confirmation';
         return;
       }
-      status.textContent += ' User Reset';
-      document.form.reset();
-    });
-  }
-
-  trigger() {
-    document.querySelector('form')
-    .addEventListener('submit', event => this.reset(event));
-  }
-}
-
-window.addEventListener('DOMContentLoaded', () => new Reset().trigger());
+      this.statusText = '';
+      this.loading = true;
+      const params = ['/user/reset', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ login, password }),
+      }];
+      fetch(...params)
+      .then(res => {
+        this.statusText = `${res.status} ${res.statusText}`;
+        if (res.status !== 200) {
+          res.json().then(({ message }) => {
+            this.statusText += message;
+            throw new Error(res.statusText);
+          });
+        }
+      })
+      .catch(e => logger.error(e.message))
+      .then(() => setTimeout(() => {
+        this.login = '';
+        this.password = '';
+        this.confirm = '';
+        this.loading = false;
+      }, 1000));
+    },
+  },
+}).mount('#app');

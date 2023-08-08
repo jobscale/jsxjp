@@ -2,12 +2,8 @@ const { service: accountService } = require('./service');
 
 class Controller {
   password(req, res) {
-    const { method, body } = req;
+    const { body } = req;
     const { password } = body;
-    if (method === 'GET') {
-      res.render('account/password', { title: 'Password' });
-      return;
-    }
     const { token } = req.cookies;
     accountService.password({ password, token })
     .then(item => {

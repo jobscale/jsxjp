@@ -5,24 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/style.css" />
     <script src="https://cdn.jsdelivr.net/npm/@jobscale/logger@0.1.0/index.min.js"></script>
-    <script src="/js/menu.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.prod.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.prod.min.js"></script>
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.3.0/css/all.css">
     <title>URL Shortener - jsx.jp</title>
   </head>
 
-  <body>
+  <body class="hide">
     <div id="app" class="nav-main">
       <div class="container">
-        <div>URL Shortener free</div>
-        <div class="description">
-          <small>
-            <div>Acts contrary to public order and morals are prohibited.</div>
-            <div>Offensive and antisocial use is prohibited.</div>
-            <div>Please use at your own risk as there is no support.</div>
-            <div>We will not get involved in any problems or troubles.</div>
-            <div>We do not accept inquiries from anyone.</div>
-          </small>
+        <div>
+          <h2>URL Shortener free</h2>
+          <div class="description">
+            <small>
+              <div>Acts contrary to public order and morals are prohibited.</div>
+              <div>Offensive and antisocial use is prohibited.</div>
+              <div>Please use at your own risk as there is no support.</div>
+              <div>We will not get involved in any problems or troubles.</div>
+              <div>We do not accept inquiries from anyone.</div>
+            </small>
+          </div>
         </div>
         <section>
           <form @submit.prevent="onSubmit">
@@ -64,6 +65,7 @@
         </div>
       </div>
     </div>
-    <script defer src="js/index.js"></script>
+    <script src="js/index.js"></script>
+    <script defer src="/js/menu.js"></script>
   </body>
 </html>

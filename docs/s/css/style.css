@@ -32,6 +32,10 @@ main {
   display: inline-block;
 }
 
+.hide {
+  display: none;
+}
+
 .container {
   text-align: center;
   max-width: 100%;

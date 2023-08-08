@@ -49,6 +49,7 @@ class Service {
       if (!item) throw createHttpError(400);
       return db.update({
         hash: createHash(`${login}/${password}`),
+        deletedAt: 0,
       }, item.key).then(() => item);
     });
   }

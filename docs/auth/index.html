@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" class="dark-scheme">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.3.0/css/all.css">
+    <link rel="stylesheet" href="/css/form.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.prod.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jobscale/logger@0.1.0/index.min.js"></script>
+    <title>Login - jsx.jp</title>
+  </head>
+
+  <body class="hide">
+    <div id="app" class="nav-main">
+      <div class="container">
+        <div>
+          <h2>Login</h2>
+        </div>
+        <section>
+          <form @submit.prevent="onSubmit" name="form" class="login">
+            <p>
+              <label for="login">User:</label>
+              <input v-model="login" type="text" id="login" placeholder="user">
+            </p>
+            <p>
+              <label for="password">Password:</label>
+              <input v-model="password" type="password" id="password" placeholder="password">
+            </p>
+            <p class="login-submit">
+              <button type="submit" class="login-button arrow-btn">Login</button>
+            </p>
+            <div class="center error" id="status">{{ statusText }}</div>
+          </form>
+        </section>
+      </div>
+      <div v-if="loading" id="loading"></div>
+    </div>
+  </body>
+  <script type="text/javascript" src="/js/auth/login.js"></script>
+  <script defer src="/js/menu.js"></script>
+</html>

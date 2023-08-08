@@ -2,6 +2,10 @@
 Main Project
 ********************************/
 
+.hide {
+  display: none;
+}
+
 .nav-main {
   position: relative;
   z-index: 1;
@@ -115,7 +119,13 @@ Overlay
 /********************************
 Navigation
 ********************************/
+.nav-container h2 {
+  text-align: center;
+  padding: 0;
+}
+
 .nav-container {
+  line-height: 1;
   position: fixed;
   z-index: 3;
   width: 50vw;

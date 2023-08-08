@@ -28,8 +28,12 @@ footer, header, hgroup, menu, nav, section {
   display: block;
 }
 
+html {
+  background-color: #222;
+}
+
 body {
-  line-height: 1;
+  line-height: 1.5;
 }
 
 ol, ul {
@@ -128,11 +132,19 @@ table {
  * Licensed under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
  */
-body, .login-submit, .login-submit:before, .login-submit:after {
+body {
+  background: #333;
+}
+
+.login-submit, .login-submit:before, .login-submit:after {
   background: #333;
 }
 
 .register-submit, .register-submit:before, .register-submit:after {
+  background: #333;
+}
+
+.reset-submit, .reset-submit:before, .reset-submit:after {
   background: #333;
 }
 
@@ -151,6 +163,13 @@ a {
 }
 a:hover {
   text-decoration: underline;
+}
+
+h2 {
+  color: #ddd;
+  font-size: 2rem;
+  text-align: center;
+  padding: 1em 0 0;
 }
 
 .login {
@@ -452,6 +471,88 @@ label {
   background-image: linear-gradient(to bottom, #ba0591, #d300a2);
 }
 .register-button:after {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 12px;
+  width: 25px;
+  height: 19px;
+}
+
+.reset-submit {
+  position: absolute;
+  top: 63px;
+  right: 0;
+  width: 48px;
+  height: 48px;
+  padding: 8px;
+  border-radius: 32px;
+  -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.35);
+}
+.reset-submit:before, .reset-submit:after {
+  content: '';
+  z-index: 1;
+  position: absolute;
+}
+.reset-submit:before {
+  top: 28px;
+  left: -4px;
+  width: 4px;
+  height: 10px;
+  -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.06);
+}
+.reset-submit:after {
+  top: -4px;
+  bottom: -4px;
+  right: -4px;
+  width: 36px;
+}
+
+.reset-button {
+  position: relative;
+  z-index: 2;
+  width: 48px;
+  height: 48px;
+  padding: 0 0 48px;
+  /* Fix wrong positioning in Firefox 9 & older (bug 450418) */
+  text-indent: 120%;
+  white-space: nowrap;
+  overflow: hidden;
+  background: none;
+  border: 0;
+  border-radius: 24px;
+  cursor: pointer;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.2), 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.2), 0 1px rgba(255, 255, 255, 0.1);
+  /* Must use another pseudo element for the gradient background because Webkit */
+  /* clips the background incorrectly inside elements with a border-radius.     */
+}
+.reset-button:before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 5px;
+  right: 5px;
+  background: #00d3a2;
+  border-radius: 24px;
+  background-image: -webkit-linear-gradient(top, #00d3a2, #0d9677);
+  background-image: -moz-linear-gradient(top, #00d3a2, #0d9677);
+  background-image: -o-linear-gradient(top, #00d3a2, #0d9677);
+  background-image: linear-gradient(to bottom, #00d3a2, #0d9677);
+  -webkit-box-shadow: inset 0 0 0 1px #00d3a2, 0 0 0 5px rgba(0, 0, 0, 0.16);
+  box-shadow: inset 0 0 0 1px #00d3a2, 0 0 0 5px rgba(0, 0, 0, 0.16);
+}
+.reset-button:active:before {
+  background: #05ba91;
+  background-image: -webkit-linear-gradient(top, #05ba91, #00d3a2);
+  background-image: -moz-linear-gradient(top, #05ba91, #00d3a2);
+  background-image: -o-linear-gradient(top, #05ba91, #00d3a2);
+  background-image: linear-gradient(to bottom, #05ba91, #00d3a2);
+}
+.reset-button:after {
   content: '';
   position: absolute;
   top: 15px;

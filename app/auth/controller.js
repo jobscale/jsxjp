@@ -4,13 +4,6 @@ const { service: authService } = require('./service');
 const { service: apiService } = require('../api/service');
 
 class Controller {
-  index(req, res) {
-    authService.now()
-    .then((now) => {
-      res.render('auth/login', { title: 'Login', now });
-    });
-  }
-
   login(req, res) {
     const { login, password } = req.body;
     authService.login({ login, password })
@@ -41,13 +34,23 @@ class Controller {
     res.redirect('/auth');
   }
 
+  sign(req, res) {
+    const { token } = req.cookies;
+    authService.verify(token)
+    .then(() => res.json({ ok: true }))
+    .catch(e => {
+      const { href } = req.body;
+      this.cookie(res, 'href', href, dayjs().add(5, 'minute'));
+      res.status(403).json({ message: e.message });
+    });
+  }
+
   verify(req, res, next) {
     const { token } = req.cookies;
     authService.verify(token)
     .then(() => next())
     .catch(e => {
       logger.info({ message: e.toString() });
-      this.cookie(res, 'href', req.originalUrl, dayjs().add(5, 'minute'));
       res.redirect('/auth');
     });
   }
