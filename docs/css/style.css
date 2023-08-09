@@ -1,9 +1,10 @@
 html, body {
   margin: 0;
+  height: 100vh;
 }
-.hide {
-  visibility: hidden;
-}
+
+.nav-container, .nav-overlay { visibility: hidden; }
+
 .content, .content * {
   font-size: 3vw;
   margin: 0;

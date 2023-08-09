@@ -34,7 +34,10 @@ html {
 
 body {
   line-height: 1.5;
+  height: 100vh;
 }
+
+.nav-container, .nav-overlay { visibility: hidden; }
 
 ol, ul {
   list-style: none;
@@ -104,10 +107,6 @@ table {
 .about-author > a {
   padding: 1px 3px;
   margin: 0 -1px;
-}
-
-.hide {
-  visibility: hidden;
 }
 
 #loading {

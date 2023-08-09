@@ -7,8 +7,9 @@ class Menu {
     .then(html => {
       const div = document.createElement('div');
       div.innerHTML = html;
-      document.head.append(...div.querySelectorAll('link'));
-      document.body.append(...div.querySelectorAll('.nav-trigger, .nav-container, .nav-overlay'));
+      const top = document.createElement('div');
+      top.append(div);
+      document.body.append(...top.querySelectorAll('div > *'));
     });
   }
 
@@ -24,9 +25,11 @@ class Menu {
     .then(() => {
       document.querySelector('.nav-trigger')
       .addEventListener('click', event => this.navigation(event));
-      return new Promise(resolve => { setTimeout(resolve, 200); });
+      return new Promise(resolve => { setTimeout(resolve, 2000); });
     })
-    .then(() => document.body.classList.remove('hide'));
+    .then(() => {
+      document.querySelector('.nav-container').style = 'visibility: inherit';
+    });
   }
 }
 

@@ -2,10 +2,6 @@
 Main Project
 ********************************/
 
-.hide {
-  visibility: hidden;
-}
-
 .nav-main {
   position: relative;
   z-index: 1;

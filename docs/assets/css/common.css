@@ -1,5 +1,4 @@
 * {
-  overflow: hidden;
   font-size: 2.2vmin;
 }
 
@@ -75,13 +74,9 @@ button:enabled {
 .position-ref {
   position: relative;
 }
-.top-right {
-  position: absolute;
-  top: 1em;
-  right: 2em;
-}
 .content {
   text-align: center;
+  line-height: 1.8;
 }
 .title {
   letter-spacing: 0.2em;

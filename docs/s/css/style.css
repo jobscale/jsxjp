@@ -21,6 +21,8 @@ body {
   height: 100vh;
 }
 
+.nav-container, .nav-overlay { visibility: hidden; }
+
 #app {
   display: flex;
   align-items: center;
@@ -30,10 +32,6 @@ body {
 
 main {
   display: inline-block;
-}
-
-.hide {
-  visibility: hidden;
 }
 
 .container {
