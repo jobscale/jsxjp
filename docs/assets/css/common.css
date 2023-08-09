@@ -30,7 +30,6 @@ button:enabled {
   font-size: 0.8em;
   padding: 0.5em 1em;
   cursor: pointer;
-  border: 1px solid #888;
   border-radius: 1.2em;
   display: inline-block;
 }
@@ -76,7 +75,6 @@ button:enabled {
 }
 .content {
   text-align: center;
-  line-height: 1.8;
 }
 .title {
   letter-spacing: 0.2em;
@@ -95,9 +93,9 @@ button:enabled {
 }
 .links {
   display: inline-block;
+  line-height: 1.8;
 }
 .links > a {
-  color: #888;
   margin: 0.2em 0.5em;
   display: inline-block;
   font-size: 0.8em;
