@@ -27,30 +27,11 @@ body {
 
 button {
   cursor: pointer;
-  background-color: #888;
+  opacity: 0.5;
 }
 
-.dark-scheme button {
-  color-scheme: light;
-}
-
-.light-scheme button {
-  color-scheme: dark;
-}
-
-.dark-scheme button:hover {
-  color-scheme: dark;
-}
-
-.light-scheme button:hover {
-  color-scheme: light;
-}
-
-.command {
-  font-size: 0.5em;
-  border-radius: 0.5em;
-  border: 1px solid #888;
-  padding: 0.2em 0.5em;
+button:hover {
+  opacity: 1;
 }
 
 .circle-area {

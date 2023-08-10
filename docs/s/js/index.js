@@ -3,13 +3,33 @@ const logger = console;
 Vue.createApp({
   data() {
     return {
+      signed: false,
       url: '',
       shorten: '',
       loading: false,
     };
   },
 
+  async mounted() {
+    await this.sign();
+  },
+
   methods: {
+    sign() {
+      return fetch('/auth/sign', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ href: '/s/list' }),
+      })
+      .then(res => {
+        if (res.status === 200) {
+          this.signed = true;
+          return;
+        }
+        document.location.href = '/auth';
+      });
+    },
+
     onSubmit() {
       if (this.url.length < 20) return;
       this.loading = true;

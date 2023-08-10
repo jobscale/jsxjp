@@ -8,3 +8,5 @@ mkdir -p logs
   sam build
   sam deploy --config-env ${ENV}
 } 2>&1 | tee logs/deploy-${ENV}-$(date +%s%3N).log
+
+[[ ${ENV} == "dev" ]] && google-chrome-stable --incognito https://dev.jsx.jp || google-chrome-stable --incognito https://jsx.jp

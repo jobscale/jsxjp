@@ -26,14 +26,31 @@ class App {
     app.set('etag', false);
     app.set('x-powered-by', false);
     app.use((req, res, next) => {
-      const referer = req.headers.referer && req.headers.referer.match(/https?:\/\/[a-z0-9.:]+/g);
-      const origin = req.headers.origin || (referer && referer[0]) || `${req.protocol}://${req.headers.host}`;
+      const headers = new Headers(req.headers)
+      const [referer] = (headers.get('referer') && headers.get('referer').match(/https?:\/\/[a-z0-9.:]+/g)) || [];
+      const origin = referer || headers.get('origin') || `${req.protocol}://${req.headers.host}`;
+      if (referer) logger.info({ origin: headers.get('origin'), referer });
       res.header('Access-Control-Allow-Origin', `${origin}`);
       res.header('Access-Control-Allow-Methods', 'GET, POST, HEAD');
       res.header('Access-Control-Allow-Headers', 'Content-Type');
       res.header('Server', 'acl-ingress-k8s');
       res.header('X-Backend-Host', os.hostname());
-      if (XDG_SESSION_DESKTOP !== 'cinnamon') res.header('Content-Security-Policy', "default-src 'none'; base-uri 'none'; form-action 'self' https:; connect-src https: wss:; font-src 'self' data: https:; frame-src 'self' https:; frame-ancestors 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-eval'; script-src-elem 'self' https:; style-src 'self' 'unsafe-inline' https:; manifest-src 'self'");
+      const csp = [
+        "default-src 'none'",
+        "base-uri 'none'",
+        "form-action 'self' https:",
+        "connect-src https: wss:",
+        "font-src 'self' data: https:",
+        "frame-src 'self' https:",
+        "frame-ancestors 'self'",
+        "img-src 'self' data: https:",
+        "media-src 'self' data: https:",
+        "script-src 'self' 'unsafe-eval'",
+        "script-src-elem 'self' https:",
+        "style-src 'self' 'unsafe-inline' https:",
+        "manifest-src 'self'",
+      ];
+      if (XDG_SESSION_DESKTOP !== 'cinnamon') res.header('Content-Security-Policy', csp.join('; '));
       res.header('Permissions-Policy', 'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()');
       res.header('Referrer-Policy', 'strict-origin-when-cross-origin');
       res.header('Strict-Transport-Security', 'max-age=31536000; includeSubdomains; preload');
