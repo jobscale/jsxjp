@@ -26,7 +26,7 @@ class App {
     app.set('etag', false);
     app.set('x-powered-by', false);
     app.use((req, res, next) => {
-      const headers = new Headers(req.headers)
+      const headers = new Headers(req.headers);
       const [referer] = (headers.get('referer') && headers.get('referer').match(/https?:\/\/[a-z0-9.:]+/g)) || [];
       const origin = referer || headers.get('origin') || `${req.protocol}://${req.headers.host}`;
       if (referer) logger.info({ origin: headers.get('origin'), referer });
@@ -39,7 +39,7 @@ class App {
         "default-src 'none'",
         "base-uri 'none'",
         "form-action 'self' https:",
-        "connect-src https: wss:",
+        'connect-src https: wss:',
         "font-src 'self' data: https:",
         "frame-src 'self' https:",
         "frame-ancestors 'self'",

@@ -1,5 +1,4 @@
-/* global logger */
-/* global Howl */
+/* global logger, Howl, dayjs */
 
 Vue.createApp({
   data() {
@@ -91,7 +90,7 @@ Vue.createApp({
       if (this.busy) {
         if (this.busy === 1) {
           this.busyList.unshift(1);
-          const [date, time] = dayjs().add(9, 'hour').toISOString().split(/[T.]/);
+          const [, time] = dayjs().add(9, 'hour').toISOString().split(/[T.]/);
           this.busyTime = time;
         }
         this.busyList[0]++;
