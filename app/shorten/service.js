@@ -60,7 +60,7 @@ class Service {
     return db.get(key)
     .then(data => {
       if (!data) throw createHttpError(400);
-      if (data.deletedAt) throw createHttpError(403);
+      if (data.deletedAt) throw createHttpError(501);
       return data;
     })
     .then(data => db.update({

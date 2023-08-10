@@ -12,7 +12,10 @@ class Controller {
 
     service.register({ html })
     .then(({ id }) => res.json({ id }))
-    .catch(e => res.status(500).json({ message: e.message }));
+    .catch(e => {
+      if (!e.statusCode) e.statusCode = 500;
+      res.status(e.statusCode).json({ message: e.message });
+    });
   }
 
   redirect(req, res) {
@@ -27,7 +30,10 @@ class Controller {
     .then(({ html }) => {
       res.redirect(html);
     })
-    .catch(e => res.status(500).json({ message: e.message }));
+    .catch(e => {
+      if (!e.statusCode) e.statusCode = 500;
+      res.status(e.statusCode).json({ message: e.message });
+    });
   }
 
   find(req, res) {
@@ -37,7 +43,10 @@ class Controller {
     .then((rows) => {
       res.json({ rows });
     })
-    .catch(e => res.status(500).json({ message: e.message }));
+    .catch(e => {
+      if (!e.statusCode) e.statusCode = 500;
+      res.status(e.statusCode).json({ message: e.message });
+    });
   }
 
   remove(req, res) {
@@ -47,7 +56,10 @@ class Controller {
     .then((rows) => {
       res.json({ rows });
     })
-    .catch(e => res.status(500).json({ message: e.message }));
+    .catch(e => {
+      if (!e.statusCode) e.statusCode = 500;
+      res.status(e.statusCode).json({ message: e.message });
+    });
   }
 }
 
