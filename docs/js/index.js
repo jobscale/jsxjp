@@ -52,7 +52,7 @@ Vue.createApp({
 
     action() {
       this.actionText = 'loading...';
-      this.sound = new Howl({ src: ['/assets/mp3/warning1.mp3'] });
+      this.sound = new Howl({ src: ['//jsx.jp/assets/mp3/warning1.mp3'] });
       this.sound.once('load', () => {
         this.actionText = '☃';
       });
