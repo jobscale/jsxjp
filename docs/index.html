@@ -20,86 +20,124 @@
   <script src="https://cdn.jsdelivr.net/npm/@jobscale/logger@0.1.0/index.min.js"></script>
 </head>
 <body>
-  <div id="app" class="nav-main flex-center position-ref full-height">
-    <div class="content">
-      <div class="section">
-        <div class="area">
-          <div class="title">
-            <div>{{ welcomeText }}</div>
+  <div id="app" class="nav-main position-ref full-height">
+    <div class="container">
+      <section>
+        <div class="inner-section">
+          <div class="area">
+            <div class="title">
+              <div>{{ welcomeText }}</div>
+            </div>
+            <div class="title volume">
+              <span @click="action">{{ actionText }}</span>
+              <span>{{ spanText }}</span>
+            </div>
           </div>
-          <div class="title volume">
-            <span @click="action">{{ actionText }}</span>
-            <span>{{ spanText }}</span>
+          <div class="area" id="svelte-app"></div>
+        </div>
+      </section>
+      <section>
+        <div class="title m-b-md">
+          <div>{{ dateText }}</div>
+        </div>
+      </section>
+      <section>
+        <div class="worm">
+          <span class="inline-scroll"><span class="busy-ts">{{ busyTime }}</span></span>
+          <span class="inline-scroll"><span class="busy">{{ busyText }}</span></span>
+          <span class="inline-scroll">
+            <span v-for="num of busyList">{{ num }}</span>
+          </span>
+        </div>
+      </section>
+      <section>
+        <div class="link-area">
+          <div class="links">
+            <a target="_blank" href="//github.com/jobscale">Github</a>
+            <a target="_blank" href="//hub.docker.com/u/jobscale">Docker</a>
+            <a target="_blank" href="//bitbucket.org/jsxjp/workspace/projects/OPEN">Bitbucket</a>
+            <a target="_blank" href="//vercel.com/jobscale-gmailcom">Vercel</a>
+            <a target="_blank" href="//codepen.io/jobscale/pens/public">CodePen</a>
+            <a target="_blank" href="//www.value-domain.com/moddnsfree.php?action=moddns2&domainname=jsx.jp">ValueDomain</a>
+            <a target="_blank" href="//k8s.jsx.jp">Kubernetes</a>
+            <a target="_blank" href="//wetty.jsx.jp/wetty">Wetty</a>
+            <a target="_blank" href="//Sshwifty.jsx.jp">Sshwifty</a>
           </div>
         </div>
-        <div class="area" id="svelte-app"></div>
-      </div>
-      <div class="title m-b-md">
-        <div>{{ dateText }}</div>
-      </div>
-      <div class="worm">
-        <span class="inline-scroll"><span class="busy-ts">{{ busyTime }}</span></span>
-        <span class="inline-scroll"><span class="busy">{{ busyText }}</span></span>
-        <span class="inline-scroll">
-          <span v-for="num of busyList">{{ num }}</span>
-        </span>
-      </div>
-      <div class="link-area">
-        <div class="links">
-          <a target="_blank" href="//github.com/jobscale">Github</a>
-          <a target="_blank" href="//hub.docker.com/u/jobscale">Docker</a>
-          <a target="_blank" href="//bitbucket.org/jsxjp/workspace/projects/OPEN">Bitbucket</a>
-          <a target="_blank" href="//vercel.com/jobscale-gmailcom">Vercel</a>
-          <a target="_blank" href="//codepen.io/jobscale/pens/public">CodePen</a>
-          <a target="_blank" href="//www.value-domain.com/moddnsfree.php?action=moddns2&domainname=jsx.jp">ValueDomain</a>
+      </section>
+      <section>
+        <div class="link-area">
+          <div class="links">
+            <a target="_blank" href="//todo.jsx.jp">Todo</a>
+            <a target="_blank" href="//shop.jsx.jp">Ecommerce</a>
+            <a target="_blank" href="//wiki.jsx.jp">Wiki</a>
+            <a target="_blank" href="//redmine.jsx.jp">Redmine</a>
+            <a target="_blank" href="//tutorial.jsx.jp">Tutorial</a>
+            <a target="_blank" href="//echo.jsx.jp">Echo</a>
+            <a target="_blank" href="//blog.jsx.jp">CMS</a>
+            <a target="_blank" href="//wp.jsx.jp">WordPress</a>
+            <a target="_blank" href="//jsx.jp/profile">Profile</a>
+            <a target="_blank" href="//code-server.jsx.jp">CodeServer</a>
+            <a target="_blank" href="//mongo-blog.jsx.jp">MongoBlog</a>
+            <a target="_blank" href="//mqtt.jsx.jp">MQTT Chat</a>
+            <a target="_blank" href="//simple-chat.jsx.jp">SimpleChat</a>
+            <a target="_blank" href="//ramen-timer.jsx.jp">RamenTimer</a>
+            <a target="_blank" href="//zipcode-jp.jsx.jp">ZipCode</a>
+            <a target="_blank" href="//jsx.jp/s">URL Shortener</a>
+          </div>
         </div>
-        <div class="links">
-          <a target="_blank" href="//k8s.jsx.jp">Kubernetes</a>
-          <a target="_blank" href="//wetty.jsx.jp/wetty">Wetty</a>
-          <a target="_blank" href="//Sshwifty.jsx.jp">Sshwifty</a>
+      </section>
+      <section>
+        <div class="link-area">
+          <div class="links">
+            <a target="_blank" href="//mqtt.cdn.jsx.jp">MQTT Chat</a>
+            <a target="_blank" href="//chat-mqtt-cool.cdn.jsx.jp">MQTT Cool</a>
+            <a target="_blank" href="//timer.cdn.jsx.jp">Timer</a>
+            <a target="_blank" href="//tetris.cdn.jsx.jp">Tetris</a>
+            <a target="_blank" href="//paycard.cdn.jsx.jp">PayCard</a>
+            <a target="_blank" href="//snow.cdn.jsx.jp">SnowBall</a>
+            <a target="_blank" href="//fake.cdn.jsx.jp">FakeNotification</a>
+          </div>
         </div>
-      </div>
-      <div class="link-area">
-        <div class="links">
-          <a target="_blank" href="//todo.jsx.jp">Todo</a>
-          <a target="_blank" href="//shop.jsx.jp">Ecommerce</a>
-          <a target="_blank" href="//wiki.jsx.jp">Wiki</a>
-          <a target="_blank" href="//redmine.jsx.jp">Redmine</a>
-          <a target="_blank" href="//tutorial.jsx.jp">Tutorial</a>
-          <a target="_blank" href="//echo.jsx.jp">Echo</a>
-          <a target="_blank" href="//blog.jsx.jp">CMS</a>
-          <a target="_blank" href="//wp.jsx.jp">WordPress</a>
-          <a target="_blank" href="//jsx.jp/profile">Profile</a>
-          <a target="_blank" href="//code-server.jsx.jp">CodeServer</a>
-          <a target="_blank" href="//mongo-blog.jsx.jp">MongoBlog</a>
-          <a target="_blank" href="//mqtt.jsx.jp">MQTT Chat</a>
-          <a target="_blank" href="//simple-chat.jsx.jp">SimpleChat</a>
-          <a target="_blank" href="//ramen-timer.jsx.jp">RamenTimer</a>
-          <a target="_blank" href="//zipcode-jp.jsx.jp">ZipCode</a>
-          <a target="_blank" href="//jsx.jp/s">URL Shortener</a>
+      </section>
+      <section>
+        <div class="link-area">
+          <div class="links">
+            <button @click="onColorScheme" class="button">
+              <i class="fa-solid fa-bagel"></i>
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="link-area">
-        <div class="links">
-          <a target="_blank" href="//mqtt.cdn.jsx.jp">MQTT Chat</a>
-          <a target="_blank" href="//chat-mqtt-cool.cdn.jsx.jp">MQTT Cool</a>
-          <a target="_blank" href="//timer.cdn.jsx.jp">Timer</a>
-          <a target="_blank" href="//tetris.cdn.jsx.jp">Tetris</a>
-          <a target="_blank" href="//paycard.cdn.jsx.jp">PayCard</a>
-          <a target="_blank" href="//snow.cdn.jsx.jp">SnowBall</a>
-          <a target="_blank" href="//fake.cdn.jsx.jp">FakeNotification</a>
+      </section>
+      <section>
+        <div class="link-area">
+          <div class="links">
+            <a target="_blank" href="//mqtt.cdn.jsx.jp">MQTT Chat</a>
+            <a target="_blank" href="//chat-mqtt-cool.cdn.jsx.jp">MQTT Cool</a>
+            <a target="_blank" href="//timer.cdn.jsx.jp">Timer</a>
+            <a target="_blank" href="//tetris.cdn.jsx.jp">Tetris</a>
+            <a target="_blank" href="//paycard.cdn.jsx.jp">PayCard</a>
+            <a target="_blank" href="//snow.cdn.jsx.jp">SnowBall</a>
+            <a target="_blank" href="//fake.cdn.jsx.jp">FakeNotification</a>
+          </div>
         </div>
-      </div>
-      <div class="link-area">
-        <div class="links">
-          <button @click="onColorScheme" class="button">
-            <i class="fa-solid fa-bagel"></i>
-          </button>
+      </section>
+      <section>
+        <div class="link-area">
+          <div class="links">
+            <a target="_blank" href="//mqtt.cdn.jsx.jp">MQTT Chat</a>
+            <a target="_blank" href="//chat-mqtt-cool.cdn.jsx.jp">MQTT Cool</a>
+            <a target="_blank" href="//timer.cdn.jsx.jp">Timer</a>
+            <a target="_blank" href="//tetris.cdn.jsx.jp">Tetris</a>
+            <a target="_blank" href="//paycard.cdn.jsx.jp">PayCard</a>
+            <a target="_blank" href="//snow.cdn.jsx.jp">SnowBall</a>
+            <a target="_blank" href="//fake.cdn.jsx.jp">FakeNotification</a>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
+    <a id="powered" href="https://jsx.jp">jsx.jp</a>
   </div>
-  <a id="powered" href="https://jsx.jp">jsx.jp</a>
   <script src="/js/index.js"></script>
   <script defer src="/js/svelte-app.js"></script>
   <script defer src="/js/menu.js"></script>

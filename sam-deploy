@@ -2,8 +2,9 @@
 set -eu
 
 ENV=$1
+mkdir -p logs
 
 {
   sam build
   sam deploy --config-env ${ENV}
-} 2>&1 | tee deploy-${ENV}-$(date +%s%3N).log
+} 2>&1 | tee logs/deploy-${ENV}-$(date +%s%3N).log

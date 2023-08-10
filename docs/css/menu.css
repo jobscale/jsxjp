@@ -121,7 +121,6 @@ Navigation
 }
 
 .nav-container {
-  line-height: 1;
   position: fixed;
   z-index: 3;
   width: 50vw;
@@ -137,13 +136,17 @@ Navigation
   transition: transform .5s cubic-bezier(.83, .14, .33, 1.05);
 }
 
+.nav-container * {
+  font-size: 3vmin;
+  line-height: 1;
+}
+
 .nav-open .nav-container {
   transform: translateX(0);
 }
 
 .nav-container h2 {
   margin: 2vw 0;
-  font-size: 3vw;
   font-weight: bold;
   text-transform: uppercase;
   color: #333;
@@ -158,7 +161,6 @@ Navigation
 .nav a {
   display: block;
   padding: .4em 0;
-  font-size: 3vw;
   font-weight: bold;
   font-family: serif;
   text-decoration: none;
