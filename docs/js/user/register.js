@@ -3,6 +3,7 @@
 Vue.createApp({
   data() {
     return {
+      signed: false,
       login: '',
       password: '',
       confirm: '',
@@ -23,7 +24,10 @@ Vue.createApp({
         body: JSON.stringify({ href: '/user/register' }),
       })
       .then(res => {
-        if (res.status === 200) return;
+        if (res.status === 200) {
+          this.signed = true;
+          return;
+        }
         document.location.href = '/auth';
       });
     },

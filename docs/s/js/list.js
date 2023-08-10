@@ -3,6 +3,7 @@ const logger = console;
 Vue.createApp({
   data() {
     return {
+      signed: false,
       loading: true,
       items: [],
       confirmation: {
@@ -15,20 +16,23 @@ Vue.createApp({
     };
   },
 
-  mounted() {
-    this.sign();
+  async mounted() {
+    await this.sign();
     this.onFind();
   },
 
   methods: {
     sign() {
-      fetch('/auth/sign', {
+      return fetch('/auth/sign', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ href: '/s/list' }),
       })
       .then(res => {
-        if (res.status === 200) return;
+        if (res.status === 200) {
+          this.signed = true;
+          return;
+        }
         document.location.href = '/auth';
       });
     },
