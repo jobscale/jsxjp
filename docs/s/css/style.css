@@ -8,6 +8,7 @@
 
 .light-scheme {
   color-scheme: light;
+  background-color: #ccc;
 }
 
 * {
@@ -43,6 +44,75 @@ main {
   display: flex;
   justify-content: center;
   margin: 2em 0;
+}
+
+.inner-section {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+section {
+  margin: 0 auto;
+}
+
+.area {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+#svelte-app {
+  max-width: 7em;
+}
+
+.smoke #app {
+  opacity: 0.6;
+}
+
+.title {
+  font-size: 2em;
+  letter-spacing: 0.1em;
+  margin: 0.4em 0;
+}
+.title span {
+  margin: 0 0.5em;
+}
+
+.m-b-md {
+  letter-spacing: 0.1em;
+}
+
+.worm {
+  display: inline-flex;
+}
+
+.worm span {
+  font-size: 0.8em;
+  margin: 0 0.2em;
+  opacity: 0.6;
+}
+
+.inline-scroll {
+  display: inline-block;
+  max-width: 50vw;
+  overflow-x: auto;
+}
+
+.link-area {
+  margin: 0.5em 2em;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.links a {
+  margin: 0.3em 0.4em;
+  text-decoration: none;
+  font-size: 0.8em;
+  letter-spacing: 0.1em;
 }
 
 small, small > * {
@@ -98,10 +168,6 @@ input {
 .horizontal {
   display: flex;
   justify-content: space-between;
-}
-
-section {
-  margin: 0 auto;
 }
 
 .btn-remove {
