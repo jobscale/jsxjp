@@ -82,6 +82,13 @@ section {
   letter-spacing: 0.1em;
 }
 
+.fa-bagel {
+  opacity: 0.5;
+}
+.fa-bagel:hover {
+  opacity: 1;
+}
+
 .worm {
   display: inline-flex;
 }

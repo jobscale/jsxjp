@@ -68,7 +68,7 @@ Hamburger menu
 .nav-trigger:hover span,
 .nav-trigger:hover span::before,
 .nav-trigger:hover span::after {
-  background: #4cc;
+  background: #552;
 }
 
 .nav-open .nav-trigger span::before,
