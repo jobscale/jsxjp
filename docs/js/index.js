@@ -91,7 +91,8 @@ Vue.createApp({
         if (this.busy === 1) {
           this.busyList.unshift(1);
           const [, time] = dayjs().add(9, 'hour').toISOString().split(/[T.]/);
-          this.busyTimes.push(time);
+          this.busyTimes.unshift(time);
+          if (this.busyTimes.length > 16) this.busyTimes.length = 16;
         }
         this.busyList[0]++;
         this.busy++;
