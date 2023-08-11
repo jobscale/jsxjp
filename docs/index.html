@@ -45,7 +45,7 @@
       </section>
       <section>
         <div class="worm">
-          <span class="inline-scroll"><span class="busy-ts" title="{{ busyTimes.join('\n') }}">{{ busyTimes[0] }}</span></span>
+          <span class="inline-scroll"><span class="busy-ts" :title="busyTimes.join('\n')">{{ busyTimes[0] }}</span></span>
           <span class="inline-scroll"><span class="busy">{{ busyText }}</span></span>
           <span class="inline-scroll">
             <span v-for="num of busyList">{{ num }}</span>
