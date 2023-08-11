@@ -60,7 +60,7 @@ Vue.createApp({
     updateDate() {
       const params = {
         req: [
-          `https://www.jsx.jp/timestamp?v=${Date.now()}`,
+          `/timestamp?v=${Date.now()}`,
           { method: 'head' },
         ],
         begin: performance.now(),
