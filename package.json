@@ -2,13 +2,13 @@
   "name": "jsxjp",
   "private": true,
   "version": "0.1.0",
-  "description": "node express ejs template SSR MVC",
+  "description": "node express vue and ejs template SSR MVC",
   "author": "jobscale <jobscale@users.noreply.github.com>",
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "start": "eval $(cat .env) node .",
-    "lint": "eslint . --fix && ejslint app/views --fix",
+    "start": "node .",
+    "lint": "eslint . && ejslint app/views",
     "test": "npm run lint"
   },
   "pre-commit": [
@@ -19,8 +19,8 @@
     "@jobscale/slack": "^0.1.0",
     "aws-serverless-express": "^3.4.0",
     "cookie-parser": "^1.4.6",
-    "dayjs": "^1.11.8",
-    "deta": "^1.1.0",
+    "dayjs": "^1.11.9",
+    "deta": "^1.2.0",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "http-errors": "^2.0.0",
@@ -29,9 +29,9 @@
   },
   "devDependencies": {
     "ejs-lint": "^2.0.0",
-    "eslint": "^8.43.0",
+    "eslint": "^8.46.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-import": "^2.28.0",
     "pre-commit": "^1.2.2"
   },
   "repository": {

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -eu
+
+DISTRIBUTION_ID=$(aws cloudfront list-distributions --out json | jq .DistributionList.Items[].Id --raw-output | head -1)
+aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths "/*"
