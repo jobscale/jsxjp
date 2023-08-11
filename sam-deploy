@@ -4,9 +4,13 @@ set -eu
 ENV=$1
 mkdir -p logs
 
+open() {
+  nohup google-chrome-stable --incognito $1 > /dev/null 2>&1 &
+}
+
 {
   sam build
   sam deploy --config-env ${ENV}
 } 2>&1 | tee logs/deploy-${ENV}-$(date +%s%3N).log
 
-[[ ${ENV} == "dev" ]] && google-chrome-stable --incognito https://dev.jsx.jp || google-chrome-stable --incognito https://jsx.jp
+[[ ${ENV} == "dev" ]] && open https://dev.jsx.jp || open https://site.jsx.jp

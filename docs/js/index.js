@@ -8,7 +8,7 @@ Vue.createApp({
       spanText: 'guest',
       dateText: '☃',
       sound: undefined,
-      busyTime: '',
+      busyTimes: [],
       busyText: '',
       busy: 0,
       busyList: [],
@@ -91,7 +91,7 @@ Vue.createApp({
         if (this.busy === 1) {
           this.busyList.unshift(1);
           const [, time] = dayjs().add(9, 'hour').toISOString().split(/[T.]/);
-          this.busyTime = time;
+          this.busyTimes.push(time);
         }
         this.busyList[0]++;
         this.busy++;
