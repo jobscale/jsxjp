@@ -32,9 +32,17 @@ Vue.createApp({
       setTimeout(() => this.interval(), 200);
     },
 
-    action() {
+    async action() {
+      if (this.sound) {
+        logger.info(`Sound existing.`);
+        return;
+      }
       this.actionText = 'loading...';
-      this.sound = new Howl({ src: ['//jsx.jp/assets/mp3/warning1.mp3'] });
+      // this.sound = new Howl({ src: ['//jsx.jp/assets/mp3/warning1.mp3'] });
+      const b64 = await fetch('/assets/mp3/warning1.mp3.b64')
+      .then(res => res.text());
+      // Without Binary
+      this.sound = new Howl({ src: [`data:audio/x-mp3;base64,${b64}`] });
       this.sound.once('load', () => {
         this.actionText = '☃';
       });

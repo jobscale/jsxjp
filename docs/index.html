@@ -23,7 +23,7 @@
 
 <body class="smoke">
   <div id="app" class="nav-main">
-    <div class="container">
+    <div @click.prepend="action" class="container">
       <section>
         <div class="inner-section">
           <div class="area">
@@ -31,7 +31,7 @@
               <div>{{ welcomeText }}</div>
             </div>
             <div class="title">
-              <span @click="action">{{ actionText }}</span>
+              <span>{{ actionText }}</span>
               <span>{{ spanText }}</span>
             </div>
           </div>
