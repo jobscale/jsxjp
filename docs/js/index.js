@@ -34,7 +34,7 @@ Vue.createApp({
 
     async action() {
       if (this.sound) {
-        logger.info(`Sound existing.`);
+        logger.info('Sound existing.');
         return;
       }
       this.actionText = 'loading...';
