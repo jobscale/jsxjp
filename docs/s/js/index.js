@@ -12,6 +12,7 @@ Vue.createApp({
 
   async mounted() {
     await this.sign();
+    this.$refs.url.focus();
   },
 
   methods: {
@@ -19,7 +20,7 @@ Vue.createApp({
       return fetch('/auth/sign', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ href: '/s/list' }),
+        body: JSON.stringify({ href: '/s' }),
       })
       .then(res => {
         if (res.status === 200) {

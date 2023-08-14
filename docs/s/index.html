@@ -29,7 +29,7 @@
         </div>
         <section>
           <form @submit.prevent="onSubmit">
-            <input v-model="url" class="input" type="search" maxlength="2048" placeholder="URL"><br>
+            <input ref="url" v-model="url" class="input" type="search" maxlength="2048" placeholder="URL"><br>
             <button :disabled="url.length < 20 || shorten.length > 0" type="submit" :class="url.length >= 20 ? 'fa-beat' : ''">
               <i class="fa-regular fa-down-left-and-up-right-to-center fa-rotate-45 fa-size-big"></i>
             </button>

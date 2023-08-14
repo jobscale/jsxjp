@@ -1,7 +1,9 @@
 const createHttpError = require('http-errors');
 const dayjs = require('dayjs');
+const { JSDOM } = require('jsdom');
 const { connection } = require('../db');
 
+const logger = console;
 const showDate = (date, defaultValue) => (date ? dayjs(date).add(9, 'hours').toISOString()
 .replace(/T/, ' ')
 .replace(/\..*$/, '') : defaultValue);
@@ -17,15 +19,28 @@ class Service {
       const pattern = '^https://raw.githubusercontent.com/jobscale/_/main/infra/(.+)';
       const regExp = new RegExp(pattern);
       const [, key] = html.match(regExp) || [];
-      return db.put({
-        key,
-        html,
-        deletedAt: 0,
-        registerAt: new Date().toISOString(),
-        count: 0,
+      return this.getCaption({ html })
+      .then(caption => {
+        logger.info(caption);
+        return db.put({
+          key,
+          caption,
+          html,
+          deletedAt: 0,
+          registerAt: new Date().toISOString(),
+          count: 0,
+        });
       });
     })
     .then(({ key: id }) => ({ id }));
+  }
+
+  async getCaption({ html }) {
+    return fetch(html)
+    .then(res => res.text())
+    .then(body => new JSDOM(body).window.document)
+    .then(document => document.querySelector('title'))
+    .then(title => title && title.textContent);
   }
 
   async find({ key }) {

@@ -35,7 +35,7 @@
               </label>
 
               <div v-for="item of items" class="note">
-                <div>{{ item.id }}</div>
+                <div :title="item.caption">{{ item.id }}</div>
                 <div>
                   <span class="inb">{{ item.registerAt }}</span><span class="inb">{{ item.lastAccess }}</span>
                 </div>
