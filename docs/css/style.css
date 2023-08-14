@@ -221,6 +221,9 @@ input {
 .pos-abs.github {
   left: 16em;
 }
+.pos-abs.xvideos {
+  right: 8em;
+}
 .note .btn-area {
   display: flex;
   justify-content: space-between;
@@ -253,6 +256,10 @@ input {
   content: "GitHub";
   margin-left: 2px;
 }
+.tag.xvideos::after {
+  content: "Videos";
+  margin-left: 2px;
+}
 .shorten,
 .note:has(.shorten) {
   --tagColor: #875;
@@ -265,9 +272,14 @@ input {
 .note:has(.github) {
   --tagColor: #858;
 }
+.xvideos,
+.note:has(.xvideos) {
+  --tagColor: #302;
+}
 .shorten,
 .personal,
-.github {
+.github,
+.xvideos {
   background-color: var(--tagColor);
 }
 label:hover {
@@ -283,11 +295,17 @@ label div {
   border: 1px solid var(--tagColor);
   position: absolute;
   top: 0;
-  display: inline-flex;
+}
+#xvideos-box + label div {
+  border: 1px solid var(--tagColor);
+  position: absolute;
+  top: 0;
+  opacity: 0;
 }
 #shorten-box:checked + label div,
 #personal-box:checked + label div,
-#github-box:checked + label div {
+#github-box:checked + label div,
+#xvideos-box:checked + label div {
   opacity: 1;
 }
 
@@ -321,7 +339,8 @@ label div {
 }
 #shorten-box ~ .note:has(.shorten),
 #personal-box ~ .note:has(.personal),
-#github-box ~ .note:has(.github) {
+#github-box ~ .note:has(.github),
+#xvideos-box ~ .note:has(.xvideos) {
   width: 0;
   height: 0;
   padding: 0;
@@ -329,9 +348,11 @@ label div {
   opacity: 0;
   border-width: 0;
 }
+
 #shorten-box:checked ~ .note:has(.shorten),
 #personal-box:checked ~ .note:has(.personal),
-#github-box:checked ~ .note:has(.github) {
+#github-box:checked ~ .note:has(.github),
+#xvideos-box:checked ~ .note:has(.xvideos) {
   width: 32%;
   height: 11em;
   padding: 0.3em;

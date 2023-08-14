@@ -53,7 +53,9 @@ Vue.createApp({
       .then(({ rows }) => {
         const tag = item => {
           if (!item.html) return 'personal';
-          return item.html.match(/github/) ? 'github' : 'shorten';
+          if (item.html.match(/github/)) return 'github';
+          if (item.html.match(/xvideos/)) return 'xvideos';
+          return 'shorten';
         };
         this.items = rows.map(item => ({
           ...item,
