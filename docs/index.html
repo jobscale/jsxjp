@@ -48,7 +48,7 @@
           <span class="inline-scroll"><span class="busy-ts" :title="busyTimes.join('\n')">{{ busyTimes[0] }}</span></span>
           <span class="inline-scroll"><span class="busy">{{ busyText }}</span></span>
           <span class="inline-scroll">
-            <span v-for="num of busyList">{{ num }}</span>
+            <span v-for="item of busyList" :title="item.time">{{ item.num }}</span>
           </span>
         </div>
       </section>

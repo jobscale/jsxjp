@@ -97,12 +97,12 @@ Vue.createApp({
     checkDate() {
       if (this.busy) {
         if (this.busy === 1) {
-          this.busyList.unshift(1);
           const [, time] = dayjs().add(9, 'hour').toISOString().split(/[T.]/);
+          this.busyList.unshift({ num: 1, time });
           this.busyTimes.unshift(time);
           if (this.busyTimes.length > 16) this.busyTimes.length = 16;
         }
-        this.busyList[0]++;
+        this.busyList[0].num++;
         this.busy++;
         this.busyText = `${this.busy} 🍺`;
         if (this.stack.length > 10) this.stack.length = 10;
