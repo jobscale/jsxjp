@@ -195,6 +195,14 @@ input {
 }
 
 
+.pos-abs {
+  display: inline-block;
+  margin: 0.5em;
+}
+.pos-abs.xvideos {
+  position: absolute;
+  right: 8em;
+}
 
 /* list-wrapper */
 .list-wrapper, .list-wrapper * {
@@ -204,25 +212,15 @@ input {
   position: relative;
   width: 99vw;
 }
+.ctl-area {
+  margin: 2em auto 0;
+}
 .flex-div {
   display: inline-flex;
   min-width: 50em;
   flex-wrap: wrap;
-  margin: 4em auto;
+  margin: 2em auto;
   width: 100%;
-}
-.pos-abs {
-  display: inline-block;
-  margin: 0.5em;
-}
-.pos-abs.personal {
-  left: 8em;
-}
-.pos-abs.github {
-  left: 16em;
-}
-.pos-abs.xvideos {
-  right: 8em;
 }
 .note .btn-area {
   display: flex;
@@ -282,51 +280,82 @@ input {
 .xvideos {
   background-color: var(--tagColor);
 }
-label:hover {
-  cursor: pointer;
-  opacity: 0.8;
+.dark-scheme {
+  --border-color: #ddd;
 }
-label div {
-  opacity: 0.3;
+.light-scheme {
+  --border-color: #333;
 }
-#shorten-box + label div,
-#personal-box + label div,
-#github-box + label div {
-  border: 1px solid var(--tagColor);
-  position: absolute;
-  top: 0;
+label input[type="checkbox"] {
+  display: none;
 }
-#xvideos-box + label div {
-  border: 1px solid var(--tagColor);
-  position: absolute;
-  top: 0;
+label:has(input[type="checkbox"]) div {
+  border: 1px solid var(--border-color);
+}
+label:has(#xvideos-box) {
   opacity: 0;
 }
-#shorten-box:checked + label div,
-#personal-box:checked + label div,
-#github-box:checked + label div,
-#xvideos-box:checked + label div {
+label:has(input[type="checkbox"]) {
+  opacity: 0.3;
+}
+label:has(input[type="checkbox"]):hover {
+  cursor: pointer;
+  opacity: 0.7;
+}
+label:has(input:checked) {
   opacity: 1;
 }
+label:has(input:checked) div {
+  box-shadow: var(--border-color) 0.2em 0.2em 0.5em;
+}
 
-.note {
+div .note:has(.tag) {
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  border-width: 0;
+  transition: all 300ms ease-in-out 0s;
+}
+div .note:has(.tag) button,
+div .note:has(.tag) a {
+  display: none;
+}
+.ctl-area:has(#shorten-box:checked) ~ div .note:has(.shorten) button,
+.ctl-area:has(#shorten-box:checked) ~ div .note:has(.shorten) a,
+.ctl-area:has(#personal-box:checked) ~ div .note:has(.personal) button,
+.ctl-area:has(#personal-box:checked) ~ div .note:has(.personal) a,
+.ctl-area:has(#github-box:checked) ~ div .note:has(.github) button,
+.ctl-area:has(#github-box:checked) ~ div .note:has(.github) a,
+.ctl-area:has(#xvideos-box:checked) ~ div .note:has(.xvideos) button,
+.ctl-area:has(#xvideos-box:checked) ~ div .note:has(.xvideos) a {
+  display: inherit;
+}
+.ctl-area:has(#shorten-box:checked) ~ div .note:has(.shorten),
+.ctl-area:has(#personal-box:checked) ~ div .note:has(.personal),
+.ctl-area:has(#github-box:checked) ~ div .note:has(.github),
+.ctl-area:has(#xvideos-box:checked) ~ div .note:has(.xvideos) {
+  display: flex;
   border: 1px solid #777;
   box-sizing: border-box;
   line-height: 1.5;
   border-radius: 0.5em;
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 4px;
   overflow: auto;
-  display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: all 300ms ease-in-out 0s;
+  width: 32%;
+  height: 11em;
+  padding: 0.3em;
+  margin: 0.3em;
+  opacity: 1;
+  border-width: 1px;
 }
 .note:hover {
-  border: 14px solid var(--tagColor);
+  border: 1px solid var(--tagColor);
+  box-shadow: var(--tagColor) 0 0 0.5em;
 }
-.note::selection {
-  opacity: 1;
-}
+
 .one-line {
   overflow: scroll hidden;
   height: 2.7em;
@@ -336,32 +365,6 @@ label div {
 .inb {
   font-size: 0.8em;
   padding: 0 0.8em;
-}
-#shorten-box ~ .note:has(.shorten),
-#personal-box ~ .note:has(.personal),
-#github-box ~ .note:has(.github),
-#xvideos-box ~ .note:has(.xvideos) {
-  width: 0;
-  height: 0;
-  padding: 0;
-  margin: 0;
-  opacity: 0;
-  border-width: 0;
-}
-
-#shorten-box:checked ~ .note:has(.shorten),
-#personal-box:checked ~ .note:has(.personal),
-#github-box:checked ~ .note:has(.github),
-#xvideos-box:checked ~ .note:has(.xvideos) {
-  width: 32%;
-  height: 11em;
-  padding: 0.3em;
-  margin: 0.3em;
-  opacity: 1;
-  border-width: 1px;
-}
-input[type="checkbox"] {
-  display: none;
 }
 /* list-wrapper */
 

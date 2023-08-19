@@ -20,24 +20,25 @@
         </div>
         <section>
           <div class="list-wrapper">
-            <div class="flex-div">
-              <input type="checkbox" id="shorten-box" checked />
-              <label for="shorten-box">
+            <div class="ctl-area">
+              <label>
                 <div class="pos-abs tag shorten"></div>
+                <input type="checkbox" id="shorten-box" checked />
               </label>
-              <input type="checkbox" id="personal-box" checked />
-              <label for="personal-box">
+              <label>
                 <div class="pos-abs tag personal"></div>
+                <input type="checkbox" id="personal-box" checked />
               </label>
-              <input type="checkbox" id="github-box" checked />
-              <label for="github-box">
+              <label>
                 <div class="pos-abs tag github"></div>
+                <input type="checkbox" id="github-box" checked />
               </label>
-              <input type="checkbox" id="xvideos-box" />
-              <label for="xvideos-box">
+              <label>
                 <div class="pos-abs tag xvideos"></div>
+                <input type="checkbox" id="xvideos-box" />
               </label>
-
+            </div>
+            <div class="flex-div">
               <div v-for="item of items" class="note">
                 <div :title="item.caption">{{ item.id }}</div>
                 <div>
