@@ -40,6 +40,7 @@ Vue.createApp({
     onFind(rest) {
       const { id } = rest || {};
       this.loading = true;
+      this.items = [];
       const params = ['../find', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
@@ -61,9 +62,18 @@ Vue.createApp({
           ...item,
           tag: tag(item),
         }));
+        this.onSort();
       })
       .catch(e => logger.error(e.message))
       .then(() => setTimeout(() => { this.loading = false; }, 1000));
+    },
+
+    onSort() {
+      this.items = this.items.sort((a, b) => {
+        const ta = new Date(a.lastAccess).getTime() || 0;
+        const tb = new Date(b.lastAccess).getTime() || 0;
+        return ta - tb;
+      });
     },
 
     onRemove(event) {
