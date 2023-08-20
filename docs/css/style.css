@@ -82,6 +82,10 @@ section {
   letter-spacing: 0.1em;
 }
 
+.busy {
+  cursor: default;
+}
+
 .fa-bagel {
   opacity: 0.5;
 }
