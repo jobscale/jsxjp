@@ -37,7 +37,7 @@
                 <div class="pos-abs tag xvideos"></div>
                 <input type="checkbox" id="xvideos-box" />
               </label>
-              <button @click.prepend="onFind" class="btn-middle" title="Refresh">
+              <button @click.prevent="onFind" class="btn-middle" title="Refresh">
                 <i class="fa-regular fa-arrow-rotate-right"></i>
               </button>
             </div>
@@ -61,7 +61,7 @@
                   <button v-if="!item.deletedAt" class="button" :data-id="item.id">
                     <i class="fa-light fa-pen-nib"></i>
                   </button>
-                  <button v-if="!item.deletedAt" @click.prepend="onRemove" class="button btn-remove" :data-id="item.id">
+                  <button v-if="!item.deletedAt" @click.prevent="onRemove" class="button btn-remove" :data-id="item.id">
                     <i class="fa-regular fa-trash-can fa-fade"></i>
                   </button>
                 </div>
