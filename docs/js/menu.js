@@ -22,13 +22,13 @@ class Menu {
   trigger() {
     logger.info('menu trigger');
     this.initMenu()
-    .then(() => {
-      document.querySelector('.nav-trigger')
-      .addEventListener('click', event => this.navigation(event));
-      return new Promise(resolve => { setTimeout(resolve, 2000); });
-    })
+    .then(() => new Promise(resolve => { setTimeout(resolve, 2000); }))
     .then(() => {
       document.querySelector('.nav-container').style = 'visibility: inherit';
+      const trigger = document.querySelector('.nav-trigger');
+      trigger.addEventListener('click', event => {
+        this.navigation(event);
+      });
     });
   }
 }
