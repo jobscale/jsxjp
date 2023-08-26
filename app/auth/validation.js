@@ -6,6 +6,7 @@ class Validation {
     const { error } = Joi.object({
       login: Joi.string().pattern(login).max(30),
       password: Joi.string().max(30),
+      code: Joi.string(),
     }).validate(req.body);
     if (error) {
       res.status(400).json({ message: error.message });

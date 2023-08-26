@@ -5,16 +5,20 @@ const { service: apiService } = require('../api/service');
 
 class Controller {
   login(req, res) {
-    const { login, password } = req.body;
-    authService.login({ login, password })
+    const { login, password, code } = req.body;
+    authService.login({ login, password, code })
     .then(({ token, multiFactor }) => {
-      this.cookie(res, 'token', token, dayjs().add(12, 'hour'));
-      this.cookie(res, 'multiFactor', multiFactor, dayjs().add(6, 'minute'));
-      apiService.slack({
-        icon_emoji: ':unlock:',
-        username: 'Multi Factor Login',
-        text: multiFactor,
-      });
+      if (code) {
+        this.cookie(res, 'token', token, dayjs().add(12, 'hour'));
+      } else if (multiFactor) {
+        apiService.slack({
+          icon_emoji: ':unlock:',
+          username: 'Multi Factor Login',
+          text: multiFactor,
+        });
+        res.json({});
+        return;
+      }
       const { href } = req.cookies;
       this.cookie(res, 'href', '', dayjs().add(10, 'second'));
       const ignore = [

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Tangerine'>
     <link rel="stylesheet" href="/css/form.css">
+    <link rel="stylesheet" href="/css/popup.css">
     <link rel="stylesheet" href="/css/menu.css">
     <script src="https://cdn.jsdelivr.net/npm/@jobscale/logger@0.1.0/index.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.prod.min.js"></script>
@@ -35,9 +36,23 @@
           </form>
         </section>
       </div>
+      <div v-if="auth.allow" id="popup">
+        <div class="grid-area">
+          <div class="white-area">
+            <div class="rainbow">
+              <p>Input your authorization code</p>
+              <form @submit.prevent="onSubmitAuth" class="auth-area">
+                <input ref="code" v-model="auth.code" class="center" placeholder="auth code">
+                <button type="submit" :disabled="auth.code.length < 6" class="center btn">AUTH</button>
+                <div>{{ auth.statusText }}</div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
       <div v-if="loading" id="loading"></div>
     </div>
   </body>
-  <script type="text/javascript" src="/js/auth/login.js"></script>
+  <script type="text/javascript" src="/js/auth/index.js"></script>
   <script defer src="/js/menu.js"></script>
 </html>

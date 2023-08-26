@@ -1,17 +1,41 @@
 const createHttpError = require('http-errors');
+const speakeasy = require('speakeasy');
 const { auth } = require('.');
 const { createHash } = require('../user');
 const { connection } = require('../db');
 
 const jwtSecret = 'node-express-ejs';
+const getSecret = () => 'JSXJP';
 
 class Service {
   async now() {
     return new Date().toISOString();
   }
 
+  generateSecret() {
+    return speakeasy.generateSecret({
+      name: 'jsx.jp',
+    }).base32;
+  }
+
+  generateCode() {
+    return speakeasy.totp({
+      secret: getSecret(),
+      encoding: 'base32',
+    });
+  }
+
+  verifyCode(token) {
+    return speakeasy.totp.verify({
+      secret: getSecret(),
+      encoding: 'base32',
+      token,
+      window: 1,
+    });
+  }
+
   async login(rest) {
-    const { login, password } = rest;
+    const { login, password, code } = rest;
     if (!login || !password) throw createHttpError(400);
     const ts = new Date().toISOString();
     const db = await connection();
@@ -22,13 +46,13 @@ class Service {
     })
     .then(({ items: [item] }) => {
       if (!item) throw createHttpError(401);
-      const multiFactor = `0000${Math.floor(Math.random() * 100000)}`.slice(-5);
+      if (code && !this.verifyCode(code)) throw createHttpError(401);
+      const multiFactor = !code && this.generateCode();
       return db.update({
         lastAccess: ts,
-        multiFactor,
       }, item.key).then(() => ({
-        multiFactor,
         token: auth.sign({ login, ts }, jwtSecret),
+        multiFactor,
       }));
     });
   }
