@@ -121,10 +121,13 @@ section {
 }
 
 .links a {
-  margin: 0.3em 0.5em;
+  margin: 0.3em 0;
   text-decoration: none;
   font-size: 0.8em;
   letter-spacing: 0.1em;
+}
+.links a + a {
+  margin-left: 0.8em;
 }
 
 small, small > * {
