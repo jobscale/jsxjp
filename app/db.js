@@ -1,7 +1,7 @@
 const { Deta } = require('deta');
 const { planNine } = require('./js-proxy');
 
-const { ENV, PARTNER_HOST } = process.env;
+const { PARTNER_HOST } = process.env;
 
 class DB {
   async allowInsecure(use) {
@@ -36,16 +36,18 @@ class DB {
     .then(env => env.DETA_PROJECT_KEY);
   }
 
-  async connectDB() {
+  async connection(tableName) {
     if (!this.cache) this.cache = {};
-    if (this.cache.db) return this.cache.db;
+    if (this.cache[tableName]) return this.cache[tableName];
     const detaKey = await this.getKey();
     const deta = Deta(detaKey);
-    this.cache.db = deta.Base(`${ENV || 'dev'}-user`);
-    return this.cache.db;
+    this.cache[tableName] = deta.Base(tableName);
+    return this.cache[tableName];
   }
 }
 
+const db = new DB();
+
 module.exports = {
-  connection: () => new DB().connectDB(),
+  connection: tableName => db.connection(tableName),
 };

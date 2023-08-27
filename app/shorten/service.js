@@ -3,7 +3,10 @@ const dayjs = require('dayjs');
 const { JSDOM } = require('jsdom');
 const { connection } = require('../db');
 
+const { ENV } = process.env;
+const tableName = `${ENV || 'dev'}-shorten`;
 const logger = console;
+
 const showDate = (date, defaultValue) => (date ? dayjs(date).add(9, 'hours').toISOString()
 .replace(/T/, ' ')
 .replace(/\..*$/, '') : defaultValue);
@@ -12,7 +15,7 @@ class Service {
   async register(rest) {
     const { html } = rest;
     if (!html) throw createHttpError(400);
-    const db = await connection();
+    const db = await connection(tableName);
     return db.fetch({ html })
     .then(({ items: [item] }) => {
       if (item) return item;
@@ -44,10 +47,9 @@ class Service {
   }
 
   async find({ key }) {
-    const db = await connection();
+    const db = await connection(tableName);
     return db.fetch({ key })
-    .then(({ items }) => items
-    .map(item => {
+    .then(({ items }) => items.map(item => {
       item.registerAt = showDate(item.registerAt, '-');
       item.lastAccess = showDate(item.lastAccess, '-');
       item.deletedAt = showDate(item.deletedAt);
@@ -58,7 +60,8 @@ class Service {
   }
 
   async remove({ key }) {
-    const db = await connection();
+    if (!key) throw createHttpError(400);
+    const db = await connection(tableName);
     return db.get(key)
     .then(data => {
       if (!data) throw createHttpError(400);
@@ -71,7 +74,7 @@ class Service {
 
   async redirect(rest) {
     const { id: key } = rest;
-    const db = await connection();
+    const db = await connection(tableName);
     return db.get(key)
     .then(data => {
       if (!data) throw createHttpError(400);

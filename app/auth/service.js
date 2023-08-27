@@ -7,6 +7,9 @@ const { connection } = require('../db');
 const jwtSecret = 'node-express-ejs';
 const getSecret = () => 'JSXJP';
 
+const { ENV } = process.env;
+const tableName = `${ENV || 'dev'}-user`;
+
 class Service {
   async now() {
     return new Date().toISOString();
@@ -40,7 +43,7 @@ class Service {
     const { login, password, code } = rest;
     if (!login || !password) throw createHttpError(400);
     const ts = new Date().toISOString();
-    const db = await connection();
+    const db = await connection(tableName);
     return db.fetch({
       login,
       hash: createHash(`${login}/${password}`),

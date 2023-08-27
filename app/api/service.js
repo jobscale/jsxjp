@@ -1,14 +1,32 @@
 const os = require('os');
+const nodemailer = require('nodemailer');
+const { logger } = require('@jobscale/logger');
 const { Slack } = require('@jobscale/slack');
-const { planEight } = require('../js-proxy');
+const { service: configService } = require('../config/service');
 
-const { ENV, PARTNER_HOST } = process.env;
+const { PARTNER_HOST } = process.env;
 
 class Service {
-  slack(rest) {
-    return this.getKey()
+  sendMail({ to, subject, text }) {
+    return configService.getEnv('smtp')
+    .then(env => {
+      const smtp = nodemailer.createTransport(env);
+      return smtp.sendMail({
+        from: 'info@jsx.jp',
+        to,
+        subject,
+        text,
+      });
+    })
+    .then(res => logger.info(res))
+    .catch(e => logger.error(e));
+  }
+
+  async slack(rest) {
+    return configService.getEnv('slack')
     .then(env => new Slack(env).send(rest))
-    .then(res => ({ ...res, ts: Date.now() }));
+    .then(res => logger.info(res))
+    .catch(e => logger.error(e));
   }
 
   async hostname() {
@@ -45,11 +63,6 @@ class Service {
       this.cache.env = res.data;
       return this.cache.env;
     });
-  }
-
-  async getKey() {
-    if (planEight) return JSON.parse(planEight(ENV));
-    return this.fetchEnv();
   }
 }
 

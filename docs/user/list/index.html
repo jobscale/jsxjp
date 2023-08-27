@@ -16,26 +16,22 @@
     <div id="app" class="nav-main">
       <div v-if="signed" class="container">
         <div>
-          <h2>List of Shorten</h2>
+          <h2>List of User</h2>
         </div>
         <section>
           <div class="list-wrapper">
             <div class="ctl-area">
               <label>
-                <div class="pos-abs tag shorten"></div>
-                <input type="checkbox" id="shorten-box" checked />
+                <div class="pos-abs tag admin"></div>
+                <input type="checkbox" id="admin-box" checked />
               </label>
               <label>
-                <div class="pos-abs tag personal"></div>
-                <input type="checkbox" id="personal-box" checked />
+                <div class="pos-abs tag staff"></div>
+                <input type="checkbox" id="staff-box" checked />
               </label>
               <label>
-                <div class="pos-abs tag github"></div>
-                <input type="checkbox" id="github-box" checked />
-              </label>
-              <label>
-                <div class="pos-abs tag xvideos"></div>
-                <input type="checkbox" id="xvideos-box" />
+                <div class="pos-abs tag guest"></div>
+                <input type="checkbox" id="guest-box" checked />
               </label>
               <button @click.prevent="onFind" class="btn-middle" title="Refresh">
                 <i class="fa-regular fa-arrow-rotate-right"></i>

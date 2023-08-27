@@ -254,26 +254,46 @@ input {
   width: fit-content;
   border-radius: 1em;
 }
+.tag + .tag {
+  margin-left: 1em;
+}
 .tag::before {
   content: "#";
   margin-right: 2px;
   opacity: 0.3;
 }
+.tag.admin::after {
+  content: "Admin";
+}
+.tag.staff::after {
+  content: "Staff";
+}
+.tag.guest::after {
+  content: "Guest";
+}
 .tag.shorten::after {
   content: "Shorten";
-  margin-left: 2px;
 }
 .tag.personal::after {
   content: "Personal";
-  margin-left: 2px;
 }
 .tag.github::after {
   content: "GitHub";
-  margin-left: 2px;
 }
 .tag.xvideos::after {
   content: "Videos";
-  margin-left: 2px;
+}
+.admin,
+.note:has(.admin) {
+  --tagColor: #875;
+}
+.staff,
+.note:has(.staff) {
+  --tagColor: #579;
+}
+.guest,
+.note:has(.guest) {
+  --tagColor: #858;
 }
 .shorten,
 .note:has(.shorten) {
@@ -291,10 +311,8 @@ input {
 .note:has(.xvideos) {
   --tagColor: #302;
 }
-.shorten,
-.personal,
-.github,
-.xvideos {
+.admin, .staff, .guest,
+.shorten, .personal, .github, .xvideos {
   background-color: var(--tagColor);
 }
 .dark-scheme {
@@ -346,6 +364,12 @@ div .note:has(.tag) button,
 div .note:has(.tag) a {
   display: none;
 }
+.ctl-area:has(#admin-box:checked) ~ div .note:has(.admin) button,
+.ctl-area:has(#admin-box:checked) ~ div .note:has(.admin) a,
+.ctl-area:has(#staff-box:checked) ~ div .note:has(.staff) button,
+.ctl-area:has(#staff-box:checked) ~ div .note:has(.staff) a,
+.ctl-area:has(#guest-box:checked) ~ div .note:has(.guest) button,
+.ctl-area:has(#guest-box:checked) ~ div .note:has(.guest) a,
 .ctl-area:has(#shorten-box:checked) ~ div .note:has(.shorten) button,
 .ctl-area:has(#shorten-box:checked) ~ div .note:has(.shorten) a,
 .ctl-area:has(#personal-box:checked) ~ div .note:has(.personal) button,
@@ -356,6 +380,9 @@ div .note:has(.tag) a {
 .ctl-area:has(#xvideos-box:checked) ~ div .note:has(.xvideos) a {
   display: inherit;
 }
+.ctl-area:has(#admin-box:checked) ~ div .note:has(.admin),
+.ctl-area:has(#staff-box:checked) ~ div .note:has(.staff),
+.ctl-area:has(#guest-box:checked) ~ div .note:has(.guest),
 .ctl-area:has(#shorten-box:checked) ~ div .note:has(.shorten),
 .ctl-area:has(#personal-box:checked) ~ div .note:has(.personal),
 .ctl-area:has(#github-box:checked) ~ div .note:has(.github),

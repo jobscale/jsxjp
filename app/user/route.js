@@ -15,6 +15,10 @@ router.post(
   (...args) => userController.reset(...args),
 );
 router.post(
+  '/find',
+  (...args) => userController.find(...args),
+);
+router.post(
   '/remove',
   (...args) => userController.remove(...args),
 );

@@ -30,6 +30,18 @@ class Controller {
     });
   }
 
+  find(req, res) {
+    const { id: key } = req.body;
+    userService.find({ key })
+    .then((rows) => {
+      res.json({ rows });
+    })
+    .catch(e => {
+      if (!e.statusCode) e.statusCode = 500;
+      res.status(e.statusCode).json({ message: e.message });
+    });
+  }
+
   remove(req, res) {
     const { id: key } = req.body;
     userService.remove({ key })
