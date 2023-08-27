@@ -19,9 +19,11 @@ class Service {
   }
 
   generateCode() {
+    const time = Math.floor(Date.now() / 1000) + 30;
     return speakeasy.totp({
       secret: getSecret(),
       encoding: 'base32',
+      time,
     });
   }
 
