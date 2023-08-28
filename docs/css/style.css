@@ -22,7 +22,9 @@ body {
   height: 100vh;
 }
 
-.nav-container, .nav-overlay { visibility: hidden; }
+.nav-trigger, .nav-container, .nav-overlay {
+  visibility: hidden;
+}
 
 #app {
   display: flex;

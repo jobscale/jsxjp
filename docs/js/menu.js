@@ -25,10 +25,12 @@ class Menu {
     .then(() => new Promise(resolve => { setTimeout(resolve, 2000); }))
     .then(() => {
       document.querySelector('.nav-container').style = 'visibility: inherit';
+    })
+    .then(() => new Promise(resolve => { setTimeout(resolve, 100); }))
+    .then(() => {
       const trigger = document.querySelector('.nav-trigger');
-      trigger.addEventListener('click', event => {
-        this.navigation(event);
-      });
+      trigger.addEventListener('click', event => this.navigation(event));
+      trigger.style = 'visibility: inherit';
     });
   }
 }

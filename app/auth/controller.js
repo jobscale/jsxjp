@@ -49,6 +49,15 @@ class Controller {
     });
   }
 
+  totp(req, res) {
+    const { secret } = req.body;
+    authService.totp({ secret })
+    .then(({ code }) => res.json({ code }))
+    .catch(e => {
+      res.status(403).json({ message: 'Access Deny' });
+    });
+  }
+
   verify(req, res, next) {
     const { token } = req.cookies;
     authService.verify(token)

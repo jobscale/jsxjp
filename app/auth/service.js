@@ -66,6 +66,16 @@ class Service {
     if (!token) throw createHttpError(400);
     if (!auth.verify(token, jwtSecret)) throw createHttpError(403);
   }
+
+  async totp({ secret }) {
+    const time = Math.floor(Date.now() / 1000) + 30;
+    const code = speakeasy.totp({
+      secret,
+      encoding: 'base32',
+      time,
+    });
+    return { code };
+  }
 }
 
 module.exports = {
