@@ -53,7 +53,7 @@ class Controller {
   totp(req, res) {
     const { secret } = req.body;
     authService.totp({ secret })
-    .then(({ code }) => res.json({ code }))
+    .then(result => res.json(result))
     .catch(e => {
       if (!e.statusCode) e = createHttpError(403);
       res.status(e.statusCode || 500).json({ message: e.message });

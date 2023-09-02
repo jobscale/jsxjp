@@ -74,7 +74,12 @@ class Service {
       encoding: 'base32',
       time,
     });
-    return { code };
+    const list = [code];
+    list.push(speakeasy.totp({
+      secret,
+      encoding: 'base32',
+    }));
+    return { code, list };
   }
 }
 

@@ -178,6 +178,12 @@ input {
   font-size: 0.9em;
 }
 
+.output.code-6 {
+  width: 6em;
+  font-size: 0.9em;
+  text-align: center;
+}
+
 .try-action * {
   color: cyan;
 }

@@ -9,14 +9,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@jobscale/logger@0.1.0/index.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.prod.min.js"></script>
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.3.0/css/all.css">
-    <title>Shorten List - jsx.jp</title>
+    <title>TOTP Online - jsx.jp</title>
   </head>
 
   <body>
     <div id="app" class="nav-main">
-      <div v-if="signed" class="container">
+      <div class="container">
         <div>
-          <h2>URL Shortener</h2>
+          <h2>TOTP Online</h2>
           <div class="description">
             <small>
               <div>Acts contrary to public order and morals are prohibited.</div>
@@ -29,16 +29,16 @@
         </div>
         <section>
           <form @submit.prevent="onSubmit">
-            <input ref="url" v-model="url" class="input" type="search" maxlength="2048" placeholder="URL"><br>
-            <button :disabled="url.length < 20 || shorten.length > 0" type="submit" :class="url.length >= 20 ? 'fa-beat' : ''">
+            <input ref="token" v-model="token" class="input" type="search" maxlength="2048" placeholder="TOTP Token"><br>
+            <button :disabled="token.length < 5" type="submit" :class="token.length >= 5 ? 'fa-beat' : ''">
               <i class="fa-regular fa-down-left-and-up-right-to-center fa-rotate-45 fa-size-big"></i>
             </button>
           </form>
         </section>
-        <section>
+        <section v-for="(item, index) of list">
           <main ref="clipboard">
-            <input v-model="shorten" class="output" type="search" :readonly="true">
-            <button @click="onCopyToClipboard" :disabled="!shorten.length">
+            <input v-model="item" class="output code-6" type="search" :readonly="true">
+            <button @click="onCopyToClipboard(index)">
               <i class="fa-regular fa-clone"></i>
             </button>
           </main>
