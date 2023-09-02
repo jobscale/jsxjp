@@ -90,3 +90,15 @@ jobs:
           curl -is -X POST -H 'Content-Type: application/json' \
           https://jsx.jp/api/slack \
           --data "{\"icon_emoji\":\":whale:\",\"username\":\"GitHub\",\"text\":\"$GIP\\n$DATA\"}" || echo
+
+      - name: Error handling
+        if: ${{ steps.error_execution.outcome == 'failure' }}
+        run: |
+          echo "Error handling"
+          echo ${{ steps.error_execution.outcome }}
+          GIP=$(curl -s https://inet-ip.info/ip)
+          echo "Global: $GIP"
+          DATA=$(echo "${{ steps.error_execution.outcome }} ${{ steps.meta.outputs.labels }}" | sed -z -e 's/\n/\\n/g')
+          curl -is -X POST -H 'Content-Type: application/json' \
+          https://jsx.jp/api/slack \
+          --data "{\"icon_emoji\":\":whale:\",\"username\":\"GitHub\",\"text\":\"$GIP\\n$DATA\"}" || echo
