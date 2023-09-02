@@ -16,6 +16,19 @@ class Validation {
     }
     next();
   }
+
+  email(req, res, next) {
+    const { body } = req;
+    const { error } = Joi.object({
+      subject: Joi.string().required().min(1).max(2 ** 16 - 1),
+      text: Joi.string().required().min(1).max(2 ** 16 - 1),
+    }).validate(body);
+    if (error) {
+      res.status(400).json({ message: error.message });
+      return;
+    }
+    next();
+  }
 }
 
 module.exports = {

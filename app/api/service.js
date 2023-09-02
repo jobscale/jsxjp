@@ -7,24 +7,20 @@ const { service: configService } = require('../config/service');
 const { PARTNER_HOST } = process.env;
 
 class Service {
-  sendMail({ to, subject, text }) {
-    return configService.getEnv('smtp')
-    .then(env => {
-      const smtp = nodemailer.createTransport(env);
-      return smtp.sendMail({
-        from: 'info@jsx.jp',
-        to,
-        subject,
-        text,
-      });
-    })
+  async slack(rest) {
+    const env = await configService.getEnv('slack');
+    return new Slack(env).send(rest)
     .then(res => logger.info(res))
     .catch(e => logger.error(e));
   }
 
-  async slack(rest) {
-    return configService.getEnv('slack')
-    .then(env => new Slack(env).send(rest))
+  async email(rest) {
+    const env = await configService.getEnv('smtp');
+    const smtp = nodemailer.createTransport(env);
+    return smtp.sendMail({
+      ...rest,
+      from: 'no-reply@jsx.jp',
+    })
     .then(res => logger.info(res))
     .catch(e => logger.error(e));
   }

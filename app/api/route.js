@@ -11,6 +11,11 @@ class Route {
       (...args) => apiController.slack(...args),
     );
     router.post(
+      '/email',
+      (...args) => apiValidation.email(...args),
+      (...args) => apiController.email(...args),
+    );
+    router.post(
       '/hostname',
       (...args) => apiController.hostname(...args),
     );
