@@ -20,13 +20,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm i
-    - run: npm run lint
-    - run: npm test
 
     - name: Error handling
       if: ${{ steps.error_execution.outcome == 'failure' }}
@@ -39,3 +37,9 @@ jobs:
         curl -is -X POST -H 'Content-Type: application/json' \
         https://jsx.jp/api/slack \
         --data "{\"icon_emoji\":\":whale:\",\"username\":\"GitHub\",\"text\":\"$GIP\\n$DATA\"}" || echo
+
+    - name: Build Step
+      run: |
+        npm i
+        npm run lint
+        npm test
