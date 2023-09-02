@@ -10,8 +10,12 @@ router.post(
   (...args) => authController.login(...args),
 );
 router.post('/auth/sign', (...args) => authController.sign(...args));
-router.post('/auth/totp', (...args) => authController.totp(...args));
-router.options('/auth/totp', (req, res) => res.json(''));
+router.options('/auth/totp', (req, res) => res.json());
+router.post(
+  '/auth/totp',
+  (...args) => authValidation.totp(...args),
+  (...args) => authController.totp(...args),
+);
 router.use('', (...args) => authController.verify(...args));
 router.get('/auth/logout', (...args) => authController.logout(...args));
 
