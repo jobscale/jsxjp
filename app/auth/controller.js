@@ -1,4 +1,5 @@
 const dayjs = require('dayjs');
+const createHttpError = require('http-errors');
 const { logger } = require('@jobscale/logger');
 const { service: authService } = require('./service');
 const { service: apiService } = require('../api/service');
@@ -54,7 +55,8 @@ class Controller {
     authService.totp({ secret })
     .then(({ code }) => res.json({ code }))
     .catch(e => {
-      res.status(403).json({ message: 'Access Deny' });
+      if (!e.statusCode) e = createHttpError(403);
+      res.status(e.statusCode || 500).json({ message: e.message });
     });
   }
 
