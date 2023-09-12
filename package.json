@@ -1,7 +1,7 @@
 {
   "name": "jsxjp",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "node express vue and ejs template SSR MVC",
   "author": "jobscale <jobscale@users.noreply.github.com>",
   "license": "MIT",
@@ -16,7 +16,7 @@
   ],
   "dependencies": {
     "@jobscale/logger": "^0.2.0",
-    "@jobscale/slack": "^0.1.0",
+    "@jobscale/slack": "^0.2.0",
     "aws-serverless-express": "^3.4.0",
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.11.9",
