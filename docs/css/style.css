@@ -206,7 +206,6 @@ td {
 }
 section {
   overflow-x: auto;
-  margin: 1em 0;
 }
 
 .ss-input {
@@ -219,6 +218,7 @@ section {
 
 form {
   padding: 0.5em 0;
+  overflow: hidden;
 }
 input {
   border-radius: 0.5em;
@@ -248,8 +248,9 @@ input {
   width: 10em;
 }
 
-.pink {
-  border-color: #a33;
+.pink.error {
+  border: 2px solid #a33;
+  background-color: rgb(200, 0, 0, 0.04);
 }
 
 .output.code-6 {

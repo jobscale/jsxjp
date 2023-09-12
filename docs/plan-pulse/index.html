@@ -43,7 +43,7 @@
                 </button>
               </div>
               <label>Title
-                <input v-model="hub.title" type="search" placeholder="Vegan Party">
+                <input v-model="hub.title" ref="title" type="search" placeholder="Vegan Party">
               </label>
               <label>Description
                 <input v-model="hub.description" type="search" placeholder="Let's have fun together">
@@ -53,7 +53,7 @@
             <div v-if="hubId" class="left margin">
               <div v-for="item of hub.plan">{{ item }}</div>
             </div>
-            <textarea v-model="plan" v-if="!hubId" class="plan-edit" placeholder="Today 8:00 PM in Osaka&#10;Tomorrow 7:30 PM in NewYork&#10;Day after tomorrow 7:00 PM in China&#10;"></textarea>
+            <textarea v-model="plan" ref="plan" v-if="!hubId" class="plan-edit" placeholder="Today 8:00 PM in Osaka&#10;Tomorrow 7:30 PM in NewYork&#10;Day after tomorrow 7:00 PM in China&#10;"></textarea>
             <button type="submit" class="btn-submit">
               Register plan
             </button>

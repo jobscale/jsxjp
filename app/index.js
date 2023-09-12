@@ -29,7 +29,7 @@ class App {
       const headers = new Headers(req.headers);
       const [referer] = (headers.get('referer') && headers.get('referer').match(/https?:\/\/[a-z0-9.:]+/g)) || [];
       const origin = referer || headers.get('origin') || `${req.protocol}://${req.headers.host}`;
-      if (referer) logger.info({ origin: headers.get('origin'), referer });
+      if (referer) logger.debug({ origin: headers.get('origin'), referer });
       res.header('Access-Control-Allow-Origin', `${origin}`);
       res.header('Access-Control-Allow-Methods', 'GET, POST, HEAD');
       res.header('Access-Control-Allow-Headers', 'Content-Type');

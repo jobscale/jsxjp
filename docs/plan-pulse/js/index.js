@@ -56,7 +56,7 @@ Vue.createApp({
 
     onEntry() {
       if (!this.person.name) {
-        this.$refs.name.classList.add('pink');
+        this.required(this.$refs.name, true);
         return;
       }
 
@@ -137,11 +137,32 @@ Vue.createApp({
       }
     },
 
+    required(el, bad) {
+      if (bad) {
+        el.classList.add('pink');
+        el.classList.add('error');
+      } else {
+        el.classList.remove('pink');
+        el.classList.remove('error');
+      }
+    },
+
     onSubmit() {
+      this.required(this.$refs.plan);
+      this.required(this.$refs.title);
       const plan = this.plan.split(/[\r\n]+/)
       .map(item => item.trim())
       .filter(item => item.length);
-      if (!plan.length) return;
+      let bad = 0;
+      if (!plan.length) {
+        this.required(this.$refs.plan, true);
+        bad++;
+      }
+      if (!this.hub.title) {
+        this.required(this.$refs.title, true);
+        bad++;
+      }
+      if (bad) return;
       this.loading = true;
       logger.info('plan', plan);
       this.hub.plan = plan;
