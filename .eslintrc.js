@@ -4,7 +4,11 @@ module.exports = {
     Vue: 'readonly',
   },
   env: {
+    node: true,
     browser: true,
+  },
+  parserOptions: {
+    ecmaVersion: 2023,
   },
   rules: {
     indent: ['error', 2, { MemberExpression: 0 }],

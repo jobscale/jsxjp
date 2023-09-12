@@ -20,21 +20,21 @@
     "aws-serverless-express": "^3.4.0",
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.11.9",
-    "deta": "^1.2.0",
+    "deta": "^2.0.0",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "http-errors": "^2.0.0",
-    "joi": "^17.9.2",
+    "joi": "^17.10.1",
     "jsdom": "^22.1.0",
     "jws": "^4.0.0",
-    "nodemailer": "^6.9.4",
+    "nodemailer": "^6.9.5",
     "speakeasy": "^2.0.0"
   },
   "devDependencies": {
     "ejs-lint": "^2.0.0",
-    "eslint": "^8.46.0",
+    "eslint": "^8.49.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-import": "^2.28.1",
     "pre-commit": "^1.2.2"
   },
   "repository": {
