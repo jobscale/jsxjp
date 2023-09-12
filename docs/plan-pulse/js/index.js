@@ -20,7 +20,7 @@ Vue.createApp({
   methods: {
     tyyEntry(personId) {
       if (personId) {
-        this.person = this.persons.find(item => item.personId == personId);
+        this.person = this.persons.find(item => item.personId === personId);
       } else {
         this.person = { plan: [] };
       }

@@ -137,6 +137,11 @@ small, small > * {
   font-size: 0.8em;
   text-align: left;
 }
+@media screen and (max-width: 800px) {
+  small, small > * {
+    font-size: 1em;
+  }
+}
 
 button {
   background: initial;
@@ -212,6 +217,9 @@ section {
   justify-content: space-between;
 }
 
+form {
+  padding: 0.5em 0;
+}
 input {
   border-radius: 0.5em;
 }
