@@ -152,22 +152,75 @@ button:enabled {
   margin: 0.2em;
 }
 
+.btn-submit {
+  display: inline-flex;
+  padding: 1em 2em;
+  margin: 1em 2em;
+  background-color: rgb(10, 200, 10, 0.1);
+  border: 1px solid #383;
+  border-radius: 5em;
+}
+.btn-submit:hover {
+  background-color: rgb(10, 200, 10, 0.3);
+}
+.btn-submit:active {
+  background-color: rgb(10, 200, 10, 0.5);
+}
+.ss-remove {
+  display: inline-flex;
+  padding: 0.3em 0.5em;
+  margin-left: 0.5em;
+  color: #caa;
+  background-color: rgb(200, 10, 10, 0.3);
+  border: 1px solid #833;
+  border-radius: 5em;
+}
+.ss-remove:hover {
+  background-color: rgb(200, 10, 10, 0.6);
+}
+.ss-remove:active {
+  background-color: rgb(200, 10, 10, 1);
+}
+.ss-close {
+  display: inline-flex;
+  padding: 0.3em 0.5em;
+  margin-left: 0.5em;
+  border-radius: 5em;
+}
+.plan-edit {
+  width: 20em;
+  height: 9em;
+  resize: none;
+  overflow: auto;
+  white-space: pre;
+}
+td {
+  background-color: rgb(0, 60, 0, 0.4);
+  min-width: 6em;
+  min-height: 1em;
+}
+section {
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.ss-input {
+  display: inline-block;
+}
+.ss-input label {
+  display: flex;
+  justify-content: space-between;
+}
+
 input {
   border-radius: 0.5em;
 }
 
-.input, .output {
+.input, .output, .nickname, .entry-comment,
+.ss-input input {
   padding: 0.2em 0.5em;
   margin: 0.2em;
   border: 1px solid #888;
-}
-
-.fa-size-big {
-  font-size: 2em;
-}
-
-.fa-rotate-45 {
-  transform: rotate(45deg);
 }
 
 .input {
@@ -179,10 +232,30 @@ input {
   font-size: 0.9em;
 }
 
+.nickname {
+  width: 6em;
+}
+
+.entry-comment {
+  width: 10em;
+}
+
+.pink {
+  border-color: #a33;
+}
+
 .output.code-6 {
   width: 6em;
   font-size: 0.9em;
   text-align: center;
+}
+
+.fa-size-big {
+  font-size: 2em;
+}
+
+.fa-rotate-45 {
+  transform: rotate(45deg);
 }
 
 .try-action * {
@@ -197,6 +270,106 @@ input {
 .btn-remove {
   color: #833;
 }
+
+.pointer:hover {
+  text-decoration: underline;
+  color: #3dd;
+  cursor: pointer;
+}
+
+.left {
+  text-align: left;
+}
+.right {
+  text-align: right;
+}
+.ss-title {
+  margin: 0 1em 0.5em;
+  display: inline-flex;
+}
+.ss-subtitle {
+  font-size: 0.7em;
+  margin: 0 1em 0.5em;
+  display: inline-flex;
+}
+.ss-td {
+  min-height: 2.3em;
+  display: inline-grid;
+  align-items: center;
+}
+
+.margin {
+  margin: 1em 0;
+}
+
+table.ss-table * {
+  font-size: 0.6rem;
+}
+
+.plan-entry i {
+  border-radius: 5em;
+  width: 2em;
+  height: 2em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.2em;
+}
+
+.plan-entry i.fa-check {
+  background-color: rgb(0, 255, 0, 0.9);
+}
+.plan-entry i.fa-question {
+  background-color: rgb(230, 230, 0, 0.9);
+}
+.plan-entry i.fa-slash {
+  background-color: rgb(255, 30, 30, 0.9);
+}
+
+.radio-area label {
+  width: 2.5em;
+  height: 2.5em;
+  margin: 0.5em;
+  border-radius: 2em;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.radio-area input[type="radio"] {
+  display: none;
+}
+.radio-area input:nth-child(1) + label {
+  background-color: rgb(0, 255, 0, 0.1);
+}
+.radio-area input:nth-child(3) + label {
+  background-color: rgb(230, 230, 0, 0.1);
+}
+.radio-area input:nth-child(5) + label {
+  background-color: rgb(255, 30, 30, 0.1);
+}
+.radio-area input:checked + label {
+  color: black;
+}
+.radio-area input:nth-child(1):checked + label {
+  background-color: rgb(0, 255, 0, 0.9);
+}
+.radio-area input:nth-child(3):checked + label {
+  background-color: rgb(230, 230, 0, 0.9);
+}
+.radio-area input:nth-child(5):checked + label {
+  background-color: rgb(255, 30, 30, 0.9);
+}
+.radio-area input:nth-child(1) + label:hover {
+  background-color: rgb(0, 255, 0, 0.5);
+}
+.radio-area input:nth-child(3) + label:hover {
+  background-color: rgb(230, 230, 0, 0.5);
+}
+.radio-area input:nth-child(5) + label:hover {
+  background-color: rgb(255, 30, 30, 0.5);
+}
+
 
 *::-webkit-scrollbar {
   width: 6px;

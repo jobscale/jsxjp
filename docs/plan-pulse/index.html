@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" class="dark-scheme">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Tangerine'>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/menu.css">
+    <script src="https://cdn.jsdelivr.net/npm/@jobscale/logger@0.1.0/index.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.prod.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.3.0/css/all.css">
+    <title>Plan Pulse - jsx.jp</title>
+  </head>
+
+  <body>
+    <div id="app" class="nav-main">
+      <div class="container">
+        <section v-if="mode === 'top'">
+          <h2>Plan Pulse</h2>
+          <div class="description">
+            <small>
+              <div>Acts contrary to public order and morals are prohibited.</div>
+              <div>Offensive and antisocial use is prohibited.</div>
+              <div>Please use at your own risk as there is no support.</div>
+              <div>We will not get involved in any problems or troubles.</div>
+              <div>We do not accept inquiries from anyone.</div>
+            </small>
+          </div>
+        </section>
+        <section v-if="mode === 'top'">
+          <form @submit.prevent="onCreate">
+            <button type="submit" class="btn-submit">
+              Create new plan
+            </button>
+          </form>
+        </section>
+        <section v-if="mode === 'create'">
+          <form @submit.prevent="onSubmit">
+            <div class="ss-input">
+              <div class="right">
+                <button type="button" @click.prevent="onClosePlan" class="ss-close">
+                  <i class="fa-regular fa-circle-xmark"></i>
+                </button>
+              </div>
+              <label>Title
+                <input v-model="hub.title" type="search" placeholder="Vegan Party">
+              </label>
+              <label>Description
+                <input v-model="hub.description" type="search" placeholder="Let's have fun together">
+              </label>
+              <div class="left">Schedule</div>
+            </div>
+            <div v-if="hubId" class="left margin">
+              <div v-for="item of hub.plan">{{ item }}</div>
+            </div>
+            <textarea v-model="plan" v-if="!hubId" class="plan-edit" placeholder="Today 8:00 PM in Osaka&#10;Tomorrow 7:30 PM in NewYork&#10;Day after tomorrow 7:00 PM in China&#10;"></textarea>
+            <button type="submit" class="btn-submit">
+              Register plan
+            </button>
+          </form>
+        </section>
+        <section v-if="mode === 'hub'">
+          <div class="ss-head">
+            <div @click.prevent="onCreate" class="pointer">PlanPulse<span class="ss-title">{{ hub.title }}</span></div>
+            <div v-if="hub.description"><span class="ss-title">{{ hub.description }}</span></div>
+            <div>Link<a class="ss-subtitle" :href="getLink()" target="_blank">{{ getLink() }}</a></div>
+          </div>
+          <table class="ss-table">
+            <thead>
+              <tr>
+                <td></td>
+                <td v-for="item of hub.plan" class="tbl-item">
+                  {{ item }}
+                </td>
+                <td></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item of persons">
+                <td @click.prevent="tyyEntry(item.personId)" class="pointer"><span class="ss-td">{{ item.name }}</span></td>
+                <td v-for="p of item.plan" class="plan-entry">
+                  <i v-if="p === '1'" title="entry" class="fa-solid fa-check"></i>
+                  <i v-if="p === '2'" title="to be decided" class="fa-solid fa-question"></i>
+                  <i v-if="p === '3'" title="busy" class="fa-solid fa-slash"></i>
+                </td>
+                <td>{{ item.comment }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <button @click.prevent="tyyEntry()" type="submit" class="btn-submit">
+            New Entry
+          </button>
+        </section>
+        <section v-if="mode === 'entry'">
+          <div class="right">
+            <button @click.prevent="onCloseEntry" class="ss-close">
+              <i class="fa-regular fa-circle-xmark"></i>
+            </button>
+          </div>
+          <div class="ss-head">
+            <div>PlanPulse<span class="ss-title">{{ hub.title }}</span></div>
+            <div v-if="hub.description"><span class="ss-title">{{ hub.description }}</span></div>
+          </div>
+          <form @submit.prevent="onEntry">
+            <table class="ss-table">
+              <tbody>
+                <tr v-for="(item, index) of hub.plan">
+                  <td>{{ item }}</td>
+                  <td>
+                    <div class="radio-area">
+                      <input v-model="person.plan[index]" value="1" type="radio" :id="`st1-${index}`">
+                      <label :for="`st1-${index}`"><i class="fa-solid fa-check" title="entry"></i></label>
+                      <input v-model="person.plan[index]" value="2" type="radio" :id="`st2-${index}`">
+                      <label :for="`st2-${index}`"><i class="fa-solid fa-question" title="to be decided"></i></label>
+                      <input v-model="person.plan[index]" value="3" type="radio" :id="`st3-${index}`">
+                      <label :for="`st3-${index}`"><i class="fa-solid fa-slash" title="busy"></i></label>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div>
+              <input v-model="person.name" ref="name" class="nickname" type="search" maxlength="16" placeholder="nickname">
+              <input v-model="person.comment" class="entry-comment" type="search" maxlength="16" placeholder="comment">
+              <button v-if="person.personId" @click.prevent="onRemovePerson" type="button" class="ss-remove" title="remove">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+            </div>
+            <button type="submit" class="btn-submit">
+              Entry
+            </button>
+          </form>
+        </section>
+        <section>
+          <button @click="onColorScheme" class="button">
+            <i class="fa-solid fa-bagel"></i>
+          </button>
+        </section>
+        <footer style="text-align:right;margin:0.5em;"><a href="https://jsx.jp" target="_blank">powered by jsx.jp</a></footer>
+      </div>
+      <div v-show="loading" class="loading">
+        <div class="loader">
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+      </div>
+    </div>
+    <script src="js/index.js"></script>
+    <script defer src="/js/menu.js"></script>
+  </body>
+</html>
