@@ -2,7 +2,9 @@
   --font-size: 3vmin;
 }
 @media screen and (max-width: 640px) {
-  --font-size: 4vmin;
+  :root {
+    --font-size: 4vmin;
+  }
 }
 a { text-decoration: none; }
 
@@ -153,7 +155,7 @@ small, small > * {
   font-size: 0.8em;
   text-align: left;
 }
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 640px) {
   small, small > * {
     font-size: 1em;
   }
