@@ -41,9 +41,15 @@ class Service {
       return record;
     })
     .then(async () => {
-      if (personId && !await personDb.get(personId)) throw createHttpError(400);
+      if (!personId) return {};
+      const exist = await personDb.get(personId);
+      if (!exist) throw createHttpError(400);
+      return exist;
     })
-    .then(() => personDb.put({ key: personId, hubId, person }))
+    .then(exist => {
+      person.createdAt = exist.createdAt || new Date().toISOString();
+      return personDb.put({ key: personId, hubId, person });
+    })
     .then(({ key }) => ({ personId: key }));
   }
 

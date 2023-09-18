@@ -10,6 +10,7 @@ Vue.createApp({
       hub: { plan: [] },
       persons: [],
       person: { plan: [] },
+      summary: [],
     };
   },
 
@@ -110,8 +111,21 @@ Vue.createApp({
         return res.json();
       })
       .then(({ hub, persons }) => {
+        hub.plan.forEach((v, index) => {
+          const sum = persons.reduce((acc, person) => {
+            if (person.plan[index] === '1') acc[0] += 1;
+            if (person.plan[index] === '2') acc[1] += 1;
+            if (person.plan[index] === '3') acc[2] += 1;
+            return acc;
+          }, [0, 0, 0]);
+          this.summary[index] = sum;
+        });
         this.hub = hub;
-        this.persons = persons;
+        this.persons = persons.sort((a, b) => {
+          if (a.createdAt < b.createdAt) return -1;
+          if (a.createdAt > b.createdAt) return 1;
+          return 0;
+        });
       })
       .catch(e => {
         logger.error(e.message);

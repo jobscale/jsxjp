@@ -1,14 +1,30 @@
 :root {
   --font-size: 3vmin;
 }
+@media screen and (max-width: 640px) {
+  --font-size: 4vmin;
+}
+a { text-decoration: none; }
 
-.dark-scheme {
-  color-scheme: dark;
+/* System color */
+@media (prefers-color-scheme: dark) {
+  :root { color-scheme: dark; }
+}
+@media (prefers-color-scheme: light) {
+  :root { color-scheme: light; }
 }
 
-.light-scheme {
-  color-scheme: light;
-  background-color: #ccc;
+/* Custom color */
+.dark-scheme { color-scheme: dark; }
+.dark-scheme a:link { color: rgb(188, 188, 255); }
+.dark-scheme a:visited { color: rgba(250, 195, 195, 0.5); }
+.dark-scheme a:hover { color: rgb(134, 134, 250); }
+
+.light-scheme { color-scheme: light; background-color: #ccc; }
+.light-scheme a:link { color: rgb(55, 55, 255); }
+.light-scheme a:visited { color: rgb(10, 10, 10, 0.5); }
+.light-scheme a:hover {
+  filter: blur(1px) contrast(200%) brightness(25%);
 }
 
 * {
@@ -200,7 +216,7 @@ button:enabled {
   white-space: pre;
 }
 td {
-  background-color: rgb(0, 60, 0, 0.4);
+  background-color: rgb(0, 180, 220, 0.2);
   min-width: 6em;
   min-height: 1em;
 }
@@ -306,6 +322,17 @@ input {
   display: inline-grid;
   align-items: center;
 }
+.ss-in-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.ss-h1 {
+  padding: 0 0.5em;
+}
+.ss-head a {
+  text-decoration: none;
+}
 
 .margin {
   margin: 1em 0;
@@ -325,13 +352,27 @@ table.ss-table * {
   margin: 0.2em;
 }
 
-.plan-entry i.fa-check {
+.ss-p1, .ss-p2, .ss-p3 {
+  border-radius: 5em;
+  padding: 0 0.3em;
+  min-width: 1.1em;
+}
+.dark-scheme .plan-entry i.fa-check, .dark-scheme .ss-p1 {
+  color: rgb(0, 255, 0);
+}
+.dark-scheme .plan-entry i.fa-question, .dark-scheme .ss-p2 {
+  color: rgb(230, 230, 0);
+}
+.dark-scheme .plan-entry i.fa-slash, .dark-scheme .ss-p3 {
+  color: rgb(255, 30, 30);
+}
+.light-scheme .plan-entry i.fa-check, .light-scheme .ss-p1 {
   background-color: rgb(0, 255, 0, 0.9);
 }
-.plan-entry i.fa-question {
+.light-scheme .plan-entry i.fa-question, .light-scheme .ss-p2 {
   background-color: rgb(230, 230, 0, 0.9);
 }
-.plan-entry i.fa-slash {
+.light-scheme .plan-entry i.fa-slash, .light-scheme .ss-p3 {
   background-color: rgb(255, 30, 30, 0.9);
 }
 

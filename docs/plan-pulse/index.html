@@ -53,7 +53,7 @@
             <div v-if="hubId" class="left margin">
               <div v-for="item of hub.plan">{{ item }}</div>
             </div>
-            <textarea v-model="plan" ref="plan" v-if="!hubId" class="plan-edit" placeholder="Today 8:00 PM in Osaka&#10;Tomorrow 7:30 PM in NewYork&#10;Day after tomorrow 7:00 PM in China&#10;"></textarea>
+            <textarea v-model="plan" ref="plan" v-show="!hubId" class="plan-edit" placeholder="Today 8:00 PM in Osaka&#10;Tomorrow 7:30 PM in NewYork&#10;Day after tomorrow 7:00 PM in China&#10;"></textarea>
             <button type="submit" class="btn-submit">
               Register plan
             </button>
@@ -61,7 +61,12 @@
         </section>
         <section v-if="mode === 'hub'">
           <div class="ss-head">
-            <div @click.prevent="onCreate" class="pointer">PlanPulse<span class="ss-title">{{ hub.title }}</span></div>
+            <div class="left ss-h1">
+              <a href="/plan-pulse" target="_blank">Plan Pulse</a>
+            </div>
+            <div>
+              <span @click.prevent="onCreate" class="pointer ss-title">{{ hub.title }}</span>
+            </div>
             <div v-if="hub.description"><span class="ss-title">{{ hub.description }}</span></div>
             <div>Link<a class="ss-subtitle" :href="getLink()" target="_blank">{{ getLink() }}</a></div>
           </div>
@@ -76,6 +81,13 @@
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <td></td>
+                <td v-for="num of summary">
+                  <div class="ss-in-flex ss-td"><span class="ss-p1">{{ num[0] }}</span><span class="ss-p2">{{ num[1] }}</span><span class="ss-p3">{{ num[2] }}</span></div>
+                </td>
+                <td></td>
+              </tr>
               <tr v-for="item of persons">
                 <td @click.prevent="tyyEntry(item.personId)" class="pointer"><span class="ss-td">{{ item.name }}</span></td>
                 <td v-for="p of item.plan" class="plan-entry">
