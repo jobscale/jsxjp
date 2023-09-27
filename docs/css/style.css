@@ -3,7 +3,7 @@
 }
 @media screen and (max-width: 640px) {
   :root {
-    --font-size: 4vmin;
+    --font-size: 4.5vmin;
   }
 }
 a { text-decoration: none; }

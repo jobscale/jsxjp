@@ -44,7 +44,7 @@ class Service {
       if (!personId) return {};
       const exist = await personDb.get(personId);
       if (!exist) throw createHttpError(400);
-      return exist;
+      return exist.person;
     })
     .then(exist => {
       person.createdAt = exist.createdAt || new Date().toISOString();
