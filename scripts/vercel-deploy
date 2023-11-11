@@ -2,20 +2,9 @@
 set -eu
 
 ENV=${1:-dev}
-CC=0
 
 rm -fr node_modules package-lock.json
-npm i --omit=dev
 
-deploy() {
+{
   vercel --prod -y -e ENV=${ENV}
-  CC=$(( $CC + 1 ))
-  echo -en "\n  Try $CC ... "
-  sleep 30
-  [[ $(curl -I -s https://jsxjp.vercel.app/ | grep "HTTP/2 500" | wc -l) -eq 1 ]]
-  && echo NG \
-  && sleep 5 \
-  && deploy
 }
-
-deploy

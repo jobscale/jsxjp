@@ -1,10 +1,9 @@
 const { logger } = require('@jobscale/logger');
-const { App } = require('./app');
+const app = require('./app');
 
 const main = async () => {
   const prom = {};
   prom.pending = new Promise(resolve => { prom.resolve = resolve; });
-  const app = new App().start();
   const options = {
     host: '0.0.0.0',
     port: parseInt(process.env.PORT, 10) || 3000,
