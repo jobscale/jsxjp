@@ -15,7 +15,8 @@ class Service {
   async register(rest) {
     const { html } = rest;
     if (!html) throw createHttpError(400);
-    const isOk = await fetch(html).then(res => res.status === 200).catch(e => logger.warn(e));
+    const isOk = await fetch(html, { redirect: 'error' })
+    .then(res => res.status === 200).catch(e => logger.warn(e));
     if (!isOk) throw createHttpError(400);
     const db = await connection(tableName);
     return db.fetch({ html })
