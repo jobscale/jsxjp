@@ -5,6 +5,14 @@ ENV=${1:-dev}
 
 rm -fr node_modules package-lock.json
 
-{
+deploy() {
   vercel --prod -y -e ENV=${ENV}
+  echo -n "check url wait ... "
+  sleep 30
+  [[ $(curl -I -s https://jsxjp.vercel.app/ | grep 'HTTP/2 500' | wc -l) == 0 ]] && echo "OK" && return || echo "NG"
+  echo " ... retry ..."
+  sleep 5
+  deploy
 }
+
+deploy
