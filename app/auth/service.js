@@ -5,7 +5,7 @@ const { createHash } = require('../user');
 const { connection } = require('../db');
 
 const jwtSecret = 'node-express-ejs';
-const getSecret = () => 'X6EY4BMPXIRSSR74';
+const getSecret = () => 'JSXJPX6EY4BMPXIRSSR74';
 
 const { ENV } = process.env;
 const tableName = `${ENV || 'dev'}-user`;
