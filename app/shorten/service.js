@@ -15,8 +15,6 @@ class Service {
   async register(rest) {
     const { html } = rest;
     if (!html) throw createHttpError(400);
-    const isOk = await this.checkUrl(html);
-    if (!isOk) throw createHttpError(400);
     const db = await connection(tableName);
     return db.fetch({ html })
     .then(({ items: [item] }) => {
@@ -78,11 +76,9 @@ class Service {
     const { id: key } = rest;
     const db = await connection(tableName);
     return db.get(key)
-    .then(async data => {
+    .then(data => {
       if (!data) throw createHttpError(400);
       if (data.deletedAt) throw createHttpError(501);
-      const isOk = await this.checkUrl(data.html);
-      if (!isOk) throw createHttpError(400);
       return data;
     })
     .then(data => db.update({
@@ -90,11 +86,6 @@ class Service {
       count: (parseInt(data.count, 10) || 0) + 1,
     }, data.key).then(() => data))
     .then(({ html }) => ({ html }));
-  }
-
-  checkUrl(url) {
-    return fetch(url, { redirect: 'error' })
-    .then(res => res.status === 200).catch(e => logger.warn(e));
   }
 }
 
