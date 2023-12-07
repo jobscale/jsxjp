@@ -72,12 +72,12 @@ class Service {
     const code = speakeasy.totp({
       secret,
       encoding: 'base32',
-      time,
     });
     const list = [code];
     list.push(speakeasy.totp({
       secret,
       encoding: 'base32',
+      time,
     }));
     return { code, list };
   }
