@@ -64,6 +64,9 @@
                   <button v-if="!item.deletedAt" @click.prevent="onRemove" class="button btn-remove" :data-id="item.id">
                     <i class="fa-regular fa-trash-can fa-fade"></i>
                   </button>
+                  <button v-if="item.deletedAt" @click.prevent="onRemove" class="button btn-remove" :data-id="item.id">
+                    <i class="fa-regular fa-coffin-cross fa-fade"></i>
+                  </button>
                 </div>
               </div>
             </div>
