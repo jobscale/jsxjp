@@ -64,11 +64,11 @@ class Service {
     return db.get(key)
     .then(data => {
       if (!data) throw createHttpError(400);
-      return data;
-    })
-    .then(data => db.update({
-      deletedAt: new Date().getTime(),
-    }, data.key));
+      if (data.deletedAt) return db.delete(data.key);
+      return db.update({
+        deletedAt: new Date().getTime(),
+      }, data.key);
+    });
   }
 }
 
