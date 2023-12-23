@@ -1272,3 +1272,17 @@ div .note:has(.tag) a {
   80%  { transform: scale(1.0, 0.97) translate(-2%, 2%) skew(3deg, 0deg); }
   100% { transform: scale(1.0, 1.0) translate(0%, 0%); }
 }
+
+.popup {
+  position: fixed;
+  border: none;
+  font-size: 0.3rem;
+  padding: 1em 2em;
+  border-radius: 3em;
+  background-image: linear-gradient(to right, #197, #043);
+  color: #fff;
+  letter-spacing: 0.5em;
+  display: inline-flex;
+  cursor: none;
+  margin: 1em;
+}
