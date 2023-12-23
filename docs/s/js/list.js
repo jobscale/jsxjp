@@ -5,6 +5,7 @@ Vue.createApp({
     return {
       signed: false,
       loading: true,
+      popupText: '',
       items: [],
       confirmation: {
         ok: () => {},
@@ -74,6 +75,35 @@ Vue.createApp({
         const tb = new Date(b.lastAccess).getTime() || 0;
         return ta - tb;
       });
+    },
+
+    onCopy(event) {
+      const { target: { parentElement: el } } = event;
+      const { id } = el.dataset;
+      const html = `${window.location.origin}/s/${id}`;
+      navigator.clipboard.writeText(html)
+      .then(() => {
+        this.showPopup('Shorten URL Copied', el);
+      })
+      .catch(e => logger.error(e.message));
+    },
+
+    showPopup(text, el) {
+      clearTimeout(this.popupId);
+      const { popup } = this.$refs;
+      popup.style.opacity = '0';
+      this.popupText = text;
+      setTimeout(() => {
+        const { left, right, top, bottom } = el.getBoundingClientRect();
+        const x = (left + right) / 2;
+        const y = top - (bottom - top);
+        popup.style.left = `${x - (popup.offsetWidth / 2)}px`;
+        popup.style.top = `${y - popup.offsetHeight}px`;
+        popup.style.opacity = '100';
+        this.popupId = setTimeout(() => {
+          this.popupText = '';
+        }, 2000);
+      }, 100);
     },
 
     onRemove(event) {
