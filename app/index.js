@@ -28,7 +28,7 @@ class App {
     app.use((req, res, next) => {
       const headers = new Headers(req.headers);
       const [referer] = (headers.get('referer') && headers.get('referer').match(/https?:\/\/[a-z0-9.:]+/g)) || [];
-      const origin = referer || headers.get('origin') || `${req.protocol}://${req.headers.host}`;
+      const origin = referer || headers.get('origin') || `${req.protocol}://${headers.get('host')}`;
       if (referer) logger.debug({ origin: headers.get('origin'), referer });
       res.header('Access-Control-Allow-Origin', `${origin}`);
       res.header('Access-Control-Allow-Methods', 'GET, POST, HEAD');
@@ -70,11 +70,12 @@ class App {
     app.use((req, res, next) => {
       const ts = new Date().toLocaleString();
       const progress = () => {
-        const remoteIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        const headers = new Headers(req.headers);
+        const ip = req.socket.remoteAddress || req.ip;
+        const remoteIp = headers.get('X-Real-Ip') || headers.get('X-Forwarded-For') || ip;
         const { protocol, method, url } = req;
-        const headers = JSON.stringify(req.headers);
         logger.info({
-          ts, remoteIp, protocol, method, url, headers,
+          ts, remoteIp, protocol, method, url, headers: JSON.stringify(headers),
         });
       };
       progress();
