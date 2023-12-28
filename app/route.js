@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const { route: ipRoute } = require('./ip/route');
 const { route: apiRoute } = require('./api/route');
 const { route: authRoute } = require('./auth/route');
 const { route: accountRoute } = require('./account/route');
@@ -9,6 +10,10 @@ const { route: planPulse } = require('./plan-pulse/route');
 const { controller } = require('./controller');
 
 const router = Router();
+router.use(
+  '/ip',
+  (...args) => ipRoute.router(...args),
+);
 router.use(
   '/api',
   (...args) => apiRoute.router(...args),
