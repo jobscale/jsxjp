@@ -24,7 +24,7 @@ a { text-decoration: none; }
 
 .light-scheme { color-scheme: light; background-color: #ccc; }
 .light-scheme a:link { color: rgb(55, 55, 255); }
-.light-scheme a:visited { color: rgb(10, 10, 10, 0.5); }
+.light-scheme a:visited { color: rgba(10, 10, 10, 0.5); }
 .light-scheme a:hover {
   filter: blur(1px) contrast(200%) brightness(25%);
 }
@@ -179,30 +179,30 @@ button:enabled {
   display: inline-flex;
   padding: 1em 2em;
   margin: 1em 2em;
-  background-color: rgb(10, 200, 10, 0.1);
+  background-color: rgba(10, 200, 10, 0.1);
   border: 1px solid #383;
   border-radius: 5em;
 }
 .btn-submit:hover {
-  background-color: rgb(10, 200, 10, 0.3);
+  background-color: rgba(10, 200, 10, 0.3);
 }
 .btn-submit:active {
-  background-color: rgb(10, 200, 10, 0.5);
+  background-color: rgba(10, 200, 10, 0.5);
 }
 .ss-remove {
   display: inline-flex;
   padding: 0.3em 0.5em;
   margin-left: 0.5em;
   color: #caa;
-  background-color: rgb(200, 10, 10, 0.3);
+  background-color: rgba(200, 10, 10, 0.3);
   border: 1px solid #833;
   border-radius: 5em;
 }
 .ss-remove:hover {
-  background-color: rgb(200, 10, 10, 0.6);
+  background-color: rgba(200, 10, 10, 0.6);
 }
 .ss-remove:active {
-  background-color: rgb(200, 10, 10, 1);
+  background-color: rgba(200, 10, 10, 1);
 }
 .ss-close {
   display: inline-flex;
@@ -218,7 +218,7 @@ button:enabled {
   white-space: pre;
 }
 td {
-  background-color: rgb(0, 180, 220, 0.2);
+  background-color: rgba(0, 180, 220, 0.2);
   min-width: 6em;
   min-height: 1em;
 }
@@ -268,7 +268,7 @@ input {
 
 .pink.error {
   border: 2px solid #a33;
-  background-color: rgb(200, 0, 0, 0.04);
+  background-color: rgba(200, 0, 0, 0.04);
 }
 
 .output.code-6 {
@@ -369,13 +369,13 @@ table.ss-table * {
   color: rgb(255, 30, 30);
 }
 .light-scheme .plan-entry i.fa-check, .light-scheme .ss-p1 {
-  background-color: rgb(0, 255, 0, 0.9);
+  background-color: rgba(0, 255, 0, 0.9);
 }
 .light-scheme .plan-entry i.fa-question, .light-scheme .ss-p2 {
-  background-color: rgb(230, 230, 0, 0.9);
+  background-color: rgba(230, 230, 0, 0.9);
 }
 .light-scheme .plan-entry i.fa-slash, .light-scheme .ss-p3 {
-  background-color: rgb(255, 30, 30, 0.9);
+  background-color: rgba(255, 30, 30, 0.9);
 }
 
 .radio-area label {
@@ -392,34 +392,34 @@ table.ss-table * {
   display: none;
 }
 .radio-area input:nth-child(1) + label {
-  background-color: rgb(0, 255, 0, 0.1);
+  background-color: rgba(0, 255, 0, 0.1);
 }
 .radio-area input:nth-child(3) + label {
-  background-color: rgb(230, 230, 0, 0.1);
+  background-color: rgba(230, 230, 0, 0.1);
 }
 .radio-area input:nth-child(5) + label {
-  background-color: rgb(255, 30, 30, 0.1);
+  background-color: rgba(255, 30, 30, 0.1);
 }
 .radio-area input:checked + label {
   color: black;
 }
 .radio-area input:nth-child(1):checked + label {
-  background-color: rgb(0, 255, 0, 0.9);
+  background-color: rgba(0, 255, 0, 0.9);
 }
 .radio-area input:nth-child(3):checked + label {
-  background-color: rgb(230, 230, 0, 0.9);
+  background-color: rgba(230, 230, 0, 0.9);
 }
 .radio-area input:nth-child(5):checked + label {
-  background-color: rgb(255, 30, 30, 0.9);
+  background-color: rgba(255, 30, 30, 0.9);
 }
 .radio-area input:nth-child(1) + label:hover {
-  background-color: rgb(0, 255, 0, 0.5);
+  background-color: rgba(0, 255, 0, 0.5);
 }
 .radio-area input:nth-child(3) + label:hover {
-  background-color: rgb(230, 230, 0, 0.5);
+  background-color: rgba(230, 230, 0, 0.5);
 }
 .radio-area input:nth-child(5) + label:hover {
-  background-color: rgb(255, 30, 30, 0.5);
+  background-color: rgba(255, 30, 30, 0.5);
 }
 
 
