@@ -15,6 +15,7 @@
     "test"
   ],
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.485.0",
     "@jobscale/logger": "^0.2.0",
     "@jobscale/slack": "^0.2.0",
     "aws-serverless-express": "^3.4.0",
@@ -27,7 +28,9 @@
     "joi": "^17.10.1",
     "jsdom": "^22.1.0",
     "jws": "^4.0.0",
+    "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.5",
+    "sharp": "^0.33.1",
     "speakeasy": "^2.0.0"
   },
   "devDependencies": {

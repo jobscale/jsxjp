@@ -40,6 +40,10 @@ Vue.createApp({
           this.auth.password = this.password;
           this.auth.statusText = '';
           this.auth.allow = true;
+          res.json().then(data => {
+            const href = data?.href;
+            if (href) document.location.href = href;
+          });
           setTimeout(() => this.$refs.code.focus(), 200);
         }
       })

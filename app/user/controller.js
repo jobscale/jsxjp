@@ -1,5 +1,7 @@
+const createHttpError = require('http-errors');
 const { logger } = require('@jobscale/logger');
 const { service: userService } = require('./service');
+const { service: authService } = require('../auth/service');
 
 class Controller {
   // res.render(view, options);
@@ -31,8 +33,13 @@ class Controller {
   }
 
   find(req, res) {
-    const { id: key } = req.body;
-    userService.find({ key })
+    const { body: { id: key }, cookies: { token } } = req;
+    authService.decode(token)
+    .then(payload => {
+      const { login } = payload;
+      if (login !== 'alice') throw createHttpError(403);
+    })
+    .then(() => userService.find({ key }))
     .then((rows) => {
       res.json({ rows });
     })

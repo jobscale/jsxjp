@@ -22,7 +22,8 @@ class Auth {
   }
 
   decode(signature) {
-    return jws.decode(signature).header.payload;
+    const decoded = jws.decode(signature, { json: true });
+    return decoded?.payload;
   }
 }
 

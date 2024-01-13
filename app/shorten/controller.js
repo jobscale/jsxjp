@@ -1,5 +1,6 @@
 const createHttpError = require('http-errors');
 const { service } = require('./service');
+const { service: authService } = require('../auth/service');
 
 class Controller {
   register(req, res) {
@@ -37,9 +38,13 @@ class Controller {
   }
 
   find(req, res) {
-    const { id: key } = req.body;
-
-    service.find({ key })
+    const { body: { id: key }, cookies: { token } } = req;
+    authService.decode(token)
+    .then(payload => {
+      const { login } = payload;
+      if (login !== 'alice') throw createHttpError(403);
+    })
+    .then(() => service.find({ key }))
     .then((rows) => {
       res.json({ rows });
     })
@@ -51,7 +56,6 @@ class Controller {
 
   remove(req, res) {
     const { id: key } = req.body;
-
     service.remove({ key })
     .then((rows) => {
       res.json({ rows });

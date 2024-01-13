@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" class="dark-scheme">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Tangerine'>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/menu.css">
+    <script src="https://cdn.jsdelivr.net/npm/@jobscale/logger/index.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.prod.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.3.0/css/all.css">
+    <title>Pictures - jsx.jp</title>
+  </head>
+
+  <style>
+    .item-box {
+      display: inline-flex;
+      margin: 0.3em;
+    }
+    .item-inline {
+      display: inline-block;
+      cursor: pointer;
+    }
+    .img-head {
+      overflow: visible;
+      max-width: 8em;
+    }
+    .thumbnail {
+      width: 8em;
+      height: 8em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .thumbnail img {
+      width: 100%;
+      height: auto;
+      margin: 0.2em;
+    }
+    .img-preview {
+      cursor: pointer;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #111;
+    }
+  </style>
+  <body>
+    <div id="app" class="nav-main">
+      <div v-if="signed" class="container">
+        <section>
+          <h2>Pictures</h2>
+          <form @submit.prevent="onSubmit">
+            <div>
+              <input type="file" ref="file" @change="onReadFile" accept="image/*" multiple  class="btn-submit"></input>
+            </div>
+            <div v-for="item of refFiles" class="item-box">
+              <div class="item-inline">
+                <div class="thumbnail">
+                  <img :src="item.src">
+                </div>
+                <div class="img-head">{{ item.name }} {{ item.type }} {{ item.size }}</div>
+              </div>
+            </div>
+            <div>
+              <button v-if="refFiles.length" type="submit" class="btn-submit">Upload now</button>
+            </div>
+          </form>
+          <div v-if="list.length" style="margin:2em">
+            <hr>
+            <h1>Uploaded...</h1>
+          </div>
+          <div v-for="item of list" class="item-box">
+            <div class="item-inline" @click.prevent="show(item)">
+              <div class="thumbnail">
+                <img :src="`t/${item.name}`">
+              </div>
+              <div class="img-head">{{ item.name }}</div>
+              <div v-if="item.preview === 1" class="img-preview" @click.prevent="show(item, 'hide')">
+                <img :src="`i/${item.name}`">
+              </div>  
+            </div>
+          </div>
+        </section>
+        <section>
+          <button @click="onColorScheme" class="button">
+            <i class="fa-solid fa-bagel"></i>
+          </button>
+        </section>
+        <footer style="text-align:right;margin:0.5em;"><a href="https://jsx.jp" target="_blank">powered by jsx.jp</a></footer>
+      </div>
+      <div v-show="loading" class="loading">
+        <div class="loader">
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+      </div>
+    </div>
+    <script src="js/index.js"></script>
+    <script defer src="/js/menu.js"></script>
+  </body>
+</html>
