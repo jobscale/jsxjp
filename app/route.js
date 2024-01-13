@@ -7,6 +7,7 @@ const { route: userRoute } = require('./user/route');
 const { route: templateRoute } = require('./template/route');
 const { route: shortenRoute } = require('./shorten/route');
 const { route: planPulse } = require('./plan-pulse/route');
+const { route: picts } = require('./picts/route');
 const { controller } = require('./controller');
 
 const router = Router();
@@ -17,6 +18,10 @@ router.use(
 router.use(
   '/api',
   (...args) => apiRoute.router(...args),
+);
+router.use(
+  '/picts',
+  (...args) => picts.router(...args),
 );
 router.use(
   '/plan-pulse',

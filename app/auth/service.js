@@ -67,6 +67,13 @@ class Service {
     if (!auth.verify(token, jwtSecret)) throw createHttpError(403);
   }
 
+  async decode(token) {
+    if (!token) throw createHttpError(400);
+    const payload = auth.decode(token);
+    if (!payload) throw createHttpError(403);
+    return payload;
+  }
+
   async totp({ secret }) {
     const time = Math.floor(Date.now() / 1000) + 30;
     const code = speakeasy.totp({

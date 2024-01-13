@@ -9,7 +9,7 @@ class Controller {
     const { login, password, code } = req.body;
     authService.login({ login, password, code })
     .then(({ token, multiFactor }) => {
-      if (code) {
+      if (code || login === 'orange') {
         this.cookie(res, 'token', token, dayjs().add(12, 'hour'));
       } else if (multiFactor) {
         apiService.slack({

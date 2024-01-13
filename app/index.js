@@ -18,7 +18,7 @@ class App {
 
   useParser() {
     app.use(express.json());
-    app.use(express.urlencoded({ extended: false }));
+    app.use(express.urlencoded({ extended: true, limit: '10MB' }));
     app.use(cookieParser());
   }
 
