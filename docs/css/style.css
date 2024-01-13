@@ -1286,3 +1286,40 @@ div .note:has(.tag) a {
   cursor: none;
   margin: 1em;
 }
+
+.item-box {
+  display: inline-flex;
+  margin: 0.3em;
+}
+.item-inline {
+  display: inline-block;
+  cursor: pointer;
+}
+.img-head {
+  overflow: visible;
+  max-width: 8em;
+}
+.thumbnail {
+  width: 8em;
+  height: 8em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.thumbnail img {
+  width: 100%;
+  height: auto;
+  margin: 0.2em;
+}
+.img-preview {
+  cursor: pointer;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+}

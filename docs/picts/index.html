@@ -11,45 +11,6 @@
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.3.0/css/all.css">
     <title>Pictures - jsx.jp</title>
   </head>
-
-  <style>
-    .item-box {
-      display: inline-flex;
-      margin: 0.3em;
-    }
-    .item-inline {
-      display: inline-block;
-      cursor: pointer;
-    }
-    .img-head {
-      overflow: visible;
-      max-width: 8em;
-    }
-    .thumbnail {
-      width: 8em;
-      height: 8em;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .thumbnail img {
-      width: 100%;
-      height: auto;
-      margin: 0.2em;
-    }
-    .img-preview {
-      cursor: pointer;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #111;
-    }
-  </style>
   <body>
     <div id="app" class="nav-main">
       <div v-if="signed" class="container">
@@ -83,7 +44,7 @@
               <div class="img-head">{{ item.name }}</div>
               <div v-if="item.preview === 1" class="img-preview" @click.prevent="show(item, 'hide')">
                 <img :src="`i/${item.name}`">
-              </div>  
+              </div>
             </div>
           </div>
         </section>
