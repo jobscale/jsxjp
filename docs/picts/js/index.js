@@ -79,7 +79,7 @@ Vue.createApp({
           this.$refs.file.value = '';
           reject(new Error('unsupported content type'));
         }
-        const MB = 2;
+        const MB = 5;
         const MAX_LENGTH = MB * 1024 * 1024; // 2MB
         if (size > MAX_LENGTH) {
           this.$refs.file.value = '';
