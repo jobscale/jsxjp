@@ -8,7 +8,7 @@ ENV=${1:-dev}
 deploy() {
   echo
   vercel --prod -y -e ENV=${ENV}
-  echo -n "check url wait ... "
+  echo -n "check url wait ... ihttps://jsxjp.vercel.app/ ... "
   sleep 30
   [[ $(curl -I -s https://jsxjp.vercel.app/ | grep 'HTTP/2 500' | wc -l) == 0 ]] && echo "OK" && return || echo "NG"
   echo " ... retry ..."

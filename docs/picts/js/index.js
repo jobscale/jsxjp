@@ -1,24 +1,28 @@
 const logger = console;
 
-const sliceByDigit = (array, unit) => {
-  const count = Math.ceil(array.length / unit);
-  return new Array(count).fill()
-  .map((_, i) => array.slice(unit * i, unit * (i + 1)));
-};
-
 Vue.createApp({
   data() {
     return {
+      status: 'v0.12',
       signed: false,
-      loading: false,
+      loading: true,
       refFiles: [],
       list: [],
+      tags: [
+        { red: true }, { blue: true }, { green: false },
+        { yellow: true }, { purple: true }, { pink: false },
+        { gold: true }, { silver: true }, { peru: false },
+      ],
+      preview: undefined,
     };
   },
 
   async mounted() {
     await this.sign();
-    if (!this.list.length) await this.find();
+    if (!this.list.length) {
+      await this.find();
+      setTimeout(() => { this.loading = false; }, 500);
+    }
   },
 
   methods: {
@@ -51,42 +55,61 @@ Vue.createApp({
         images.forEach(image => {
           this.list.unshift({
             name: image,
+            tags: [
+              { red: true }, { blue: true }, { green: false },
+              { yellow: true }, { purple: true }, { pink: false },
+              { gold: true }, { silver: true }, { peru: false },
+            ],
           });
         });
       })
       .catch(e => logger.error(e.message));
     },
 
+    wait(ms) {
+      return new Promise(resolve => { setTimeout(resolve, ms); });
+    },
+
     async onReadFile(event) {
       const { files } = event.target;
       if (!files) return;
       logger.info({ files });
-      this.files = [];
+      this.refFiles = [];
+      this.status = `${files.length} `;
       // eslint-disable-next-line no-restricted-syntax
       for (const file of files) {
         await this.readFile(file)
+        .then(item => {
+          this.refFiles.push(item);
+        })
         .catch(e => {
+          this.status += `${e.message} `;
           logger.error(e);
         });
       }
-      this.refFiles = files;
     },
 
     readFile(file) {
       return new Promise((resolve, reject) => {
-        const { type, size } = file;
+        const { name, type, size } = file;
+        const item = { name, type, size };
         if (!['image/png', 'image/jpeg', 'image/gif', 'image/webp'].includes(type)) {
           this.$refs.file.value = '';
+          this.status += 'unsupported content type ';
           reject(new Error('unsupported content type'));
         }
-        const MB = 5;
-        const MAX_LENGTH = MB * 1024 * 1024; // 2MB
+        const MB = 8;
+        const MAX_LENGTH = MB * 1024 * 1024;
+        item.mb = `${Math.floor(size / 102400) / 10} mb`;
         if (size > MAX_LENGTH) {
           this.$refs.file.value = '';
-          reject(new Error(`over content size ${JSON.stringify({ MB })}`));
+          reject(new Error(`over content size ${JSON.stringify(item)}`));
         }
         const reader = new FileReader();
-        reader.onerror = e => reject(e);
+        reader.onerror = e => {
+          this.status += `${e.message} `;
+          reject(e);
+        };
         reader.onload = res => {
           let binary = '';
           const buffer = new Uint8Array(res.target.result);
@@ -94,18 +117,16 @@ Vue.createApp({
             binary += String.fromCharCode(buffer[i]);
           }
           const src = `data:${type};base64,${btoa(binary)}`;
-          file.src = src;
-          resolve();
+          item.src = src;
+          resolve(item);
         };
         reader.readAsArrayBuffer(file);
       });
     },
 
-    async upload(files) {
+    async upload(file) {
       const formData = new FormData();
-      files.forEach(file => {
-        formData.append('files', file);
-      });
+      formData.append('files', file);
       const params = ['upload', {
         method: 'post',
         redirect: 'error',
@@ -122,20 +143,58 @@ Vue.createApp({
     async onSubmit() {
       if (!this.$refs.file.files.length) return;
       this.loading = true;
-      const filesList = sliceByDigit(Array.from(this.$refs.file.files), 2);
+      const filesList = Array.from(this.$refs.file.files);
       // eslint-disable-next-line no-restricted-syntax
-      for (const files of filesList) {
-        await this.upload(files);
+      for (const file of filesList) {
+        await this.upload(file);
+        const index = this.refFiles.findIndex(item => file.name === item.name);
+        const item = this.refFiles.splice(index, 1);
+        this.list.unshift(...item);
       }
-      Array.from(this.refFiles).forEach(item => {
-        this.list.unshift({ name: item.name });
-      });
       this.$refs.file.value = '';
+      this.refFiles = [];
       this.loading = false;
     },
 
-    show(item, hide) {
-      item.preview = hide ? -1 : (Number.parseInt(item.preview, 10) || 0) + 1;
+    async remove() {
+      if (!this.preview) return;
+      this.loading = true;
+      const { preview } = this;
+      const params = ['remove', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: preview.name }),
+        redirect: 'error',
+      }];
+      await fetch(...params)
+      .then(res => {
+        if (res.status !== 200) throw new Error(res.statusText);
+        const index = this.list.findIndex(item => item.name === preview.name);
+        this.list.splice(index, 1);
+        this.preview = undefined;
+        return res.json();
+      })
+      .catch(e => logger.error(e.message));
+      this.loading = false;
+    },
+
+    async update(preview) {
+      const item = this.list.find(v => v.name === preview.name);
+      if (JSON.stringify(item) === JSON.stringify(preview)) return;
+      item.tags = preview.tags;
+    },
+
+    async show(item) {
+      if (item) {
+        this.preview = JSON.parse(JSON.stringify(item));
+      } else {
+        const { preview } = this;
+        this.preview = undefined;
+        await this.update(preview);
+        return;
+      }
+      this.loading = true;
+      setTimeout(() => { this.loading = false; }, 1500);
     },
 
     onColorScheme() {

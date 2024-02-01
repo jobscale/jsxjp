@@ -33,7 +33,7 @@ class Controller {
       buffer.pipe(res);
     })
     .catch(e => {
-      if (!e.status) e.status = 500;
+      if (!e.status) e.status = 404;
       res.status(e.status).send(e.message);
     });
   }
@@ -54,8 +54,18 @@ class Controller {
   }
 
   remove(req, res) {
-    const e = createHttpError(501);
-    res.status(e.status).json({ message: e.message });
+    const { body: { name }, cookies: { token } } = req;
+    authService.decode(token)
+    .then(payload => {
+      const { login } = payload;
+      if (!login) throw createHttpError(403);
+      return service.remove({ login, fname: name });
+    })
+    .then(() => res.json({ ok: true }))
+    .catch(e => {
+      if (!e.status) e.status = 500;
+      res.status(e.status).json({ message: e.message });
+    });
   }
 }
 
