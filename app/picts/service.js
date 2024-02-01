@@ -1,10 +1,11 @@
 const sharp = require('sharp');
 const {
-  S3Client, PutObjectCommand, GetObjectCommand, ListObjectsV2Command,
+  S3Client, PutObjectCommand, GetObjectCommand,
+  ListObjectsV2Command, DeleteObjectCommand,
 } = require('@aws-sdk/client-s3');
+const { logger } = require('@jobscale/logger');
 const { service: configService } = require('../config/service');
 
-const logger = console;
 const { ENV } = process.env;
 const Bucket = `${ENV || 'dev'}-storage-737635344638`;
 const region = 'us-east-1';
@@ -40,8 +41,15 @@ class Service {
     for (const file of files) {
       const { originalname: fname, size, buffer, mimetype: ContentType } = file;
       logger.info({ login, fname, size });
+      const imageInfo = await sharp(buffer).metadata();
       const thumbnailBuffer = await sharp(buffer)
-      .resize({ width: 100, height: 100 }).toBuffer();
+      .resize({ width: 128, height: 128 })
+      .toFormat(imageInfo.format, { progressive: true, force: false })
+      .toBuffer()
+      .catch(e => {
+        logger.info(e);
+        throw e;
+      });
       const Key = `${login}/picts/${fname}`;
       const thumbnailKey = `${login}/thumbnail/${fname}`;
       await Promise.all([
@@ -53,6 +61,22 @@ class Service {
         })),
       ]);
     }
+  }
+
+  async remove({ login, fname }) {
+    if (!login) throw new Error('login must be string');
+    const config = await this.config();
+    const s3 = new S3Client(config);
+    const Key = `${login}/picts/${fname}`;
+    const thumbnailKey = `${login}/thumbnail/${fname}`;
+    await Promise.all([
+      s3.send(new DeleteObjectCommand({
+        Bucket, Key: thumbnailKey,
+      })),
+      s3.send(new DeleteObjectCommand({
+        Bucket, Key,
+      })),
+    ]);
   }
 
   async config() {

@@ -1,11 +1,11 @@
 const createHttpError = require('http-errors');
 const dayjs = require('dayjs');
 const { JSDOM } = require('jsdom');
+const { logger } = require('@jobscale/logger');
 const { connection } = require('../db');
 
 const { ENV } = process.env;
 const tableName = `${ENV || 'dev'}-shorten`;
-const logger = console;
 
 const showDate = (date, defaultValue) => (date ? dayjs(date).add(9, 'hours').toISOString()
 .replace(/T/, ' ')

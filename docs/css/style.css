@@ -38,6 +38,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100vh;
+  overflow: scroll;
 }
 
 .nav-trigger, .nav-container, .nav-overlay {
@@ -296,6 +297,9 @@ input {
 
 .btn-remove {
   color: #833;
+}
+.btn-big {
+  font-size: 2em;
 }
 
 .pointer:hover {
@@ -1307,8 +1311,8 @@ div .note:has(.tag) a {
   justify-content: center;
 }
 .thumbnail img {
-  width: 100%;
-  height: auto;
+  width: 8em;
+  max-height: 8em;
   margin: 0.2em;
 }
 .img-preview {
@@ -1324,10 +1328,36 @@ div .note:has(.tag) a {
   background: #111;
 }
 .img-preview img {
-  display: block;
   position: relative;
+  display: block;
   max-width: 100vw;
-  height: auto;
+  max-height: 100vh;
   top: 0;
   left: 0;
+}
+.img-control {
+  position: absolute;
+  text-align: right;
+  right: 0;
+  bottom: 1em;
+}
+.hide {
+  display: none;
+}
+.tag-control {
+  text-align: left;
+}
+.tag-control label {
+  display: inline-block;
+  background-color: rgba(55, 55, 0, 0.7);
+  padding: 0.4em 0.8em;
+  margin: 0.2em;
+  border-radius: 1em;
+  border: 1px solid #555;
+  color: #888;
+}
+.tag-control label:has(input:checked) {
+  background-color: rgba(180, 180, 0, 0.4);
+  border: 1px solid #833;
+  color: #eee;
 }

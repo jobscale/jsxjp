@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Tangerine'>
-    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/style.css?v=0.12" />
     <link rel="stylesheet" href="/css/menu.css">
     <script src="https://cdn.jsdelivr.net/npm/@jobscale/logger/index.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.prod.min.js"></script>
@@ -16,25 +16,35 @@
       <div v-if="signed" class="container">
         <section>
           <h2>Pictures</h2>
+          <div>{{ status }}</div>
           <form @submit.prevent="onSubmit">
             <div>
-              <input type="file" ref="file" @change="onReadFile" accept="image/*" multiple  class="btn-submit"></input>
+              <label class="btn-submit">
+                <input type="file" ref="file" @change="onReadFile" accept="image/*" multiple class="hide"></input>
+                Select Pictures
+              </label>
             </div>
             <div v-for="item of refFiles" class="item-box">
               <div class="item-inline">
                 <div class="thumbnail">
                   <img :src="item.src">
                 </div>
-                <div class="img-head">{{ item.name }} {{ item.type }} {{ item.size }}</div>
+                <div class="img-head">{{ item.name }}</div>
+                <div class="img-head">{{ item.mb }}</div>
               </div>
             </div>
             <div>
               <button v-if="refFiles.length" type="submit" class="btn-submit">Upload now</button>
             </div>
           </form>
-          <div v-if="list.length" style="margin:2em">
+          <div v-if="list.length" style="margin:1.5em">
             <hr>
-            <h1>Uploaded...</h1>
+            <div class="tag-control">
+              <label v-for="(tag, index) in tags">
+                <input type="checkbox" v-model="tag[Object.keys(tag)[0]]" class="hide">
+                {{ Object.keys(tag)[0] }}
+              </label>
+            </div>
           </div>
           <div v-for="item of list" class="item-box">
             <div class="item-inline" @click.prevent="show(item)">
@@ -42,9 +52,6 @@
                 <img :src="`t/${item.name}`">
               </div>
               <div class="img-head">{{ item.name }}</div>
-              <div v-if="item.preview === 1" class="img-preview" @click.prevent="show(item, 'hide')">
-                <img :src="`i/${item.name}`">
-              </div>
             </div>
           </div>
         </section>
@@ -54,6 +61,26 @@
           </button>
         </section>
         <footer style="text-align:right;margin:0.5em;"><a href="https://jsx.jp" target="_blank">powered by jsx.jp</a></footer>
+      </div>
+      <div v-if="preview" class="img-preview">
+        <img :src="`i/${preview.name}`">
+        <div class="img-control">
+          <div class="tag-control">
+            <label v-for="(tag, index) in preview.tags">
+              <input type="checkbox" v-model="tag[Object.keys(tag)[0]]" class="hide">
+              {{ Object.keys(tag)[0] }}
+            </label>
+          </div>
+          <button @click.prevent="show()" class="button btn-big" title="Close">
+            <i class="fa-regular fa-close"></i>
+          </button>
+          <button v-if="preview.unlock" @click.prevent="remove" class="button btn-remove btn-big" title="Remove">
+            <i class="fa-regular fa-trash-can fa-fade"></i>
+          </button>
+          <button v-if="!preview.unlock" @click.prevent="preview.unlock = true" class="button btn-big" title="Unlock Remove">
+            <i class="fa-regular fa-lock"></i>
+          </button>
+        </div>
       </div>
       <div v-show="loading" class="loading">
         <div class="loader">
@@ -72,7 +99,7 @@
         </div>
       </div>
     </div>
-    <script src="js/index.js"></script>
+    <script src="js/index.js?v=0.12"></script>
     <script defer src="/js/menu.js"></script>
   </body>
 </html>
