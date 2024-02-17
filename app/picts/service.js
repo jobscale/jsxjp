@@ -7,7 +7,7 @@ const { logger } = require('@jobscale/logger');
 const { service: configService } = require('../config/service');
 
 const { ENV } = process.env;
-const Bucket = `${ENV || 'dev'}-storage-737635344638`;
+const Bucket = `${ENV || 'dev'}-store-975049893701`;
 const region = 'us-east-1';
 
 class Service {
