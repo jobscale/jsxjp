@@ -27,7 +27,7 @@
             <div v-for="item of refFiles" class="item-box">
               <div class="item-inline">
                 <div class="thumbnail">
-                  <img :src="item.src">
+                  <img :src="item.img.src">
                 </div>
                 <div class="img-head">{{ item.name }}</div>
                 <div class="img-head">{{ item.mb }}</div>
@@ -38,6 +38,12 @@
             </div>
           </form>
           <div v-if="list.length" style="margin:1.5em">
+            <div style="margin: 0 2em">
+              <hr>
+              <span>TAGS</span>
+              <button @click="onEdit" class="btn-submit">EDIT</button>
+              <button v-if="check()" @click="onSave" class="btn-submit fa-fade">SAVE</button>
+            </div>
             <hr>
             <div class="tag-control">
               <label v-for="(tag, index) in tags">
