@@ -7,13 +7,41 @@ const { logger } = require('@jobscale/logger');
 const { service: configService } = require('../config/service');
 
 const { ENV } = process.env;
-const Bucket = `${ENV || 'dev'}-store-975049893701`;
-const region = 'us-east-1';
+const { Bucket } = {
+  dev: {
+    Bucket: 'dev-store-975049893701',
+  },
+  test: {
+    Bucket: 'test-store',
+  },
+}[ENV || 'dev'];
+
+const config = {
+  dev: {
+    region: 'us-east-1',
+  },
+  test: {
+    endpoint: 'https://lo-stack.jsx.jp',
+    region: 'ap-northeast-1',
+    urlParser: url => {
+      const op = new URL(url);
+      return {
+        protocol: op.protocol,
+        hostname: op.hostname,
+        port: op.port,
+        path: op.pathname,
+      };
+    },
+    endpointProvider: ep => ({ url: `${ep.Endpoint}${ep.Bucket}/` }),
+  },
+}[ENV || 'dev'];
 
 class Service {
   async find({ login }) {
-    const config = await this.config();
-    const s3 = new S3Client(config);
+    const s3 = new S3Client({
+      ...this.credentials(),
+      ...config,
+    });
     const Prefix = `${login}/thumbnail/`;
     const { Contents } = await s3.send(new ListObjectsV2Command({
       Bucket, Prefix,
@@ -24,8 +52,10 @@ class Service {
 
   async image({ login, type, fname }) {
     const dir = type === 'i' ? 'picts' : 'thumbnail';
-    const config = await this.config();
-    const s3 = new S3Client(config);
+    const s3 = new S3Client({
+      ...this.credentials(),
+      ...config,
+    });
     const Key = `${login}/${dir}/${fname}`;
     const { ContentType, Body } = await s3.send(new GetObjectCommand({
       Bucket, Key,
@@ -35,8 +65,10 @@ class Service {
 
   async upload({ login, files }) {
     if (!login) throw new Error('login must be string');
-    const config = await this.config();
-    const s3 = new S3Client(config);
+    const s3 = new S3Client({
+      ...this.credentials(),
+      ...config,
+    });
     // eslint-disable-next-line no-restricted-syntax
     for (const file of files) {
       const { originalname: fname, size, buffer, mimetype: ContentType } = file;
@@ -65,8 +97,10 @@ class Service {
 
   async remove({ login, fname }) {
     if (!login) throw new Error('login must be string');
-    const config = await this.config();
-    const s3 = new S3Client(config);
+    const s3 = new S3Client({
+      ...this.credentials(),
+      ...config,
+    });
     const Key = `${login}/picts/${fname}`;
     const thumbnailKey = `${login}/thumbnail/${fname}`;
     await Promise.all([
@@ -79,7 +113,7 @@ class Service {
     ]);
   }
 
-  async config() {
+  async credentials() {
     const env = await configService.getEnv('storage');
     return {
       credentials: {
@@ -87,7 +121,6 @@ class Service {
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       },
       ...env,
-      region,
     };
   }
 }

@@ -3,7 +3,10 @@ const { decode } = require('../js-proxy');
 const { connection } = require('../db');
 
 const { ENV } = process.env;
-const tableName = `${ENV || 'dev'}-config`;
+const tableName = {
+  dev: 'dev-config',
+  test: 'dev-config',
+}[ENV || 'dev'];
 
 class Service {
   async register(rest) {

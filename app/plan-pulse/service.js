@@ -2,8 +2,16 @@ const createHttpError = require('http-errors');
 const { connection } = require('../db');
 
 const { ENV } = process.env;
-const hubTable = `${ENV || 'dev'}-pp-hub`;
-const personTable = `${ENV || 'dev'}-pp-person`;
+const { hubTable, personTable } = {
+  dev: {
+    hubTable: 'dev--pp-hub',
+    personTable: 'dev-pp-person',
+  },
+  test: {
+    hubTable: 'dev--pp-hub',
+    personTable: 'dev-pp-person',
+  },
+}[ENV || 'dev'];
 
 class Service {
   async hub({ hubId }) {
