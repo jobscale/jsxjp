@@ -39,7 +39,7 @@ const config = {
 class Service {
   async find({ login }) {
     const s3 = new S3Client({
-      ...this.credentials(),
+      ...(await this.credentials()),
       ...config,
     });
     const Prefix = `${login}/thumbnail/`;
@@ -53,7 +53,7 @@ class Service {
   async image({ login, type, fname }) {
     const dir = type === 'i' ? 'picts' : 'thumbnail';
     const s3 = new S3Client({
-      ...this.credentials(),
+      ...(await this.credentials()),
       ...config,
     });
     const Key = `${login}/${dir}/${fname}`;
@@ -66,7 +66,7 @@ class Service {
   async upload({ login, files }) {
     if (!login) throw new Error('login must be string');
     const s3 = new S3Client({
-      ...this.credentials(),
+      ...(await this.credentials()),
       ...config,
     });
     // eslint-disable-next-line no-restricted-syntax
@@ -98,7 +98,7 @@ class Service {
   async remove({ login, fname }) {
     if (!login) throw new Error('login must be string');
     const s3 = new S3Client({
-      ...this.credentials(),
+      ...(await this.credentials()),
       ...config,
     });
     const Key = `${login}/picts/${fname}`;
