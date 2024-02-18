@@ -8,7 +8,10 @@ const jwtSecret = 'node-express-ejs';
 const getSecret = () => 'JSXJPX6EY4BMPXIRSSR74';
 
 const { ENV } = process.env;
-const tableName = `${ENV || 'dev'}-user`;
+const tableName = {
+  dev: 'dev-user',
+  test: 'dev-user',
+}[ENV || 'dev'];
 
 class Service {
   async now() {

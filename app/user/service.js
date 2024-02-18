@@ -4,7 +4,10 @@ const { createHash } = require('.');
 const { connection } = require('../db');
 
 const { ENV } = process.env;
-const tableName = `${ENV || 'dev'}-user`;
+const tableName = {
+  dev: 'dev-user',
+  test: 'dev-user',
+}[ENV || 'dev'];
 
 const showDate = (date, defaultValue) => (date ? dayjs(date).add(9, 'hours').toISOString()
 .replace(/T/, ' ')

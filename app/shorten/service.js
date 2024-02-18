@@ -5,7 +5,10 @@ const { logger } = require('@jobscale/logger');
 const { connection } = require('../db');
 
 const { ENV } = process.env;
-const tableName = `${ENV || 'dev'}-shorten`;
+const tableName = {
+  dev: 'dev-shorten',
+  test: 'dev-shorten',
+}[ENV || 'dev'];
 
 const showDate = (date, defaultValue) => (date ? dayjs(date).add(9, 'hours').toISOString()
 .replace(/T/, ' ')

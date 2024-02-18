@@ -4,7 +4,10 @@ const { createHash } = require('../user');
 const { connection } = require('../db');
 
 const { ENV } = process.env;
-const tableName = `${ENV || 'dev'}-user`;
+const tableName = {
+  dev: 'dev-user',
+  test: 'dev-user',
+}[ENV || 'dev'];
 
 class Service {
   async password(rest) {
