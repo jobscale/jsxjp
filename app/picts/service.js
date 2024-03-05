@@ -1,7 +1,7 @@
 const sharp = require('sharp');
 const {
   S3Client, PutObjectCommand, GetObjectCommand,
-  ListObjectsV2Command, DeleteObjectCommand,
+  ListObjectsV2Command, DeleteObjectCommand, CreateBucketCommand,
 } = require('@aws-sdk/client-s3');
 const { logger } = require('@jobscale/logger');
 const { service: configService } = require('../config/service');
@@ -49,6 +49,10 @@ class Service {
       ...(await this.credentials()),
       ...config,
     });
+    if (['test'].includes(ENV)) {
+      await s3.send(new CreateBucketCommand({ Bucket }))
+      .catch(() => undefined);
+    }
     const Prefix = `${login}/thumbnail/`;
     const { Contents } = await s3.send(new ListObjectsV2Command({
       Bucket, Prefix,
@@ -138,11 +142,10 @@ class Service {
       .then(res => fetchObjectChunk(res))
       .then(body => JSON.parse(body))
       .catch(e => {
-        if (e.Code === 'NoSuchKey') return {};
+        if (e.Code === 'NoSuchKey') return;
         logger.error(e);
-        return {};
       });
-      logger.info({ login, name, size: dataset[name].length });
+      logger.info({ login, name, size: (dataset[name] || '').length });
     }
     return dataset;
   }
