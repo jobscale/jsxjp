@@ -24,8 +24,8 @@ Vue.createApp({
     await this.sign();
     if (!this.list.length) {
       await this.find();
+      await this.onLoad();
       this.check();
-      this.onSave();
       setTimeout(() => { this.loading = false; }, 500);
     }
   },
@@ -64,7 +64,21 @@ Vue.createApp({
       return this.imageTags !== this.modify;
     },
 
-    onSave() {
+    async onLoad() {
+      const dataset = await this.getData([
+        { name: 'tags' },
+        { name: 'imageTags' },
+      ]);
+      this.tags = dataset.tags || [];
+      this.modify = dataset.imageTags || {};
+      this.imageTags = this.modify;
+    },
+
+    async onSave() {
+      await this.putData({
+        tags: this.tags,
+        imageTags: this.modify,
+      });
       this.imageTags = this.modify;
     },
 
@@ -85,6 +99,36 @@ Vue.createApp({
             tags: JSON.parse(JSON.stringify(this.tags)),
           });
         });
+      })
+      .catch(e => logger.error(e.message));
+    },
+
+    async getData(list) {
+      const params = ['getData', {
+        method: 'post',
+        redirect: 'error',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(list),
+      }];
+      return fetch(...params)
+      .then(res => {
+        if (res.status !== 200) throw new Error(res.statusText);
+        return res.json();
+      })
+      .catch(e => logger.error(e.message));
+    },
+
+    async putData(dataset) {
+      const params = ['putData', {
+        method: 'post',
+        redirect: 'error',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataset),
+      }];
+      return fetch(...params)
+      .then(res => {
+        if (res.status !== 200) throw new Error(res.statusText);
+        return res.json();
       })
       .catch(e => logger.error(e.message));
     },
