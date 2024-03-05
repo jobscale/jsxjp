@@ -36,6 +36,13 @@ const config = {
   },
 }[ENV || 'dev'];
 
+const fetchObjectChunk = res => new Promise((resolve, reject) => {
+  const dataChunks = [];
+  res.Body.once('error', e => reject(e));
+  res.Body.on('data', chunk => dataChunks.push(chunk));
+  res.Body.once('end', () => resolve(dataChunks.join('')));
+});
+
 class Service {
   async find({ login }) {
     const s3 = new S3Client({
@@ -111,6 +118,50 @@ class Service {
         Bucket, Key,
       })),
     ]);
+  }
+
+  async getData({ login, list }) {
+    if (!login) throw new Error('login must be string');
+    const s3 = new S3Client({
+      ...(await this.credentials()),
+      ...config,
+    });
+    const dataset = {};
+    // eslint-disable-next-line no-restricted-syntax
+    for (const data of list) {
+      const { name } = data;
+      logger.info({ login, name });
+      const Key = `${login}/dataset/${name}`;
+      dataset[name] = await s3.send(new GetObjectCommand({
+        Bucket, Key,
+      }))
+      .then(res => fetchObjectChunk(res))
+      .then(body => JSON.parse(body))
+      .catch(e => {
+        if (e.Code === 'NoSuchKey') return {};
+        logger.error(e);
+        return {};
+      });
+      logger.info({ login, name, size: dataset[name].length });
+    }
+    return dataset;
+  }
+
+  async putData({ login, dataset }) {
+    if (!login) throw new Error('login must be string');
+    const s3 = new S3Client({
+      ...(await this.credentials()),
+      ...config,
+    });
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [name, item] of Object.entries(dataset)) {
+      const Body = JSON.stringify(item);
+      logger.info({ login, name, size: Body.length });
+      const Key = `${login}/dataset/${name}`;
+      await s3.send(new PutObjectCommand({
+        Bucket, Key, Body,
+      }));
+    }
   }
 
   async credentials() {

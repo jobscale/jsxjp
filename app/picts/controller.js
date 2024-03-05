@@ -67,6 +67,36 @@ class Controller {
       res.status(e.status).json({ message: e.message });
     });
   }
+
+  getData(req, res) {
+    const { body: list, cookies: { token } } = req;
+    authService.decode(token)
+    .then(payload => {
+      const { login } = payload;
+      if (!login) throw createHttpError(403);
+      return service.getData({ login, list });
+    })
+    .then(dataset => res.json(dataset))
+    .catch(e => {
+      if (!e.status) e.status = 500;
+      res.status(e.status).json({ message: e.message });
+    });
+  }
+
+  putData(req, res) {
+    const { body: dataset, cookies: { token } } = req;
+    authService.decode(token)
+    .then(payload => {
+      const { login } = payload;
+      if (!login) throw createHttpError(403);
+      return service.putData({ login, dataset });
+    })
+    .then(() => res.json({ ok: true }))
+    .catch(e => {
+      if (!e.status) e.status = 500;
+      res.status(e.status).json({ message: e.message });
+    });
+  }
 }
 
 module.exports = {
