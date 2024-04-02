@@ -7,7 +7,7 @@
 ## linting
 
 ```
-npm run lint
+npm run lint --if-present
 ```
 
 ## testing
