@@ -84,6 +84,7 @@ section {
 
 #svelte-app {
   max-width: 7em;
+  padding: 0 1rem;
 }
 
 .smoke #app {
