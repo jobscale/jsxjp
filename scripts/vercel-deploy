@@ -4,6 +4,7 @@ set -eu
 ENV=${1:-dev}
 
 # rm -fr node_modules package-lock.json
+npm ci --omit=dev
 
 deploy() {
   echo
