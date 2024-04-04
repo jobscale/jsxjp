@@ -1,0 +1,4 @@
+#!/usr/bin/env
+set -eu
+
+render dashboard

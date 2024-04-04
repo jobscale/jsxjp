@@ -6,18 +6,22 @@ ENV=${1:-dev}
 # rm -fr node_modules package-lock.json
 npm ci --omit=dev
 
-deploy() {
-  echo
-  vercel --prod -y -e ENV=${ENV}
-  echo -n "check url wait ... https://jsxjp.vercel.app/ ... "
-  sleep 30
-  [[ $(curl -I -s https://jsxjp.vercel.app/ | grep 'HTTP/2 500' | wc -l) == 0 ]] && echo "OK" && return || echo "NG"
-  echo " ... retry ..."
-  for i in {59..0}
+wait() {
+  for i in $(seq $1 -1 0)
   do
     echo -n "$i "
     sleep 5
   done
+}
+
+deploy() {
+  echo
+  vercel --prod -y -e ENV=${ENV}
+  echo -n "check url wait ... https://jsxjp.vercel.app/ ... "
+  wait 10
+  [[ $(curl -I -s https://jsxjp.vercel.app/ | grep 'HTTP/2 500' | wc -l) == 0 ]] && echo "OK" && return || echo "NG"
+  echo " ... retry ..."
+  wait 60
   deploy
 }
 
