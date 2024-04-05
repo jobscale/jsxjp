@@ -143,7 +143,6 @@ Vue.createApp({
       logger.info({ files });
       this.refFiles = [];
       this.status = `${files.length} `;
-      // eslint-disable-next-line no-restricted-syntax
       for (const file of files) {
         await this.readFile(file)
         .then(item => {
@@ -224,7 +223,6 @@ Vue.createApp({
       if (!this.$refs.file.files.length) return;
       this.loading = true;
       const filesList = Array.from(this.refFiles);
-      // eslint-disable-next-line no-restricted-syntax
       for (const item of filesList) {
         await this.upload(item.file);
         const index = this.refFiles.findIndex(v => item.file.name === v.name);

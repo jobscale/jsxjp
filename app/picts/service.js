@@ -80,7 +80,6 @@ class Service {
       ...(await this.credentials()),
       ...config,
     });
-    // eslint-disable-next-line no-restricted-syntax
     for (const file of files) {
       const { originalname: fname, size, buffer, mimetype: ContentType } = file;
       logger.info({ login, fname, size });
@@ -131,7 +130,6 @@ class Service {
       ...config,
     });
     const dataset = {};
-    // eslint-disable-next-line no-restricted-syntax
     for (const data of list) {
       const { name } = data;
       logger.info({ login, name });
@@ -156,7 +154,6 @@ class Service {
       ...(await this.credentials()),
       ...config,
     });
-    // eslint-disable-next-line no-restricted-syntax
     for (const [name, item] of Object.entries(dataset)) {
       const Body = JSON.stringify(item);
       logger.info({ login, name, size: Body.length });
