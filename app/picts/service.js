@@ -9,7 +9,7 @@ const { service: configService } = require('../config/service');
 const { ENV } = process.env;
 const { Bucket } = {
   dev: {
-    Bucket: 'dev-store-975049893701',
+    Bucket: 'dev-store',
   },
   test: {
     Bucket: 'test-store',
@@ -49,7 +49,7 @@ class Service {
       ...(await this.credentials()),
       ...config,
     });
-    if (['test'].includes(ENV)) {
+    if (['test', 'dev'].includes(ENV)) {
       await s3.send(new CreateBucketCommand({ Bucket }))
       .catch(() => undefined);
     }
