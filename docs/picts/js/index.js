@@ -2,21 +2,18 @@ const logger = console;
 
 Vue.createApp({
   data() {
-    const tags = [
-      { red: true }, { blue: true }, { green: false },
-      { yellow: true }, { purple: true }, { pink: false },
-      { gold: true }, { silver: true }, { peru: false },
-    ];
     return {
       status: 'v0.12',
       signed: false,
       loading: true,
       refFiles: [],
       list: [],
-      tags,
+      tags: {},
       imageTags: '{}',
       modify: '{}',
       preview: undefined,
+      edit: undefined,
+      editTags: [],
     };
   },
 
@@ -25,7 +22,6 @@ Vue.createApp({
     if (!this.list.length) {
       await this.find();
       await this.onLoad();
-      this.check();
       setTimeout(() => { this.loading = false; }, 500);
     }
   },
@@ -46,32 +42,20 @@ Vue.createApp({
       });
     },
 
-    check() {
-      const nowTags = {
-        tags: Object.keys(this.tags),
-        imageTags: {},
-      };
-      this.list.sort((a, b) => {
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-        return 0;
-      }).forEach(item => {
-        nowTags.imageTags[item.name] = {
-          tags: item.tags,
-        };
-      });
-      this.modify = JSON.stringify(nowTags);
-      return this.imageTags !== this.modify;
-    },
-
     async onLoad() {
-      const dataset = await this.getData([
+      const { tags, imageTags } = (await this.getData([
         { name: 'tags' },
         { name: 'imageTags' },
-      ]);
-      this.tags = dataset.tags || [];
-      this.modify = dataset.imageTags || {};
-      this.imageTags = this.modify;
+      ])) || {};
+      this.tags = tags || {};
+      this.modify = {};
+      this.list.forEach(item => {
+        this.modify[item.name] = { tags: {} };
+        Object.keys(this.tags).forEach(key => {
+          this.modify[item.name].tags[key] = imageTags?.[item.name]?.tags[key] || false;
+        });
+      });
+      this.imageTags = JSON.parse(JSON.stringify(this.modify));
     },
 
     async onSave() {
@@ -79,7 +63,44 @@ Vue.createApp({
         tags: this.tags,
         imageTags: this.modify,
       });
-      this.imageTags = this.modify;
+      this.imageTags = JSON.parse(JSON.stringify(this.modify));
+    },
+
+    itemShown(item) {
+      const enabled = Object.keys(this.tags).filter(key => this.tags[key]);
+      if (!enabled.length) return '';
+      for (const key of enabled) {
+        if (this.imageTags[item.name].tags[key]) return '';
+      }
+      return 'hide';
+    },
+
+    onEdit() {
+      this.editTags = Object.keys(this.tags);
+      this.edit = true;
+    },
+
+    onAddTag() {
+      this.editTags.push('');
+    },
+
+    onRemoveTag(index) {
+      this.editTags.splice(index, 1);
+    },
+
+    async onCloseTag() {
+      const editTags = this.editTags.filter(v => v);
+      const tags = {};
+      editTags.forEach(key => {
+        if (!key) return;
+        tags[key] = !!this.tags[key];
+      });
+      if (JSON.stringify(editTags) !== JSON.stringify(Object.keys(this.tags))) {
+        await this.onSave();
+      }
+      this.tags = tags;
+      this.editTags = [];
+      this.edit = false;
     },
 
     async find() {
@@ -125,9 +146,11 @@ Vue.createApp({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataset),
       }];
+      this.loading = true;
       return fetch(...params)
       .then(res => {
         if (res.status !== 200) throw new Error(res.statusText);
+        this.loading = false;
         return res.json();
       })
       .catch(e => logger.error(e.message));
@@ -259,21 +282,27 @@ Vue.createApp({
       this.loading = false;
     },
 
-    async update(preview) {
-      const item = this.list.find(v => v.name === preview.name);
-      if (JSON.stringify(item) === JSON.stringify(preview)) return;
-      item.tags = preview.tags;
+    async update(prev) {
+      const item = this.list.find(v => v.name === prev.name);
+      if (JSON.stringify(this.modify[item.name].tags) === JSON.stringify(prev.tags)) return;
+      this.modify[item.name].tags = prev.tags;
     },
 
     async show(item) {
-      if (item) {
-        this.preview = JSON.parse(JSON.stringify(item));
-      } else {
-        const { preview } = this;
+      if (!item) {
+        await this.update(this.preview);
+        if (JSON.stringify(this.imageTags) !== JSON.stringify(this.modify)) {
+          await this.onSave();
+        }
         this.preview = undefined;
-        await this.update(preview);
         return;
       }
+      const preview = JSON.parse(JSON.stringify(item));
+      preview.tags = {};
+      Object.keys(this.tags).forEach(key => {
+        preview.tags[key] = !!this.modify[item.name].tags[key];
+      });
+      this.preview = preview;
       this.loading = true;
       setTimeout(() => { this.loading = false; }, 1500);
     },

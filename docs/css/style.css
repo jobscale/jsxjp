@@ -176,6 +176,10 @@ button:enabled {
   padding: 0.2em 0.5em;
   margin: 0.2em;
 }
+.button-mini {
+  padding: 0 0 0 0.2em;
+  margin: 0 0 0 0.2em;
+}
 
 .btn-submit {
   display: inline-flex;
@@ -253,6 +257,12 @@ input {
 
 .input {
   width: 80vw;
+}
+
+.input-text {
+  padding: 0.2em 0.4em;
+  width: 12em;
+  border: 1px solid gray;
 }
 
 .output {
@@ -1339,7 +1349,7 @@ div .note:has(.tag) a {
 .img-control {
   position: absolute;
   text-align: right;
-  right: 0;
+  right: 1em;
   bottom: 1em;
 }
 .hide {

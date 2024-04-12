@@ -13,7 +13,7 @@
   </head>
   <body>
     <div id="app" class="nav-main">
-      <div v-if="signed" class="container">
+      <div v-if="signed && !preview && !edit" class="container">
         <section>
           <h2>Pictures</h2>
           <div>{{ status }}</div>
@@ -38,21 +38,18 @@
             </div>
           </form>
           <div v-if="list.length" style="margin:1.5em">
-            <div style="margin: 0 2em">
-              <hr>
-              <span>TAGS</span>
-              <button @click="onEdit" class="btn-submit">EDIT</button>
-              <button v-if="check()" @click="onSave" class="btn-submit fa-fade">SAVE</button>
-            </div>
             <hr>
+            <div style="margin: 0 2em">
+              <button @click="onEdit" class="btn-submit">EDIT TAGS</button>
+            </div>
             <div class="tag-control">
-              <label v-for="(tag, index) in tags">
-                <input type="checkbox" v-model="tag[Object.keys(tag)[0]]" class="hide">
-                {{ Object.keys(tag)[0] }}
+              <label v-for="(value, key) of tags">
+                {{ key }}
+                <input type="checkbox" v-model="tags[key]" class="hide"></input>
               </label>
             </div>
           </div>
-          <div v-for="item of list" class="item-box">
+          <div v-for="item of list" class="item-box" :class="itemShown(item)">
             <div class="item-inline" @click.prevent="show(item)">
               <div class="thumbnail">
                 <img :src="`t/${item.name}`">
@@ -72,9 +69,9 @@
         <img :src="`i/${preview.name}`">
         <div class="img-control">
           <div class="tag-control">
-            <label v-for="(tag, index) in preview.tags">
-              <input type="checkbox" v-model="tag[Object.keys(tag)[0]]" class="hide">
-              {{ Object.keys(tag)[0] }}
+            <label v-for="(value, key) in preview.tags">
+              <input type="checkbox" v-model="preview.tags[key]" class="hide">
+              {{ key }}
             </label>
           </div>
           <button @click.prevent="show()" class="button btn-big" title="Close">
@@ -87,6 +84,18 @@
             <i class="fa-regular fa-lock"></i>
           </button>
         </div>
+      </div>
+      <div v-show="edit" class="container">
+        <div class="tag-control">
+          <label v-for="(tag, index) in editTags">
+            <input type="text" v-model="editTags[index]" class="input-text"></input>
+            <button @click="onRemoveTag(index)" class="button-mini">
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
+          </label>
+        </div>
+        <button @click="onCloseTag"><i class="fa-regular fa-close"></i></button>
+        <button @click="onAddTag"><i class="fa-regular fa-plus"></i></button>
       </div>
       <div v-show="loading" class="loading">
         <div class="loader">
