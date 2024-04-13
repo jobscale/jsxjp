@@ -7,22 +7,41 @@ const { logger } = require('@jobscale/logger');
 const { service: configService } = require('../config/service');
 
 const { ENV } = process.env;
-const { Bucket } = {
+const { Bucket, forceCreate } = {
+  stg: {
+    Bucket: 'stg-store-jsx-picture',
+  },
   dev: {
     Bucket: 'dev-store',
+    forceCreate: true,
   },
   test: {
     Bucket: 'test-store',
+    forceCreate: true,
   },
 }[ENV || 'dev'];
 
 const config = {
-  dev: {
+  stg: {
     region: 'us-east-1',
   },
-  test: {
+  dev: {
+    region: 'us-east-1',
     endpoint: 'https://lo-stack.jsx.jp',
+    urlParser: url => {
+      const op = new URL(url);
+      return {
+        protocol: op.protocol,
+        hostname: op.hostname,
+        port: op.port,
+        path: op.pathname,
+      };
+    },
+    endpointProvider: ep => ({ url: `${ep.Endpoint}${ep.Bucket}/` }),
+  },
+  test: {
     region: 'ap-northeast-1',
+    endpoint: 'https://lo-stack.jsx.jp',
     urlParser: url => {
       const op = new URL(url);
       return {
@@ -49,7 +68,7 @@ class Service {
       ...(await this.credentials()),
       ...config,
     });
-    if (['test', 'dev'].includes(ENV)) {
+    if (forceCreate) {
       await s3.send(new CreateBucketCommand({ Bucket }))
       .catch(() => undefined);
     }

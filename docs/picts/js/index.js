@@ -1,5 +1,9 @@
 const logger = console;
 
+const wait = ms => new Promise(resolve => { setTimeout(resolve, ms); });
+const strictEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const deepClone = obj => JSON.parse(JSON.stringify(obj));
+
 Vue.createApp({
   data() {
     return {
@@ -14,6 +18,7 @@ Vue.createApp({
       preview: undefined,
       edit: undefined,
       editTags: [],
+      cacheImage: {},
     };
   },
 
@@ -48,14 +53,15 @@ Vue.createApp({
         { name: 'imageTags' },
       ])) || {};
       this.tags = tags || {};
-      this.modify = {};
+      this.imageTags = {};
       this.list.forEach(item => {
-        this.modify[item.name] = { tags: {} };
+        this.imageTags[item.name] = { tags: {} };
         Object.keys(this.tags).forEach(key => {
-          this.modify[item.name].tags[key] = imageTags?.[item.name]?.tags[key] || false;
+          this.tags[key] = false;
+          this.imageTags[item.name].tags[key] = imageTags?.[item.name]?.tags[key] || false;
         });
       });
-      this.imageTags = JSON.parse(JSON.stringify(this.modify));
+      this.modify = deepClone(this.imageTags);
     },
 
     async onSave() {
@@ -63,14 +69,14 @@ Vue.createApp({
         tags: this.tags,
         imageTags: this.modify,
       });
-      this.imageTags = JSON.parse(JSON.stringify(this.modify));
+      this.imageTags = deepClone(this.modify);
     },
 
     itemShown(item) {
       const enabled = Object.keys(this.tags).filter(key => this.tags[key]);
       if (!enabled.length) return '';
       for (const key of enabled) {
-        if (this.imageTags[item.name].tags[key]) return '';
+        if (this.imageTags[item.name]?.tags[key]) return '';
       }
       return 'hide';
     },
@@ -92,13 +98,12 @@ Vue.createApp({
       const editTags = this.editTags.filter(v => v);
       const tags = {};
       editTags.forEach(key => {
-        if (!key) return;
         tags[key] = !!this.tags[key];
       });
-      if (JSON.stringify(editTags) !== JSON.stringify(Object.keys(this.tags))) {
+      if (!strictEqual(tags, this.tags)) {
+        this.tags = tags;
         await this.onSave();
       }
-      this.tags = tags;
       this.editTags = [];
       this.edit = false;
     },
@@ -117,11 +122,17 @@ Vue.createApp({
         images.forEach(name => {
           this.list.unshift({
             name,
-            tags: JSON.parse(JSON.stringify(this.tags)),
           });
         });
       })
       .catch(e => logger.error(e.message));
+    },
+
+    async preLoad() {
+      for (const { name } of this.list) {
+        await wait(10000);
+        this.cacheImage[`i/${name}`] = undefined;
+      }
     },
 
     async getData(list) {
@@ -154,10 +165,6 @@ Vue.createApp({
         return res.json();
       })
       .catch(e => logger.error(e.message));
-    },
-
-    wait(ms) {
-      return new Promise(resolve => { setTimeout(resolve, ms); });
     },
 
     async onReadFile(event) {
@@ -250,10 +257,8 @@ Vue.createApp({
         await this.upload(item.file);
         const index = this.refFiles.findIndex(v => item.file.name === v.name);
         const [data] = this.refFiles.splice(index, 1);
-        this.list.unshift({
-          name: data.file.name,
-          tags: JSON.parse(JSON.stringify(this.tags)),
-        });
+        const { name } = data.file;
+        this.list.unshift({ name });
       }
       this.$refs.file.value = '';
       this.refFiles = [];
@@ -282,29 +287,36 @@ Vue.createApp({
       this.loading = false;
     },
 
-    async update(prev) {
-      const item = this.list.find(v => v.name === prev.name);
-      if (JSON.stringify(this.modify[item.name].tags) === JSON.stringify(prev.tags)) return;
-      this.modify[item.name].tags = prev.tags;
-    },
-
     async show(item) {
+      const { name } = item || this.preview;
       if (!item) {
-        await this.update(this.preview);
-        if (JSON.stringify(this.imageTags) !== JSON.stringify(this.modify)) {
+        if (!strictEqual(this.modify[name]?.tags, this.preview.tags)) {
+          this.modify[name] = { tags: this.preview.tags };
           await this.onSave();
         }
         this.preview = undefined;
         return;
       }
-      const preview = JSON.parse(JSON.stringify(item));
+      const preview = deepClone(item);
       preview.tags = {};
       Object.keys(this.tags).forEach(key => {
-        preview.tags[key] = !!this.modify[item.name].tags[key];
+        preview.tags[key] = !!this.imageTags[name]?.tags[key];
       });
       this.preview = preview;
+      const imagePath = `i/${name}`;
+      if (this.cacheImage[imagePath]) {
+        preview.imgUrl = this.cacheImage[imagePath];
+        return;
+      }
       this.loading = true;
-      setTimeout(() => { this.loading = false; }, 1500);
+      fetch(imagePath)
+      .then(res => res.blob())
+      .then(blob => URL.createObjectURL(blob))
+      .then(imgUrl => {
+        preview.imgUrl = imgUrl;
+        this.cacheImage[imagePath] = imgUrl;
+        this.loading = false;
+      });
     },
 
     onColorScheme() {
