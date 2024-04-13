@@ -10,7 +10,7 @@ wait() {
   for i in $(seq $1 -1 0)
   do
     echo -n "$i "
-    sleep 5
+    sleep 6
   done
 }
 
@@ -18,10 +18,10 @@ deploy() {
   echo
   vercel --prod -y -e ENV=${ENV}
   echo -n "check url wait ... https://jsxjp.vercel.app/ ... "
-  wait 10
+  wait 20
   [[ $(curl -I -s https://jsxjp.vercel.app/ | grep 'HTTP/2 500' | wc -l) == 0 ]] && echo "OK" && return || echo "NG"
   echo " ... retry ..."
-  wait 60
+  wait 40
   deploy
 }
 
