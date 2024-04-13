@@ -43,7 +43,7 @@ class App {
         "font-src 'self' data: https:",
         "frame-src 'self' https:",
         "frame-ancestors 'self'",
-        "img-src 'self' data: https:",
+        "img-src 'self' data: blob: https:",
         "media-src 'self' data: https:",
         "script-src 'self' 'unsafe-eval'",
         "script-src-elem 'self' https:",

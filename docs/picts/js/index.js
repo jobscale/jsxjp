@@ -7,7 +7,7 @@ const deepClone = obj => JSON.parse(JSON.stringify(obj));
 Vue.createApp({
   data() {
     return {
-      status: 'v0.12',
+      status: 'v0.13',
       signed: false,
       loading: true,
       refFiles: [],
@@ -287,6 +287,17 @@ Vue.createApp({
       this.loading = false;
     },
 
+    loadImage(url) {
+      return fetch(url)
+      .then(res => res.blob())
+      .then(blob => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      }));
+    },
+
     async show(item) {
       const { name } = item || this.preview;
       if (!item) {
@@ -309,9 +320,7 @@ Vue.createApp({
         return;
       }
       this.loading = true;
-      fetch(imagePath)
-      .then(res => res.blob())
-      .then(blob => URL.createObjectURL(blob))
+      this.loadImage(imagePath)
       .then(imgUrl => {
         preview.imgUrl = imgUrl;
         this.cacheImage[imagePath] = imgUrl;
