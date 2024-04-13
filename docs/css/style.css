@@ -60,6 +60,10 @@ main {
   text-align: center;
   max-width: 100%;
 }
+.container-footer {
+  margin: 1em 0 0;
+  padding: 1em 0 0;
+}
 
 .description {
   display: flex;
@@ -1352,11 +1356,23 @@ div .note:has(.tag) a {
   right: 1em;
   bottom: 1em;
 }
+.item-image {
+  width: calc(100vw - 1em);
+}
+.cache-image {
+  position: fixed;
+  top: -20em;
+  width: 10em;
+  height: 10em;
+  overflow: auto;
+}
 .hide {
   display: none;
 }
 .tag-control {
   text-align: left;
+  margin: 1em 0;
+  padding: 1em 0;
 }
 .tag-control label {
   display: inline-block;

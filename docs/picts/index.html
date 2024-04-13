@@ -13,7 +13,7 @@
   </head>
   <body>
     <div id="app" class="nav-main">
-      <div v-if="signed && !preview && !edit" class="container">
+      <div v-if="signed" v-show="!preview && !edit" class="container">
         <section>
           <h2>Pictures</h2>
           <div>{{ status }}</div>
@@ -49,16 +49,18 @@
               </label>
             </div>
           </div>
-          <div v-for="item of list" class="item-box" :class="itemShown(item)">
-            <div class="item-inline" @click.prevent="show(item)">
-              <div class="thumbnail">
-                <img :src="`t/${item.name}`">
+          <div class="item-image">
+            <div v-for="item of list" class="item-box" :class="itemShown(item)">
+              <div class="item-inline" @click.prevent="show(item)">
+                <div class="thumbnail">
+                  <img :src="`t/${item.name}`">
+                </div>
+                <div class="img-head">{{ item.name }}</div>
               </div>
-              <div class="img-head">{{ item.name }}</div>
             </div>
           </div>
         </section>
-        <section>
+        <section class="container-footer">
           <button @click="onColorScheme" class="button">
             <i class="fa-solid fa-bagel"></i>
           </button>
@@ -66,7 +68,10 @@
         <footer style="text-align:right;margin:0.5em;"><a href="https://jsx.jp" target="_blank">powered by jsx.jp</a></footer>
       </div>
       <div v-if="preview" class="img-preview">
-        <img :src="`i/${preview.name}`">
+        <div v-if="!preview.imgUrl">
+          Now Loading...
+        </div>
+        <img v-if="preview.imgUrl" :src="preview.imgUrl" class="preview-image">
         <div class="img-control">
           <div class="tag-control">
             <label v-for="(value, key) in preview.tags">
@@ -86,6 +91,9 @@
         </div>
       </div>
       <div v-show="edit" class="container">
+        <button @click="onCloseTag">
+          <i class="fa-regular fa-close"></i> &nbsp;&nbsp; CLOSE
+        </button>
         <div class="tag-control">
           <label v-for="(tag, index) in editTags">
             <input type="text" v-model="editTags[index]" class="input-text"></input>
@@ -94,8 +102,9 @@
             </button>
           </label>
         </div>
-        <button @click="onCloseTag"><i class="fa-regular fa-close"></i></button>
-        <button @click="onAddTag"><i class="fa-regular fa-plus"></i></button>
+        <button @click="onAddTag">
+          <i class="fa-regular fa-plus"></i> &nbsp;&nbsp; ADD
+        </button>
       </div>
       <div v-show="loading" class="loading">
         <div class="loader">
