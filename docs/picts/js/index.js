@@ -286,6 +286,9 @@ Vue.createApp({
         const index = this.list.findIndex(item => item.name === preview.name);
         this.list.splice(index, 1);
         this.preview = undefined;
+        this.$nextTick(() => {
+          window.scrollTo(0, this.scrollY);
+        });
         return res.json();
       })
       .catch(e => logger.error(e.message));
@@ -311,6 +314,9 @@ Vue.createApp({
           await this.onSave();
         }
         this.preview = undefined;
+        this.$nextTick(() => {
+          window.scrollTo(0, this.scrollY);
+        });
         return;
       }
       const preview = deepClone(item);
@@ -318,6 +324,7 @@ Vue.createApp({
       Object.keys(this.tags).forEach(key => {
         preview.tags[key] = !!this.imageTags[name]?.tags[key];
       });
+      this.scrollY = window.scrollY;
       this.preview = preview;
       const imagePath = `i/${name}`;
       if (this.cacheImage[imagePath]) {
