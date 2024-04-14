@@ -10,19 +10,27 @@ wait() {
   for i in $(seq $1 -1 0)
   do
     echo -n "$i "
-    sleep 6
+    sleep 3
   done
+}
+
+check() {
+  echo "check url wait ... https://jsxjp.vercel.app/ ... "
+  wait 20
+  [[ $(curl -I -s https://jsxjp.vercel.app/ | grep 'HTTP/2 500' | wc -l) == 0 ]] && echo "Fetch OK" && return 0
+  echo "Fetch NG"
+  return 1
 }
 
 deploy() {
   echo
+  date
   vercel --prod -y -e ENV=${ENV}
-  echo -n "check url wait ... https://jsxjp.vercel.app/ ... "
-  wait 20
-  [[ $(curl -I -s https://jsxjp.vercel.app/ | grep 'HTTP/2 500' | wc -l) == 0 ]] && echo "OK" && return || echo "NG"
-  echo " ... retry ..."
-  wait 40
+  echo
+  (check || check) && return 0
+  (check || check) && return 0
+  echo -e "\n ... retry ..."
   deploy
 }
 
-deploy
+time deploy

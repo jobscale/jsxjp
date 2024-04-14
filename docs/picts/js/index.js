@@ -60,6 +60,13 @@ Vue.createApp({
           this.imageTags[item.name].tags[key] = imageTags?.[item.name]?.tags[key] || false;
         });
       });
+      const { searchParams } = new URL(location.href);
+      if (searchParams.has('t')) {
+        decodeURIComponent(searchParams.get('t')).split(',').forEach(key => {
+          if (this.tags[key] === undefined) return;
+          this.tags[key] = true;
+        });
+      }
       this.modify = deepClone(this.imageTags);
     },
 
