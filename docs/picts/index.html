@@ -13,7 +13,7 @@
   </head>
   <body>
     <div id="app" class="nav-main">
-      <div v-if="signed" v-show="!preview && !edit" class="container">
+      <div v-if="signed" v-show="!preview && !editTags.length" class="container">
         <section>
           <h2>Pictures</h2>
           <div>{{ status }}</div>
@@ -90,7 +90,7 @@
           </button>
         </div>
       </div>
-      <div v-show="edit" class="container">
+      <div v-show="editTags.length" class="container">
         <button @click="onCloseTag">
           <i class="fa-regular fa-close"></i> &nbsp;&nbsp; CLOSE
         </button>
