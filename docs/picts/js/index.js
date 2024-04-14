@@ -16,7 +16,6 @@ Vue.createApp({
       imageTags: '{}',
       modify: '{}',
       preview: undefined,
-      edit: undefined,
       editTags: [],
       cacheImage: {},
     };
@@ -83,7 +82,7 @@ Vue.createApp({
 
     onEdit() {
       this.editTags = Object.keys(this.tags);
-      this.edit = true;
+      if (!Object.keys(this.editTags).length) this.onAddTag();
     },
 
     onAddTag() {
@@ -105,7 +104,6 @@ Vue.createApp({
         await this.onSave();
       }
       this.editTags = [];
-      this.edit = false;
     },
 
     async find() {
