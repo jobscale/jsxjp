@@ -1,4 +1,24 @@
-const logger = console;
+/* global mqtt */
+
+const version = 'v=0.1';
+const client = mqtt.connect('wss://mqtt.jsx.jp/mqtt');
+const publish = payload => {
+  const topic = 'chat/logs/speak';
+  client.publish(topic, JSON.stringify({
+    ...payload,
+    time: new Date().toISOString(),
+    userId: 'browser',
+    name: 'browser',
+    id: Math.floor(Date.now() % 10000),
+  }));
+};
+
+const { createLogger } = window.logger;
+const logger = createLogger('debug', {
+  callback: ({ recipe }) => {
+    publish({ message: recipe.map(v => JSON.stringify(v)).join(' ') });
+  },
+});
 
 const wait = ms => new Promise(resolve => { setTimeout(resolve, ms); });
 const strictEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
@@ -7,7 +27,8 @@ const deepClone = obj => JSON.parse(JSON.stringify(obj));
 Vue.createApp({
   data() {
     return {
-      status: 'v0.13',
+      version,
+      status: version,
       signed: false,
       loading: true,
       refFiles: [],
@@ -15,6 +36,7 @@ Vue.createApp({
       tags: {},
       imageTags: '{}',
       modify: '{}',
+      showMessage: '',
       preview: undefined,
       editTags: [],
       cacheImage: {},
@@ -175,12 +197,12 @@ Vue.createApp({
     async onReadFile(event) {
       const { files } = event.target;
       if (!files) return;
-      logger.info({ files });
       this.refFiles = [];
       this.status = `${files.length} `;
       for (const file of files) {
         await this.readFile(file)
         .then(item => {
+          logger.debug('sanitizePicture', `${(item.file.size / 1000).toLocaleString()} ${item.file.name}`);
           this.refFiles.push(item);
         })
         .catch(e => {
@@ -205,37 +227,56 @@ Vue.createApp({
 
     async sanitizePicture(file, quality) {
       const prom = {};
-      prom.pending = new Promise((resolve, reject) => {
-        prom.resolve = resolve;
-        prom.reject = reject;
-      });
+      prom.pending = new Promise((...argv) => { [prom.resolve, prom.reject] = argv; });
       const reader = new FileReader();
       const img = new Image();
       const canvas = document.createElement('canvas');
       reader.addEventListener('load', event => {
+        logger.debug('FileReader load');
         img.src = event.target.result;
       });
       img.addEventListener('load', () => {
+        logger.debug('Image load');
+        const { width, height } = this.adjustSize(img.width, img.height, 1200);
         // Assuming Live Photo duration is 3 seconds (adjust as needed)
-        canvas.width = img.width;
-        canvas.height = img.height;
+        canvas.width = width;
+        canvas.height = height;
         const context = canvas.getContext('2d');
         // Draw the first frame of the Live Photo (static image)
-        context.drawImage(img, 0, 0, img.width, img.height);
+        context.drawImage(img, 0, 0, width, height);
         // Convert canvas to blob and store it
         canvas.toBlob(blob => {
           const capture = new File([blob], file.name, { type: file.type });
+          const selected = file.size > capture.size ? capture : file;
+          logger.debug(`original ${(file.size / 1000).toLocaleString()} toBlob ${(capture.size / 1000).toLocaleString()}`);
           prom.resolve({
             img,
-            file: file.size > capture.size ? capture : file,
+            file: selected,
           });
         }, file.type, quality);
       });
       reader.addEventListener('error', e => {
+        logger.error(e.message);
         prom.reject(e);
       });
       reader.readAsDataURL(file);
       return prom.pending;
+    },
+
+    adjustSize(width, height, max) {
+      if (width > max || height > max) {
+        if (width > height) {
+          return {
+            width: max,
+            height: Math.round((height * max) / width),
+          };
+        }
+        return {
+          width: Math.round((width * max) / height),
+          height: max,
+        };
+      }
+      return { width, height };
     },
 
     async upload(file) {
@@ -246,20 +287,24 @@ Vue.createApp({
         redirect: 'error',
         body: formData,
       }];
+      logger.debug('fetch upload');
       await fetch(...params)
       .then(res => {
-        if (res.status !== 200) throw new Error(res.statusText);
+        logger.debug({ status: res.status });
+        if (res.status !== 200) throw new Error(`${res.status} ${res.statusText}`);
         return res.json();
-      })
-      .catch(e => logger.error(e.message));
+      });
     },
 
     async onSubmit() {
       if (!this.$refs.file.files.length) return;
       this.loading = true;
-      const filesList = Array.from(this.refFiles);
-      for (const item of filesList) {
-        await this.upload(item.file);
+      for (const item of this.refFiles) {
+        await this.upload(item.file)
+        .catch(e => {
+          logger.error(e.message);
+          this.status = e.message;
+        });
         const index = this.refFiles.findIndex(v => item.file.name === v.name);
         const [data] = this.refFiles.splice(index, 1);
         const { name } = data.file;
@@ -297,7 +342,12 @@ Vue.createApp({
 
     loadImage(url) {
       return fetch(url)
-      .then(res => res.blob())
+      .then(res => {
+        if (res.status !== 200) {
+          throw new Error(`${res.status} ${res.statusText}`);
+        }
+        return res.blob();
+      })
       .then(blob => new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result);
@@ -325,6 +375,7 @@ Vue.createApp({
         preview.tags[key] = !!this.imageTags[name]?.tags[key];
       });
       this.scrollY = window.scrollY;
+      this.showMessage = 'Now Loading...';
       this.preview = preview;
       const imagePath = `i/${name}`;
       if (this.cacheImage[imagePath]) {
@@ -333,9 +384,16 @@ Vue.createApp({
       }
       this.loading = true;
       this.loadImage(imagePath)
+      .catch(() => this.loadImage(`t/${name}`))
       .then(imgUrl => {
         preview.imgUrl = imgUrl;
         this.cacheImage[imagePath] = imgUrl;
+      })
+      .catch(e => {
+        logger.error(e.message);
+        this.showMessage = e.message;
+      })
+      .then(() => {
         this.loading = false;
       });
     },

@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Tangerine'>
-    <link rel="stylesheet" href="/css/style.css?v=0.13" />
+    <link rel="stylesheet" href="/css/style.css?v=0.1" />
     <link rel="stylesheet" href="/css/menu.css">
-    <script src="https://cdn.jsdelivr.net/npm/@jobscale/logger/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jobscale/logger@0.6.0/index.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.3.7/mqtt.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.global.prod.min.js"></script>
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.3.0/css/all.css">
     <title>Pictures - jsx.jp</title>
@@ -69,7 +70,7 @@
       </div>
       <div v-if="preview" class="img-preview">
         <div v-if="!preview.imgUrl">
-          Now Loading...
+          {{ showMessage }}
         </div>
         <img v-if="preview.imgUrl" :src="preview.imgUrl" class="preview-image">
         <div class="img-control">
@@ -79,8 +80,8 @@
               {{ key }}
             </label>
           </div>
-          <button @click.prevent="show()" class="button btn-big" title="Close">
-            <i class="fa-regular fa-close"></i>
+          <button @click.prevent="show()" title="Close">
+            <i class="fa-regular fa-close"></i> &nbsp; CLOSE
           </button>
           <button v-if="preview.unlock" @click.prevent="remove" class="button btn-remove btn-big" title="Remove">
             <i class="fa-regular fa-trash-can fa-fade"></i>
@@ -92,7 +93,7 @@
       </div>
       <div v-show="editTags.length" class="container">
         <button @click="onCloseTag">
-          <i class="fa-regular fa-close"></i> &nbsp;&nbsp; CLOSE
+          <i class="fa-regular fa-close"></i> &nbsp; CLOSE
         </button>
         <div class="tag-control">
           <label v-for="(tag, index) in editTags">
@@ -103,7 +104,7 @@
           </label>
         </div>
         <button @click="onAddTag">
-          <i class="fa-regular fa-plus"></i> &nbsp;&nbsp; ADD
+          <i class="fa-regular fa-plus"></i> &nbsp; ADD
         </button>
       </div>
       <div v-show="loading" class="loading">
@@ -123,7 +124,7 @@
         </div>
       </div>
     </div>
-    <script src="js/index.js?v=0.13"></script>
+    <script src="js/index.js?v=0.1"></script>
     <script defer src="/js/menu.js"></script>
   </body>
 </html>
