@@ -27,8 +27,7 @@ deploy() {
   date
   vercel --prod -y -e ENV=${ENV}
   echo
-  (check || check) && return 0
-  (check || check) && return 0
+  (check || check || check) && return 0
   echo -e "\n ... retry ..."
   deploy
 }
