@@ -70,12 +70,13 @@ class Service {
     });
     if (forceCreate) {
       await s3.send(new CreateBucketCommand({ Bucket }))
-      .catch(() => undefined);
+      .catch(e => logger.error(e));
     }
     const Prefix = `${login}/thumbnail/`;
     const { Contents } = await s3.send(new ListObjectsV2Command({
       Bucket, Prefix,
-    }));
+    }))
+    .catch(e => logger.error(e) || {});
     const images = Contents?.map(obj => obj.Key.replace(Prefix, '')) || [];
     return { images };
   }
