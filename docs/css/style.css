@@ -1336,7 +1336,7 @@ div .note:has(.tag) a {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 3em);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1354,7 +1354,7 @@ div .note:has(.tag) a {
   position: absolute;
   text-align: right;
   right: 1em;
-  bottom: 1em;
+  bottom: 3em;
 }
 .item-image {
   width: calc(100vw - 1em);
