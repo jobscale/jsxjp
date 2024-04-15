@@ -60,7 +60,7 @@ Vue.createApp({
           this.imageTags[item.name].tags[key] = imageTags?.[item.name]?.tags[key] || false;
         });
       });
-      const { searchParams } = new URL(location.href);
+      const { searchParams } = new URL(window.location.href);
       if (searchParams.has('t')) {
         decodeURIComponent(searchParams.get('t')).split(',').forEach(key => {
           if (this.tags[key] === undefined) return;
