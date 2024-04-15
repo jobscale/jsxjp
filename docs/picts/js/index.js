@@ -221,7 +221,7 @@ Vue.createApp({
         this.status += 'unsupported content type ';
         throw new Error('unsupported content type');
       }
-      const item = await this.sanitizePicture(file, 0.7);
+      const item = await this.sanitizePicture(file, 0.6);
       return item;
     },
 
@@ -237,7 +237,7 @@ Vue.createApp({
       });
       img.addEventListener('load', () => {
         logger.debug('Image load');
-        const { width, height } = this.adjustSize(img.width, img.height, 1200);
+        const { width, height } = this.adjustSize(img.width, img.height, 1024);
         // Assuming Live Photo duration is 3 seconds (adjust as needed)
         canvas.width = width;
         canvas.height = height;

@@ -114,14 +114,12 @@ class Service {
       });
       const Key = `${login}/picts/${fname}`;
       const thumbnailKey = `${login}/thumbnail/${fname}`;
-      await Promise.all([
-        s3.send(new PutObjectCommand({
-          Bucket, Key: thumbnailKey, Body: thumbnailBuffer, ContentType,
-        })),
-        s3.send(new PutObjectCommand({
-          Bucket, Key, Body: buffer, ContentType,
-        })),
-      ]);
+      await s3.send(new PutObjectCommand({
+        Bucket, Key: thumbnailKey, Body: thumbnailBuffer, ContentType,
+      }));
+      await s3.send(new PutObjectCommand({
+        Bucket, Key, Body: buffer, ContentType,
+      }));
     }
   }
 
