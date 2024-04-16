@@ -287,16 +287,20 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
     async onSubmit() {
       if (!this.$refs.file.files.length) return;
       this.loading = true;
+      let count = this.refFiles.length;
       for (const item of this.refFiles) {
+        logger.debug('count', count);
+        this.status = count.toLocaleString();
+        count--;
         await this.upload(item.file)
         .catch(e => {
           logger.error(e.message);
           this.status = e.message;
         });
-        await wait(1000);
         const index = this.refFiles.findIndex(v => item.file.name === v.name);
         const [data] = this.refFiles.splice(index, 1);
         const { name } = data.file;
+        await wait(1000);
         this.list.unshift({ name });
       }
       this.$refs.file.value = '';
