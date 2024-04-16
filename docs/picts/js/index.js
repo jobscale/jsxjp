@@ -155,13 +155,6 @@ Vue.createApp({
       .catch(e => logger.error(e.message));
     },
 
-    async preLoad() {
-      for (const { name } of this.list) {
-        await wait(10000);
-        this.cacheImage[`i/${name}`] = undefined;
-      }
-    },
-
     async getData(list) {
       const params = ['getData', {
         method: 'post',
@@ -248,10 +241,7 @@ Vue.createApp({
           logger.debug(`${file.name}
 original ${(file.size / 1000).toLocaleString()}
 toBlob ${(capture.size / 1000).toLocaleString()}`);
-          prom.resolve({
-            img,
-            file: selected,
-          });
+          prom.resolve({ img, file: selected });
         }, file.type, quality);
       });
       reader.addEventListener('error', e => {
@@ -303,6 +293,7 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
           logger.error(e.message);
           this.status = e.message;
         });
+        await wait(1000);
         const index = this.refFiles.findIndex(v => item.file.name === v.name);
         const [data] = this.refFiles.splice(index, 1);
         const { name } = data.file;
