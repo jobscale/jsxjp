@@ -284,7 +284,7 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       });
     },
 
-    async onSubmit() {
+    async multiUpload() {
       if (!this.$refs.file.files.length) return;
       this.loading = true;
       let count = this.refFiles.length;
@@ -306,6 +306,10 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       this.$refs.file.value = '';
       this.refFiles = [];
       this.loading = false;
+    },
+
+    async onSubmit() {
+      this.$nextTick(() => this.multiUpload());
     },
 
     async remove() {
