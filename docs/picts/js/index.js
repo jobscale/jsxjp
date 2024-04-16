@@ -202,7 +202,6 @@ Vue.createApp({
       for (const file of files) {
         await this.readFile(file)
         .then(item => {
-          logger.debug('sanitizePicture', `${(item.file.size / 1000).toLocaleString()} ${item.file.name}`);
           this.refFiles.push(item);
         })
         .catch(e => {
@@ -232,11 +231,9 @@ Vue.createApp({
       const img = new Image();
       const canvas = document.createElement('canvas');
       reader.addEventListener('load', event => {
-        logger.debug('FileReader load');
         img.src = event.target.result;
       });
       img.addEventListener('load', () => {
-        logger.debug('Image load');
         const { width, height } = this.adjustSize(img.width, img.height, 1024);
         // Assuming Live Photo duration is 3 seconds (adjust as needed)
         canvas.width = width;
@@ -248,7 +245,9 @@ Vue.createApp({
         canvas.toBlob(blob => {
           const capture = new File([blob], file.name, { type: file.type });
           const selected = file.size > capture.size ? capture : file;
-          logger.debug(`original ${(file.size / 1000).toLocaleString()} toBlob ${(capture.size / 1000).toLocaleString()}`);
+          logger.debug(`${file.name}
+original ${(file.size / 1000).toLocaleString()}
+toBlob ${(capture.size / 1000).toLocaleString()}`);
           prom.resolve({
             img,
             file: selected,
@@ -287,10 +286,9 @@ Vue.createApp({
         redirect: 'error',
         body: formData,
       }];
-      logger.debug('fetch upload');
       await fetch(...params)
       .then(res => {
-        logger.debug({ status: res.status });
+        logger.debug({ 'upload fetch status': res.status });
         if (res.status !== 200) throw new Error(`${res.status} ${res.statusText}`);
         return res.json();
       });
