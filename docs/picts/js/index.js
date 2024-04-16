@@ -284,14 +284,11 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       });
     },
 
-    async multiUpload() {
+    async onSubmit() {
       if (!this.$refs.file.files.length) return;
       this.loading = true;
-      let count = this.refFiles.length;
-      for (const item of this.refFiles) {
-        logger.debug('count', count);
-        this.status = count.toLocaleString();
-        count--;
+      const list = [];
+      for (const item of [...this.refFiles]) {
         await this.upload(item.file)
         .catch(e => {
           logger.error(e.message);
@@ -300,16 +297,14 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
         const index = this.refFiles.findIndex(v => item.file.name === v.name);
         const [data] = this.refFiles.splice(index, 1);
         const { name } = data.file;
-        await wait(1000);
-        this.list.unshift({ name });
+        this.status = this.refFiles.length.toLocaleString();
+        await wait(200);
+        list.unshift({ name });
       }
+      this.list.unshift(...list);
       this.$refs.file.value = '';
       this.refFiles = [];
       this.loading = false;
-    },
-
-    async onSubmit() {
-      this.$nextTick(() => this.multiUpload());
     },
 
     async remove() {
