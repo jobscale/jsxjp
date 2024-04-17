@@ -3,7 +3,7 @@
 const version = 'v=0.1';
 const client = mqtt.connect('wss://mqtt.jsx.jp/mqtt');
 const publish = payload => {
-  const topic = 'chat/logs/speak';
+  const topic = `chat/logs-${version}/speak`;
   client.publish(topic, JSON.stringify({
     ...payload,
     time: new Date().toISOString(),
