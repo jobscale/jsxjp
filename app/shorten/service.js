@@ -27,6 +27,7 @@ class Service {
       const [, key] = html.match(regExp) || [];
       return this.getCaption({ html })
       .then(caption => {
+        if (!caption) caption = key;
         logger.info(caption);
         return db.put({
           key,
