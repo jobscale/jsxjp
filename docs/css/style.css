@@ -445,12 +445,12 @@ table.ss-table * {
 *::-webkit-scrollbar {
   width: 6px;
   height: 6px;
-  background-color: #444;
+  background: #888;
   border-radius: 3px;
 }
 
 *::-webkit-scrollbar-thumb {
-  background: #888;
+  background-color: #444;
   border-radius: 3px;
 }
 
