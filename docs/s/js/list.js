@@ -80,7 +80,7 @@ Vue.createApp({
     onCopy(event) {
       const { target: { parentElement: el } } = event;
       const { id } = el.dataset;
-      const html = `${window.location.origin}/s/${id}`;
+      const html = `${window.location.origin.replace(/https?:\/\//, '')}/s/${id}`;
       navigator.clipboard.writeText(html)
       .then(() => {
         this.showPopup('Shorten URL Copied', el);
