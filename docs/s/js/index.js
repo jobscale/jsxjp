@@ -46,7 +46,7 @@ Vue.createApp({
         return res.json();
       })
       .then(({ id }) => {
-        this.shorten = `https://jsx.jp/s/${id}`;
+        this.shorten = `jsx.jp/s/${id}`;
       })
       .catch(e => logger.error(e.message))
       .then(() => setTimeout(() => { this.loading = false; }, 1000));
