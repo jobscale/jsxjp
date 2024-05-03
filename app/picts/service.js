@@ -12,8 +12,7 @@ const { Bucket, forceCreate } = {
     Bucket: 'stg-store-jsx-picture',
   },
   dev: {
-    Bucket: 'dev-store',
-    forceCreate: true,
+    Bucket: 'dev-store-jsx-picture',
   },
   test: {
     Bucket: 'test-store',
@@ -27,17 +26,6 @@ const config = {
   },
   dev: {
     region: 'us-east-1',
-    endpoint: 'https://lo-stack.jsx.jp',
-    urlParser: url => {
-      const op = new URL(url);
-      return {
-        protocol: op.protocol,
-        hostname: op.hostname,
-        port: op.port,
-        path: op.pathname,
-      };
-    },
-    endpointProvider: ep => ({ url: `${ep.Endpoint}${ep.Bucket}/` }),
   },
   test: {
     region: 'ap-northeast-1',
