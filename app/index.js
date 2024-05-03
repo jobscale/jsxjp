@@ -50,7 +50,7 @@ class App {
         "style-src 'self' 'unsafe-inline' https:",
         "manifest-src 'self'",
       ];
-      if (XDG_SESSION_DESKTOP !== 'cinnamon') res.header('Content-Security-Policy', csp.join('; '));
+      if (!['plasma', 'cinnamon'].includes(XDG_SESSION_DESKTOP)) res.header('Content-Security-Policy', csp.join('; '));
       res.header('Permissions-Policy', 'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()');
       res.header('Referrer-Policy', 'strict-origin-when-cross-origin');
       res.header('Strict-Transport-Security', 'max-age=31536000; includeSubdomains; preload');
