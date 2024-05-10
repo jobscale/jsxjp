@@ -1381,7 +1381,6 @@ div .note:has(.tag) a {
   margin: 0.2em;
   border-radius: 1em;
   border: 1px solid #555;
-  color: #888;
 }
 .tag-control label:has(input:checked) {
   background-color: rgba(180, 180, 0, 0.4);
