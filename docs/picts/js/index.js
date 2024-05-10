@@ -1,6 +1,6 @@
 /* global mqtt */
 
-const version = 'v=0.1';
+const version = 'v=0.2';
 const client = mqtt.connect('wss://mqtt.jsx.jp/mqtt');
 const publish = payload => {
   const topic = `chat/logs-${version}/speak`;
