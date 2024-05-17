@@ -1369,6 +1369,12 @@ div .note:has(.tag) a {
 .hide {
   display: none;
 }
+.chevron-control {
+  width: calc(100vw - 2em);
+  margin-bottom: 5em;
+  display: flex;
+  justify-content: space-between;
+}
 .tag-control {
   text-align: left;
   margin: 1em 0;
