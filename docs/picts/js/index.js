@@ -1,6 +1,6 @@
 /* global mqtt */
 
-const version = 'v=0.3';
+const version = 'v=0.4';
 const client = mqtt.connect('wss://mqtt.jsx.jp/mqtt');
 const publish = payload => {
   const topic = `chat/logs-${version}/speak`;
@@ -93,6 +93,7 @@ Vue.createApp({
     },
 
     async onSave() {
+      if (strictEqual(this.modify, this.imageTags)) return;
       await this.putData({
         tags: this.tags,
         imageTags: this.modify,
@@ -287,6 +288,7 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
     async onSubmit() {
       if (!this.$refs.file.files.length) return;
       this.loading = true;
+      this.modify = deepClone(this.imageTags);
       const list = [];
       for (const item of [...this.refFiles]) {
         await this.upload(item.file)
@@ -350,37 +352,18 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       }));
     },
 
-    async show(item) {
-      const { name } = item || this.preview;
-      if (!item) {
-        if (!strictEqual(this.modify[name]?.tags, this.preview.tags)) {
-          this.modify[name] = { tags: this.preview.tags };
-          await this.onSave();
-        }
-        this.preview = undefined;
-        this.$nextTick(() => {
-          window.scrollTo(0, this.scrollY);
-        });
-        return;
-      }
-      const preview = deepClone(item);
-      preview.tags = {};
-      Object.keys(this.tags).forEach(key => {
-        preview.tags[key] = !!this.imageTags[name]?.tags[key];
-      });
-      this.scrollY = window.scrollY;
-      this.showMessage = 'Now Loading...';
-      this.preview = preview;
+    async showImage() {
+      const { name } = this.preview;
       const imagePath = `i/${name}`;
       if (this.cacheImage[imagePath]) {
-        preview.imgUrl = this.cacheImage[imagePath];
+        this.preview.imgUrl = this.cacheImage[imagePath];
         return;
       }
       this.loading = true;
       this.loadImage(imagePath)
       .catch(() => this.loadImage(`t/${name}`))
       .then(imgUrl => {
-        preview.imgUrl = imgUrl;
+        this.preview.imgUrl = imgUrl;
         this.cacheImage[imagePath] = imgUrl;
       })
       .catch(e => {
@@ -390,6 +373,35 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       .then(() => {
         this.loading = false;
       });
+    },
+
+    async show(item) {
+      if (!item) {
+        await this.onSave();
+        this.preview = undefined;
+        this.$nextTick(() => {
+          window.scrollTo(0, this.scrollY);
+        });
+        return;
+      }
+      this.scrollY = window.scrollY;
+      this.showMessage = 'Now Loading...';
+      this.preview = item;
+      this.showImage();
+    },
+
+    onShowNext() {
+      const { name } = this.preview;
+      const index = this.list.findIndex(item => item.name === name);
+      this.preview = this.list[index + 1 >= this.list.length ? 0 : index + 1];
+      this.showImage();
+    },
+
+    onShowPrev() {
+      const { name } = this.preview;
+      const index = this.list.findIndex(item => item.name === name);
+      this.preview = this.list[index < 1 ? this.list.length - 1 : index - 1];
+      this.showImage();
     },
 
     onColorScheme() {
