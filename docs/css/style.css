@@ -1370,8 +1370,9 @@ div .note:has(.tag) a {
   display: none;
 }
 .chevron-control {
-  width: calc(100vw - 2em);
-  margin-bottom: 5em;
+  font-size: 2em;
+  width: calc(100vw - 1em);
+  margin-bottom: 3em;
   display: flex;
   justify-content: space-between;
 }
