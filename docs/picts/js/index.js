@@ -297,10 +297,12 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
         const index = this.refFiles.findIndex(v => item.file.name === v.name);
         const [data] = this.refFiles.splice(index, 1);
         const { name } = data.file;
+        this.modify[name] = { tags: this.tags };
         this.status = this.refFiles.length.toLocaleString();
         await wait(200);
         list.unshift({ name });
       }
+      await this.onSave();
       this.list.unshift(...list);
       this.$refs.file.value = '';
       this.refFiles = [];
