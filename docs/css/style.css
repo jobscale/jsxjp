@@ -441,19 +441,33 @@ table.ss-table * {
   background-color: rgba(255, 30, 30, 0.5);
 }
 
+/* System color */
+@media (prefers-color-scheme: dark) {
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color: #444;
+    border-radius: 3px;
+  }
 
-*::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-  background: #888;
-  border-radius: 3px;
+  *::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
 }
+@media (prefers-color-scheme: light) {
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background: #888;
+    border-radius: 3px;
+  }
 
-*::-webkit-scrollbar-thumb {
-  background-color: #444;
-  border-radius: 3px;
+  *::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: 3px;
+  }
 }
-
 
 .pos-abs {
   display: inline-block;
