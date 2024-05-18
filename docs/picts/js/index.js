@@ -34,8 +34,8 @@ Vue.createApp({
       refFiles: [],
       list: [],
       tags: {},
-      imageTags: '{}',
-      modify: '{}',
+      imageTags: {},
+      modify: {},
       showMessage: '',
       preview: undefined,
       editTags: [],
@@ -74,14 +74,7 @@ Vue.createApp({
         { name: 'imageTags' },
       ])) || {};
       this.tags = tags || {};
-      this.imageTags = {};
-      this.list.forEach(item => {
-        this.imageTags[item.name] = { tags: {} };
-        Object.keys(this.tags).forEach(key => {
-          this.tags[key] = false;
-          this.imageTags[item.name].tags[key] = imageTags?.[item.name]?.tags[key] || false;
-        });
-      });
+      this.updateImageTags(imageTags || {});
       const { searchParams } = new URL(window.location.href);
       if (searchParams.has('t')) {
         decodeURIComponent(searchParams.get('t')).split(',').forEach(key => {
@@ -92,13 +85,29 @@ Vue.createApp({
       this.modify = deepClone(this.imageTags);
     },
 
-    async onSave() {
-      if (strictEqual(this.modify, this.imageTags)) return;
+    async onSave(tags) {
+      if (tags) {
+        Object.keys(tags).forEach(key => {
+          this.tags[key] = this.tags[key] || false;
+        });
+      } else if (strictEqual(this.modify, this.imageTags)) return;
+      this.updateImageTags(this.modify);
+      tags = {};
+      Object.keys(this.tags).forEach(key => { tags[key] = false; });
       await this.putData({
-        tags: this.tags,
-        imageTags: this.modify,
+        tags,
+        imageTags: this.imageTags,
       });
-      this.imageTags = deepClone(this.modify);
+    },
+
+    updateImageTags(input) {
+      const imageTags = deepClone(input);
+      this.list.forEach(item => {
+        this.imageTags[item.name] = { tags: {} };
+        Object.keys(this.tags).forEach(key => {
+          this.imageTags[item.name].tags[key] = imageTags[item.name].tags[key] || false;
+        });
+      });
     },
 
     itemShown(item) {
@@ -130,8 +139,7 @@ Vue.createApp({
         tags[key] = !!this.tags[key];
       });
       if (!strictEqual(tags, this.tags)) {
-        this.tags = tags;
-        await this.onSave();
+        await this.onSave(tags);
       }
       this.editTags = [];
     },
@@ -148,9 +156,7 @@ Vue.createApp({
       })
       .then(({ images }) => {
         images.forEach(name => {
-          this.list.unshift({
-            name,
-          });
+          this.list.unshift({ name });
         });
       })
       .catch(e => logger.error(e.message));
@@ -304,8 +310,8 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
         await wait(200);
         list.unshift({ name });
       }
-      await this.onSave();
       this.list.unshift(...list);
+      await this.onSave();
       this.$refs.file.value = '';
       this.refFiles = [];
       this.loading = false;
