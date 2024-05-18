@@ -234,7 +234,7 @@ Vue.createApp({
         img.src = event.target.result;
       });
       img.addEventListener('load', () => {
-        const { width, height } = this.adjustSize(img.width, img.height, 1024);
+        const { width, height } = this.adjustSize(img.width, img.height, 2048);
         // Assuming Live Photo duration is 3 seconds (adjust as needed)
         canvas.width = width;
         canvas.height = height;
