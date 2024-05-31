@@ -3,7 +3,7 @@ const logger = console;
 Vue.createApp({
   data() {
     return {
-      signed: false,
+      signed: undefined,
       loading: true,
       popupText: '',
       items: [],
@@ -30,10 +30,13 @@ Vue.createApp({
         body: JSON.stringify({ href: '/s/list' }),
       })
       .then(res => {
-        if (res.status === 200) {
-          this.signed = true;
-          return;
-        }
+        if (res.status !== 200) throw new Error('denied');
+        return res.json();
+      })
+      .then(payload => {
+        this.signed = payload;
+      })
+      .catch(() => {
         document.location.href = '/auth';
       });
     },
