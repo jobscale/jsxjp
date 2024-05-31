@@ -1408,3 +1408,13 @@ div .note:has(.tag) a {
   border: 1px solid #833;
   color: #eee;
 }
+
+header.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  padding: 10px;
+  justify-content: flex-end;
+}

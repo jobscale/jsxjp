@@ -3,7 +3,7 @@
 Vue.createApp({
   data() {
     return {
-      signed: false,
+      signed: undefined,
       password: '',
       confirm: '',
       statusText: '',
@@ -17,16 +17,19 @@ Vue.createApp({
 
   methods: {
     sign() {
-      fetch('/auth/sign', {
+      return fetch('/auth/sign', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ href: '/account/password' }),
       })
       .then(res => {
-        if (res.status === 200) {
-          this.signed = true;
-          return;
-        }
+        if (res.status !== 200) throw new Error('denied');
+        return res.json();
+      })
+      .then(payload => {
+        this.signed = payload;
+      })
+      .catch(() => {
         document.location.href = '/auth';
       });
     },

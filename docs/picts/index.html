@@ -14,9 +14,10 @@
   </head>
   <body>
     <div id="app" class="nav-main">
+      <header class="header">{{ signed.login }}</header>
       <div v-if="signed" v-show="!preview && !editTags.length" class="container">
         <section>
-          <h2>Pictures</h2>
+          <h2>Pictures Online</h2>
           <div>{{ status }}</div>
           <form @submit.prevent="onSubmit">
             <div>

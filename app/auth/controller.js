@@ -41,8 +41,8 @@ class Controller {
 
   sign(req, res) {
     const { token } = req.cookies;
-    authService.verify(token)
-    .then(() => res.json({ ok: true }))
+    authService.decode(token)
+    .then(payload => res.json(payload))
     .catch(e => {
       const { href } = req.body;
       this.cookie(res, 'href', href, dayjs().add(5, 'minute'));

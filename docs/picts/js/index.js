@@ -29,7 +29,7 @@ Vue.createApp({
     return {
       version,
       status: version,
-      signed: false,
+      signed: undefined,
       loading: true,
       refFiles: [],
       list: [],
@@ -60,10 +60,13 @@ Vue.createApp({
         body: JSON.stringify({ href: '/picts' }),
       })
       .then(res => {
-        if (res.status === 200) {
-          this.signed = true;
-          return;
-        }
+        if (res.status !== 200) throw new Error('denied');
+        return res.json();
+      })
+      .then(payload => {
+        this.signed = payload;
+      })
+      .catch(() => {
         document.location.href = '/auth';
       });
     },
