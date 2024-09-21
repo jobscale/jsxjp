@@ -19,6 +19,7 @@ Vue.createApp({
 
   mounted() {
     this.start();
+    setTimeout(() => { this.action(); }, 2000);
   },
 
   methods: {
