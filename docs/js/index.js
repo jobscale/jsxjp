@@ -136,7 +136,8 @@ Vue.createApp({
           audioSource.disconnect();
           logger.info('disconnect audioSource');
         });
-        return audioSource.start();
+        audioSource.start();
+        return audioSource;
       });
       const actions = ['alert play sound.', this.latest, await play()];
       logger.info(...actions);
