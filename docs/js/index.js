@@ -19,7 +19,6 @@ Vue.createApp({
 
   mounted() {
     this.start();
-    setTimeout(() => this.action(), 2000);
   },
 
   methods: {
@@ -131,7 +130,11 @@ Vue.createApp({
     play() {
       if (this.latest && (this.latest + 60000) > Date.now()) return;
       this.latest = Date.now();
-      const play = () => this.audioSource && this.audioSource.start();
+      const play = () => {
+        if (!this.audioSource) return 'without audioSource';
+        this.audioSource.currentTime = 0;
+        return this.audioSource.start();
+      };
       const actions = ['alert play sound.', this.latest, play()];
       logger.info(...actions);
     },
