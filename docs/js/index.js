@@ -34,7 +34,7 @@ Vue.createApp({
     },
 
     async action() {
-      if (this.audioSource) {
+      if (this.audioContext.destination) {
         logger.info('Sound existing.');
         return;
       }
@@ -45,7 +45,6 @@ Vue.createApp({
       .then(audioBuffer => {
         this.audioSource = this.audioContext.createBufferSource();
         this.audioSource.buffer = audioBuffer;
-        this.audioSource.connect(this.audioContext.destination);
         this.actionText = '☃';
       });
       fetch('/favicon.ico')
@@ -132,7 +131,10 @@ Vue.createApp({
       this.latest = Date.now();
       const play = () => {
         if (!this.audioSource) return 'without audioSource';
-        this.audioSource.currentTime = 0;
+        this.audioSource.connect(this.audioContext.destination);
+        this.audioSource.addEventListener('ended', () => {
+          this.audioSource.disconnect();
+        });
         return this.audioSource.start();
       };
       const actions = ['alert play sound.', this.latest, play()];
