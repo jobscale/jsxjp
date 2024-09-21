@@ -1,4 +1,4 @@
-/* global logger, Howl, dayjs */
+/* global logger, dayjs */
 
 Vue.createApp({
   data() {
@@ -7,17 +7,19 @@ Vue.createApp({
       welcomeText: 'welcome',
       spanText: 'guest',
       dateText: '☃',
-      sound: undefined,
       busyTimes: [],
       busyText: '',
       busy: 0,
       busyList: [],
       stack: [],
+      audioContext: new AudioContext(),
+      audioSource: undefined,
     };
   },
 
   mounted() {
     this.start();
+    setTimeout(() => this.action(), 2000);
   },
 
   methods: {
@@ -33,16 +35,18 @@ Vue.createApp({
     },
 
     async action() {
-      if (this.sound) {
+      if (this.audioSource) {
         logger.info('Sound existing.');
         return;
       }
       this.actionText = 'loading...';
-      const b64 = await fetch('/assets/mp3/warning1.mp3.b64')
-      .then(res => res.text());
-      // Without Binary
-      this.sound = new Howl({ src: [`data:audio/x-mp3;base64,${b64}`] });
-      this.sound.once('load', () => {
+      fetch('/assets/mp3/warning1.mp3')
+      .then(res => res.arrayBuffer())
+      .then(arrayBuffer => this.audioContext.decodeAudioData(arrayBuffer))
+      .then(audioBuffer => {
+        this.audioSource = this.audioContext.createBufferSource();
+        this.audioSource.buffer = audioBuffer;
+        this.audioSource.connect(this.audioContext.destination);
         this.actionText = '☃';
       });
       fetch('/favicon.ico')
@@ -127,7 +131,7 @@ Vue.createApp({
     play() {
       if (this.latest && (this.latest + 60000) > Date.now()) return;
       this.latest = Date.now();
-      const play = () => this.sound && this.sound.play();
+      const play = () => this.audioSource && this.audioSource.start();
       const actions = ['alert play sound.', this.latest, play()];
       logger.info(...actions);
     },
