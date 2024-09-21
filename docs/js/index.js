@@ -12,8 +12,8 @@ Vue.createApp({
       busy: 0,
       busyList: [],
       stack: [],
-      audioContext: new AudioContext(),
-      audioSource: undefined,
+      audioContext: undefined,
+      audioBuffer: undefined,
     };
   },
 
@@ -34,17 +34,16 @@ Vue.createApp({
     },
 
     async action() {
-      if (this.audioSource) {
-        logger.info('existing audioSource');
+      if (this.audioContext) {
+        logger.info('existing audioContext');
         return;
       }
       this.actionText = 'loading...';
       fetch('/assets/mp3/warning1.mp3')
       .then(res => res.arrayBuffer())
-      .then(arrayBuffer => this.audioContext.decodeAudioData(arrayBuffer))
-      .then(audioBuffer => {
-        this.audioSource = this.audioContext.createBufferSource();
-        this.audioSource.buffer = audioBuffer;
+      .then(arrayBuffer => {
+        this.audioContext = new AudioContext();
+        this.audioBuffer = this.audioContext.decodeAudioData(arrayBuffer);
         this.actionText = '☃';
       });
       fetch('/favicon.ico')
@@ -130,12 +129,13 @@ Vue.createApp({
       if (this.latest && (this.latest + 60000) > Date.now()) return;
       this.latest = Date.now();
       const play = () => {
-        if (!this.audioSource) return 'without audioSource';
-        this.audioSource.connect(this.audioContext.destination);
-        this.audioSource.addEventListener('ended', () => {
-          this.audioSource.disconnect();
+        const audioSource = this.audioContext.createBufferSource();
+        audioSource.buffer = this.audioBuffer;
+        audioSource.connect(this.audioContext.destination);
+        audioSource.addEventListener('ended', () => {
+          audioSource.disconnect();
         });
-        return this.audioSource.start();
+        return audioSource.start();
       };
       const actions = ['alert play sound.', this.latest, play()];
       logger.info(...actions);
