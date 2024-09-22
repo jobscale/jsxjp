@@ -51,7 +51,7 @@
             <span class="busy">{{ busyText }}</span>
           </span>
           <span class="inline-scroll">
-            <span v-for="item of busyList" class="busy" :title="`item.date item.time`">{{ item.num }}</span>
+            <span v-for="item of busyList" class="busy" :title="`${item.date} ${item.time}`">{{ item.num }}</span>
           </span>
         </div>
       </section>
