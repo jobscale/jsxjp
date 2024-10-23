@@ -16,7 +16,7 @@ const config = {
   test: {
     region: 'ap-northeast-1',
   },
-}[ENV || 'dev'];
+}[ENV];
 
 const wait = ms => new Promise(resolve => { setTimeout(resolve, ms); });
 

@@ -8,7 +8,7 @@ const tableName = {
   stg: 'stg-shorten',
   dev: 'shorten',
   test: 'shorten',
-}[ENV || 'dev'];
+}[ENV];
 
 const showDate = (date, defaultValue) => (date ? dayjs(date).add(9, 'hours').toISOString()
 .replace(/T/, ' ')

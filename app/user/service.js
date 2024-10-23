@@ -8,8 +8,8 @@ const { ENV } = process.env;
 const tableName = {
   stg: 'stg-user',
   dev: 'user',
-  test: 'dev-user',
-}[ENV || 'dev'];
+  test: 'user',
+}[ENV];
 
 const showDate = (date, defaultValue) => (date ? dayjs(date).add(9, 'hours').toISOString()
 .replace(/T/, ' ')

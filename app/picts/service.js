@@ -18,7 +18,7 @@ const { Bucket, forceCreate } = {
     Bucket: 'test-store',
     forceCreate: true,
   },
-}[ENV || 'dev'];
+}[ENV];
 
 const config = {
   stg: {
@@ -41,7 +41,7 @@ const config = {
     },
     endpointProvider: ep => ({ url: `${ep.Endpoint}${ep.Bucket}/` }),
   },
-}[ENV || 'dev'];
+}[ENV];
 
 const fetchObjectChunk = res => new Promise((resolve, reject) => {
   const dataChunks = [];
