@@ -1,42 +1,44 @@
 const createHttpError = require('http-errors');
 const dayjs = require('dayjs');
 const { JSDOM } = require('jsdom');
-const { logger } = require('@jobscale/logger');
-const { connection } = require('../db');
+const { db } = require('../db');
 
 const { ENV } = process.env;
 const tableName = {
-  dev: 'dev-shorten',
-  test: 'dev-shorten',
+  stg: 'stg-shorten',
+  dev: 'shorten',
+  test: 'shorten',
 }[ENV || 'dev'];
 
 const showDate = (date, defaultValue) => (date ? dayjs(date).add(9, 'hours').toISOString()
 .replace(/T/, ' ')
 .replace(/\..*$/, '') : defaultValue);
 
+const random = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  return Array.from(
+    { length: 6 },
+    () => chars.charAt((Math.floor(Math.random() * 1000) + Date.now()) % chars.length),
+  ).join('');
+};
+
 class Service {
   async register(rest) {
     const { html } = rest;
     if (!html) throw createHttpError(400);
-    const db = await connection(tableName);
-    return db.fetch({ html })
-    .then(({ items: [item] }) => {
+    return db.findValue(tableName, `"html": "${html}"`)
+    .then(async item => {
       if (item) return item;
       const pattern = '^https://raw.githubusercontent.com/jobscale/_/main/infra/(.+)';
       const regExp = new RegExp(pattern);
-      const [, key] = html.match(regExp) || [];
-      return this.getCaption({ html })
-      .then(caption => {
-        if (!caption) caption = key;
-        logger.info(caption);
-        return db.put({
-          key,
-          caption,
-          html,
-          deletedAt: 0,
-          registerAt: new Date().toISOString(),
-          count: 0,
-        });
+      const [, key] = html.match(regExp) || [undefined, random()];
+      const caption = (await this.getCaption({ html })) || key;
+      return db.setValue(tableName, key, {
+        caption,
+        html,
+        deletedAt: 0,
+        registerAt: new Date().toISOString(),
+        count: 0,
       });
     })
     .then(({ key: id }) => ({ id }));
@@ -50,10 +52,9 @@ class Service {
     .then(title => title && title.textContent);
   }
 
-  async find({ key }) {
-    const db = await connection(tableName);
-    return db.fetch({ key })
-    .then(({ items }) => items.map(item => {
+  async find() {
+    return db.list(tableName)
+    .then(items => items.map(item => {
       item.registerAt = showDate(item.registerAt, '-');
       item.lastAccess = showDate(item.lastAccess, '-');
       item.deletedAt = showDate(item.deletedAt);
@@ -65,30 +66,30 @@ class Service {
 
   async remove({ key }) {
     if (!key) throw createHttpError(400);
-    const db = await connection(tableName);
-    return db.get(key)
+    return db.getValue(tableName, key)
     .then(data => {
       if (!data) throw createHttpError(400);
-      if (data.deletedAt) return db.delete(data.key);
-      return db.update({
+      if (data.deletedAt) return db.deleteValue(tableName, key);
+      return db.setValue(tableName, key, {
+        ...data,
         deletedAt: new Date().getTime(),
-      }, data.key);
+      });
     });
   }
 
   async redirect(rest) {
     const { id: key } = rest;
-    const db = await connection(tableName);
-    return db.get(key)
+    return db.getValue(tableName, key)
     .then(data => {
       if (!data) throw createHttpError(400);
       if (data.deletedAt) throw createHttpError(501);
       return data;
     })
-    .then(data => db.update({
+    .then(data => db.setValue(tableName, key, {
+      ...data,
       lastAccess: new Date().toISOString(),
       count: (parseInt(data.count, 10) || 0) + 1,
-    }, data.key).then(() => data))
+    }).then(() => data))
     .then(({ html }) => ({ html }));
   }
 }

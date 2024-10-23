@@ -28,9 +28,9 @@ class Controller {
       res.json({ href: ignore.indexOf(href) === -1 ? href : '/' });
     })
     .catch(e => {
-      logger.info({ message: e.toString() });
+      logger.info({ message: e });
       if (!e.status) e.status = 401;
-      res.status(e.status).json({ message: e.message });
+      res.status(e.status).json({ message: e.name });
     });
   }
 
