@@ -5,9 +5,10 @@ const { connection } = require('../db');
 
 const { ENV } = process.env;
 const tableName = {
-  dev: 'dev-user',
-  test: 'dev-user',
-}[ENV || 'dev'];
+  stg: 'stg-user',
+  dev: 'user',
+  test: 'user',
+}[ENV];
 
 class Service {
   async password(rest) {

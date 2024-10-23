@@ -3,15 +3,19 @@ const { connection } = require('../db');
 
 const { ENV } = process.env;
 const { hubTable, personTable } = {
+  stg: {
+    hubTable: 'stg-pp-hub',
+    personTable: 'stg-pp-person',
+  },
   dev: {
-    hubTable: 'dev--pp-hub',
-    personTable: 'dev-pp-person',
+    hubTable: 'pp-hub',
+    personTable: 'pp-person',
   },
   test: {
-    hubTable: 'dev--pp-hub',
-    personTable: 'dev-pp-person',
+    hubTable: 'pp-hub',
+    personTable: 'pp-person',
   },
-}[ENV || 'dev'];
+}[ENV];
 
 class Service {
   async hub({ hubId }) {

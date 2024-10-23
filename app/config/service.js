@@ -6,8 +6,8 @@ const { ENV } = process.env;
 const tableName = {
   stg: 'stg-config',
   dev: 'config',
-  test: 'dev-config',
-}[ENV || 'dev'];
+  test: 'config',
+}[ENV];
 
 class Service {
   async register(rest) {

@@ -11,8 +11,8 @@ const { ENV } = process.env;
 const tableName = {
   stg: 'stg-user',
   dev: 'user',
-  test: 'dev-user',
-}[ENV || 'dev'];
+  test: 'user',
+}[ENV];
 
 class Service {
   async now() {
@@ -49,7 +49,7 @@ class Service {
     const ts = new Date().toISOString();
     const hash = createHash(`${login}/${password}`);
     const item = await db.getValue(tableName, login);
-    if (item.hash !== hash) throw createHttpError(401);
+    if (!item || item.hash !== hash) throw createHttpError(401);
     if (code && !this.verifyCode(code)) throw createHttpError(401);
     const multiFactor = !code && this.generateCode();
     return db.setValue(tableName, login, { ...item, lastAccess: ts })
