@@ -9,8 +9,8 @@ class Controller {
   register(req, res) {
     const { login, password } = req.body;
     userService.register({ login, password })
-    .then(item => {
-      res.json({ login: item.login });
+    .then(() => {
+      res.json({ login });
     })
     .catch(e => {
       logger.info({ message: e.toString() });
@@ -33,13 +33,13 @@ class Controller {
   }
 
   find(req, res) {
-    const { body: { id: key }, cookies: { token } } = req;
+    const { cookies: { token } } = req;
     authService.decode(token)
     .then(payload => {
       const { login } = payload;
       if (login !== 'alice') throw createHttpError(403);
     })
-    .then(() => userService.find({ key }))
+    .then(() => userService.find())
     .then((rows) => {
       res.json({ rows });
     })

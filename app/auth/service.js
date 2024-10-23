@@ -2,14 +2,15 @@ const createHttpError = require('http-errors');
 const speakeasy = require('speakeasy');
 const { auth } = require('.');
 const { createHash } = require('../user');
-const { connection } = require('../db');
+const { db } = require('../db');
 
 const jwtSecret = 'node-express-ejs';
 const getSecret = () => 'JSXJPX6EY4BMPXIRSSR74';
 
 const { ENV } = process.env;
 const tableName = {
-  dev: 'dev-user',
+  stg: 'stg-user',
+  dev: 'user',
   test: 'dev-user',
 }[ENV || 'dev'];
 
@@ -46,23 +47,16 @@ class Service {
     const { login, password, code } = rest;
     if (!login || !password) throw createHttpError(400);
     const ts = new Date().toISOString();
-    const db = await connection(tableName);
-    return db.fetch({
-      login,
-      hash: createHash(`${login}/${password}`),
-      deletedAt: 0,
-    })
-    .then(({ items: [item] }) => {
-      if (!item) throw createHttpError(401);
-      if (code && !this.verifyCode(code)) throw createHttpError(401);
-      const multiFactor = !code && this.generateCode();
-      return db.update({
-        lastAccess: ts,
-      }, item.key).then(() => ({
-        token: auth.sign({ login, ts }, jwtSecret),
-        multiFactor,
-      }));
-    });
+    const hash = createHash(`${login}/${password}`);
+    const item = await db.getValue(tableName, login);
+    if (item.hash !== hash) throw createHttpError(401);
+    if (code && !this.verifyCode(code)) throw createHttpError(401);
+    const multiFactor = !code && this.generateCode();
+    return db.setValue(tableName, login, { ...item, lastAccess: ts })
+    .then(() => ({
+      token: auth.sign({ login, ts }, jwtSecret),
+      multiFactor,
+    }));
   }
 
   async verify(token) {

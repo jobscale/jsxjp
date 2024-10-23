@@ -38,13 +38,13 @@ class Controller {
   }
 
   find(req, res) {
-    const { body: { id: key }, cookies: { token } } = req;
+    const { cookies: { token } } = req;
     authService.decode(token)
     .then(payload => {
       const { login } = payload;
       if (login !== 'alice') throw createHttpError(403);
     })
-    .then(() => service.find({ key }))
+    .then(() => service.find())
     .then((rows) => {
       res.json({ rows });
     })
