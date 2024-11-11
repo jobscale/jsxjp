@@ -29,9 +29,10 @@ Vue.createApp({
     return {
       version,
       status: version,
-      signed: undefined,
+      signed: {},
       loading: true,
       refFiles: [],
+      preList: [],
       list: [],
       tags: {},
       imageTags: {},
@@ -152,6 +153,8 @@ Vue.createApp({
         method: 'post',
         redirect: 'error',
       }];
+      this.list.length = 0;
+      this.preList.length = 0;
       return fetch(...params)
       .then(res => {
         if (res.status !== 200) throw new Error(res.statusText);
@@ -159,10 +162,21 @@ Vue.createApp({
       })
       .then(({ images }) => {
         images.forEach(name => {
-          this.list.unshift({ name });
+          this.preList.unshift({ name });
         });
+        this.loadNextBatch();
       })
       .catch(e => logger.error(e.message));
+    },
+
+    onImageLoad() {
+      this.loadNextBatch();
+    },
+
+    loadNextBatch() {
+      if (!this.preList.length) return;
+      const nextItems = this.preList.splice(0, 1);
+      this.list.push(...nextItems);
     },
 
     async getData(list) {
