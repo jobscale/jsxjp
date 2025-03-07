@@ -3,21 +3,20 @@ const { controller: authController } = require('./controller');
 const { validation: authValidation } = require('./validation');
 
 const router = Router();
-
 router.post(
   '/auth/login',
-  (...args) => authValidation.login(...args),
-  (...args) => authController.login(...args),
+  authValidation.login,
+  authController.login,
 );
-router.post('/auth/sign', (...args) => authController.sign(...args));
+router.post('/auth/sign', authController.sign);
 router.options('/auth/totp', (req, res) => res.json());
 router.post(
   '/auth/totp',
-  (...args) => authValidation.totp(...args),
-  (...args) => authController.totp(...args),
+  authValidation.totp,
+  authController.totp,
 );
-router.use('', (...args) => authController.verify(...args));
-router.get('/auth/logout', (...args) => authController.logout(...args));
+router.use('', authController.verify);
+router.get('/auth/logout', authController.logout);
 
 module.exports = {
   route: { router },

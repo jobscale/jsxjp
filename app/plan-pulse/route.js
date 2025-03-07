@@ -3,26 +3,25 @@ const { controller } = require('./controller');
 const { validation } = require('./validation');
 
 const router = Router();
-
 router.post(
   '/hub',
-  (...args) => validation.hub(...args),
-  (...args) => controller.hub(...args),
+  validation.hub,
+  controller.hub,
 );
 router.post(
   '/putHub',
-  (...args) => validation.putHub(...args),
-  (...args) => controller.putHub(...args),
+  validation.putHub,
+  controller.putHub,
 );
 router.post(
   '/putPerson',
-  (...args) => validation.putPerson(...args),
-  (...args) => controller.putPerson(...args),
+  validation.putPerson,
+  controller.putPerson,
 );
 router.post(
   '/removePerson',
-  (...args) => validation.removePerson(...args),
-  (...args) => controller.removePerson(...args),
+  validation.removePerson,
+  controller.removePerson,
 );
 
 module.exports = {

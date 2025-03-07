@@ -3,24 +3,23 @@ const { controller: userController } = require('./controller');
 const { validation: userValidation } = require('./validation');
 
 const router = Router();
-
 router.post(
   '/register',
-  (...args) => userValidation.register(...args),
-  (...args) => userController.register(...args),
+  userValidation.register,
+  userController.register,
 );
 router.post(
   '/reset',
-  (...args) => userValidation.reset(...args),
-  (...args) => userController.reset(...args),
+  userValidation.reset,
+  userController.reset,
 );
 router.post(
   '/find',
-  (...args) => userController.find(...args),
+  userController.find,
 );
 router.post(
   '/remove',
-  (...args) => userController.remove(...args),
+  userController.remove,
 );
 
 module.exports = {

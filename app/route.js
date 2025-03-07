@@ -11,46 +11,16 @@ const { route: picts } = require('./picts/route');
 const { controller } = require('./controller');
 
 const router = Router();
-router.use(
-  '/ip',
-  (...args) => ipRoute.router(...args),
-);
-router.use(
-  '/api',
-  (...args) => apiRoute.router(...args),
-);
-router.use(
-  '/picts',
-  (...args) => picts.router(...args),
-);
-router.use(
-  '/plan-pulse',
-  (...args) => planPulse.router(...args),
-);
-router.use(
-  '/s',
-  (...args) => shortenRoute.router(...args),
-);
-router.use(
-  '',
-  (...args) => authRoute.router(...args),
-);
-router.use(
-  '/account',
-  (...args) => accountRoute.router(...args),
-);
-router.use(
-  '/user',
-  (...args) => userRoute.router(...args),
-);
-router.use(
-  '/template',
-  (...args) => templateRoute.router(...args),
-);
-router.get(
-  '',
-  (...args) => controller.page(...args),
-);
+router.use('/ip', ipRoute.router);
+router.use('/api', apiRoute.router);
+router.use('/picts', picts.router);
+router.use('/plan-pulse', planPulse.router);
+router.use('/s', shortenRoute.router);
+router.use('', authRoute.router);
+router.use('/account', accountRoute.router);
+router.use('/user', userRoute.router);
+router.use('/template', templateRoute.router);
+router.get('', controller.page);
 
 module.exports = {
   route: { router },

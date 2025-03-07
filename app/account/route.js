@@ -2,19 +2,13 @@ const { Router } = require('express');
 const { controller: accountController } = require('./controller');
 const { validation: accountValidation } = require('./validation');
 
-class Route {
-  constructor() {
-    const router = Router();
-    router.post(
-      '/password',
-      (...args) => accountValidation.password(...args),
-      (...args) => accountController.password(...args),
-    );
-    this.router = router;
-  }
-}
+const router = Router();
+router.post(
+  '/password',
+  accountValidation.password,
+  accountController.password,
+);
 
 module.exports = {
-  Route,
-  route: new Route(),
+  route: { router },
 };
