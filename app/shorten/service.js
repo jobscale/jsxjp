@@ -28,7 +28,10 @@ class Service {
     if (!html) throw createHttpError(400);
     return db.findValue(tableName, `"html": "${html}"`)
     .then(async item => {
-      if (item) return item;
+      if (item) {
+        const [,,, key] = item[0].split('/');
+        return { ...item[1], key };
+      }
       const pattern = '^https://raw.githubusercontent.com/jobscale/_/main/infra/(.+)';
       const regExp = new RegExp(pattern);
       const [, key] = html.match(regExp) || [undefined, random()];

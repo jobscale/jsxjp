@@ -10,7 +10,11 @@ class Controller {
     authService.login({ login, password, code })
     .then(({ token, multiFactor }) => {
       if (code || login.startsWith('orange')) {
-        this.cookie(res, 'token', token, dayjs().add(12, 'hour'));
+        res.cookie('token', token, {
+          expires: dayjs().add(12, 'hour').toDate(),
+          httpOnly: true,
+          secure: !!req.socket.encrypted,
+        });
       } else if (multiFactor) {
         apiService.slack({
           icon_emoji: ':unlock:',
@@ -21,7 +25,11 @@ class Controller {
         return;
       }
       const { href } = req.cookies;
-      this.cookie(res, 'href', '', dayjs().add(10, 'second'));
+      res.cookie('href', '', {
+        expires: dayjs().add(10, 'second').toDate(),
+        httpOnly: true,
+        secure: !!req.socket.encrypted,
+      });
       const ignore = [
         '/auth', '/account/password', '/favicon.ico', '', undefined,
       ];
@@ -35,7 +43,11 @@ class Controller {
   }
 
   logout(req, res) {
-    this.cookie(res, 'token', '', dayjs().add(10, 'second'));
+    res.cookie('token', '', {
+      expires: dayjs().add(10, 'second').toDate(),
+      httpOnly: true,
+      secure: !!req.socket.encrypted,
+    });
     res.redirect('/auth');
   }
 
@@ -45,7 +57,11 @@ class Controller {
     .then(payload => res.json(payload))
     .catch(e => {
       const { href } = req.body;
-      this.cookie(res, 'href', href, dayjs().add(5, 'minute'));
+      res.cookie('href', href, {
+        expires: dayjs().add(5, 'minute').toDate(),
+        httpOnly: true,
+        secure: !!req.socket.encrypted,
+      });
       res.status(403).json({ message: e.message });
     });
   }
@@ -65,16 +81,12 @@ class Controller {
     authService.verify(token)
     .then(() => next())
     .catch(e => {
-      logger.info({ message: e.toString() });
-      res.redirect('/auth');
-    });
-  }
-
-  cookie(res, key, value, expires) {
-    res.cookie(key, value, {
-      expires: new Date(expires),
-      httpOnly: true,
-      secure: true,
+      logger.info({ ...e });
+      if (req.method === 'GET') {
+        res.redirect('/auth');
+        return;
+      }
+      res.status(403).json({ message: 'access denied' });
     });
   }
 }
