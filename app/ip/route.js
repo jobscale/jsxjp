@@ -1,18 +1,9 @@
 const { Router } = require('express');
 const { controller } = require('./controller');
 
-class Route {
-  constructor() {
-    const router = Router();
-    router.use(
-      '',
-      (...args) => controller.ip(...args),
-    );
-    this.router = router;
-  }
-}
+const router = Router();
+router.use('', controller.ip);
 
 module.exports = {
-  Route,
-  route: new Route(),
+  route: { router },
 };

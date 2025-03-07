@@ -2,28 +2,22 @@ const { Router } = require('express');
 const { controller: apiController } = require('./controller');
 const { validation: apiValidation } = require('./validation');
 
-class Route {
-  constructor() {
-    const router = Router();
-    router.post(
-      '/slack',
-      (...args) => apiValidation.slack(...args),
-      (...args) => apiController.slack(...args),
-    );
-    router.post(
-      '/email',
-      (...args) => apiValidation.email(...args),
-      (...args) => apiController.email(...args),
-    );
-    router.post(
-      '/hostname',
-      (...args) => apiController.hostname(...args),
-    );
-    this.router = router;
-  }
-}
+const router = Router();
+router.post(
+  '/slack',
+  apiValidation.slack,
+  apiController.slack,
+);
+router.post(
+  '/email',
+  apiValidation.email,
+  apiController.email,
+);
+router.post(
+  '/hostname',
+  apiController.hostname,
+);
 
 module.exports = {
-  Route,
-  route: new Route(),
+  route: { router },
 };

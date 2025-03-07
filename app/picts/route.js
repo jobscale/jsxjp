@@ -5,8 +5,7 @@ const { controller: authController } = require('../auth/controller');
 
 const upload = multer();
 const router = Router();
-
-router.use('', (...args) => authController.verify(...args));
+router.use('', authController.verify);
 router.post('/upload', upload.array('files'), controller.upload);
 router.post('/find', controller.find);
 router.post('/remove', controller.remove);
