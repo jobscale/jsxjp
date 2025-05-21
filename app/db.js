@@ -78,22 +78,6 @@ class DB {
     return this.list(tableName, nextToken, opt);
   }
 
-  async findValue(tableName, pattern, NextToken) {
-    const schema = `${ENV}/${tableName}`;
-    const con = await this.connection(schema);
-    const Path = `/${schema}/`;
-    const { Parameters, NextToken: nextToken } = await con.send(new GetParametersByPathCommand({
-      Path,
-      Recursive: true,
-      WithDecryption: true,
-      NextToken,
-    }));
-    const exist = Parameters.find(item => item.Value.match(pattern));
-    if (exist) return [exist.Name, JSON.parse(exist.Value)];
-    if (!nextToken) return undefined;
-    return this.findValue(tableName, pattern, nextToken);
-  }
-
   async getValue(tableName, key) {
     const schema = `${ENV}/${tableName}`;
     const con = await this.connection(schema);

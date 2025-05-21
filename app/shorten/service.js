@@ -1,3 +1,4 @@
+const { createHash } = require('crypto');
 const createHttpError = require('http-errors');
 const dayjs = require('dayjs');
 const { JSDOM } = require('jsdom');
@@ -8,6 +9,11 @@ const tableName = {
   stg: 'stg-shorten',
   dev: 'shorten',
   test: 'shorten',
+}[ENV];
+const tableHash = {
+  stg: 'stg-shorten-hash',
+  dev: 'shorten-hash',
+  test: 'shorten-hash',
 }[ENV];
 
 const showDate = (date, defaultValue) => (date ? dayjs(date).add(9, 'hours').toISOString()
@@ -26,16 +32,18 @@ class Service {
   async register(rest) {
     const { html } = rest;
     if (!html) throw createHttpError(400);
-    return db.findValue(tableName, `"html": "${html}"`)
-    .then(async item => {
-      if (item) {
-        const [,,, key] = item[0].split('/');
-        return { ...item[1], key };
+    const hash = createHash('sha256').update(html).digest('hex');
+    return db.getValue(tableHash, hash)
+    .then(async exist => {
+      if (exist) {
+        return db.getValue(tableName, exist.code)
+        .then(item => ({ ...item, key: exist.code }));
       }
       const pattern = '^https://raw.githubusercontent.com/jobscale/_/main/infra/(.+)';
       const regExp = new RegExp(pattern);
       const [, key] = html.match(regExp) || [undefined, random()];
       const caption = (await this.getCaption({ html })) || key;
+      await db.setValue(tableHash, hash, { code: key });
       return db.setValue(tableName, key, {
         caption,
         html,
