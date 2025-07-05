@@ -7,9 +7,7 @@ class Menu {
     .then(html => {
       const div = document.createElement('div');
       div.innerHTML = html;
-      const top = document.createElement('div');
-      top.append(div);
-      document.body.append(...top.querySelectorAll('div > *'));
+      document.body.append(div.children);
     });
   }
 
@@ -35,4 +33,4 @@ class Menu {
   }
 }
 
-setTimeout(() => new Menu().trigger(), 1000);
+window.addEventListener('DOMContentLoaded', () => setTimeout(() => new Menu().trigger(), 200));
