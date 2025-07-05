@@ -7,7 +7,7 @@ class Menu {
     .then(html => {
       const div = document.createElement('div');
       div.innerHTML = html;
-      document.body.append(div.children);
+      document.body.append(...div.children);
     });
   }
 
