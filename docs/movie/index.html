@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>動画再生</title>
+
+  <!-- Video.js CSS -->
+  <link href="video-js.min.css" rel="stylesheet" />
+
+  <!-- スタイリッシュなテーマ（City） -->
+  <link href="index.css" rel="stylesheet" />
+
+  <style>
+    :root {
+      color-scheme: light dark;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: Canvas;
+      color: CanvasText;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: system-ui, sans-serif;
+    }
+
+    .video-container {
+      max-width: 90vw;
+      max-height: 80vh;
+      width: 640px;
+    }
+
+    .video-js {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="video-container">
+    <video
+      id="my-video"
+      class="video-js vjs-theme-city vjs-big-play-centered"
+      controls
+      preload="auto"
+      width="640"
+      height="360"
+      data-setup='{}'>
+      <source src="out/output.m3u8" type="application/x-mpegURL" />
+      <p class="vjs-no-js">
+        JavaScript を有効にしてください。<br />
+        または最新のブラウザをご利用ください。
+      </p>
+    </video>
+  </div>
+
+  <!-- Video.js ライブラリ -->
+  <script src="video.min.js"></script>
+</body>
+</html>
