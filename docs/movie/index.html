@@ -43,6 +43,7 @@
 </head>
 <body>
   <div class="video-container">
+    <div>default</div>
     <video
       id="my-video"
       class="video-js vjs-theme-city vjs-big-play-centered"
@@ -52,6 +53,22 @@
       height="360"
       data-setup='{}'>
       <source src="out/output.m3u8" type="application/x-mpegURL" />
+      <p class="vjs-no-js">
+        JavaScript を有効にしてください。<br />
+        または最新のブラウザをご利用ください。
+      </p>
+    </video>
+    <hr>
+    <div>400 kbps / 64 kbps</div>
+    <video
+      id="my-video"
+      class="video-js vjs-theme-city vjs-big-play-centered"
+      controls
+      preload="auto"
+      width="640"
+      height="360"
+      data-setup='{}'>
+      <source src="out-medium/output.m3u8" type="application/x-mpegURL" />
       <p class="vjs-no-js">
         JavaScript を有効にしてください。<br />
         または最新のブラウザをご利用ください。
