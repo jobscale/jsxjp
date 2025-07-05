@@ -39,18 +39,23 @@ class App {
         "default-src 'none'",
         "base-uri 'none'",
         "form-action 'self' https:",
-        'connect-src https: wss:',
+        "connect-src 'self' https: wss:",
         "font-src 'self' data: https:",
         "frame-src 'self' https:",
         "frame-ancestors 'self'",
         "img-src 'self' data: blob: https:",
-        "media-src 'self' data: https:",
-        "script-src 'self' 'unsafe-eval'",
+        "media-src 'self' data: blob: https:",
+        "script-src 'self' 'unsafe-eval' blob:",
         "script-src-elem 'self' https:",
         "style-src 'self' 'unsafe-inline' https:",
         "manifest-src 'self'",
+        "worker-src 'self' blob:",
       ];
-      if (!['plasma', 'cinnamon'].includes(XDG_SESSION_DESKTOP)) res.header('Content-Security-Policy', csp.join('; '));
+      if (!['plasma', 'cinnamon'].includes(XDG_SESSION_DESKTOP)) {
+        res.header('Content-Security-Policy', csp.join('; '));
+      } else {
+        res.header('Content-Security-Policy', csp.map(v => v.replace('https:', 'http:')).map(v => v.replace('wss:', 'ws:')).join('; '));
+      }
       res.header('Permissions-Policy', 'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()');
       res.header('Referrer-Policy', 'strict-origin-when-cross-origin');
       res.header('Strict-Transport-Security', 'max-age=31536000; includeSubdomains; preload');

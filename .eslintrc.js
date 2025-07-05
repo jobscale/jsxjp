@@ -10,6 +10,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2023,
   },
+  ignorePatterns: ['**/*.min.js'],
   rules: {
     indent: ['error', 2, { MemberExpression: 0 }],
     'no-trailing-spaces': 'error',
