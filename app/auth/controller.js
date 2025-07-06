@@ -79,7 +79,14 @@ class Controller {
   verify(req, res, next) {
     const { token } = req.cookies;
     authService.verify(token)
-    .then(() => next())
+    .then(() => {
+      res.cookie('token', token, {
+        expires: dayjs().add(12, 'hour').toDate(),
+        httpOnly: true,
+        secure: !!req.socket.encrypted,
+      });
+      next();
+    })
     .catch(e => {
       logger.info({ ...e });
       if (req.method === 'GET') {
