@@ -46,7 +46,6 @@ class App {
         "img-src 'self' data: blob: https:",
         "media-src 'self' data: blob: https:",
         "script-src 'self' 'unsafe-eval' blob:",
-        "script-src-elem 'self' https:",
         "style-src 'self' 'unsafe-inline' https:",
         "manifest-src 'self'",
         "worker-src 'self' blob:",
