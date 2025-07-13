@@ -31,7 +31,7 @@
     整列することに興味が無いならすぐにウインドウを閉じてください。<br>
     <hr>
     tampermonkey という拡張機能にこのスクリプトを追加します。<br>
-    キーボードの O キーで表示を切り替えることができます。 
+    キーボードの O キーで表示を切り替えることができます。
   </div>
   <div lang="en">
     This is a userscript that displays a grid to align your units.<br>
@@ -54,7 +54,7 @@
 // @grant        none
 // ==/UserScript==
 
-const getNow = () => new Intl.DateTimeFormat('ja-JP', {
+const getNow = () => new Intl.DateTimeFormat('sv-SE', {
   timeZone: 'Europe/Paris', // CET/CEST
   year: 'numeric',
   month: '2-digit',
@@ -62,7 +62,7 @@ const getNow = () => new Intl.DateTimeFormat('ja-JP', {
   hour: '2-digit',
   minute: '2-digit',
   second: '2-digit',
-}).format(new Date()).replace(/\//g, '-');
+}).format(new Date());
 
 const action = () => {
   const style = document.createElement('style');
