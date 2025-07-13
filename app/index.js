@@ -36,20 +36,8 @@ class App {
       res.header('Server', 'acl-ingress-k8s');
       res.header('X-Backend-Host', os.hostname());
       const csp = [
-        "default-src 'none'",
+        "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https: wss:",
         "base-uri 'none'",
-        "form-action 'self' https:",
-        "connect-src 'self' https: wss:",
-        "font-src 'self' data: https:",
-        "frame-src 'self' https:",
-        "frame-ancestors 'self'",
-        "img-src 'self' data: blob: https:",
-        "media-src 'self' data: blob: https:",
-        "script-src 'self' 'unsafe-eval' blob:",
-        "style-src 'self' 'unsafe-inline' https:",
-        "manifest-src 'self'",
-        "worker-src 'self' blob:",
-        "script-src-elem 'self' 'unsafe-inline'",
       ];
       if (!['plasma', 'cinnamon'].includes(XDG_SESSION_DESKTOP)) {
         res.header('Content-Security-Policy', csp.join('; '));
