@@ -50,7 +50,7 @@ class App {
         "style-src 'self' 'unsafe-inline' https:",
         "manifest-src 'self'",
         "worker-src 'self' blob:",
-        "script-src-elem 'self'",
+        "script-src-elem 'self' 'unsafe-inline'",
       ];
       if (!['plasma', 'cinnamon'].includes(XDG_SESSION_DESKTOP)) {
         res.header('Content-Security-Policy', csp.join('; '));
