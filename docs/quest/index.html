@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <title></title>
     <style>
       :root {
         color-scheme: light dark;
@@ -9,11 +10,18 @@
     </style>
     <script>
       window.addEventListener('DOMContentLoaded', () => {
-        const unUseLang = navigator.language.startsWith('ja') ? 'en' : 'ja';
-        document.querySelectorAll(`[lang="${unUseLang}"]`)
+        const isJapanese = navigator.language.startsWith('ja')
+        const usedLang = isJapanese ? 'ja' : 'en';
+        const unusedLang = isJapanese ? 'en' : 'ja';
+        document.querySelectorAll(`[lang="${unusedLang}"]`)
         .forEach(el => {
           el.style.display = 'none';
         });
+        const titles = {
+        ja: 'グリッドを表示',
+        en: 'Display Grid'
+      };
+      document.title = titles[usedLang];
       });
     </script>
 </head>
