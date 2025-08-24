@@ -1,8 +1,6 @@
 module.exports = {
   extends: 'airbnb-base',
-  globals: {
-    Vue: 'readonly',
-  },
+  globals: {},
   env: {
     node: true,
     browser: true,
@@ -27,5 +25,6 @@ module.exports = {
     }],
     'no-restricted-syntax': 'off',
     'import/extensions': 'off',
+    'import/no-unresolved': ['error', { ignore: ['^https://'] }],
   },
 };

@@ -1,4 +1,6 @@
 /* global mqtt */
+import { createApp } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
+import { createLogger } from 'https://esm.sh/@jobscale/logger';
 
 const version = 'v=0.5';
 const client = mqtt.connect('wss://mqtt.jsx.jp/mqtt');
@@ -13,7 +15,6 @@ const publish = payload => {
   }));
 };
 
-const { createLogger } = window.logger;
 const logger = createLogger('debug', {
   callback: ({ recipe }) => {
     publish({ message: recipe.map(v => JSON.stringify(v)).join(' ') });
@@ -24,7 +25,7 @@ const wait = ms => new Promise(resolve => { setTimeout(resolve, ms); });
 const strictEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const deepClone = obj => JSON.parse(JSON.stringify(obj));
 
-Vue.createApp({
+createApp({
   data() {
     return {
       version,
