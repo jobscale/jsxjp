@@ -1,7 +1,7 @@
-const createHttpError = require('http-errors');
-const { auth } = require('../auth');
-const { createHash } = require('../user');
-const { connection } = require('../db');
+import createHttpError from 'http-errors';
+import { auth } from '../auth/index.js';
+import { createHash } from '../user/index.js';
+import { connection } from '../db.js';
 
 const { ENV } = process.env;
 const tableName = {
@@ -10,7 +10,7 @@ const tableName = {
   test: 'user',
 }[ENV];
 
-class Service {
+export class Service {
   async password(rest) {
     const { password, token } = rest;
     if (!token || !password) throw createHttpError(400);
@@ -29,7 +29,9 @@ class Service {
   }
 }
 
-module.exports = {
+export const service = new Service();
+
+export default {
   Service,
-  service: new Service(),
+  service,
 };

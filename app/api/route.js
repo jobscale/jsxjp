@@ -1,6 +1,6 @@
-const { Router } = require('express');
-const { controller: apiController } = require('./controller');
-const { validation: apiValidation } = require('./validation');
+import { Router } from 'express';
+import { controller as apiController } from './controller.js';
+import { validation as apiValidation } from './validation.js';
 
 const router = Router();
 router.post(
@@ -18,6 +18,8 @@ router.post(
   apiController.hostname,
 );
 
-module.exports = {
+export const route = { router };
+
+export default {
   route: { router },
 };

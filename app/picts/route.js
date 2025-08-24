@@ -1,7 +1,7 @@
-const { Router } = require('express');
-const multer = require('multer');
-const { controller } = require('./controller');
-const { controller: authController } = require('../auth/controller');
+import { Router } from 'express';
+import multer from 'multer';
+import { controller } from './controller.js';
+import { controller as authController } from '../auth/controller.js';
 
 const upload = multer();
 const router = Router();
@@ -14,6 +14,8 @@ router.post('/getData', controller.getData);
 router.post('/putData', controller.putData);
 router.get('', (req, res) => res.status(404).send('not found'));
 
-module.exports = {
-  route: { router },
+export const route = { router };
+
+export default {
+  route,
 };

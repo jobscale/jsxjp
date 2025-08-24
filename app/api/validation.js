@@ -1,6 +1,6 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
-class Validation {
+export class Validation {
   slack(req, res, next) {
     const { body } = req;
     const { error } = Joi.object({
@@ -31,7 +31,9 @@ class Validation {
   }
 }
 
-module.exports = {
+export const validation = new Validation();
+
+export default {
   Validation,
-  validation: new Validation(),
+  validation,
 };

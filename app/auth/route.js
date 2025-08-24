@@ -1,6 +1,6 @@
-const { Router } = require('express');
-const { controller: authController } = require('./controller');
-const { validation: authValidation } = require('./validation');
+import { Router } from 'express';
+import { controller as authController } from './controller.js';
+import { validation as authValidation } from './validation.js';
 
 const router = Router();
 router.post(
@@ -18,6 +18,8 @@ router.post(
 router.use('', authController.verify);
 router.get('/auth/logout', authController.logout);
 
-module.exports = {
-  route: { router },
+export const route = { router };
+
+export default {
+  route,
 };

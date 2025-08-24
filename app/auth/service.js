@@ -1,8 +1,8 @@
-const createHttpError = require('http-errors');
-const speakeasy = require('speakeasy');
-const { auth } = require('.');
-const { createHash } = require('../user');
-const { db } = require('../db');
+import createHttpError from 'http-errors';
+import speakeasy from 'speakeasy';
+import { auth } from './index.js';
+import { createHash } from '../user/index.js';
+import { db } from '../db.js';
 
 const jwtSecret = 'node-express-ejs';
 const getSecret = () => 'JSXJPX6EY4BMPXIRSSR74';
@@ -14,7 +14,7 @@ const tableName = {
   test: 'user',
 }[ENV];
 
-class Service {
+export class Service {
   async now() {
     return new Date().toISOString();
   }
@@ -87,7 +87,9 @@ class Service {
   }
 }
 
-module.exports = {
+export const service = new Service();
+
+export default {
   Service,
-  service: new Service(),
+  service,
 };

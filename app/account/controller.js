@@ -1,6 +1,6 @@
-const { service: accountService } = require('./service');
+import { service as accountService } from './service.js';
 
-class Controller {
+export class Controller {
   password(req, res) {
     const { body } = req;
     const { password } = body;
@@ -16,7 +16,9 @@ class Controller {
   }
 }
 
-module.exports = {
+export const controller = new Controller();
+
+export default {
   Controller,
-  controller: new Controller(),
+  controller,
 };

@@ -1,6 +1,7 @@
+/* eslint-disable import/first */
 if (!process.env.ENV) process.env.ENV = 'dev';
-const { logger } = require('@jobscale/logger');
-const app = require('./app');
+import { logger } from '@jobscale/logger';
+import app from './app/index.js';
 
 const main = async () => {
   const prom = {};
@@ -19,6 +20,8 @@ const main = async () => {
   return prom.pending;
 };
 
-module.exports = {
-  server: main(),
+export const server = main();
+
+export default {
+  server,
 };

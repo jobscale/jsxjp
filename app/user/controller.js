@@ -1,9 +1,9 @@
-const createHttpError = require('http-errors');
-const { logger } = require('@jobscale/logger');
-const { service: userService } = require('./service');
-const { service: authService } = require('../auth/service');
+import createHttpError from 'http-errors';
+import { logger } from '@jobscale/logger';
+import { service as userService } from './service.js';
+import { service as authService } from '../auth/service.js';
 
-class Controller {
+export class Controller {
   // res.render(view, options);
 
   register(req, res) {
@@ -63,7 +63,9 @@ class Controller {
   }
 }
 
-module.exports = {
+export const controller = new Controller();
+
+export default {
   Controller,
-  controller: new Controller(),
+  controller,
 };

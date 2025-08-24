@@ -1,10 +1,10 @@
-const dayjs = require('dayjs');
-const createHttpError = require('http-errors');
-const { logger } = require('@jobscale/logger');
-const { service: authService } = require('./service');
-const { service: apiService } = require('../api/service');
+import dayjs from 'dayjs';
+import createHttpError from 'http-errors';
+import { logger } from '@jobscale/logger';
+import { service as authService } from './service.js';
+import { service as apiService } from '../api/service.js';
 
-class Controller {
+export class Controller {
   login(req, res) {
     const { login, password, code } = req.body;
     authService.login({ login, password, code })
@@ -98,7 +98,9 @@ class Controller {
   }
 }
 
-module.exports = {
+export const controller = new Controller();
+
+export default {
   Controller,
-  controller: new Controller(),
+  controller,
 };

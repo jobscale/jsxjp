@@ -1,18 +1,21 @@
-const os = require('os');
-const path = require('path');
-const createHttpError = require('http-errors');
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const { logger } = require('@jobscale/logger');
-const { route } = require('./route');
+import { fileURLToPath } from 'url';
+import os from 'os';
+import path from 'path';
+import createHttpError from 'http-errors';
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import { logger } from '@jobscale/logger';
+import { route } from './route.js';
 
 const { XDG_SESSION_DESKTOP } = process.env;
 
+const filepath = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filepath);
 const app = express();
 
-class App {
+export class App {
   useView() {
-    app.set('views', path.resolve(__dirname, 'views'));
+    app.set('views', path.resolve(dirname, 'views'));
     app.set('view engine', 'ejs');
   }
 
@@ -128,4 +131,4 @@ class App {
   }
 }
 
-module.exports = new App().start();
+export default new App().start();

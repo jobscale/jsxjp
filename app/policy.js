@@ -1,7 +1,12 @@
-const login = (max = 30, min = 3) => new RegExp(`^[-+@.a-zA-Z0-9]{${min},${max}}$`);
-const base32 = () => /^[A-Za-z2-7]+$/;
+const app = {
+  login: (max = 30, min = 3) => new RegExp(`^[-+@.a-zA-Z0-9]{${min},${max}}$`),
+  base32: () => /^[A-Za-z2-7]+$/,
+};
 
-module.exports = {
-  login: login(),
-  base32: base32(),
+export const login = app.login();
+export const base32 = app.base32();
+
+export default {
+  login,
+  base32,
 };

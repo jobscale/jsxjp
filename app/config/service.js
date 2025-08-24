@@ -1,6 +1,6 @@
-const createHttpError = require('http-errors');
-const { decode } = require('../js-proxy');
-const { db } = require('../db');
+import createHttpError from 'http-errors';
+import { decode } from '../js-proxy.js';
+import { db } from '../db.js';
 
 const { ENV } = process.env;
 const tableName = {
@@ -9,7 +9,7 @@ const tableName = {
   test: 'config',
 }[ENV];
 
-class Service {
+export class Service {
   async register(rest) {
     const { name, data } = rest;
     if (!name || !data) throw createHttpError(400);
@@ -36,7 +36,9 @@ class Service {
   }
 }
 
-module.exports = {
+export const service = new Service();
+
+export default {
   Service,
-  service: new Service(),
+  service,
 };

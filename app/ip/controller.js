@@ -1,4 +1,4 @@
-class Controller {
+export class Controller {
   ip(req, res) {
     const headers = new Headers(req.headers);
     const ip = req.socket.remoteAddress || req.ip;
@@ -7,7 +7,9 @@ class Controller {
   }
 }
 
-module.exports = {
+export const controller = new Controller();
+
+export default {
   Controller,
-  controller: new Controller(),
+  controller,
 };

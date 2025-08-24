@@ -1,7 +1,7 @@
-const createHttpError = require('http-errors');
-const dayjs = require('dayjs');
-const { createHash } = require('.');
-const { db } = require('../db');
+import createHttpError from 'http-errors';
+import dayjs from 'dayjs';
+import { createHash } from './index.js';
+import { db } from '../db.js';
 
 const { ENV } = process.env;
 
@@ -15,7 +15,7 @@ const showDate = (date, defaultValue) => (date ? dayjs(date).add(9, 'hours').toI
 .replace(/T/, ' ')
 .replace(/\..*$/, '') : defaultValue);
 
-class Service {
+export class Service {
   async now() {
     return new Date().toISOString();
   }
@@ -74,7 +74,9 @@ class Service {
   }
 }
 
-module.exports = {
+export const service = new Service();
+
+export default {
   Service,
-  service: new Service(),
+  service,
 };

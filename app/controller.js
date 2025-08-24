@@ -1,6 +1,6 @@
-const { service } = require('./service');
+import { service } from './service.js';
 
-class Controller {
+export class Controller {
   page(req, res) {
     service.now()
     .then(now => {
@@ -9,7 +9,9 @@ class Controller {
   }
 }
 
-module.exports = {
+export const controller = new Controller();
+
+export default {
   Controller,
-  controller: new Controller(),
+  controller,
 };

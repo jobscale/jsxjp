@@ -1,10 +1,12 @@
-class Service {
+export class Service {
   async now() {
     return new Date().toISOString();
   }
 }
 
-module.exports = {
+export const service = new Service();
+
+export default {
   Service,
-  service: new Service(),
+  service,
 };

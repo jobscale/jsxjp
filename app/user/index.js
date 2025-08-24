@@ -1,8 +1,9 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 
-const alg = 'sha512';
+export const alg = 'sha512';
+export const createHash = plain => crypto.createHash(alg).update(plain).digest('hex');
 
-module.exports = {
+export default {
   alg,
-  createHash: plain => crypto.createHash(alg).update(plain).digest('hex'),
+  createHash,
 };
