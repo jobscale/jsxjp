@@ -1,6 +1,7 @@
-const logger = console;
+import { createApp } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
+import { logger } from 'https://esm.sh/@jobscale/logger';
 
-Vue.createApp({
+createApp({
   data() {
     return {};
   },

@@ -1,4 +1,4 @@
-/* globals logger */
+import { logger } from 'https://esm.sh/@jobscale/logger';
 
 class Menu {
   initMenu() {
