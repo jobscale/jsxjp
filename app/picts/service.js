@@ -1,10 +1,10 @@
-const sharp = require('sharp');
-const {
+import sharp from 'sharp';
+import {
   S3Client, PutObjectCommand, GetObjectCommand,
   ListObjectsV2Command, DeleteObjectCommand, CreateBucketCommand,
-} = require('@aws-sdk/client-s3');
-const { logger } = require('@jobscale/logger');
-const { service: configService } = require('../config/service');
+} from '@aws-sdk/client-s3';
+import { logger } from '@jobscale/logger';
+import { service as configService } from '../config/service.js';
 
 const { ENV } = process.env;
 const { Bucket, forceCreate } = {
@@ -50,7 +50,7 @@ const fetchObjectChunk = res => new Promise((resolve, reject) => {
   res.Body.once('end', () => resolve(dataChunks.join('')));
 });
 
-class Service {
+export class Service {
   async find({ login }) {
     const s3 = new S3Client({
       ...(await this.credentials()),
@@ -182,7 +182,9 @@ class Service {
   }
 }
 
-module.exports = {
+export const service = new Service();
+
+export default {
   Service,
-  service: new Service(),
+  service,
 };

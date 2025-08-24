@@ -1,8 +1,8 @@
-const { createHash } = require('crypto');
-const createHttpError = require('http-errors');
-const dayjs = require('dayjs');
-const { JSDOM } = require('jsdom');
-const { db } = require('../db');
+import { createHash } from 'crypto';
+import createHttpError from 'http-errors';
+import dayjs from 'dayjs';
+import { JSDOM } from 'jsdom';
+import { db } from '../db.js';
 
 const { ENV } = process.env;
 const tableName = {
@@ -28,7 +28,7 @@ const random = () => {
   ).join('');
 };
 
-class Service {
+export class Service {
   async register(rest) {
     const { html } = rest;
     if (!html) throw createHttpError(400);
@@ -105,7 +105,9 @@ class Service {
   }
 }
 
-module.exports = {
+export const service = new Service();
+
+export default {
   Service,
-  service: new Service(),
+  service,
 };

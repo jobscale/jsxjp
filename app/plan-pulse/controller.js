@@ -1,7 +1,7 @@
-const { logger } = require('@jobscale/logger');
-const { service } = require('./service');
+import { logger } from '@jobscale/logger';
+import { service } from './service.js';
 
-class Controller {
+export class Controller {
   hub(req, res) {
     const { hubId } = req.body;
     service.hub({ hubId })
@@ -55,7 +55,9 @@ class Controller {
   }
 }
 
-module.exports = {
+export const controller = new Controller();
+
+export default {
   Controller,
-  controller: new Controller(),
+  controller,
 };

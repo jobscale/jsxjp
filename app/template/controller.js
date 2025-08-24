@@ -1,6 +1,6 @@
-const { service: templateService } = require('./service');
+import { service as templateService } from './service.js';
 
-class Controller {
+export class Controller {
   load(req, res) {
     const { id } = req.body;
     templateService.now()
@@ -11,7 +11,9 @@ class Controller {
   }
 }
 
-module.exports = {
+export const controller = new Controller();
+
+export default {
   Controller,
-  controller: new Controller(),
+  controller,
 };

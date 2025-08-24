@@ -1,9 +1,11 @@
-const { Router } = require('express');
-const { controller: templateController } = require('./controller');
+import { Router } from 'express';
+import { controller as templateController } from './controller.js';
 
 const router = Router();
 router.post('', templateController.load);
 
-module.exports = {
-  route: { router },
+export const route = { router };
+
+export default {
+  route,
 };

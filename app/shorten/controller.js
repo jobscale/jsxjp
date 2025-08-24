@@ -1,8 +1,8 @@
-const createHttpError = require('http-errors');
-const { service } = require('./service');
-const { service: authService } = require('../auth/service');
+import createHttpError from 'http-errors';
+import { service } from './service.js';
+import { service as authService } from '../auth/service.js';
 
-class Controller {
+export class Controller {
   register(req, res) {
     const { html } = req.body;
     if (!html) {
@@ -67,7 +67,9 @@ class Controller {
   }
 }
 
-module.exports = {
+export const controller = new Controller();
+
+export default {
   Controller,
-  controller: new Controller(),
+  controller,
 };

@@ -1,8 +1,8 @@
-const {
+import {
   SSMClient, GetParameterCommand, PutParameterCommand,
   GetParametersByPathCommand, DeleteParameterCommand,
-} = require('@aws-sdk/client-ssm');
-const { planNine, pinky, decode } = require('./js-proxy');
+} from '@aws-sdk/client-ssm';
+import { planNine, pinky, decode } from './js-proxy.js';
 
 const { ENV, PARTNER_HOST } = process.env;
 
@@ -20,7 +20,7 @@ const config = {
 
 const wait = ms => new Promise(resolve => { setTimeout(resolve, ms); });
 
-class DB {
+export class DB {
   async allowInsecure(use) {
     if (use === false) delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
     else process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -142,9 +142,10 @@ class DB {
   }
 }
 
-const db = new DB();
+export const db = new DB();
+export const connection = tableName => db.connection(tableName);
 
-module.exports = {
+export default {
   db,
-  connection: tableName => db.connection(tableName),
+  connection,
 };

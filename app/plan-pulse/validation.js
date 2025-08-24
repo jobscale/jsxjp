@@ -1,6 +1,6 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
-class Validation {
+export class Validation {
   hub(req, res, next) {
     const { error } = Joi.object({
       hubId: Joi.string().required().alphanum().max(30),
@@ -50,7 +50,9 @@ class Validation {
   }
 }
 
-module.exports = {
+export const validation = new Validation();
+
+export default {
   Validation,
-  validation: new Validation(),
+  validation,
 };

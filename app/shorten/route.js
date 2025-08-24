@@ -1,6 +1,6 @@
-const { Router } = require('express');
-const { controller } = require('./controller');
-const { controller: authController } = require('../auth/controller');
+import { Router } from 'express';
+import { controller } from './controller.js';
+import { controller as authController } from '../auth/controller.js';
 
 const router = Router();
 router.get('/:id', controller.redirect);
@@ -10,6 +10,8 @@ router.post('/register', controller.register);
 router.post('/find', controller.find);
 router.post('/remove', controller.remove);
 
-module.exports = {
-  route: { router },
+export const route = { router };
+
+export default {
+  route,
 };

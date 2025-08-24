@@ -1,12 +1,11 @@
-const { gzipSync, gunzipSync } = require('zlib');
+import { gzipSync, gunzipSync } from 'zlib';
 
 const logger = console;
 const gst = 'H4sIAAAAAAAAA';
 const gpr = new RegExp(`^${gst}`);
 
-const encode = value => Buffer.from(gzipSync(Buffer.from(value))).toString('base64').replace(gpr, '');
-
-const decode = value => Buffer.from(gunzipSync(Buffer.from(`${gst}${value}`, 'base64'))).toString();
+export const encode = value => Buffer.from(gzipSync(Buffer.from(value))).toString('base64').replace(gpr, '');
+export const decode = value => Buffer.from(gunzipSync(Buffer.from(`${gst}${value}`, 'base64'))).toString();
 
 const sample = () => {
   const obj = {};
@@ -35,10 +34,12 @@ const sample = () => {
 ];
 
 const plan = pen => () => decode(pen);
+export const planNine = plan(sample.planNine);
+export const pinky = plan(sample.pinky);
 
-module.exports = {
-  planNine: plan(sample.planNine),
-  pinky: plan(sample.pinky),
+export default {
+  planNine,
+  pinky,
   encode,
   decode,
 };

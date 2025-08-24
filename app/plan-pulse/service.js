@@ -1,5 +1,5 @@
-const createHttpError = require('http-errors');
-const { connection } = require('../db');
+import createHttpError from 'http-errors';
+import { connection } from '../db.js';
 
 const { ENV } = process.env;
 const { hubTable, personTable } = {
@@ -17,7 +17,7 @@ const { hubTable, personTable } = {
   },
 }[ENV];
 
-class Service {
+export class Service {
   async hub({ hubId }) {
     const hubDb = await connection(hubTable);
     const personDb = await connection(personTable);
@@ -80,7 +80,9 @@ class Service {
   }
 }
 
-module.exports = {
+export const service = new Service();
+
+export default {
   Service,
-  service: new Service(),
+  service,
 };

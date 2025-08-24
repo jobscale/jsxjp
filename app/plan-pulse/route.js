@@ -1,6 +1,6 @@
-const { Router } = require('express');
-const { controller } = require('./controller');
-const { validation } = require('./validation');
+import { Router } from 'express';
+import { controller } from './controller.js';
+import { validation } from './validation.js';
 
 const router = Router();
 router.post(
@@ -24,6 +24,8 @@ router.post(
   controller.removePerson,
 );
 
-module.exports = {
-  route: { router },
+export const route = { router };
+
+export default {
+  route,
 };

@@ -1,7 +1,9 @@
-class Service {
+export class Service {
 }
 
-module.exports = {
+export const service = new Service();
+
+export default {
   Service,
-  service: new Service(),
+  service,
 };

@@ -1,14 +1,14 @@
-const { Router } = require('express');
-const { route: ipRoute } = require('./ip/route');
-const { route: apiRoute } = require('./api/route');
-const { route: authRoute } = require('./auth/route');
-const { route: accountRoute } = require('./account/route');
-const { route: userRoute } = require('./user/route');
-const { route: templateRoute } = require('./template/route');
-const { route: shortenRoute } = require('./shorten/route');
-const { route: planPulse } = require('./plan-pulse/route');
-const { route: picts } = require('./picts/route');
-const { controller } = require('./controller');
+import { Router } from 'express';
+import { route as ipRoute } from './ip/route.js';
+import { route as apiRoute } from './api/route.js';
+import { route as authRoute } from './auth/route.js';
+import { route as accountRoute } from './account/route.js';
+import { route as userRoute } from './user/route.js';
+import { route as templateRoute } from './template/route.js';
+import { route as shortenRoute } from './shorten/route.js';
+import { route as planPulse } from './plan-pulse/route.js';
+import { route as picts } from './picts/route.js';
+import { controller } from './controller.js';
 
 const router = Router();
 router.use('/ip', ipRoute.router);
@@ -22,6 +22,8 @@ router.use('/user', userRoute.router);
 router.use('/template', templateRoute.router);
 router.get('', controller.page);
 
-module.exports = {
-  route: { router },
+export const route = { router };
+
+export default {
+  route,
 };

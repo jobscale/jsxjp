@@ -1,7 +1,7 @@
-const Joi = require('joi');
-const { login } = require('../policy');
+import Joi from 'joi';
+import { login } from '../policy.js';
 
-class Validation {
+export class Validation {
   register(req, res, next) {
     const { error } = Joi.object({
       login: Joi.string().pattern(login).max(30),
@@ -27,7 +27,9 @@ class Validation {
   }
 }
 
-module.exports = {
+export const validation = new Validation();
+
+export default {
   Validation,
-  validation: new Validation(),
+  validation,
 };

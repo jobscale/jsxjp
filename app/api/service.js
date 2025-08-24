@@ -1,12 +1,12 @@
-const os = require('os');
-const nodemailer = require('nodemailer');
-const { logger } = require('@jobscale/logger');
-const { Slack } = require('@jobscale/slack');
-const { service: configService } = require('../config/service');
+import os from 'os';
+import nodemailer from 'nodemailer';
+import { logger } from '@jobscale/logger';
+import { Slack } from '@jobscale/slack';
+import { service as configService } from '../config/service.js';
 
 const { PARTNER_HOST } = process.env;
 
-class Service {
+export class Service {
   async slack(rest) {
     const env = await configService.getEnv('slack');
     return new Slack(env).send(rest)
@@ -62,7 +62,9 @@ class Service {
   }
 }
 
-module.exports = {
+export const service = new Service();
+
+export default {
   Service,
-  service: new Service(),
+  service,
 };
