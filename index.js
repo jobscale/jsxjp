@@ -1,4 +1,4 @@
-import './config.js';
+import './app/config/index.js';
 import { logger } from '@jobscale/logger';
 import app from './app/index.js';
 
