@@ -1,5 +1,4 @@
-/* eslint-disable import/first */
-if (!process.env.ENV) process.env.ENV = 'dev';
+import './config.js';
 import { logger } from '@jobscale/logger';
 import app from './app/index.js';
 
