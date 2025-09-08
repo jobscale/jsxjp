@@ -1,5 +1,5 @@
-// parseCookies
-const parseCookies = req => {
+// cookieParser
+const cookieParser = req => {
   if (req.cookies) return;
   const cookieHeader = req.headers.cookie || '';
   const cookies = {};
@@ -16,7 +16,7 @@ const createCookieManager = res => {
   if (res.setCookie) return;
   const cookies = [];
   const hook = {
-    end: res.end,
+    writeHead: res.writeHead,
     setCookie(name, value, options = {}) {
       const parts = [`${name}=${encodeURIComponent(value)}`];
       if (options.expires) parts.push(`Expires=${options.expires.toUTCString()}`);
@@ -32,33 +32,18 @@ const createCookieManager = res => {
       if (cookies.length > 0) {
         res.setHeader('Set-Cookie', cookies);
       }
-      hook.end.apply(res, args);
+      hook.writeHead.apply(res, args);
     },
   };
-  res.end = hook.listener;
+  res.writeHead = hook.listener;
   res.setCookie = hook.setCookie;
 };
 
-export const manageCookie = (req, res) => {
-  parseCookies(req);
+export const parseCookies = (req, res) => {
+  cookieParser(req);
   createCookieManager(res);
 };
 
-// 使用例
-export function reqHandler(req) {
-  parseCookies(req);
-  const { token } = req.cookies;
-  return token;
-}
-
-// 使用例
-export function resHandler(req, res) {
-  createCookieManager(res);
-
-  // 任意のタイミングで呼び出せる
-  res.setCookie('token', 'abc123', { httpOnly: true, secure: true });
-  res.setCookie('session', 'xyz789', { path: '/', sameSite: 'Lax' });
-
-  res.statusCode = 200;
-  res.end('OK');
-}
+export default {
+  parseCookies,
+};

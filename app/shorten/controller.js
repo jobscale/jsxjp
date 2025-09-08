@@ -8,10 +8,10 @@ export class Controller {
     if (!html) {
       const { message } = createHttpError(400);
       res.status(400).json({ message });
-      return;
+      return undefined;
     }
 
-    service.register({ html })
+    return service.register({ html })
     .then(({ id }) => res.json({ id }))
     .catch(e => {
       if (!e.statusCode) e.statusCode = 500;
@@ -24,10 +24,10 @@ export class Controller {
     if (!id) {
       const { message } = createHttpError(400);
       res.status(400).json({ message });
-      return;
+      return undefined;
     }
 
-    service.redirect({ id })
+    return service.redirect({ id })
     .then(({ html }) => {
       res.redirect(html);
     })
@@ -39,7 +39,7 @@ export class Controller {
 
   find(req, res) {
     const { cookies: { token } } = req;
-    authService.decode(token)
+    return authService.decode(token)
     .then(payload => {
       const { login } = payload;
       if (login !== 'alice') throw createHttpError(403);
@@ -56,7 +56,7 @@ export class Controller {
 
   remove(req, res) {
     const { id: key } = req.body;
-    service.remove({ key })
+    return service.remove({ key })
     .then((rows) => {
       res.json({ rows });
     })

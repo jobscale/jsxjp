@@ -1,8 +1,8 @@
-import { Router } from 'express';
+import { Router } from '../router.js';
 import { controller } from './controller.js';
 
-const router = Router();
-router.use('', controller.ip);
+const router = new Router();
+router.add('GET', '', controller.ip);
 
 export const route = { router };
 

@@ -15,7 +15,9 @@ export const parseBody = async req => {
     const params = new URLSearchParams(buffer.toString());
     req.body = {};
     params.entries().forEach(([key, value]) => { req.body[key] = value; });
+    return;
   }
+  req.body = '';
 };
 
 export default {

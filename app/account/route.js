@@ -1,13 +1,11 @@
-import { Router } from 'express';
-import { controller as accountController } from './controller.js';
-import { validation as accountValidation } from './validation.js';
+import { Router } from '../router.js';
+import { controller } from './controller.js';
+import { validation } from './validation.js';
 
-const router = Router();
-router.post(
-  '/password',
-  accountValidation.password,
-  accountController.password,
-);
+const router = new Router();
+router.add('POST', '/password', async (req, res) => {
+  await validation.password(req, res, controller.password);
+});
 
 export const route = { router };
 

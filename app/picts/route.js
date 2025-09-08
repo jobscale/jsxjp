@@ -1,18 +1,36 @@
-import { Router } from 'express';
-import multer from 'multer';
+import { Router } from '../router.js';
 import { controller } from './controller.js';
 import { controller as authController } from '../auth/controller.js';
+import { parseFiles } from '../parse-files.js';
 
-const upload = multer();
-const router = Router();
-router.use('', authController.verify);
-router.post('/upload', upload.array('files'), controller.upload);
-router.post('/find', controller.find);
-router.post('/remove', controller.remove);
-router.get('/:type/:fname', controller.image);
-router.post('/getData', controller.getData);
-router.post('/putData', controller.putData);
-router.get('', (req, res) => res.status(404).send('not found'));
+const router = new Router();
+router.add('POST', '/upload', async (req, res) => {
+  await authController.verify(req, res, async () => {
+    await parseFiles(req);
+    await controller.upload(req, res);
+  });
+});
+router.add('POST', '/find', async (req, res) => {
+  await authController.verify(req, res, controller.find);
+});
+router.add('POST', '/remove', async (req, res) => {
+  await authController.verify(req, res, controller.remove);
+});
+router.add('POST', '/getData', async (req, res) => {
+  await authController.verify(req, res, controller.getData);
+});
+router.add('POST', '/putData', async (req, res) => {
+  await authController.verify(req, res, controller.putData);
+});
+router.add('GET', '/:type/:fname', async (req, res) => {
+  await authController.verify(req, res, controller.image);
+});
+router.add('GET', '', async (req, res) => {
+  await authController.verify(req, res, () => {
+    res.writeHead(404);
+    res.end('404 NotFound');
+  });
+});
 
 export const route = { router };
 

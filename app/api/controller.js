@@ -1,10 +1,10 @@
 import { logger } from '@jobscale/logger';
-import { service as apiService } from './service.js';
+import { service } from './service.js';
 
 export class Controller {
   slack(req, res) {
     const { body } = req;
-    apiService.slack(body)
+    return service.slack(body)
     .then(result => res.json(result))
     .catch(e => {
       logger.info({ message: e.toString() });
@@ -19,7 +19,7 @@ export class Controller {
       'jobscalespam@gmail.com',
       'jobscalespam@na-cat.com',
     ];
-    apiService.email({
+    return service.email({
       to: to.join(','),
       subject,
       text,
@@ -33,7 +33,7 @@ export class Controller {
   }
 
   hostname(req, res) {
-    apiService.hostname()
+    return service.hostname()
     .then(result => res.json(result))
     .catch(e => {
       logger.info({ message: e.toString() });

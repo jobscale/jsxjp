@@ -2,7 +2,7 @@ import Joi from 'joi';
 import { login } from '../policy.js';
 
 export class Validation {
-  register(req, res, next) {
+  async register(req, res, next) {
     const { error } = Joi.object({
       login: Joi.string().pattern(login).max(30),
       password: Joi.string().min(6).max(30),
@@ -11,10 +11,10 @@ export class Validation {
       res.status(400).json({ message: error.message });
       return;
     }
-    next();
+    await next(req, res);
   }
 
-  reset(req, res, next) {
+  async reset(req, res, next) {
     const { error } = Joi.object({
       login: Joi.string().pattern(login).max(30),
       password: Joi.string().min(6).max(30),
@@ -23,7 +23,7 @@ export class Validation {
       res.status(400).json({ message: error.message });
       return;
     }
-    next();
+    await next(req, res);
   }
 }
 

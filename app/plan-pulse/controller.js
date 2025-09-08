@@ -4,7 +4,7 @@ import { service } from './service.js';
 export class Controller {
   hub(req, res) {
     const { hubId } = req.body;
-    service.hub({ hubId })
+    return service.hub({ hubId })
     .then(result => {
       res.json(result);
     })
@@ -17,7 +17,7 @@ export class Controller {
 
   putHub(req, res) {
     const { hubId, hub } = req.body;
-    service.putHub({ hubId, hub })
+    return service.putHub({ hubId, hub })
     .then(result => {
       res.json(result);
     })
@@ -30,7 +30,7 @@ export class Controller {
 
   putPerson(req, res) {
     const { hubId, personId, person } = req.body;
-    service.putPerson({ hubId, personId, person })
+    return service.putPerson({ hubId, personId, person })
     .then(result => {
       res.json(result);
     })
@@ -43,7 +43,7 @@ export class Controller {
 
   removePerson(req, res) {
     const { hubId, personId } = req.body;
-    service.removePerson({ hubId, personId })
+    return service.removePerson({ hubId, personId })
     .then(result => {
       res.json(result);
     })

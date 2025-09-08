@@ -1,8 +1,8 @@
-import { Router } from 'express';
-import { controller as templateController } from './controller.js';
+import { Router } from '../router.js';
+import { controller } from './controller.js';
 
-const router = Router();
-router.post('', templateController.load);
+const router = new Router();
+router.add('POST', '', controller.load);
 
 export const route = { router };
 

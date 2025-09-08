@@ -2,9 +2,9 @@ import { service } from './service.js';
 
 export class Controller {
   page(req, res) {
-    service.now()
+    return service.now()
     .then(now => {
-      res.render('', { now });
+      res.end(now.toString());
     });
   }
 }

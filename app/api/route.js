@@ -1,22 +1,15 @@
-import { Router } from 'express';
-import { controller as apiController } from './controller.js';
-import { validation as apiValidation } from './validation.js';
+import { Router } from '../router.js';
+import { controller } from './controller.js';
+import { validation } from './validation.js';
 
-const router = Router();
-router.post(
-  '/slack',
-  apiValidation.slack,
-  apiController.slack,
-);
-router.post(
-  '/email',
-  apiValidation.email,
-  apiController.email,
-);
-router.post(
-  '/hostname',
-  apiController.hostname,
-);
+const router = new Router();
+router.add('POST', '/slack', async (req, res) => {
+  await validation.slack(req, res, controller.slack);
+});
+router.add('POST', '/email', async (req, res) => {
+  await validation.email(req, res, controller.email);
+});
+router.add('POST', '/hostname', controller.hostname);
 
 export const route = { router };
 

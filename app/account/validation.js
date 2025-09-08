@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 export class Validation {
-  password(req, res, next) {
+  async password(req, res, next) {
     const { error } = Joi.object({
       password: Joi.string().min(6).max(30),
     }).validate(req.body);
@@ -9,7 +9,7 @@ export class Validation {
       res.status(400).json({ message: error.message });
       return;
     }
-    next();
+    await next(req, res);
   }
 }
 

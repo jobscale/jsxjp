@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 export class Validation {
-  slack(req, res, next) {
+  async slack(req, res, next) {
     const { body } = req;
     const { error } = Joi.object({
       text: Joi.string().required().min(1).max(2 ** 16 - 1),
@@ -14,10 +14,10 @@ export class Validation {
       res.status(400).json({ message: error.message });
       return;
     }
-    next();
+    await next(req, res);
   }
 
-  email(req, res, next) {
+  async email(req, res, next) {
     const { body } = req;
     const { error } = Joi.object({
       subject: Joi.string().required().min(1).max(2 ** 8 - 1),
@@ -27,7 +27,7 @@ export class Validation {
       res.status(400).json({ message: error.message });
       return;
     }
-    next();
+    await next(req, res);
   }
 }
 
