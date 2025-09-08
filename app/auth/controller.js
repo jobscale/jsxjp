@@ -7,10 +7,10 @@ import { service as apiService } from '../api/service.js';
 export class Controller {
   login(req, res) {
     const { login, password, code } = req.body;
-    authService.login({ login, password, code })
+    return authService.login({ login, password, code })
     .then(({ token, multiFactor }) => {
       if (code || login.startsWith('orange')) {
-        res.cookie('token', token, {
+        res.setCookie('token', token, {
           expires: dayjs().add(12, 'hour').toDate(),
           httpOnly: true,
           secure: !!req.socket.encrypted,
@@ -25,7 +25,7 @@ export class Controller {
         return;
       }
       const { href } = req.cookies;
-      res.cookie('href', '', {
+      res.setCookie('href', '', {
         expires: dayjs().add(10, 'second').toDate(),
         httpOnly: true,
         secure: !!req.socket.encrypted,
@@ -43,7 +43,7 @@ export class Controller {
   }
 
   logout(req, res) {
-    res.cookie('token', '', {
+    res.setCookie('token', '', {
       expires: dayjs().add(10, 'second').toDate(),
       httpOnly: true,
       secure: !!req.socket.encrypted,
@@ -53,11 +53,11 @@ export class Controller {
 
   sign(req, res) {
     const { token } = req.cookies;
-    authService.decode(token)
+    return authService.decode(token)
     .then(payload => res.json(payload))
     .catch(e => {
       const { href } = req.body;
-      res.cookie('href', href, {
+      res.setCookie('href', href, {
         expires: dayjs().add(5, 'minute').toDate(),
         httpOnly: true,
         secure: !!req.socket.encrypted,
@@ -68,7 +68,7 @@ export class Controller {
 
   totp(req, res) {
     const { secret } = req.body;
-    authService.totp({ secret })
+    return authService.totp({ secret })
     .then(result => res.json(result))
     .catch(e => {
       if (!e.statusCode) e = createHttpError(403);
@@ -78,15 +78,15 @@ export class Controller {
 
   verify(req, res, next) {
     const { token } = req.cookies;
-    authService.verify(token)
+    return authService.verify(token)
     .then(() => {
-      res.cookie('token', token, {
+      res.setCookie('token', token, {
         expires: dayjs().add(12, 'hour').toDate(),
         httpOnly: true,
         secure: !!req.socket.encrypted,
       });
-      next();
     })
+    .then(() => next(req, res))
     .catch(e => {
       logger.info({ ...e });
       if (req.method === 'GET') {

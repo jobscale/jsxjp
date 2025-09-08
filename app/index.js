@@ -1,134 +1,182 @@
-import { fileURLToPath } from 'url';
 import os from 'os';
 import path from 'path';
+import fs from 'fs';
 import createHttpError from 'http-errors';
-import express from 'express';
-import cookieParser from 'cookie-parser';
 import { logger } from '@jobscale/logger';
+import { parseCookies } from './parse-cookie.js';
 import { route } from './route.js';
+import { parseBody } from './parse-body.js';
 
 const { XDG_SESSION_DESKTOP } = process.env;
 
-const filepath = fileURLToPath(import.meta.url);
-const dirname = path.dirname(filepath);
-const app = express();
-
-export class App {
-  useView() {
-    app.set('views', path.resolve(dirname, 'views'));
-    app.set('view engine', 'ejs');
+export class Ingress {
+  useHeader(req, res) {
+    const headers = new Headers(req.headers);
+    const protocol = req.socket.encrypted ? 'https' : 'http';
+    const host = headers.get('host');
+    const origin = headers.get('origin') || `${protocol}://${host}`;
+    res.setHeader('ETag', 'false');
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, HEAD');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Server', 'acl-ingress-k8s');
+    res.setHeader('X-Backend-Host', os.hostname());
+    const csp = [
+      "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https: wss:",
+      "base-uri 'none'",
+    ];
+    if (!['plasma', 'cinnamon'].includes(XDG_SESSION_DESKTOP)) {
+      res.setHeader('Content-Security-Policy', csp.join('; '));
+    } else {
+      res.setHeader('Content-Security-Policy', csp.map(v => v.replace('https:', 'http:')).map(v => v.replace('wss:', 'ws:')).join('; '));
+    }
+    res.setHeader('Permissions-Policy', 'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubdomains; preload');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
   }
 
-  useParser() {
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true, limit: '50MB' }));
-    app.use(cookieParser());
+  usePublic(req, res) {
+    const headers = new Headers(req.headers);
+    const { url } = req;
+    const protocol = req.socket.encrypted ? 'https' : 'http';
+    const host = headers.get('host');
+    const { pathname } = new URL(`${protocol}://${host}${url}`);
+    const file = {
+      path: path.join(process.cwd(), 'docs', pathname),
+    };
+    if (!fs.existsSync(file.path)) return false;
+    const stats = fs.statSync(file.path);
+    if (stats.isDirectory()) {
+      if (!file.path.endsWith('/')) {
+        res.writeHead(307, { Location: `${url}/` });
+        res.end();
+        return true;
+      }
+      file.path += 'index.html';
+    }
+    const mime = filePath => {
+      const ext = path.extname(filePath).toLowerCase();
+      if (['.png', '.jpeg', '.webp', '.gif'].includes(ext)) return `image/${ext}`;
+      if (['.jpg'].includes(ext)) return 'image/jpeg';
+      if (['.ico'].includes(ext)) return 'image/x-ico';
+      if (['.json'].includes(ext)) return 'application/json';
+      if (['.pdf'].includes(ext)) return 'application/pdf';
+      if (['.zip'].includes(ext)) return 'application/zip';
+      if (['.xml'].includes(ext)) return 'application/xml';
+      if (['.html', '.svg'].includes(ext)) return 'text/html';
+      if (['.js'].includes(ext)) return 'text/javascript';
+      if (['.css'].includes(ext)) return 'text/css';
+      if (['.txt', '.md'].includes(ext)) return 'text/plain';
+      return 'application/octet-stream';
+    };
+    const stream = fs.createReadStream(file.path);
+    res.writeHead(200, { 'Content-Type': mime(file.path) });
+    stream.pipe(res);
+    return true;
   }
 
-  useHeader() {
-    app.set('etag', false);
-    app.set('x-powered-by', false);
-    app.use((req, res, next) => {
+  useLogging(req, res) {
+    const ts = new Date().toISOString();
+    const progress = () => {
       const headers = new Headers(req.headers);
-      const [referer] = (headers.get('referer') && headers.get('referer').match(/https?:\/\/[a-z0-9.:]+/g)) || [];
-      const origin = referer || headers.get('origin') || `${req.protocol}://${headers.get('host')}`;
-      if (referer) logger.debug({ origin: headers.get('origin'), referer });
-      res.header('Access-Control-Allow-Origin', `${origin}`);
-      res.header('Access-Control-Allow-Methods', 'GET, POST, HEAD');
-      res.header('Access-Control-Allow-Headers', 'Content-Type');
-      res.header('Server', 'acl-ingress-k8s');
-      res.header('X-Backend-Host', os.hostname());
-      const csp = [
-        "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https: wss:",
-        "base-uri 'none'",
-      ];
-      if (!['plasma', 'cinnamon'].includes(XDG_SESSION_DESKTOP)) {
-        res.header('Content-Security-Policy', csp.join('; '));
-      } else {
-        res.header('Content-Security-Policy', csp.map(v => v.replace('https:', 'http:')).map(v => v.replace('wss:', 'ws:')).join('; '));
-      }
-      res.header('Permissions-Policy', 'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()');
-      res.header('Referrer-Policy', 'strict-origin-when-cross-origin');
-      res.header('Strict-Transport-Security', 'max-age=31536000; includeSubdomains; preload');
-      res.header('X-Content-Type-Options', 'nosniff');
-      res.header('X-Frame-Options', 'SAMEORIGIN');
-      res.header('X-XSS-Protection', '1; mode=block');
-      next();
-    });
-  }
-
-  usePublic() {
-    const docs = path.resolve(process.cwd(), 'docs');
-    app.use(express.static(docs));
-  }
-
-  useLogging() {
-    app.use((req, res, next) => {
-      const ts = new Date().toLocaleString();
-      const progress = () => {
-        const headers = new Headers(req.headers);
-        const ip = req.socket.remoteAddress || req.ip;
-        const remoteIp = headers.get('X-Real-Ip') || headers.get('X-Forwarded-For') || ip;
-        const { protocol, method, url } = req;
-        logger.info({
-          ts, remoteIp, protocol, method, url, headers: JSON.stringify(headers),
-        });
-      };
-      progress();
-      res.on('finish', () => {
-        const { statusCode, statusMessage } = res;
-        const headers = JSON.stringify(res.getHeaders());
-        logger.info({
-          ts, statusCode, statusMessage, headers,
-        });
+      const ip = req.socket.remoteAddress || req.ip;
+      const remoteIp = headers.get('X-Real-Ip') || headers.get('X-Forwarded-For') || ip;
+      const { method, url } = req;
+      const protocol = req.socket.encrypted ? 'https' : 'http';
+      const host = headers.get('host');
+      logger.info({
+        ts,
+        req: JSON.stringify({
+          remoteIp, protocol, host, method, url,
+        }),
+        headers: JSON.stringify(Object.fromEntries(headers.entries())),
       });
-      next();
+    };
+    progress();
+    res.on('finish', () => {
+      const { statusCode, statusMessage } = res;
+      const headers = JSON.stringify(res.getHeaders());
+      logger.info({
+        ts, statusCode, statusMessage, headers,
+      });
     });
   }
 
-  useRoute() {
-    app.use('', route.router);
+  async useRoute(req, res) {
+    const headers = new Headers(req.headers);
+    const method = req.method.toUpperCase();
+    const protocol = req.socket.encrypted ? 'https' : 'http';
+    const host = headers.get('host');
+    const { pathname, searchParams } = new URL(`${protocol}://${host}${req.url}`);
+    const pathRoute = `${method} ${pathname}`;
+    logger.debug({ pathRoute, searchParams });
+
+    res.status = code => {
+      res.statusCode = code;
+      return res;
+    };
+    res.json = any => {
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify(any));
+    };
+    res.redirect = uri => {
+      res.writeHead(307, { Location: uri });
+      res.end();
+    };
+
+    parseCookies(req, res);
+    await parseBody(req);
+    await route.router.handle(req, res);
+
+    if (res.writableEnded) return;
+    this.notfoundHandler(req, res);
   }
 
-  notfoundHandler() {
-    app.use((req, res) => {
-      const template = 'error/default';
-      if (req.method === 'GET') {
-        const e = createHttpError(404);
-        res.locals.e = e;
-        res.status(e.status).render(template);
-        return;
-      }
-      const e = createHttpError(501);
-      res.status(e.status).json({ message: e.message });
-    });
+  notfoundHandler(req, res) {
+    if (req.method === 'GET') {
+      const e = createHttpError(404);
+      res.writeHead(e.status, { 'Content-Type': 'text/plain' });
+      res.end(e.message);
+      return;
+    }
+    const e = createHttpError(501);
+    res.writeHead(e.status, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ message: e.message }));
   }
 
-  errorHandler() {
-    app.use((e, req, res, done) => {
-      (never => never)(done);
-      const template = 'error/default';
-      if (!e.status) e.status = 503;
-      if (req.method === 'GET') {
-        res.locals.e = e;
-        res.status(e.status).render(template);
-        return;
-      }
-      res.status(e.status).json({ message: e.message });
-    });
+  errorHandler(e, req, res) {
+    logger.error(e);
+    if (!res) return;
+    if (req.method === 'GET') {
+      e = createHttpError(503);
+      res.writeHead(e.status, { 'Content-Type': 'text/plain' });
+      res.end(e.message);
+      return;
+    }
+    if (!e.status) e = createHttpError(500);
+    res.writeHead(e.status, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ message: e.message }));
   }
 
   start() {
-    this.useParser();
-    this.useHeader();
-    this.usePublic();
-    this.useLogging();
-    this.useView();
-    this.useRoute();
-    this.notfoundHandler();
-    this.errorHandler();
-    return app;
+    return (req, res) => {
+      try {
+        this.useHeader(req, res);
+        if (this.usePublic(req, res)) return;
+        this.useLogging(req, res);
+        this.useRoute(req, res);
+      } catch (e) {
+        this.errorHandler(e, req, res);
+      }
+    };
   }
 }
 
-export default new App().start();
+const ingress = new Ingress();
+export const app = ingress.start();
+const { upgradeHandler, errorHandler } = ingress;
+export { upgradeHandler, errorHandler };
+export default app;

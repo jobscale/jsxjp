@@ -1,22 +1,19 @@
-import { Router } from 'express';
+import { Router } from '../router.js';
 import { controller as authController } from './controller.js';
 import { validation as authValidation } from './validation.js';
 
-const router = Router();
-router.post(
-  '/auth/login',
-  authValidation.login,
-  authController.login,
-);
-router.post('/auth/sign', authController.sign);
-router.options('/auth/totp', (req, res) => res.json());
-router.post(
-  '/auth/totp',
-  authValidation.totp,
-  authController.totp,
-);
-router.use('', authController.verify);
-router.get('/auth/logout', authController.logout);
+const router = new Router();
+router.add('POST', '/auth/login', async (req, res) => {
+  await authValidation.login(req, res, authController.login);
+});
+router.add('POST', '/auth/sign', authController.sign);
+router.add('OPTIONS', '/auth/totp', (req, res) => res.end());
+router.add('POST', '/auth/totp', async (req, res) => {
+  await authValidation.totp(req, res, authController.totp);
+});
+router.add('GET', '/auth/logout', async (req, res) => {
+  await authController.verify(req, res, authController.logout);
+});
 
 export const route = { router };
 

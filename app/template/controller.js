@@ -1,9 +1,9 @@
-import { service as templateService } from './service.js';
+import { service } from './service.js';
 
 export class Controller {
   load(req, res) {
     const { id } = req.body;
-    templateService.now()
+    return service.now()
     .then(now => {
       const template = id.split('-').join('/');
       res.render(template, { now });

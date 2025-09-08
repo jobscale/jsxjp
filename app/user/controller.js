@@ -1,6 +1,6 @@
 import createHttpError from 'http-errors';
 import { logger } from '@jobscale/logger';
-import { service as userService } from './service.js';
+import { service } from './service.js';
 import { service as authService } from '../auth/service.js';
 
 export class Controller {
@@ -8,7 +8,7 @@ export class Controller {
 
   register(req, res) {
     const { login, password } = req.body;
-    userService.register({ login, password })
+    return service.register({ login, password })
     .then(() => {
       res.json({ login });
     })
@@ -21,7 +21,7 @@ export class Controller {
 
   reset(req, res) {
     const { login, password } = req.body;
-    userService.reset({ login, password })
+    return service.reset({ login, password })
     .then(item => {
       res.json({ login: item.login });
     })
@@ -34,12 +34,12 @@ export class Controller {
 
   find(req, res) {
     const { cookies: { token } } = req;
-    authService.decode(token)
+    return authService.decode(token)
     .then(payload => {
       const { login } = payload;
       if (login !== 'alice') throw createHttpError(403);
     })
-    .then(() => userService.find())
+    .then(() => service.find())
     .then((rows) => {
       res.json({ rows });
     })
@@ -51,7 +51,7 @@ export class Controller {
 
   remove(req, res) {
     const { id: key } = req.body;
-    userService.remove({ key })
+    return service.remove({ key })
     .then(item => {
       res.json({ deletedAt: item.deletedAt });
     })

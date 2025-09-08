@@ -5,7 +5,7 @@ import { service as authService } from '../auth/service.js';
 export class Controller {
   find(req, res) {
     const { cookies: { token } } = req;
-    authService.decode(token)
+    return authService.decode(token)
     .then(payload => {
       const { login } = payload;
       if (!login) throw createHttpError(403);
@@ -22,7 +22,7 @@ export class Controller {
 
   image(req, res) {
     const { params: { type, fname }, cookies: { token } } = req;
-    authService.decode(token)
+    return authService.decode(token)
     .then(payload => {
       const { login } = payload;
       if (!login) throw createHttpError(403);
@@ -40,7 +40,7 @@ export class Controller {
 
   upload(req, res) {
     const { files, cookies: { token } } = req;
-    authService.decode(token)
+    return authService.decode(token)
     .then(payload => {
       const { login } = payload;
       if (!login) throw createHttpError(403);
@@ -55,7 +55,7 @@ export class Controller {
 
   remove(req, res) {
     const { body: { name }, cookies: { token } } = req;
-    authService.decode(token)
+    return authService.decode(token)
     .then(payload => {
       const { login } = payload;
       if (!login) throw createHttpError(403);
@@ -70,7 +70,7 @@ export class Controller {
 
   getData(req, res) {
     const { body: list, cookies: { token } } = req;
-    authService.decode(token)
+    return authService.decode(token)
     .then(payload => {
       const { login } = payload;
       if (!login) throw createHttpError(403);
@@ -85,7 +85,7 @@ export class Controller {
 
   putData(req, res) {
     const { body: dataset, cookies: { token } } = req;
-    authService.decode(token)
+    return authService.decode(token)
     .then(payload => {
       const { login } = payload;
       if (!login) throw createHttpError(403);

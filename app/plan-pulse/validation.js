@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 export class Validation {
-  hub(req, res, next) {
+  async hub(req, res, next) {
     const { error } = Joi.object({
       hubId: Joi.string().required().alphanum().max(30),
     }).validate(req.body);
@@ -9,10 +9,10 @@ export class Validation {
       res.status(400).json({ message: error.message });
       return;
     }
-    next();
+    await next(req, res);
   }
 
-  putHub(req, res, next) {
+  async putHub(req, res, next) {
     const { error } = Joi.object({
       hubId: Joi.string().alphanum().max(30),
       hub: Joi.object().required(),
@@ -21,10 +21,10 @@ export class Validation {
       res.status(400).json({ message: error.message });
       return;
     }
-    next();
+    await next(req, res);
   }
 
-  putPerson(req, res, next) {
+  async putPerson(req, res, next) {
     const { error } = Joi.object({
       hubId: Joi.string().required().alphanum().max(30),
       personId: Joi.string().alphanum().max(30),
@@ -34,10 +34,10 @@ export class Validation {
       res.status(400).json({ message: error.message });
       return;
     }
-    next();
+    await next(req, res);
   }
 
-  removePerson(req, res, next) {
+  async removePerson(req, res, next) {
     const { error } = Joi.object({
       hubId: Joi.string().required().alphanum().max(30),
       personId: Joi.string().required().alphanum().max(30),
@@ -46,7 +46,7 @@ export class Validation {
       res.status(400).json({ message: error.message });
       return;
     }
-    next();
+    await next(req, res);
   }
 }
 
