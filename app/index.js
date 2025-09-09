@@ -114,6 +114,9 @@ export class Ingress {
     const pathRoute = `${method} ${pathname}`;
     logger.debug({ pathRoute, searchParams });
 
+    res.contentType = contentType => {
+      res.setHeader('Content-Type', contentType);
+    };
     res.status = code => {
       res.statusCode = code;
       return res;

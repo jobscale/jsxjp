@@ -1,12 +1,10 @@
 import { Router } from '../router.js';
 import { controller } from './controller.js';
 import { controller as authController } from '../auth/controller.js';
-import { parseFiles } from '../parse-files.js';
 
 const router = new Router();
 router.add('POST', '/upload', async (req, res) => {
   await authController.verify(req, res, async () => {
-    await parseFiles(req);
     await controller.upload(req, res);
   });
 });
