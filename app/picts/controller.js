@@ -16,7 +16,7 @@ export class Controller {
     })
     .catch(e => {
       if (!e.status) e.status = 500;
-      res.status(e.status).send(e.message);
+      res.status(e.status).end(e.message);
     });
   }
 
@@ -32,9 +32,10 @@ export class Controller {
       res.contentType(ContentType);
       buffer.pipe(res);
     })
+    .then(() => new Promise(resolve => { res.on('finish', resolve); }))
     .catch(e => {
       if (!e.status) e.status = 404;
-      res.status(e.status).send(e.message);
+      res.status(e.status).end(e.message);
     });
   }
 
