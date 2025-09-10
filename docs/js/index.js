@@ -68,16 +68,20 @@ createApp({
       this.spanText = span.toFixed(1);
     },
 
+    sign() {
+      return fetch('/auth/sign', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(''),
+      });
+    },
+
     updateDate() {
       const params = {
-        req: [
-          `/timestamp?v=${Date.now()}`,
-          { method: 'head' },
-        ],
         begin: performance.now(),
         warn: setTimeout(() => this.play(), 2000),
       };
-      return fetch(...params.req)
+      return this.sign()
       .then(res => res.headers.get('date'))
       .then(gmt => {
         clearTimeout(params.warn);
