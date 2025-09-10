@@ -11,7 +11,7 @@ export class Controller {
     .then(({ token, multiFactor }) => {
       if (code || login.startsWith('orange')) {
         res.setCookie('token', token, {
-          expires: dayjs().add(12, 'hour').toDate(),
+          expires: dayjs().add(1, 'hour').toDate(),
           httpOnly: true,
           secure: !!req.socket.encrypted,
         });
@@ -54,14 +54,24 @@ export class Controller {
   sign(req, res) {
     const { token } = req.cookies;
     return authService.decode(token)
-    .then(payload => res.json(payload))
-    .catch(e => {
-      const { href } = req.body;
-      res.setCookie('href', href, {
-        expires: dayjs().add(5, 'minute').toDate(),
+    .then(payload => {
+      res.setCookie('token', token, {
+        expires: dayjs().add(1, 'hour').toDate(),
         httpOnly: true,
         secure: !!req.socket.encrypted,
       });
+      return payload;
+    })
+    .then(payload => res.json(payload))
+    .catch(e => {
+      const { href } = req.body;
+      if (href) {
+        res.setCookie('href', href, {
+          expires: dayjs().add(5, 'minute').toDate(),
+          httpOnly: true,
+          secure: !!req.socket.encrypted,
+        });
+      }
       res.status(403).json({ message: e.message });
     });
   }
