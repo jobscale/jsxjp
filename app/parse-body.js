@@ -6,6 +6,11 @@ export const parseBody = async req => {
     req.on('error', e => reject(e));
   });
 
+  if (!buffer.length) {
+    req.body = '';
+    return;
+  }
+
   const contentType = req.headers['content-type'] || '';
   if (contentType.startsWith('application/json')) {
     req.body = JSON.parse(buffer.toString());

@@ -19,7 +19,7 @@ createApp({
   methods: {
     sign() {
       return fetch('/auth/sign', {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ href: '/s' }),
       })
@@ -40,7 +40,7 @@ createApp({
       this.loading = true;
       logger.info('url', this.url);
       const params = ['register', {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ html: this.url }),
       }];

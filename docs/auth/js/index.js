@@ -24,7 +24,7 @@ createApp({
       this.statusText = '';
       this.loading = true;
       const params = ['/auth/login', {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ login, password }),
       }];
@@ -61,7 +61,7 @@ createApp({
       this.auth.statusText = '';
       this.loading = true;
       const params = ['/auth/login', {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ login, password, code }),
       }];

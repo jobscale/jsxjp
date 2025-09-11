@@ -73,7 +73,14 @@ export class Ingress {
       return 'application/octet-stream';
     };
     const stream = fs.createReadStream(file.path);
-    res.writeHead(200, { 'Content-Type': mime(file.path) });
+    res.writeHead(200, {
+      'Content-Type': mime(file.path),
+      'Content-Length': fs.statSync(file.path).size,
+    });
+    if (req.method === 'HEAD') {
+      res.end();
+      return true;
+    }
     stream.pipe(res);
     return true;
   }
@@ -165,12 +172,12 @@ export class Ingress {
   }
 
   start() {
-    return (req, res) => {
+    return async (req, res) => {
       try {
         this.useHeader(req, res);
         if (this.usePublic(req, res)) return;
         this.useLogging(req, res);
-        this.useRoute(req, res);
+        await this.useRoute(req, res);
       } catch (e) {
         this.errorHandler(e, req, res);
       }

@@ -62,8 +62,18 @@ export class Controller {
       });
       return payload;
     })
-    .then(payload => res.json(payload))
+    .then(payload => {
+      if (req.method === 'HEAD') {
+        res.end();
+        return;
+      }
+      res.json(payload);
+    })
     .catch(e => {
+      if (req.method === 'HEAD') {
+        res.end();
+        return;
+      }
       const { href } = req.body;
       if (href) {
         res.setCookie('href', href, {

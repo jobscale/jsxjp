@@ -20,7 +20,7 @@ createApp({
   methods: {
     sign() {
       return fetch('/auth/sign', {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ href: '/user/reset' }),
       })
@@ -45,7 +45,7 @@ createApp({
       this.statusText = '';
       this.loading = true;
       const params = ['/user/reset', {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ login, password }),
       }];

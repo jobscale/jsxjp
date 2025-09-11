@@ -25,7 +25,7 @@ createApp({
   methods: {
     sign() {
       return fetch('/auth/sign', {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ href: '/user/list' }),
       })
@@ -46,7 +46,7 @@ createApp({
       this.loading = true;
       this.items = [];
       const params = ['../find', {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
       }];
@@ -102,7 +102,7 @@ createApp({
     removeId({ id }) {
       this.loading = true;
       const params = ['../remove', {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
       }];

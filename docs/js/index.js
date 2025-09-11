@@ -70,9 +70,7 @@ createApp({
 
     sign() {
       return fetch('/auth/sign', {
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(''),
+        method: 'HEAD',
       });
     },
 

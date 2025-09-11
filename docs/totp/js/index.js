@@ -20,7 +20,7 @@ createApp({
       this.loading = true;
       logger.info('token', this.token);
       const params = ['/auth/totp', {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ secret: this.token }),
       }];

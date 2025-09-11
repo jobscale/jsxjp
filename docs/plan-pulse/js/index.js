@@ -38,7 +38,7 @@ createApp({
 
       this.loading = true;
       const params = ['removePerson', {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           hubId: this.hubId,
@@ -67,7 +67,7 @@ createApp({
         if (!this.person.plan[i]) this.person.plan[i] = '0';
       }
       const params = ['putPerson', {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           hubId: this.hubId,
@@ -102,7 +102,7 @@ createApp({
 
       this.loading = true;
       const params = ['hub', {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ hubId: this.hubId }),
       }];
@@ -182,7 +182,7 @@ createApp({
       logger.info('plan', plan);
       this.hub.plan = plan;
       const params = ['putHub', {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           hubId: this.hubId,
