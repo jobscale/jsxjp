@@ -12,20 +12,30 @@ const cookieParser = req => {
 };
 
 // createCookieManager
-const createCookieManager = res => {
+const createCookieManager = (req, res) => {
   if (res.setCookie) return;
   const cookies = [];
   const hook = {
     writeHead: res.writeHead,
     setCookie(name, value, options = {}) {
       const parts = [`${name}=${encodeURIComponent(value)}`];
-      if (options.expires) parts.push(`Expires=${options.expires.toUTCString()}`);
+      if (options.expires) parts.push(`Expires=${new Date(options.expires).toUTCString()}`);
       if (options.maxAge) parts.push(`Max-Age=${options.maxAge}`);
       if (options.domain) parts.push(`Domain=${options.domain}`);
       parts.push(`Path=${options.path || '/'}`);
-      if (options.secure) parts.push('Secure');
-      if (options.httpOnly) parts.push('HttpOnly');
-      if (options.sameSite) parts.push(`SameSite=${options.sameSite}`);
+      if (req.socket.encrypted) parts.push('Secure');
+      if (!options.offline) parts.push('HttpOnly');
+      parts.push(`SameSite=${options.sameSite || 'Strict'}`);
+      cookies.push(parts.join('; '));
+    },
+    clearCookie(name, options = {}) {
+      const parts = [`${name}=`];
+      parts.push(`Expires=${new Date(0).toUTCString()}`);
+      if (options.domain) parts.push(`Domain=${options.domain}`);
+      parts.push(`Path=${options.path || '/'}`);
+      if (req.socket.encrypted) parts.push('Secure');
+      parts.push('HttpOnly');
+      parts.push('SameSite=Strict');
       cookies.push(parts.join('; '));
     },
     listener(...args) {
@@ -37,11 +47,12 @@ const createCookieManager = res => {
   };
   res.writeHead = hook.listener;
   res.setCookie = hook.setCookie;
+  res.clearCookie = hook.clearCookie;
 };
 
 export const parseCookies = (req, res) => {
   cookieParser(req);
-  createCookieManager(res);
+  createCookieManager(req, res);
 };
 
 export default {

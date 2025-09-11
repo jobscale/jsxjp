@@ -2,9 +2,7 @@ import { service } from './service.js';
 
 export class Controller {
   password(req, res) {
-    const { body } = req;
-    const { password } = body;
-    const { token } = req.cookies;
+    const { body: { password }, cookies: { token } } = req;
     return service.password({ password, token })
     .then(item => {
       res.json({ login: item.login });

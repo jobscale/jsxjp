@@ -11,9 +11,7 @@ export class Controller {
     .then(({ token, multiFactor }) => {
       if (code || login.startsWith('orange')) {
         res.setCookie('token', token, {
-          expires: dayjs().add(1, 'hour').toDate(),
-          httpOnly: true,
-          secure: !!req.socket.encrypted,
+          expires: dayjs().add(1, 'hour'),
         });
       } else if (multiFactor) {
         apiService.slack({
@@ -24,16 +22,12 @@ export class Controller {
         res.json({});
         return;
       }
-      const { href } = req.cookies;
-      res.setCookie('href', '', {
-        expires: dayjs().add(10, 'second').toDate(),
-        httpOnly: true,
-        secure: !!req.socket.encrypted,
-      });
+      const { cookies: { redirectTo } } = req;
+      res.clearCookie('redirectTo');
       const ignore = [
         '/auth', '/account/password', '/favicon.ico', '', undefined,
       ];
-      res.json({ href: ignore.indexOf(href) === -1 ? href : '/' });
+      res.json({ href: ignore.indexOf(redirectTo) === -1 ? redirectTo : '/' });
     })
     .catch(e => {
       logger.info({ message: e });
@@ -43,22 +37,16 @@ export class Controller {
   }
 
   logout(req, res) {
-    res.setCookie('token', '', {
-      expires: dayjs().add(10, 'second').toDate(),
-      httpOnly: true,
-      secure: !!req.socket.encrypted,
-    });
+    res.clearCookie('token');
     res.redirect('/auth');
   }
 
   sign(req, res) {
-    const { token } = req.cookies;
+    const { cookies: { token } } = req;
     return authService.decode(token)
     .then(payload => {
       res.setCookie('token', token, {
-        expires: dayjs().add(1, 'hour').toDate(),
-        httpOnly: true,
-        secure: !!req.socket.encrypted,
+        expires: dayjs().add(1, 'hour'),
       });
       return payload;
     })
@@ -76,10 +64,8 @@ export class Controller {
       }
       const { href } = req.body;
       if (href) {
-        res.setCookie('href', href, {
-          expires: dayjs().add(5, 'minute').toDate(),
-          httpOnly: true,
-          secure: !!req.socket.encrypted,
+        res.setCookie('redirectTo', href, {
+          expires: dayjs().add(5, 'minute'),
         });
       }
       res.status(403).json({ message: e.message });
@@ -97,13 +83,11 @@ export class Controller {
   }
 
   verify(req, res, next) {
-    const { token } = req.cookies;
+    const { cookies: { token } } = req;
     return authService.verify(token)
     .then(() => {
       res.setCookie('token', token, {
-        expires: dayjs().add(12, 'hour').toDate(),
-        httpOnly: true,
-        secure: !!req.socket.encrypted,
+        expires: dayjs().add(1, 'hour'),
       });
     })
     .then(() => next(req, res))
