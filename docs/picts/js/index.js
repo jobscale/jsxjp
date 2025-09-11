@@ -57,7 +57,7 @@ createApp({
   methods: {
     sign() {
       return fetch('/auth/sign', {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ href: '/picts' }),
       })
@@ -151,7 +151,7 @@ createApp({
 
     async find() {
       const params = ['find', {
-        method: 'post',
+        method: 'POST',
         redirect: 'error',
       }];
       this.list.length = 0;
@@ -182,7 +182,7 @@ createApp({
 
     async getData(list) {
       const params = ['getData', {
-        method: 'post',
+        method: 'POST',
         redirect: 'error',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(list),
@@ -197,7 +197,7 @@ createApp({
 
     async putData(dataset) {
       const params = ['putData', {
-        method: 'post',
+        method: 'POST',
         redirect: 'error',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataset),
@@ -297,7 +297,7 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       const formData = new FormData();
       formData.append('files', file);
       const params = ['upload', {
-        method: 'post',
+        method: 'POST',
         redirect: 'error',
         body: formData,
       }];
@@ -340,7 +340,7 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       this.loading = true;
       const { preview } = this;
       const params = ['remove', {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: preview.name }),
         redirect: 'error',
