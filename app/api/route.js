@@ -3,6 +3,7 @@ import { controller } from './controller.js';
 import { validation } from './validation.js';
 
 const router = new Router();
+router.add('OPTIONS', '/slack', (req, res) => res.end());
 router.add('POST', '/slack', async (req, res) => {
   await validation.slack(req, res, controller.slack);
 });
