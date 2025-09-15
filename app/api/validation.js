@@ -5,6 +5,7 @@ export class Validation {
     const { body } = req;
     const { error } = Joi.object({
       text: Joi.string().required().min(1).max(2 ** 16 - 1),
+      blocks: Joi.array(),
       icon_emoji: Joi.string(),
       username: Joi.string(),
       channel: Joi.string(),
