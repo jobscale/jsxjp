@@ -26,5 +26,6 @@ module.exports = {
     'no-restricted-syntax': 'off',
     'import/extensions': 'off',
     'import/no-unresolved': ['error', { ignore: ['^https://'] }],
+    'no-restricted-globals': ['error', 'event', 'name', 'location', 'status'],
   },
 };
