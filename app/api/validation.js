@@ -30,6 +30,18 @@ export class Validation {
     }
     await next(req, res);
   }
+
+  async subscription(req, res, next) {
+    const { body } = req;
+    const { error } = Joi.object({
+      subscription: Joi.string().required().min(1).max(2 ** 16 - 1),
+    }).validate(body);
+    if (error) {
+      res.status(400).json({ message: error.message });
+      return;
+    }
+    await next(req, res);
+  }
 }
 
 export const validation = new Validation();

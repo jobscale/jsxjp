@@ -13,29 +13,33 @@ class ServiceWorker {
       logger.info('activate', event);
       event.waitUntil(self.clients.claim());
     });
-    this.addEventListener('push', event => {
+    const parseData = async data => {
+      try { return data.json(); } catch (e) { return { title: ',,Ծ‸Ծ,,', body: await data.text() }; }
+    };
+    this.addEventListener('push', async event => {
       logger.info('push', event);
-      const getData = data => {
-        try { return data.json().notification; } catch (e) { return { title: 'Push Notification Title', body: data.text() }; }
-      };
-      const message = event.data ? getData(event.data) : ',,Ծ‸Ծ,,';
-      if (message.click_action) this.url = message.click_action;
+      const data = await parseData(event.data);
       event.waitUntil(
-        self.registration.showNotification(message.title, message),
+        self.registration.showNotification(data.title, {
+          body: data.body,
+          icon: data.icon,
+        }),
       );
     });
-    this.addEventListener('notificationclick', event => {
-      if (!this.url) return;
+    this.addEventListener('notificationclick', async event => {
+      const data = await parseData(event.data);
+      if (!data.clickAction) return;
       event.notification.close();
       event.waitUntil(
         self.clients.matchAll({ type: 'window' }).then(windowClients => {
           for (let i = 0; i < windowClients.length; i++) {
             const client = windowClients[i];
-            if (client.url === this.url && 'focus' in client) {
-              return client.focus();
+            if (client.url === data.clickAction) {
+              client.focus();
+              return;
             }
           }
-          return self.clients.openWindow && self.clients.openWindow(this.url);
+          self.clients.openWindow(data.clickAction);
         }),
       );
     });
@@ -103,10 +107,55 @@ const registerSW = async () => {
     });
   }, 5000);
 
-  // アプリケーションの状態管理用
   window.pwa = {
     ...(window.pwa || {}),
-    notification: async (info = {}) => {
+
+    sendToServer(subscription) {
+      logger.info('subscription', subscription);
+      return fetch('/api/subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subscription }),
+      })
+      .then(res => {
+        if (!res.ok) throw new Error(res.statusText);
+        return res.json();
+      })
+      .then(res => logger.info(res))
+      .catch(e => logger.error(e));
+    },
+
+    toUint8Array(base64String) {
+      base64String = base64String.trim();
+      const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+      const base64 = `${base64String}${padding}`
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
+      const rawData = atob(base64);
+      const output = new Uint8Array(rawData.length);
+      for (let i = 0; i < rawData.length; ++i) {
+        output[i] = rawData.charCodeAt(i);
+      }
+      return output;
+    },
+
+    async generateSubscription() {
+      const { pushManager } = await navigator.serviceWorker.ready;
+      const exist = await pushManager.getSubscription();
+      if (exist) {
+        await this.sendToServer(JSON.stringify(exist));
+      } else {
+        const publicPem = await fetch('/publicKey.pem').then(res => res.text());
+        const applicationServerKey = this.toUint8Array(publicPem);
+        const subscription = await pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey,
+        });
+        await this.sendToServer(JSON.stringify(subscription));
+      }
+    },
+
+    async notification(info = {}) {
       if (Notification.permission === 'denied') return;
       if (Notification.permission !== 'granted') {
         const permission = await Notification.requestPermission();
@@ -114,11 +163,10 @@ const registerSW = async () => {
         logger.info('通知が有効になりました！');
         info.trigger = 'init';
       }
-      if (
-        info.condition && info.condition !== info.trigger
-      ) return;
-      const notification = new Notification(info.title || '更新があります！', {
-        body: info.message || '新しいコンテンツが利用可能です。',
+      await this.generateSubscription();
+      if (info.condition && info.condition !== info.trigger) return;
+      const notification = new Notification(info.title, {
+        body: info.message,
         icon: '/favicon.ico',
       });
       notification.onclick = () => logger.info('onclick');

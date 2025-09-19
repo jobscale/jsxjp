@@ -18,7 +18,9 @@ export class TimeSignal {
     const now = new Date();
     const current = formatTimestamp(now);
     const [, mm, ss] = current.split(':');
-    if (`${mm}:${ss}` === '59:00' || !this.users) await this.refreshUsers();
+    if (`${mm}:${ss}` === '59:00' || !this.users) {
+      this.users = (await db.getValue('web/users', 'info')) || {};
+    }
     if (`${mm}:${ss}` !== '59:50') return;
     now.setSeconds(now.getSeconds() + 10);
     const timestamp = formatTimestamp(now);
@@ -32,7 +34,7 @@ export class TimeSignal {
       );
     }
 
-    this.users.forEach(user => {
+    Object.values(this.users).forEach(user => {
       if (!user.subscription) return;
       webpush.sendNotification(user.subscription, JSON.stringify({
         title: 'Time Signal',
@@ -44,13 +46,9 @@ export class TimeSignal {
     });
   }
 
-  async refreshUsers() {
-    this.users = (await db.getValue('web/users', 'info'))?.users || [];
-  }
-
-  startTimeSignal() {
-    this.timeSignal();
-    setTimeout(() => this.startTimeSignal(), Date.now() % 1000);
+  async startTimeSignal() {
+    await this.timeSignal();
+    setTimeout(() => this.startTimeSignal(), (Date.now() % 1000) || 1000);
   }
 }
 
