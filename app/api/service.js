@@ -1,8 +1,10 @@
 import os from 'os';
+import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import { logger } from '@jobscale/logger';
 import { Slack } from '@jobscale/slack';
 import { service as configService } from '../config/service.js';
+import { db } from '../db.js';
 
 const { PARTNER_HOST } = process.env;
 
@@ -23,6 +25,20 @@ export class Service {
     })
     .then(res => logger.info(res))
     .catch(e => logger.error(e));
+  }
+
+  async subscription(rest) {
+    const { subscription: json } = rest;
+    const subscription = JSON.parse(json);
+    const users = (await db.getValue('web/users', 'info')) || {};
+    const hash = crypto.createHash('sha3-256')
+    .update(subscription.endpoint)
+    .digest('base64');
+    const exist = Object.keys(users).find(key => key === hash);
+    if (exist) return { exist: true };
+    users[hash] = { subscription };
+    await db.setValue('web/users', 'info', users);
+    return { succeeded: true };
   }
 
   async hostname() {

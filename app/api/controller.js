@@ -7,7 +7,7 @@ export class Controller {
     return service.slack(body)
     .then(result => res.json(result))
     .catch(e => {
-      logger.info({ message: e.toString() });
+      logger.error({ message: e.toString() });
       if (!e.status) e.status = 500;
       res.status(e.status).json({ message: e.message });
     });
@@ -26,7 +26,18 @@ export class Controller {
     })
     .then(result => res.json(result))
     .catch(e => {
-      logger.info({ message: e.toString() });
+      logger.error({ message: e.toString() });
+      if (!e.status) e.status = 500;
+      res.status(e.status).json({ message: e.message });
+    });
+  }
+
+  subscription(req, res) {
+    const { body: { subscription } } = req;
+    return service.subscription({ subscription })
+    .then(result => res.json(result))
+    .catch(e => {
+      logger.error({ message: e.toString() });
       if (!e.status) e.status = 500;
       res.status(e.status).json({ message: e.message });
     });
@@ -36,7 +47,7 @@ export class Controller {
     return service.hostname()
     .then(result => res.json(result))
     .catch(e => {
-      logger.info({ message: e.toString() });
+      logger.error({ message: e.toString() });
       if (!e.status) e.status = 500;
       res.status(e.status).json({ message: e.message });
     });
