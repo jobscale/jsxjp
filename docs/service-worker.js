@@ -46,7 +46,7 @@ class ServiceWorker {
         fetch(this.offlinePage)
         .then(response => caches.open('pwabuilder-offline')
         .then(cache => {
-          logger.log(`[PWA Builder] Cached offline page during Install${response.url}`);
+          logger.debug(`[PWA Builder] Cached offline page during Install ${response.url}`);
           return cache.put(this.offlinePage, response);
         })),
       );
@@ -66,13 +66,17 @@ class ServiceWorker {
     });
     this.addEventListener('refreshOffline', event => caches.open('pwabuilder-offline')
     .then(cache => {
-      logger.log(`[PWA Builder] Offline page updated from refreshOffline event: ${event.url}`);
+      logger.debug(`[PWA Builder] Offline page updated from refreshOffline event: ${event.url}`);
       return cache.put(this.offlinePage, event);
     }));
   }
 
   addEventListener(type, listener) {
-    self.addEventListener(type, listener);
+    logger.debug('Add EventListener', type);
+    self.addEventListener(type, (...argv) => {
+      logger.debug('Triggered EventListener', type);
+      return listener(...argv);
+    });
   }
 }
 
@@ -94,7 +98,8 @@ const registerSW = async () => {
   setTimeout(() => {
     window.pwa.notification({
       title: 'JSXJP',
-      message: '通知がa有効になりました',
+      message: '通知が有効になりました',
+      condition: 'init',
     });
   }, 5000);
 
@@ -107,7 +112,11 @@ const registerSW = async () => {
         const permission = await Notification.requestPermission();
         if (permission !== 'granted') return;
         logger.info('通知が有効になりました！');
+        info.trigger = 'init';
       }
+      if (
+        info.condition && info.condition !== info.trigger
+      ) return;
       const notification = new Notification(info.title || '更新があります！', {
         body: info.message || '新しいコンテンツが利用可能です。',
         icon: '/favicon.ico',
