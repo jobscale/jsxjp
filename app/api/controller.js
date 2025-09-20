@@ -32,9 +32,19 @@ export class Controller {
     });
   }
 
+  public(req, res) {
+    return service.public()
+    .then(result => res.end(result))
+    .catch(e => {
+      logger.error({ message: e.toString() });
+      if (!e.status) e.status = 500;
+      res.status(e.status).end();
+    });
+  }
+
   subscription(req, res) {
-    const { body: { subscription } } = req;
-    return service.subscription({ subscription })
+    const { body } = req;
+    return service.subscription(body)
     .then(result => res.json(result))
     .catch(e => {
       logger.error({ message: e.toString() });

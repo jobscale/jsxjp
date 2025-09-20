@@ -23,6 +23,12 @@ module.exports = {
       ImportDeclaration: { minProperties: 6, multiline: true, consistent: true },
       ExportDeclaration: { minProperties: 6, multiline: true, consistent: true },
     }],
+    'object-property-newline': ['error', {
+      ObjectExpression: { minProperties: 6, multiline: true, consistent: true },
+      ObjectPattern: { minProperties: 6, multiline: true, consistent: true },
+      ImportDeclaration: { minProperties: 6, multiline: true, consistent: true },
+      ExportDeclaration: { minProperties: 6, multiline: true, consistent: true },
+    }],
     'no-restricted-syntax': 'off',
     'import/extensions': 'off',
     'import/no-unresolved': ['error', { ignore: ['^https://'] }],

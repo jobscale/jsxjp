@@ -27,16 +27,26 @@ export class Service {
     .catch(e => logger.error(e));
   }
 
+  async public() {
+    const cert = await db.getValue('config/certificate', 'secret');
+    return cert.public;
+  }
+
   async subscription(rest) {
-    const { subscription: json } = rest;
-    const subscription = JSON.parse(json);
+    const {
+      endpoint, expirationTime, keys: { auth, p256dh },
+      ts, ua,
+    } = rest;
     const users = (await db.getValue('web/users', 'info')) || {};
-    const hash = crypto.createHash('sha3-256')
-    .update(subscription.endpoint)
-    .digest('base64');
+    const hash = crypto.createHash('sha3-256').update(endpoint).digest('base64');
     const exist = Object.keys(users).find(key => key === hash);
     if (exist) return { exist: true };
-    users[hash] = { subscription };
+    users[hash] = {
+      subscription: {
+        endpoint, expirationTime, keys: { auth, p256dh },
+      },
+      ts, ua,
+    };
     await db.setValue('web/users', 'info', users);
     return { succeeded: true };
   }

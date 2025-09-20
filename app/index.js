@@ -173,7 +173,7 @@ export class Ingress {
   }
 
   start() {
-    timeSignal.startTimeSignal();
+    setTimeout(() => timeSignal.startTimeSignal(), 2200);
     return async (req, res) => {
       try {
         this.useHeader(req, res);

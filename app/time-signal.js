@@ -1,7 +1,8 @@
 import webpush from 'web-push';
+import { Logger } from '@jobscale/logger';
 import { db } from './db.js';
 
-const logger = console;
+const logger = new Logger({ timestamp: true, noPathName: true });
 
 const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
   timeZone: 'Asia/Tokyo',
@@ -34,21 +35,28 @@ export class TimeSignal {
       );
     }
 
-    Object.values(this.users).forEach(user => {
-      if (!user.subscription) return;
-      webpush.sendNotification(user.subscription, JSON.stringify({
-        title: 'Time Signal',
-        body: `Time is it ${timestamp}`,
-        icon: '/favicon.ico',
-      }))
-      .then(() => logger.info('sendNotification', JSON.stringify(user)))
-      .catch(e => logger.error(e, JSON.stringify(user)));
-    });
+    await Promise.all(
+      Object.values(this.users)
+      .filter(user => user.subscription)
+      .map(user => {
+        const { subscription } = user;
+        return webpush.sendNotification(subscription, JSON.stringify({
+          title: 'Time Signal',
+          body: `Time is it ${timestamp}`,
+          icon: '/favicon.ico',
+        }))
+        .then(() => logger.info('sendNotification', JSON.stringify(user)))
+        .catch(e => logger.error(e, JSON.stringify(user)));
+      }),
+    );
   }
 
   async startTimeSignal() {
-    await this.timeSignal();
-    setTimeout(() => this.startTimeSignal(), (Date.now() % 1000) || 1000);
+    const loop = async () => {
+      await this.timeSignal();
+      setTimeout(loop, 1000 - (Date.now() % 1000));
+    };
+    loop();
   }
 }
 
