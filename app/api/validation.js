@@ -34,7 +34,14 @@ export class Validation {
   async subscription(req, res, next) {
     const { body } = req;
     const { error } = Joi.object({
-      subscription: Joi.string().required().min(1).max(2 ** 16 - 1),
+      endpoint: Joi.string().required().min(64).max(256),
+      expirationTime: Joi.string().allow(null).min(10).max(30),
+      keys: Joi.object({
+        auth: Joi.string().required().min(16).max(32),
+        p256dh: Joi.string().required().min(64).max(128),
+      }),
+      ts: Joi.string().required().min(10).max(30),
+      ua: Joi.string().required().min(4).max(256),
     }).validate(body);
     if (error) {
       res.status(400).json({ message: error.message });

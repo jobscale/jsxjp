@@ -1,6 +1,16 @@
 /* eslint-env worker */
 const logger = console;
 
+const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
+  timeZone: 'Asia/Tokyo',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+}).format(ts || new Date());
+
 class ServiceWorker {
   constructor() {
     this.url = 'https://jsx.jp';
@@ -61,8 +71,8 @@ class ServiceWorker {
       }
       event.respondWith(
         self.fetch(event.request)
-        .catch(error => {
-          logger.error(`[PWA Builder] Network request Failed. Serving offline page ${error}`);
+        .catch(e => {
+          logger.error(`[PWA Builder] Network request Failed. Serving offline page ${e}`);
           return caches.open('pwabuilder-offline')
           .then(cache => cache.match('/'));
         }),
@@ -111,11 +121,16 @@ const registerSW = async () => {
     ...(window.pwa || {}),
 
     sendToServer(subscription) {
+      subscription = {
+        ...JSON.parse(JSON.stringify(subscription)),
+        ua: navigator.userAgent,
+        ts: `${formatTimestamp()} GMT+9`,
+      };
       logger.info('subscription', subscription);
       return fetch('/api/subscription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subscription }),
+        body: JSON.stringify(subscription),
       })
       .then(res => {
         if (!res.ok) throw new Error(res.statusText);
@@ -142,17 +157,14 @@ const registerSW = async () => {
     async generateSubscription() {
       const { pushManager } = await navigator.serviceWorker.ready;
       const exist = await pushManager.getSubscription();
-      if (exist) {
-        await this.sendToServer(JSON.stringify(exist));
-      } else {
-        const publicPem = await fetch('/publicKey.pem').then(res => res.text());
-        const applicationServerKey = this.toUint8Array(publicPem);
-        const subscription = await pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey,
-        });
-        await this.sendToServer(JSON.stringify(subscription));
-      }
+      if (exist) return exist;
+      const publicPem = await fetch('/api/public').then(res => res.text());
+      const applicationServerKey = this.toUint8Array(publicPem);
+      const subscription = await pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey,
+      });
+      return subscription;
     },
 
     async notification(info = {}) {
@@ -163,7 +175,9 @@ const registerSW = async () => {
         logger.info('通知が有効になりました！');
         info.trigger = 'init';
       }
-      await this.generateSubscription();
+      await this.generateSubscription()
+      .then(subscription => this.sendToServer(subscription))
+      .catch(e => logger.warn(e));
       if (info.condition && info.condition !== info.trigger) return;
       const notification = new Notification(info.title, {
         body: info.message,
