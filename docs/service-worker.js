@@ -11,77 +11,94 @@ const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
   second: '2-digit',
 }).format(ts || new Date());
 
+const parseData = async data => {
+  try { return data.json(); } catch (e) { return { title: ',,Ծ‸Ծ,,', body: await data.text() }; }
+};
+
 class ServiceWorker {
   constructor() {
-    this.url = 'https://jsx.jp';
-    this.offlinePage = new Request('/');
     this.initEvent();
   }
 
   initEvent() {
-    this.addEventListener('activate', event => {
-      logger.info('activate', event);
-      event.waitUntil(self.clients.claim());
-    });
-    const parseData = async data => {
-      try { return data.json(); } catch (e) { return { title: ',,Ծ‸Ծ,,', body: await data.text() }; }
-    };
-    this.addEventListener('push', async event => {
-      logger.info('push', event);
-      const data = await parseData(event.data);
-      event.waitUntil(
-        self.registration.showNotification(data.title, {
-          body: data.body,
-          icon: data.icon,
-        }),
-      );
-    });
-    this.addEventListener('notificationclick', async event => {
-      const data = await parseData(event.data);
-      if (!data.clickAction) return;
-      event.notification.close();
-      event.waitUntil(
-        self.clients.matchAll({ type: 'window' }).then(windowClients => {
-          for (let i = 0; i < windowClients.length; i++) {
-            const client = windowClients[i];
-            if (client.url === data.clickAction) {
-              client.focus();
-              return;
-            }
+    this.addEventListener('activate', this.activate);
+    this.addEventListener('push', this.push);
+    this.addEventListener('notificationclick', this.notificationclick);
+    this.addEventListener('install', this.install);
+    this.addEventListener('fetch', this.fetch);
+  }
+
+  activate(event) {
+    event.waitUntil(self.clients.claim());
+  }
+
+  async push(event) {
+    const data = await parseData(event.data);
+    event.waitUntil(
+      self.registration.showNotification(data.title, {
+        body: data.body,
+        icon: data.icon,
+      }),
+    );
+  }
+
+  async notificationclick(event) {
+    const data = await parseData(event.data);
+    if (!data.clickAction) return;
+    event.notification.close();
+    event.waitUntil(
+      self.clients.matchAll({ type: 'window' }).then(windowClients => {
+        for (let i = 0; i < windowClients.length; i++) {
+          const client = windowClients[i];
+          if (client.url === data.clickAction) {
+            client.focus();
+            return;
           }
-          self.clients.openWindow(data.clickAction);
-        }),
-      );
-    });
-    this.addEventListener('install', event => {
-      logger.info('install', event);
-      event.waitUntil(self.skipWaiting());
-      event.waitUntil(
-        fetch(this.offlinePage)
-        .then(response => caches.open('pwabuilder-offline')
-        .then(cache => {
-          logger.debug(`[PWA Builder] Cached offline page during Install ${response.url}`);
-          return cache.put(this.offlinePage, response);
-        })),
-      );
-    });
-    this.addEventListener('fetch', event => {
-      if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
-        return;
-      }
-      event.respondWith(
-        self.fetch(event.request)
-        .catch(e => {
-          logger.error(`[PWA Builder] Network request Failed. Serving offline page ${e}`);
-          return caches.open('pwabuilder-offline')
-          .then(cache => cache.match('/'));
-        }),
-      );
-    });
-    this.addEventListener('refreshOffline', event => caches.open('pwabuilder-offline')
-    .then(cache => {
-      logger.debug(`[PWA Builder] Offline page updated from refreshOffline event: ${event.url}`);
-      return cache.put(this.offlinePage, event);
+        }
+        self.clients.openWindow(data.clickAction);
+      }),
+    );
+  }
+
+  async install(event) {
+    event.waitUntil(
+      self.skipWaiting().then(async () => {
+        const cache = await caches.open('pwabuilder-offline');
+        await Promise.all(
+          ['GET /', 'GET /favicon.ico'].map(async path => {
+            await fetch(path)
+            .then(async res => {
+              logger.debug(`[PWA Builder] Cached offline page during Install ${res.url}`);
+              await cache.put(path, res);
+            })
+            .catch(e => {
+              logger.error(`[PWA Builder] Failed to cache '${path}': ${e}`);
+            });
+          }),
+        );
+      }),
+    );
+  }
+
+  fetch(event) {
+    if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
+      return;
+    }
+    event.respondWith(caches.open('pwabuilder-offline').then(cache => {
+      const url = new URL(event.request.url);
+      const path = `${event.request.method} ${url.pathname}`;
+      return self.fetch(event.request)
+      .then(res => {
+        // if (event.request.method !== 'GET') return res;
+        cache.put(path, res.clone());
+        logger.debug(`[PWA Builder] Network request cached. '${path}'`);
+        return res.clone();
+      })
+      .catch(e => {
+        logger.error(`[PWA Builder] Network request Failed. '${path}': ${e}`);
+      })
+      .then(res => res || cache.match(path).then(r => r && r.clone()))
+      .then(res => res || cache.match('GET /').then(r => r && r.clone()));
     }));
   }
 

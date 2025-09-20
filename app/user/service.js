@@ -1,11 +1,16 @@
 import { createHash } from 'crypto';
 import createHttpError from 'http-errors';
-import dayjs from 'dayjs';
 import { db } from '../db.js';
 
-const showDate = (date, defaultValue) => (date ? dayjs(date).add(9, 'hours').toISOString()
-.replace(/T/, ' ')
-.replace(/\..*$/, '') : defaultValue);
+const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
+  timeZone: 'Asia/Tokyo',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+}).format(ts || new Date());
 
 export class Service {
   async now() {
@@ -15,9 +20,9 @@ export class Service {
   async find() {
     return db.list('user')
     .then(items => items.map(item => {
-      item.registerAt = showDate(item.registerAt, '-');
-      item.lastAccess = showDate(item.lastAccess, '-');
-      item.deletedAt = showDate(item.deletedAt);
+      item.registerAt = item.registerAt ? formatTimestamp(item.registerAt) : '-';
+      item.lastAccess = item.lastAccess ? formatTimestamp(item.lastAccess) : '-';
+      item.deletedAt = item.deletedAt ? formatTimestamp(item.deletedAt) : undefined;
       item.id = item.key;
       delete item.key;
       return item;
