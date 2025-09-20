@@ -45,7 +45,8 @@ export class Service {
       subscription: {
         endpoint, expirationTime, keys: { auth, p256dh },
       },
-      ts, ua,
+      ts,
+      ua,
     };
     await db.setValue('web/users', 'info', users);
     return { succeeded: true };
