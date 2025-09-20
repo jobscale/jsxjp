@@ -1,4 +1,5 @@
 import webpush from 'web-push';
+import { createHash } from 'crypto';
 import { Logger } from '@jobscale/logger';
 import { db } from './db.js';
 
@@ -28,7 +29,11 @@ export class TimeSignal {
         const { subscription } = user;
         return webpush.sendNotification(subscription, JSON.stringify(payload))
         .then(() => logger.info('sendNotification', JSON.stringify(user)))
-        .catch(e => logger.error(e, JSON.stringify(user)));
+        .catch(e => {
+          logger.error(e, JSON.stringify(user));
+          const hash = createHash('sha3-256').update(subscription.endpoint).digest('base64');
+          delete this.users[hash];
+        });
       }),
     );
   }
@@ -61,6 +66,10 @@ export class TimeSignal {
     const unitUsers = sliceByUnit(Object.values(this.users), 10);
     for (const unit of unitUsers) {
       await this.pushSignal(payload, unit);
+    }
+    const total = unitUsers.reduce((a, b) => a + b.length, 0);
+    if (Object.keys(this.users).length < total) {
+      await db.setValue('web/users', 'info', this.users);
     }
   }
 
