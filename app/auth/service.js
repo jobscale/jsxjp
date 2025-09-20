@@ -1,18 +1,11 @@
+import { createHash } from 'crypto';
 import createHttpError from 'http-errors';
 import speakeasy from 'speakeasy';
 import { auth } from './index.js';
-import { createHash } from '../user/index.js';
 import { db } from '../db.js';
 
 const jwtSecret = 'node-express-ejs';
 const getSecret = () => 'JSXJPX6EY4BMPXIRSSR74';
-
-const { ENV } = process.env;
-const tableName = {
-  stg: 'stg-user',
-  dev: 'user',
-  test: 'user',
-}[ENV];
 
 export class Service {
   async now() {
@@ -47,12 +40,12 @@ export class Service {
     const { login, password, code } = rest;
     if (!login || !password) throw createHttpError(400);
     const ts = new Date().toISOString();
-    const hash = createHash(`${login}/${password}`);
-    const item = await db.getValue(tableName, login);
+    const hash = createHash('sha3-256').update(`${login}/${password}`).digest('base64');
+    const item = await db.getValue('user', login);
     if (!item || item.hash !== hash) throw createHttpError(401);
     if (code && !this.verifyCode(code)) throw createHttpError(401);
     const multiFactor = !code && this.generateCode();
-    return db.setValue(tableName, login, { ...item, lastAccess: ts })
+    return db.setValue('user', login, { ...item, lastAccess: ts })
     .then(() => ({
       token: auth.sign({ login, ts }, jwtSecret),
       multiFactor,

@@ -40,6 +40,7 @@ export class Ingress {
   }
 
   usePublic(req, res) {
+    if (req.method !== 'GET') return false;
     const headers = new Headers(req.headers);
     const { url } = req;
     const protocol = req.socket.encrypted ? 'https' : 'http';

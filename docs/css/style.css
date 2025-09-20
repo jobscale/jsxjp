@@ -724,6 +724,7 @@ div .note:has(.tag) a {
   align-items: center;
   background-color: #000;
   opacity: 0.5;
+  z-index: 7;
 }
 
 .loader {
