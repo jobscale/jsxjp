@@ -1,15 +1,7 @@
+import { createHash } from 'crypto';
 import createHttpError from 'http-errors';
 import dayjs from 'dayjs';
-import { createHash } from './index.js';
 import { db } from '../db.js';
-
-const { ENV } = process.env;
-
-const tableName = {
-  stg: 'stg-user',
-  dev: 'user',
-  test: 'user',
-}[ENV];
 
 const showDate = (date, defaultValue) => (date ? dayjs(date).add(9, 'hours').toISOString()
 .replace(/T/, ' ')
@@ -21,7 +13,7 @@ export class Service {
   }
 
   async find() {
-    return db.list(tableName)
+    return db.list('user')
     .then(items => items.map(item => {
       item.registerAt = showDate(item.registerAt, '-');
       item.lastAccess = showDate(item.lastAccess, '-');
@@ -35,13 +27,14 @@ export class Service {
   async register(rest) {
     const { login, password } = rest;
     if (!login || !password) throw createHttpError(400);
-    return db.getValue(tableName, login)
+    return db.getValue('user', login)
     .then(item => {
       if (item) throw createHttpError(400);
-      return db.setValue(tableName, login, {
+      const hash = createHash('sha3-256').update(`${login}/${password}`).digest('base64');
+      return db.setValue('user', login, {
         deletedAt: 0,
         registerAt: new Date().toISOString(),
-        hash: createHash(`${login}/${password}`),
+        hash,
       });
     });
   }
@@ -49,12 +42,13 @@ export class Service {
   async reset(rest) {
     const { login, password } = rest;
     if (!login || !password) throw createHttpError(400);
-    return db.getValue(tableName, login)
+    return db.getValue('user', login)
     .then(item => {
       if (!item) throw createHttpError(400);
-      return db.setValue(tableName, login, {
+      const hash = createHash('sha3-256').update(`${login}/${password}`).digest('base64');
+      return db.setValue('user', login, {
         ...item,
-        hash: createHash(`${login}/${password}`),
+        hash,
         deletedAt: 0,
       }, item.key).then(() => item);
     });
@@ -62,11 +56,11 @@ export class Service {
 
   async remove({ key }) {
     if (!key) throw createHttpError(400);
-    return db.getValue(tableName, key)
+    return db.getValue('user', key)
     .then(item => {
       if (!item) throw createHttpError(400);
-      if (item.deletedAt) return db.deleteValue(tableName, key);
-      return db.setValue(tableName, key, {
+      if (item.deletedAt) return db.deleteValue('user', key);
+      return db.setValue('user', key, {
         ...item,
         deletedAt: new Date().toISOString(),
       });

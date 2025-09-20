@@ -1,5 +1,5 @@
 import os from 'os';
-import crypto from 'crypto';
+import { createHash } from 'crypto';
 import nodemailer from 'nodemailer';
 import { logger } from '@jobscale/logger';
 import { Slack } from '@jobscale/slack';
@@ -38,7 +38,7 @@ export class Service {
       ts, ua,
     } = rest;
     const users = (await db.getValue('web/users', 'info')) || {};
-    const hash = crypto.createHash('sha3-256').update(endpoint).digest('base64');
+    const hash = createHash('sha3-256').update(endpoint).digest('base64');
     const exist = Object.keys(users).find(key => key === hash);
     if (exist) return { exist: true };
     users[hash] = {

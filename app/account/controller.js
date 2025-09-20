@@ -5,7 +5,7 @@ export class Controller {
     const { body: { password }, cookies: { token } } = req;
     return service.password({ password, token })
     .then(item => {
-      res.json({ login: item.login });
+      res.json({ login: item.key });
     })
     .catch(e => {
       if (!e.status) e.status = 503;

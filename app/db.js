@@ -18,8 +18,6 @@ const config = {
   },
 }[ENV];
 
-const wait = ms => new Promise(resolve => { setTimeout(resolve, ms); });
-
 export class DB {
   async allowInsecure(use) {
     if (use === false) delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
@@ -102,7 +100,7 @@ export class DB {
       Overwrite: true,
     };
     await con.send(new PutParameterCommand(item));
-    await wait(2000);
+    await new Promise(resolve => { setTimeout(resolve, 1000); });
     return { ...item, key };
   }
 
@@ -112,7 +110,7 @@ export class DB {
     const Name = `/${schema}/${key}`;
     const item = { Name };
     await con.send(new DeleteParameterCommand(item));
-    await wait(2000);
+    await new Promise(resolve => { setTimeout(resolve, 1000); });
   }
 
   async getKey() {
