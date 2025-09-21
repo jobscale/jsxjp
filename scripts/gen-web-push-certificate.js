@@ -1,7 +1,7 @@
-import webpush from 'web-push';
+import webPush from 'web-push';
 
 const logger = console;
-const vapidKeys = webpush.generateVAPIDKeys();
+const vapidKeys = webPush.generateVAPIDKeys();
 
 logger.info(vapidKeys.publicKey);
 logger.info(vapidKeys.privateKey);

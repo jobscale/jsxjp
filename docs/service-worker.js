@@ -196,6 +196,7 @@ const registerSW = async () => {
       .then(subscription => this.sendToServer(subscription))
       .catch(e => logger.warn(e));
       if (info.condition && info.condition !== info.trigger) return;
+      await new Promise(resolve => { setTimeout(resolve, 5000); });
       const notification = new Notification(info.title, {
         body: info.message,
         icon: '/favicon.ico',

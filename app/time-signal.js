@@ -1,4 +1,4 @@
-import webpush from 'web-push';
+import webPush from 'web-push';
 import { createHash } from 'crypto';
 import { Logger } from '@jobscale/logger';
 import { db } from './db.js';
@@ -28,7 +28,7 @@ export class TimeSignal {
       users.filter(user => user.subscription)
       .map(user => {
         const { subscription } = user;
-        return webpush.sendNotification(subscription, JSON.stringify(payload))
+        return webPush.sendNotification(subscription, JSON.stringify(payload))
         .then(() => logger.info('sendNotification', JSON.stringify(user)))
         .catch(e => {
           logger.error(e, JSON.stringify(user));
@@ -51,7 +51,7 @@ export class TimeSignal {
 
     if (!this.cert) {
       this.cert = await db.getValue('config/certificate', 'secret');
-      webpush.setVapidDetails(
+      webPush.setVapidDetails(
         'mailto:jobscale@example.com',
         this.cert.public,
         this.cert.key,

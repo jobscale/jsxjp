@@ -1,4 +1,5 @@
 import os from 'os';
+import webPush from 'web-push';
 import { createHash } from 'crypto';
 import nodemailer from 'nodemailer';
 import { logger } from '@jobscale/logger';
@@ -32,16 +33,22 @@ export class Service {
     return cert.public;
   }
 
-  async subscription(rest) {
+  async subscription(rest, login) {
     const {
       endpoint, expirationTime, keys: { auth, p256dh },
       ts, ua,
     } = rest;
     const users = (await db.getValue('web/users', 'info')) || {};
     const hash = createHash('sha3-256').update(endpoint).digest('base64');
-    const exist = Object.keys(users).find(key => key === hash);
-    if (exist) return { exist: true };
+    if (users[hash]) {
+      if (!login || users[hash].login === login) return { exist: true };
+      users[hash].login = login;
+      await db.setValue('web/users', 'info', users);
+      await this.publish('通知先を「更新」しました');
+      return { update: true };
+    }
     users[hash] = {
+      login,
       subscription: {
         endpoint, expirationTime, keys: { auth, p256dh },
       },
@@ -49,7 +56,21 @@ export class Service {
       ua,
     };
     await db.setValue('web/users', 'info', users);
+    await this.publish('通知先を「登録」しました');
     return { succeeded: true };
+  }
+
+  async publish(body, subscription) {
+    const payload = {
+      title: '通知',
+      body,
+      icon: '/favicon.ico',
+    };
+    return webPush.sendNotification(subscription, JSON.stringify(payload))
+    .then(() => logger.info('sendNotification', JSON.stringify(subscription)))
+    .catch(e => {
+      logger.error(e, JSON.stringify(subscription));
+    });
   }
 
   async hostname() {
