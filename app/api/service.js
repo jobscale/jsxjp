@@ -6,6 +6,7 @@ import { logger } from '@jobscale/logger';
 import { Slack } from '@jobscale/slack';
 import { service as configService } from '../config/service.js';
 import { db } from '../db.js';
+import { store } from '../store.js';
 
 const { PARTNER_HOST } = process.env;
 
@@ -38,29 +39,32 @@ export class Service {
       endpoint, expirationTime, keys: { auth, p256dh },
       ts, ua,
     } = rest;
-    const users = (await db.getValue('web/users', 'info')) || {};
+    const subscription = { endpoint, expirationTime, keys: { auth, p256dh } };
+    const users = (await store.getValue('web/users', 'info')) || {};
     const hash = createHash('sha3-256').update(endpoint).digest('base64');
     if (users[hash]) {
       if (!login || users[hash].login === login) return { exist: true };
       users[hash].login = login;
-      await db.setValue('web/users', 'info', users);
-      await this.publish('通知先を「更新」しました');
+      await store.setValue('web/users', 'info', users);
+      await this.publish(subscription, '通知先を「更新」しました');
       return { update: true };
     }
-    users[hash] = {
-      login,
-      subscription: {
-        endpoint, expirationTime, keys: { auth, p256dh },
-      },
-      ts,
-      ua,
-    };
-    await db.setValue('web/users', 'info', users);
-    await this.publish('通知先を「登録」しました');
+    users[hash] = { login, subscription, ts, ua };
+    await store.setValue('web/users', 'info', users);
+    await this.publish(subscription, '通知先を「登録」しました');
     return { succeeded: true };
   }
 
-  async publish(body, subscription) {
+  async publish(subscription, body) {
+    if (!this.cert) {
+      this.cert = await db.getValue('config/certificate', 'secret');
+      webPush.setVapidDetails(
+        'mailto:jobscale@example.com',
+        this.cert.public,
+        this.cert.key,
+      );
+    }
+
     const payload = {
       title: '通知',
       body,

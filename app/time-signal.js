@@ -2,6 +2,7 @@ import webPush from 'web-push';
 import { createHash } from 'crypto';
 import { Logger } from '@jobscale/logger';
 import { db } from './db.js';
+import { store } from './store.js';
 import { getHoliday } from './holiday.js';
 
 const logger = new Logger({ timestamp: true, noPathName: true });
@@ -44,7 +45,7 @@ export class TimeSignal {
     const current = formatTimestamp(now);
     const [, mm, ss] = current.split(':');
     if (`${mm}:${ss}` === '59:00' || !this.users) {
-      this.users = (await db.getValue('web/users', 'info')) || {};
+      this.users = await store.getValue('web/users', 'info');
     }
     if (`${mm}:${ss}` !== '59:50') return;
     now.setSeconds(now.getSeconds() + 10);
@@ -72,7 +73,7 @@ export class TimeSignal {
     }
     const total = unitUsers.reduce((a, b) => a + b.length, 0);
     if (Object.keys(this.users).length < total) {
-      await db.setValue('web/users', 'info', this.users);
+      await store.setValue('web/users', 'info', this.users);
     }
   }
 
