@@ -1,5 +1,6 @@
 import { logger } from '@jobscale/logger';
 import { service } from './service.js';
+import { service as authService } from '../auth/service.js';
 
 export class Controller {
   slack(req, res) {
@@ -42,9 +43,10 @@ export class Controller {
     });
   }
 
-  subscription(req, res) {
-    const { body } = req;
-    return service.subscription(body)
+  async subscription(req, res) {
+    const { body, cookies: { token } } = req;
+    const { login } = await authService.decode(token).catch(() => ({}));
+    return service.subscription(body, login)
     .then(result => res.json(result))
     .catch(e => {
       logger.error({ message: e.toString() });
