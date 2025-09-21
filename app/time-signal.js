@@ -2,6 +2,7 @@ import webpush from 'web-push';
 import { createHash } from 'crypto';
 import { Logger } from '@jobscale/logger';
 import { db } from './db.js';
+import { getHoliday } from './holiday.js';
 
 const logger = new Logger({ timestamp: true, noPathName: true });
 
@@ -58,9 +59,11 @@ export class TimeSignal {
     }
 
     const timestamp = formatTimestamp(now);
+    const holidays = await getHoliday();
+    const body = [`Time is it ${timestamp}`, '', ...holidays].join('\n');
     const payload = {
       title: 'Time Signal',
-      body: `Time is it ${timestamp}`,
+      body,
       icon: '/favicon.ico',
     };
     const unitUsers = sliceByUnit(Object.values(this.users), 10);
