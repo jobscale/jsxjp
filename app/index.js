@@ -1,6 +1,7 @@
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
+import mime from 'mime';
 import createHttpError from 'http-errors';
 import { logger } from '@jobscale/logger';
 import { parseCookies } from './parse-cookie.js';
@@ -40,44 +41,35 @@ export class Ingress {
   }
 
   usePublic(req, res) {
-    if (req.method !== 'GET') return false;
+    if (!['GET', 'HEAD'].includes(req.method)) return false;
     const headers = new Headers(req.headers);
     const { url } = req;
     const protocol = req.socket.encrypted ? 'https' : 'http';
     const host = headers.get('host');
     const { pathname } = new URL(`${protocol}://${host}${url}`);
+    const baseDir = path.join(process.cwd(), 'docs');
     const file = {
-      path: path.join(process.cwd(), 'docs', pathname),
+      path: path.join(baseDir, pathname),
     };
-    if (!fs.existsSync(file.path)) return false;
-    const stats = fs.statSync(file.path);
-    if (stats.isDirectory()) {
+    if (!file.path.startsWith(baseDir)) return false;
+    file.stat = fs.existsSync(file.path) && fs.statSync(file.path);
+    if (!file.stat) return false;
+    if (file.stat.isDirectory()) {
       if (!file.path.endsWith('/')) {
         res.writeHead(307, { Location: `${url}/` });
         res.end();
         return true;
       }
       file.path += 'index.html';
+      file.stat = fs.existsSync(file.path) && fs.statSync(file.path);
+      if (!file.stat) return false;
     }
-    const mime = filePath => {
-      const ext = path.extname(filePath).toLowerCase();
-      if (['.png', '.jpeg', '.webp', '.gif'].includes(ext)) return `image/${ext}`;
-      if (['.jpg'].includes(ext)) return 'image/jpeg';
-      if (['.ico'].includes(ext)) return 'image/x-ico';
-      if (['.json'].includes(ext)) return 'application/json';
-      if (['.pdf'].includes(ext)) return 'application/pdf';
-      if (['.zip'].includes(ext)) return 'application/zip';
-      if (['.xml'].includes(ext)) return 'application/xml';
-      if (['.html', '.svg'].includes(ext)) return 'text/html';
-      if (['.js'].includes(ext)) return 'text/javascript';
-      if (['.css'].includes(ext)) return 'text/css';
-      if (['.txt', '.md'].includes(ext)) return 'text/plain';
-      return 'application/octet-stream';
-    };
+    const contentType = mime.getType(file.path) || 'application/octet-stream';
+    const contentLength = file.stat.size;
     const stream = fs.createReadStream(file.path);
     res.writeHead(200, {
-      'Content-Type': mime(file.path),
-      'Content-Length': fs.statSync(file.path).size,
+      'Content-Type': contentType,
+      'Content-Length': contentLength,
     });
     if (req.method === 'HEAD') {
       res.end();
