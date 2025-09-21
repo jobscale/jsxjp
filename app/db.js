@@ -93,23 +93,21 @@ export class DB {
     const schema = `${ENV}/${tableName}`;
     const con = await this.connection(schema);
     const Name = `/${schema}/${key}`;
-    const item = {
+    await con.send(new PutParameterCommand({
       Name,
       Value: JSON.stringify(value, null, 2),
       Type: 'String',
       Overwrite: true,
-    };
-    await con.send(new PutParameterCommand(item));
+    }));
     await new Promise(resolve => { setTimeout(resolve, 1000); });
-    return { ...item, key };
+    return { key };
   }
 
   async deleteValue(tableName, key) {
     const schema = `${ENV}/${tableName}`;
     const con = await this.connection(schema);
     const Name = `/${schema}/${key}`;
-    const item = { Name };
-    await con.send(new DeleteParameterCommand(item));
+    await con.send(new DeleteParameterCommand({ Name }));
     await new Promise(resolve => { setTimeout(resolve, 1000); });
   }
 
