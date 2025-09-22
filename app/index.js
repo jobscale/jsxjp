@@ -7,7 +7,6 @@ import { logger } from '@jobscale/logger';
 import { parseCookies } from './parse-cookie.js';
 import { route } from './route.js';
 import { parseBody } from './parse-body.js';
-import { timeSignal } from './time-signal.js';
 
 const { XDG_SESSION_DESKTOP } = process.env;
 
@@ -166,7 +165,6 @@ export class Ingress {
   }
 
   start() {
-    setTimeout(() => timeSignal.startTimeSignal(), 2200);
     return async (req, res) => {
       try {
         this.useHeader(req, res);
