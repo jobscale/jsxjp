@@ -34,11 +34,10 @@ class ServiceWorker {
 
   async push(event) {
     const data = await parseData(event.data);
+    const { title, body, icon, expired } = data;
+    if (expired && new Date(expired) < new Date()) return;
     event.waitUntil(
-      self.registration.showNotification(data.title, {
-        body: data.body,
-        icon: data.icon,
-      }),
+      self.registration.showNotification(title, { body, icon }),
     );
   }
 
