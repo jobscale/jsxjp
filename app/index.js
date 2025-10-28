@@ -22,6 +22,9 @@ export class Ingress {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     res.setHeader('Server', 'acl-ingress-k8s');
     res.setHeader('X-Backend-Host', os.hostname());
+    if (req.method === 'GET') {
+      res.setHeader('Link', '</icon/cat-hand-mini.svg>; rel="icon"; type="image/svg+xml"');
+    }
     const csp = [
       "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https: wss:",
       "base-uri 'none'",
