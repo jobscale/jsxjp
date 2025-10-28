@@ -1,0 +1,43 @@
+<svg width="32" height="32" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 影の定義 -->
+    <filter id="shadow" x="-30%" y="-30%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#888" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <style>
+    .pulse {
+      animation: pulse 1.7s infinite ease-in-out, rainbow 5s infinite linear;
+      transform-origin: center;
+      filter: url(#shadow);
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+    }
+
+    @keyframes rainbow {
+      0%   { fill: #ff69b4; }   /* pink */
+      20%  { fill: #ff8c00; }   /* orange */
+      40%  { fill: #ffff00; }   /* yellow */
+      60%  { fill: #00ff00; }   /* green */
+      80%  { fill: #1e90ff; }   /* blue */
+      100% { fill: #ff69b4; }   /* back to pink */
+    }
+  </style>
+
+  <!-- 中央の肉球 -->
+  <ellipse class="pulse" cx="90" cy="100" rx="40" ry="30" />
+
+  <!-- 上部の小さな肉球 -->
+  <circle class="pulse" cx="40" cy="60" r="15" />
+  <circle class="pulse" cx="70" cy="40" r="15" />
+  <circle class="pulse" cx="110" cy="40" r="15" />
+  <circle class="pulse" cx="140" cy="60" r="15" />
+</svg>
