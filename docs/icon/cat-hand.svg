@@ -1,4 +1,4 @@
-<svg width="200" height="200" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+<svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <!-- 影の定義 -->
     <filter id="shadow" x="-30%" y="-30%" width="140%" height="140%">
