@@ -1,0 +1,49 @@
+<style>
+  :root {
+    color-scheme: light dark;
+  }
+  body {
+    display: grid;
+    align-content: center;
+    justify-content: center;
+ }
+  .right {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .content, section {
+    display: inline-block;
+    width: fit-content;
+  }
+  .lang-content {
+    display: none;
+  }
+  :root:has(#language option[value="ja"]:checked) .ja,
+  :root:has(#language option[value="en"]:checked) .en {
+    display: initial;
+  }
+  select, input {
+    margin-left: 1em;
+  }
+</style>
+
+<div class="content">
+  <label class="right">
+    <span class="lang-content ja">表示言語</span>
+    <span class="lang-content en">Language</span>
+    <select id="language">
+      <option value="ja">日本語</option>
+      <option value="en" selected>English</option>
+    </select>
+  </label>
+
+  <section>
+    <div class="lang-content ja">
+      <p>404 ページが見つかりません</p>
+    </div>
+
+    <div class="lang-content en">
+      <p>404 Page Not Found</p>
+    </div>
+  </section>
+</div>
