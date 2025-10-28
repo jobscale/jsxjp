@@ -23,12 +23,12 @@
     }
 
     @keyframes rainbow {
-      0%   { fill: #ff69b4; }   /* pink */
+      0%   { fill: #575757; }   /* gray */
       20%  { fill: #ff8c00; }   /* orange */
       40%  { fill: #ffff00; }   /* yellow */
       60%  { fill: #00ff00; }   /* green */
       80%  { fill: #1e90ff; }   /* blue */
-      100% { fill: #ff69b4; }   /* back to pink */
+      100% { fill: #575757; }   /* back to gray */
     }
   </style>
 
