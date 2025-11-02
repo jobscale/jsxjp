@@ -1,9 +1,29 @@
-<?xml version="1.0" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="1024pt" height="1024pt" viewBox="0 0 1024 1024" preserveAspectRatio="xMidYMid meet">
+<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+<style>
+.pulse {
+  animation: pulse 1.7s infinite ease-in-out, rainbow 5s infinite linear;
+  transform-origin: center;
+}
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+@keyframes rainbow {
+  0%   { fill: #787878; }   /* gray */
+  20%  { fill: #ff8c00; }   /* orange */
+  40%  { fill: #ffff00; }   /* yellow */
+  60%  { fill: #00ff00; }   /* green */
+  80%  { fill: #1e90ff; }   /* blue */
+  100% { fill: #787878; }   /* back to gray */
+}
+</style>
 <g transform="translate(0.000000,1024.000000) scale(0.100000,-0.100000)"
 fill="#000000" stroke="none">
-<path d="M1917 8286 c-160 -57 -350 -392 -414 -727 -27 -142 -24 -436 5 -590
+<path class="pulse" d="M1917 8286 c-160 -57 -350 -392 -414 -727 -27 -142 -24 -436 5 -590
 54 -285 187 -554 401 -810 151 -180 327 -334 605 -529 80 -56 146 -105 146
 -109 0 -4 -24 -63 -54 -132 -86 -200 -142 -347 -242 -632 -51 -148 -112 -312
 -135 -365 -105 -249 -238 -423 -454 -596 -77 -62 -129 -122 -152 -176 -8 -19
