@@ -1,24 +1,20 @@
 <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
 <style>
+:root { color-scheme: light dark; }
 .pulse {
-  animation: pulse 1.7s infinite ease-in-out, rainbow 5s infinite linear;
+  animation: pulse 1.7s infinite ease-in-out, rainbow 13s infinite linear;
   transform-origin: center;
 }
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-}
 @keyframes rainbow {
-  0%   { fill: #787878; }   /* gray */
+  0%, 100%   { fill: currentColor; }
   20%  { fill: #ff8c00; }   /* orange */
   40%  { fill: #ffff00; }   /* yellow */
   60%  { fill: #00ff00; }   /* green */
   80%  { fill: #1e90ff; }   /* blue */
-  100% { fill: #787878; }   /* back to gray */
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(0.9); }
 }
 </style>
 <g transform="translate(0.000000,1024.000000) scale(0.100000,-0.100000)"
