@@ -45,8 +45,10 @@ export class Controller {
 
   async subscription(req, res) {
     const { body, cookies: { token } } = req;
+    const headers = new Headers(req.headers);
+    const host = headers.get('host');
     const { login } = await authService.decode(token).catch(() => ({}));
-    return service.subscription(body, login)
+    return service.subscription({ ...body, host }, login)
     .then(result => res.json(result))
     .catch(e => {
       logger.error({ message: e.toString() });

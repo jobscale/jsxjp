@@ -37,7 +37,7 @@ export class Service {
   async subscription(rest, login) {
     const {
       endpoint, expirationTime, keys: { auth, p256dh },
-      ts, ua,
+      ts, ua, host,
     } = rest;
     const subscription = { endpoint, expirationTime, keys: { auth, p256dh } };
     const users = (await store.getValue('web/users', 'info')) || {};
@@ -45,11 +45,12 @@ export class Service {
     if (users[hash]) {
       if (!login || users[hash].login === login) return { exist: true };
       users[hash].login = login;
+      users[hash].host = host;
       await store.setValue('web/users', 'info', users);
       await this.publish(subscription, '通知先を「更新」しました');
       return { update: true };
     }
-    users[hash] = { login, subscription, ts, ua };
+    users[hash] = { login, host, subscription, ts, ua };
     await store.setValue('web/users', 'info', users);
     await this.publish(subscription, '通知先を「登録」しました');
     return { succeeded: true };
