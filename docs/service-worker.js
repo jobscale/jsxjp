@@ -191,16 +191,24 @@ const pwa = {
     .then(res => res.arrayBuffer())
     .catch(() => new ArrayBuffer());
     this.audioContext = new AudioContext();
+    this.audioContext.addEventListener('statechange', event => {
+      logger.info('statechange', event);
+    });
     this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
   },
 
-  playSound() {
-    this.audioContext.resume().then(() => {
-      const audioSource = this.audioContext.createBufferSource();
-      audioSource.buffer = this.audioBuffer;
-      audioSource.connect(this.audioContext.destination);
-      audioSource.start();
+  async playSound() {
+    if (this.audioContext.state === 'suspended') {
+      await this.audioContext.resume();
+    }
+    const audioSource = this.audioContext.createBufferSource();
+    audioSource.buffer = this.audioBuffer;
+    audioSource.connect(this.audioContext.destination);
+    audioSource.addEventListener('ended', () => {
+      audioSource.disconnect();
+      logger.info('disconnect audioSource');
     });
+    audioSource.start();
   },
 
   async trigger() {
@@ -209,7 +217,7 @@ const pwa = {
       const { type, title, body } = event.data;
       if (type === 'push-received') {
         logger.info('Push received:', JSON.stringify({ title, body, version }));
-        this.playSound();
+        await this.playSound();
       }
     });
   },

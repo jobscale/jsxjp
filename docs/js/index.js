@@ -46,6 +46,9 @@ createApp({
       .then(res => res.arrayBuffer())
       .then(arrayBuffer => {
         this.audioContext = new AudioContext();
+        this.audioContext.addEventListener('statechange', event => {
+          logger.info('statechange', event);
+        });
         this.audioBuffer = this.audioContext.decodeAudioData(arrayBuffer);
         this.actionText = '☃';
       });
@@ -135,17 +138,18 @@ createApp({
       this.latest = Date.now();
       const play = () => {
         if (!this.audioBuffer) return 'incomplete load audio buffer';
-        return this.audioBuffer.then(buffer => {
-          this.audioContext.resume().then(() => {
-            const audioSource = this.audioContext.createBufferSource();
-            audioSource.buffer = buffer;
-            audioSource.connect(this.audioContext.destination);
-            audioSource.addEventListener('ended', () => {
-              audioSource.disconnect();
-              logger.info('disconnect audioSource');
-            });
-            audioSource.start();
+        return this.audioBuffer.then(async buffer => {
+          if (this.audioContext.state === 'suspended') {
+            await this.audioContext.resume();
+          }
+          const audioSource = this.audioContext.createBufferSource();
+          audioSource.buffer = buffer;
+          audioSource.connect(this.audioContext.destination);
+          audioSource.addEventListener('ended', () => {
+            audioSource.disconnect();
+            logger.info('disconnect audioSource');
           });
+          audioSource.start();
           return { length: buffer.length };
         });
       };
