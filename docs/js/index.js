@@ -136,15 +136,17 @@ createApp({
       const play = () => {
         if (!this.audioBuffer) return 'incomplete load audio buffer';
         return this.audioBuffer.then(buffer => {
-          const audioSource = this.audioContext.createBufferSource();
-          audioSource.buffer = buffer;
-          audioSource.connect(this.audioContext.destination);
-          audioSource.addEventListener('ended', () => {
-            audioSource.disconnect();
-            logger.info('disconnect audioSource');
+          this.audioContext.resume().then(() => {
+            const audioSource = this.audioContext.createBufferSource();
+            audioSource.buffer = buffer;
+            audioSource.connect(this.audioContext.destination);
+            audioSource.addEventListener('ended', () => {
+              audioSource.disconnect();
+              logger.info('disconnect audioSource');
+            });
+            audioSource.start();
           });
-          audioSource.start();
-          return { length: audioSource.buffer.length };
+          return { length: buffer.length };
         });
       };
       const actions = ['alert play sound.', this.latest, await play()];

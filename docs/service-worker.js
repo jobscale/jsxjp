@@ -1,6 +1,8 @@
 /* eslint-env worker */
 const logger = console;
 
+const version = '0.1.0';
+
 const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
   timeZone: 'Asia/Tokyo',
   year: 'numeric',
@@ -36,8 +38,13 @@ class ServiceWorker {
     const data = await parseData(event.data);
     const { title, body, icon, expired } = data;
     if (expired && new Date(expired) < new Date()) return;
+
     event.waitUntil(
-      self.registration.showNotification(title, { body, icon }),
+      Promise.resolve().then(async () => {
+        const [client] = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+        client?.postMessage({ type: 'push-received', title, body, version });
+        await self.registration.showNotification(title, { body, icon });
+      }),
     );
   }
 
@@ -111,98 +118,132 @@ class ServiceWorker {
 }
 
 /* eslint-env browser */
-const registerSW = async () => {
-  // バックグラウンド
+const pwa = {
+  sendToServer(subscription) {
+    subscription = {
+      ...JSON.parse(JSON.stringify(subscription)),
+      ua: navigator.userAgent,
+      ts: `${formatTimestamp()} GMT+9`,
+    };
+    logger.info('subscription', subscription);
+    return fetch('/api/subscription', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(subscription),
+    })
+    .then(res => {
+      if (!res.ok) throw new Error(res.statusText);
+      return res.json();
+    })
+    .then(res => logger.info(res))
+    .catch(e => logger.error(e));
+  },
+
+  toUint8Array(base64String) {
+    base64String = base64String.trim();
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = `${base64String}${padding}`
+    .replace(/-/g, '+')
+    .replace(/_/g, '/');
+    const rawData = atob(base64);
+    const output = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+      output[i] = rawData.charCodeAt(i);
+    }
+    return output;
+  },
+
+  async generateSubscription() {
+    const { pushManager } = await navigator.serviceWorker.ready;
+    const exist = await pushManager.getSubscription();
+    if (exist) return exist;
+    const publicPem = await fetch('/api/public').then(res => res.text());
+    const applicationServerKey = this.toUint8Array(publicPem);
+    const subscription = await pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey,
+    });
+    return subscription;
+  },
+
+  async notification(info = {}) {
+    if (Notification.permission === 'denied') return;
+    if (Notification.permission !== 'granted') {
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') return;
+      logger.info('通知が有効になりました！');
+      info.trigger = 'init';
+    }
+    await this.generateSubscription()
+    .then(subscription => this.sendToServer(subscription))
+    .catch(e => logger.warn(e));
+    if (info.condition && info.condition !== info.trigger) return;
+    await new Promise(resolve => { setTimeout(resolve, 5000); });
+    const notification = new Notification(info.title, {
+      body: info.message,
+      icon: '/favicon.ico',
+    });
+    notification.onclick = () => logger.info('onclick');
+  },
+
+  async preloadContext() {
+    const arrayBuffer = await fetch('/assets/mp3/notify.mp3')
+    .then(res => res.arrayBuffer())
+    .catch(() => new ArrayBuffer());
+    this.audioContext = new AudioContext();
+    this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+  },
+
+  playSound() {
+    this.audioContext.resume().then(() => {
+      const audioSource = this.audioContext.createBufferSource();
+      audioSource.buffer = this.audioBuffer;
+      audioSource.connect(this.audioContext.destination);
+      audioSource.start();
+    });
+  },
+
+  async trigger() {
+    await this.preloadContext();
+    navigator.serviceWorker.addEventListener('message', async event => {
+      const { type, title, body } = event.data;
+      if (type === 'push-received') {
+        logger.info('Push received:', JSON.stringify({ title, body, version }));
+        this.playSound();
+      }
+    });
+  },
+
+  async register() {
+    await navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => {
+      logger.info('Service Worker registered:', reg);
+    });
+
+    setTimeout(() => {
+      window.pwa.notification({
+        title: 'JSXJP',
+        message: '通知が有効になりました',
+        condition: 'init',
+      });
+    }, 5000);
+
+    await this.trigger();
+  },
+};
+
+const entry = async () => {
+  // background
   if (typeof window === 'undefined') {
     const sw = new ServiceWorker();
     logger.info('backend service worker', JSON.stringify(sw));
     return;
   }
 
-  // メインスレッド
-  await navigator.serviceWorker.register('/service-worker.js')
-  .then(reg => {
-    logger.info('Service Worker registered:', reg);
-  });
-
-  setTimeout(() => {
-    window.pwa.notification({
-      title: 'JSXJP',
-      message: '通知が有効になりました',
-      condition: 'init',
-    });
-  }, 5000);
-
-  window.pwa = {
-    ...(window.pwa || {}),
-
-    sendToServer(subscription) {
-      subscription = {
-        ...JSON.parse(JSON.stringify(subscription)),
-        ua: navigator.userAgent,
-        ts: `${formatTimestamp()} GMT+9`,
-      };
-      logger.info('subscription', subscription);
-      return fetch('/api/subscription', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(subscription),
-      })
-      .then(res => {
-        if (!res.ok) throw new Error(res.statusText);
-        return res.json();
-      })
-      .then(res => logger.info(res))
-      .catch(e => logger.error(e));
-    },
-
-    toUint8Array(base64String) {
-      base64String = base64String.trim();
-      const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-      const base64 = `${base64String}${padding}`
-      .replace(/-/g, '+')
-      .replace(/_/g, '/');
-      const rawData = atob(base64);
-      const output = new Uint8Array(rawData.length);
-      for (let i = 0; i < rawData.length; ++i) {
-        output[i] = rawData.charCodeAt(i);
-      }
-      return output;
-    },
-
-    async generateSubscription() {
-      const { pushManager } = await navigator.serviceWorker.ready;
-      const exist = await pushManager.getSubscription();
-      if (exist) return exist;
-      const publicPem = await fetch('/api/public').then(res => res.text());
-      const applicationServerKey = this.toUint8Array(publicPem);
-      const subscription = await pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey,
-      });
-      return subscription;
-    },
-
-    async notification(info = {}) {
-      if (Notification.permission === 'denied') return;
-      if (Notification.permission !== 'granted') {
-        const permission = await Notification.requestPermission();
-        if (permission !== 'granted') return;
-        logger.info('通知が有効になりました！');
-        info.trigger = 'init';
-      }
-      await this.generateSubscription()
-      .then(subscription => this.sendToServer(subscription))
-      .catch(e => logger.warn(e));
-      if (info.condition && info.condition !== info.trigger) return;
-      await new Promise(resolve => { setTimeout(resolve, 5000); });
-      const notification = new Notification(info.title, {
-        body: info.message,
-        icon: '/favicon.ico',
-      });
-      notification.onclick = () => logger.info('onclick');
-    },
-  };
+  // browser
+  window.pwa = { ...(window.pwa ?? {}), ...pwa };
+  window.pwa.register();
 };
 
-registerSW();
+// enter browser or background
+entry();
