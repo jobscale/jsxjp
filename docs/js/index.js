@@ -1,6 +1,7 @@
 import { createApp } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import dayjs from 'https://esm.sh/dayjs';
-import { logger } from 'https://esm.sh/@jobscale/logger';
+
+const logger = console;
 
 createApp({
   data() {
