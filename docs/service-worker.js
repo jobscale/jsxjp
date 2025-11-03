@@ -1,5 +1,6 @@
 /* eslint-env worker */
 const logger = console;
+logger.debug = () => undefined;
 
 const VERSION = '0.1.0';
 
@@ -19,7 +20,6 @@ const parseData = async data => {
 
 class ServiceWorker {
   constructor() {
-    this.version = VERSION;
     this.initEvent();
   }
 
@@ -41,7 +41,7 @@ class ServiceWorker {
     if (expired && new Date(expired) < new Date()) return;
     const notifyAction = async () => {
       const [client] = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-      client?.postMessage({ type: 'push-received', title, body, version: this.version });
+      client?.postMessage({ type: 'push-received', title, body, version: VERSION });
       await self.registration.showNotification(title, { body, icon });
     };
     event.waitUntil(notifyAction());
@@ -91,7 +91,7 @@ class ServiceWorker {
       const path = `${event.request.method} ${url.pathname}`;
       return self.fetch(event.request)
       .then(res => {
-        // if (event.request.method !== 'GET') return res;
+        if (event.request.method !== 'GET' && !url.pathname.startsWith('/s/')) return res;
         cache.put(path, res.clone());
         logger.debug(`[PWA Builder] Network request cached. '${path}'`);
         return res.clone();
@@ -106,9 +106,9 @@ class ServiceWorker {
   }
 
   addEventListener(type, listener) {
-    logger.info('Add EventListener', type);
+    logger.debug('Add EventListener', type);
     self.addEventListener(type, (...argv) => {
-      logger.info('Triggered EventListener', type);
+      logger.debug('Triggered EventListener', type);
       return listener(...argv);
     });
   }
