@@ -1,22 +1,20 @@
 {
-    "dir": "ltr",
-    "lang": "en",
-    "name": "jsx.jp",
-    "scope": "/",
-    "display": "standalone",
-    "gcm_sender_id": "103953800507",
-    "start_url": "https://jsx.jp/",
-    "short_name": "jsx.jp",
-    "theme_color": "transparent",
-    "description": "jsx.jp",
-    "orientation": "any",
-    "background_color": "transparent",
-    "related_applications": [],
-    "prefer_related_applications": false,
-    "icons": [
-        {
-            "src": "/favicon.ico",
-            "sizes": "256x256 192x192 128x128 64x64 48x48 32x32 16x16"
-        }
-    ]
+  "dir": "ltr",
+  "lang": "en",
+  "name": "jsx.jp",
+  "scope": "/",
+  "display": "standalone",
+  "gcm_sender_id": "103953800507",
+  "start_url": "/",
+  "short_name": "jsx.jp",
+  "theme_color": "transparent",
+  "description": "jsx.jp",
+  "orientation": "any",
+  "background_color": "transparent",
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "icons": [{
+    "src": "/favicon.ico",
+    "sizes": "256x256 192x192 128x128 64x64 48x48 32x32 16x16"
+  }]
 }
