@@ -23,6 +23,10 @@ class ServiceWorker {
     this.initEvent();
   }
 
+  get version() {
+    return VERSION;
+  }
+
   initEvent() {
     this.addEventListener('activate', this.activate);
     this.addEventListener('push', this.push);
