@@ -1,7 +1,7 @@
 /* eslint-env worker */
 const logger = console;
 
-const version = '0.1.0';
+const VERSION = '0.1.0';
 
 const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
   timeZone: 'Asia/Tokyo',
@@ -19,6 +19,7 @@ const parseData = async data => {
 
 class ServiceWorker {
   constructor() {
+    this.version = VERSION;
     this.initEvent();
   }
 
@@ -38,59 +39,54 @@ class ServiceWorker {
     const data = await parseData(event.data);
     const { title, body, icon, expired } = data;
     if (expired && new Date(expired) < new Date()) return;
-
-    event.waitUntil(
-      Promise.resolve().then(async () => {
-        const [client] = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-        client?.postMessage({ type: 'push-received', title, body, version });
-        await self.registration.showNotification(title, { body, icon });
-      }),
-    );
+    const notifyAction = async () => {
+      const [client] = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+      client?.postMessage({ type: 'push-received', title, body, version: this.version });
+      await self.registration.showNotification(title, { body, icon });
+    };
+    event.waitUntil(notifyAction());
   }
 
   async notificationclick(event) {
-    const data = await parseData(event.data);
+    const data = await parseData(event.notification.data);
     if (!data.clickAction) return;
     event.notification.close();
-    event.waitUntil(
-      self.clients.matchAll({ type: 'window' }).then(windowClients => {
-        for (let i = 0; i < windowClients.length; i++) {
-          const client = windowClients[i];
-          if (client.url === data.clickAction) {
-            client.focus();
-            return;
-          }
+    const clickAction = self.clients.matchAll({ type: 'window' }).then(windowClients => {
+      for (const client of windowClients) {
+        if (client.url === data.clickAction) {
+          client.focus();
+          return;
         }
-        self.clients.openWindow(data.clickAction);
-      }),
-    );
+      }
+      self.clients.openWindow(data.clickAction);
+    });
+    event.waitUntil(clickAction());
   }
 
   async install(event) {
-    event.waitUntil(
-      self.skipWaiting().then(async () => {
-        const cache = await caches.open('pwabuilder-offline');
-        await Promise.all(
-          ['GET /', 'GET /favicon.ico'].map(async path => {
-            await fetch(path)
-            .then(async res => {
-              logger.debug(`[PWA Builder] Cached offline page during Install ${res.url}`);
-              await cache.put(path, res);
-            })
-            .catch(e => {
-              logger.error(`[PWA Builder] Failed to cache '${path}': ${e}`);
-            });
-          }),
-        );
-      }),
-    );
+    const installAction = async () => {
+      const cache = await caches.open('pwa-builder-offline');
+      await Promise.all(
+        ['GET /', 'GET /favicon.ico'].map(async path => {
+          await self.fetch(path)
+          .then(async res => {
+            logger.debug(`[PWA Builder] Cached offline page during Install ${res.url}`);
+            await cache.put(path, res);
+          })
+          .catch(e => {
+            logger.error(`[PWA Builder] Failed to cache '${path}': ${e}`);
+          });
+        }),
+      );
+    };
+    event.waitUntil(self.skipWaiting().then(installAction));
   }
 
   fetch(event) {
     if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
       return;
     }
-    event.respondWith(caches.open('pwabuilder-offline').then(cache => {
+    const cacheAction = cache => {
       const url = new URL(event.request.url);
       const path = `${event.request.method} ${url.pathname}`;
       return self.fetch(event.request)
@@ -103,15 +99,16 @@ class ServiceWorker {
       .catch(e => {
         logger.error(`[PWA Builder] Network request Failed. '${path}': ${e}`);
       })
-      .then(res => res || cache.match(path).then(r => r && r.clone()))
-      .then(res => res || cache.match('GET /').then(r => r && r.clone()));
-    }));
+      .then(res => res ?? cache.match(path).then(r => r && r.clone()))
+      .then(res => res ?? cache.match('GET /').then(r => r && r.clone()));
+    };
+    event.respondWith(caches.open('pwa-builder-offline').then(cacheAction));
   }
 
   addEventListener(type, listener) {
-    logger.debug('Add EventListener', type);
+    logger.info('Add EventListener', type);
     self.addEventListener(type, (...argv) => {
-      logger.debug('Triggered EventListener', type);
+      logger.info('Triggered EventListener', type);
       return listener(...argv);
     });
   }
@@ -214,7 +211,7 @@ const pwa = {
   async trigger() {
     await this.preloadContext();
     navigator.serviceWorker.addEventListener('message', async event => {
-      const { type, title, body } = event.data;
+      const { type, title, body, version } = event.data;
       if (type === 'push-received') {
         logger.info('Push received:', JSON.stringify({ title, body, version }));
         await this.playSound();
@@ -243,8 +240,7 @@ const pwa = {
 const entry = async () => {
   // background
   if (typeof window === 'undefined') {
-    const sw = new ServiceWorker();
-    logger.info('backend service worker', JSON.stringify(sw));
+    logger.info('backend service worker', new ServiceWorker().version);
     return;
   }
 
