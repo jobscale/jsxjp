@@ -3,7 +3,7 @@
 
 :root {
   color-scheme: light dark;
-  --font-family: Tahoma 'Mochiy Pop P One', sans-serif, Tangerine;
+  --font-family: "Mochiy Pop P One", Tahoma, Verdana, sans-serif;
   --font-size: 3vmin;
 }
 @media screen and (max-width: 640px) {
