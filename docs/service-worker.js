@@ -2,7 +2,7 @@
 const logger = console;
 logger.debug = () => undefined;
 
-const VERSION = '0.1.0';
+const VERSION = '0.1.1';
 
 const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
   timeZone: 'Asia/Tokyo',
@@ -40,30 +40,31 @@ class ServiceWorker {
   }
 
   async push(event) {
-    const data = await parseData(event.data);
-    const { title, body, icon, expired } = data;
-    if (expired && new Date(expired) < new Date()) return;
     const notifyAction = async () => {
-      const [client] = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+      const data = await parseData(event.data);
+      const { title, body, icon, image, expired } = data;
+      if (expired && new Date(expired) < new Date()) return;
+      const controlled = await self.clients.matchAll({ type: 'window' });
+      const [client] = controlled.length ? controlled
+        : await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
       client?.postMessage({ type: 'push-received', title, body, version: VERSION });
-      await self.registration.showNotification(title, { body, icon });
+      await self.registration.showNotification(title, { body, icon, image: image ?? icon, data: { url: '/' } });
     };
     event.waitUntil(notifyAction());
   }
 
   async notificationclick(event) {
-    const data = await parseData(event.notification.data);
-    if (!data.clickAction) return;
-    event.notification.close();
-    const clickAction = self.clients.matchAll({ type: 'window' }).then(windowClients => {
-      for (const client of windowClients) {
-        if (client.url === data.clickAction) {
-          client.focus();
-          return;
-        }
-      }
-      self.clients.openWindow(data.clickAction);
-    });
+    const clickAction = async () => {
+      event.notification.close();
+      const { notification: { title, body, data } } = event;
+      if (!data || !data.url) return;
+      const targetUrl = new URL(data.url, self.location.origin).href;
+      const windowClients = await self.clients.matchAll({ type: 'window' });
+      const exist = windowClients.find(client => client.url === targetUrl);
+      const client = exist ?? await self.clients.openWindow(data.url);
+      client?.focus();
+      client?.postMessage({ type: 'push-clicked', title, body, version: VERSION });
+    };
     event.waitUntil(clickAction());
   }
 
@@ -87,15 +88,23 @@ class ServiceWorker {
   }
 
   fetch(event) {
-    if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
+    const { request } = event;
+    if (request.cache === 'only-if-cached' && request.mode !== 'same-origin') {
+      const busyAction = async () => {
+        const walkerBody = 'walker busy';
+        logger.info({ walkerBody });
+        return new Response(walkerBody, { status: 503 });
+      };
+      event.respondWith(busyAction());
       return;
     }
     const cacheAction = cache => {
-      const url = new URL(event.request.url);
-      const path = `${event.request.method} ${url.pathname}`;
-      return self.fetch(event.request)
+      const url = new URL(request.url);
+      const path = `${request.method} ${url.pathname}`;
+      return self.fetch(request)
       .then(res => {
-        if (event.request.method !== 'GET' && !url.pathname.startsWith('/s/')) return res;
+        if (request.method !== 'GET' && !url.pathname.startsWith('/s/')) return res;
+        if (!res.ok) return res;
         cache.put(path, res.clone());
         logger.debug(`[PWA Builder] Network request cached. '${path}'`);
         return res.clone();
@@ -217,7 +226,11 @@ const pwa = {
     navigator.serviceWorker.addEventListener('message', async event => {
       const { type, title, body, version } = event.data;
       if (type === 'push-received') {
-        logger.info('Push received:', JSON.stringify({ title, body, version }));
+        logger.info('Push received', JSON.stringify({ title, body, version }));
+        await this.playSound();
+      }
+      if (type === 'push-clicked') {
+        logger.info('Push clicked', JSON.stringify({ title, body, version }));
         await this.playSound();
       }
     });
