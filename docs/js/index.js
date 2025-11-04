@@ -56,8 +56,12 @@ createApp({
       fetch('/favicon.ico')
       .then(res => {
         const { headers } = res;
-        const key = ['x-backend-host', 'x-host', 'x-server', 'x-served-by', 'server'].find(name => headers.get(name));
-        return headers.get(key);
+        const key = [
+          'x-backend-host', 'x-host', 'x-server', 'x-served-by', 'server', 'powered-by',
+        ].find(name => headers.get(name));
+        const hostname = headers.get(key) ?? 'anonymous';
+        const showName = hostname.split('-').filter(Boolean).slice(-3).join('-');
+        return showName;
       })
       .catch(e => logger.warn(e.message))
       .then(host => {
