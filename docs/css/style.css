@@ -1,4 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Tangerine&family=Mochiy+Pop+P+One');
+@import url('https://site-assets.fontawesome.com/releases/v6.3.0/css/all.css');
+
 :root {
+  color-scheme: light dark;
+  --font-family: Tahoma 'Mochiy Pop P One', sans-serif, Tangerine;
   --font-size: 3vmin;
 }
 @media screen and (max-width: 640px) {
@@ -6,6 +11,13 @@
     --font-size: 4.5vmin;
   }
 }
+
+* {
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  background-color: transparent;
+}
+
 a { text-decoration: none; }
 
 /* System color */
@@ -27,11 +39,6 @@ a { text-decoration: none; }
 .light-scheme a:visited { color: rgba(10, 10, 10, 0.5); }
 .light-scheme a:hover {
   filter: blur(1px) contrast(200%) brightness(25%);
-}
-
-* {
-  font-size: var(--font-size);
-  background-color: transparent;
 }
 
 body {
