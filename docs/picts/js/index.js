@@ -138,7 +138,7 @@ createApp({
     },
 
     async onCloseTag() {
-      const editTags = this.editTags.filter(v => v);
+      const editTags = this.editTags.filter(Number);
       const tags = {};
       editTags.forEach(key => {
         tags[key] = !!this.tags[key];
