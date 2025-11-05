@@ -3,9 +3,25 @@ import dayjs from 'https://esm.sh/dayjs';
 
 const logger = console;
 
+class Titan {
+  constructor(data) {
+    Object.assign(this, data);
+  }
+
+  expose() {
+    const func = {};
+    ['start', 'action'].forEach(name => {
+      func[name] = this[name].bind(this);
+    });
+    return func;
+  }
+}
+
 createApp({
   data() {
+    const titan = new Titan();
     return {
+      ...titan.expose(),
       actionText: '[⛄ 🍻]',
       welcomeText: 'welcome',
       spanText: 'guest',
@@ -43,16 +59,11 @@ createApp({
         return;
       }
       this.actionText = 'loading...';
-      fetch('/assets/mp3/warning1.mp3')
-      .then(res => res.arrayBuffer())
-      .then(arrayBuffer => {
-        this.audioContext = new AudioContext();
-        this.audioContext.addEventListener('statechange', event => {
-          logger.info('statechange', event);
-        });
-        this.audioBuffer = this.audioContext.decodeAudioData(arrayBuffer);
-        this.actionText = '☃';
-      });
+      this.preloadContext().then(() => { this.actionText = '☃'; })
+      .then(this.serverName).then(host => { this.welcomeText = host; });
+    },
+
+    async serverName() {
       fetch('/favicon.ico')
       .then(res => {
         const { headers } = res;
@@ -63,10 +74,7 @@ createApp({
         const showName = hostname.split('-').filter(Boolean).slice(-3).join('-');
         return showName;
       })
-      .catch(e => logger.warn(e.message))
-      .then(host => {
-        this.welcomeText = host;
-      });
+      .catch(e => logger.warn(e.message) ?? 'oops');
     },
 
     updateSpan() {
@@ -138,28 +146,39 @@ createApp({
       }, 1000 - (Date.now() % 1000));
     },
 
+    async preloadContext() {
+      const arrayBuffer = await fetch('/assets/mp3/warning1.mp3')
+      .then(res => res.arrayBuffer())
+      .catch(() => new ArrayBuffer());
+      this.audioContext = new AudioContext();
+      this.audioContext.addEventListener('statechange', event => {
+        logger.info('statechange', event);
+      });
+      this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+    },
+
+    async playSound() {
+      if (this.audioContext.state === 'suspended') {
+        await this.audioContext.resume().catch(e => logger.warn(e.massage));
+      }
+      const audioSource = this.audioContext.createBufferSource();
+      audioSource.buffer = this.audioBuffer;
+      audioSource.connect(this.audioContext.destination);
+      audioSource.addEventListener('ended', () => {
+        audioSource.disconnect();
+        logger.info('disconnect audioSource');
+      });
+      Promise.resolve().then(() => audioSource.start())
+      .catch(e => logger.warn(e.massage));
+    },
+
     async play() {
       if (this.latest && (this.latest + 60000) > Date.now()) return;
       this.latest = Date.now();
-      const play = () => {
-        if (!this.audioBuffer) return 'incomplete load audio buffer';
-        return this.audioBuffer.then(async buffer => {
-          if (this.audioContext.state === 'suspended') {
-            await this.audioContext.resume();
-          }
-          const audioSource = this.audioContext.createBufferSource();
-          audioSource.buffer = buffer;
-          audioSource.connect(this.audioContext.destination);
-          audioSource.addEventListener('ended', () => {
-            audioSource.disconnect();
-            logger.info('disconnect audioSource');
-          });
-          audioSource.start();
-          return { length: buffer.length };
-        });
-      };
-      const actions = ['alert play sound.', this.latest, await play()];
-      logger.info(...actions);
+      if (this.audioBuffer) await this.playSound();
+      logger.info(...['alert play sound.',
+        this.audioBuffer?.length ?? 'incomplete load audio buffer',
+      ]);
     },
   },
 }).mount('#app');
