@@ -62,7 +62,6 @@ class ServiceWorker {
       const windowClients = await self.clients.matchAll({ type: 'window' });
       const exist = windowClients.find(client => client.url === targetUrl);
       const client = exist ?? await self.clients.openWindow(data.url);
-      client?.focus();
       client?.postMessage({ type: 'push-clicked', title, body, version: VERSION });
     };
     event.waitUntil(clickAction());
@@ -103,14 +102,16 @@ class ServiceWorker {
       const path = `${request.method} ${url.pathname}`;
       return self.fetch(request)
       .then(res => {
-        if (request.method !== 'GET' && !url.pathname.startsWith('/s/')) return res;
+        const allowCache = url.pathname.startsWith('/s/');
+        const allowMethod = ['GET', 'HEAD', 'OPTIONS'];
+        if (!allowMethod.includes(request.method) && !allowCache) return res;
         if (!res.ok) return res;
         cache.put(path, res.clone());
         logger.debug(`[PWA Builder] Network request cached. '${path}'`);
         return res.clone();
       })
       .catch(e => {
-        logger.error(`[PWA Builder] Network request Failed. '${path}': ${e}`);
+        logger.error(`[PWA Builder] Network request Failed. '${path}'`, e.message);
       })
       .then(res => res ?? cache.match(path).then(r => r && r.clone()))
       .then(res => res ?? cache.match('GET /').then(r => r && r.clone()));
@@ -209,7 +210,7 @@ const pwa = {
 
   async playSound() {
     if (this.audioContext.state === 'suspended') {
-      await this.audioContext.resume();
+      await this.audioContext.resume().catch(e => logger.warn(e.massage));
     }
     const audioSource = this.audioContext.createBufferSource();
     audioSource.buffer = this.audioBuffer;
@@ -218,7 +219,8 @@ const pwa = {
       audioSource.disconnect();
       logger.info('disconnect audioSource');
     });
-    audioSource.start();
+    Promise.resolve().then(() => audioSource.start())
+    .catch(e => logger.warn(e.massage));
   },
 
   async trigger() {
@@ -232,6 +234,7 @@ const pwa = {
       if (type === 'push-clicked') {
         logger.info('Push clicked', JSON.stringify({ title, body, version }));
         await this.playSound();
+        window.focus();
       }
     });
   },
