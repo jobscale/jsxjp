@@ -8,6 +8,10 @@ class Titan {
     Object.assign(this, data);
   }
 
+  start() {}
+
+  action() {}
+
   expose() {
     const func = {};
     ['start', 'action'].forEach(name => {
