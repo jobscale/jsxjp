@@ -3,32 +3,17 @@ import dayjs from 'https://esm.sh/dayjs';
 
 const logger = console;
 
-class Titan {
-  constructor(data) {
-    Object.keys(data).forEach(key => {
-      this[key] = new Proxy(data[key], {
-        get(target, prop) {
-          return target[prop];
-        },
-        set(target, prop, value) {
-          target[prop] = value;
-          data[prop] = value;
-          return true;
-        },
-      });
-    });
-  }
-
+const Titan = {
   onColorScheme() {
     const html = document.querySelector('html');
     html.classList.toggle('dark-scheme');
     html.classList.toggle('light-scheme');
-  }
+  },
 
   start() {
     logger.info('Start jsx.jp');
     setTimeout(() => this.interval(), 200);
-  }
+  },
 
   async action() {
     if (this.audioContext) {
@@ -38,7 +23,7 @@ class Titan {
     this.actionText = 'loading...';
     this.preloadContext().then(() => { this.actionText = '☃'; })
     .then(this.serverName).then(host => { this.welcomeText = host; });
-  }
+  },
 
   async serverName() {
     return fetch('/favicon.ico')
@@ -52,20 +37,20 @@ class Titan {
       return showName;
     })
     .catch(e => logger.warn(e.message) ?? 'oops');
-  }
+  },
 
   updateSpan() {
     if (!this.stack.length) return;
     if (this.stack.length > 60) this.stack.length = 60;
     const span = Math.floor(this.stack.reduce((a, b) => a + b, 0.0)) / this.stack.length;
     this.spanText = span.toFixed(1);
-  }
+  },
 
   sign() {
     return fetch('/auth/sign', {
       method: 'HEAD',
     });
-  }
+  },
 
   updateDate() {
     const params = {
@@ -90,7 +75,7 @@ class Titan {
     .catch(e => {
       this.dateText = e.message;
     });
-  }
+  },
 
   checkDate() {
     if (this.busy) {
@@ -115,13 +100,13 @@ class Titan {
       this.busyText = '';
       this.busy = 0;
     });
-  }
+  },
 
   interval() {
     setTimeout(() => {
       setInterval(() => this.checkDate(), 1000);
     }, 1000 - (Date.now() % 1000));
-  }
+  },
 
   async preloadContext() {
     const arrayBuffer = await fetch('/assets/mp3/warning1.mp3')
@@ -132,7 +117,7 @@ class Titan {
       logger.info('statechange', event);
     });
     this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-  }
+  },
 
   async playSound() {
     if (this.audioContext.state === 'suspended') {
@@ -147,7 +132,7 @@ class Titan {
     });
     Promise.resolve().then(() => audioSource.start())
     .catch(e => logger.warn(e.message));
-  }
+  },
 
   async play() {
     if (this.latest && (this.latest + 60000) > Date.now()) return;
@@ -156,20 +141,13 @@ class Titan {
     logger.info(...['alert play sound.',
       this.audioBuffer?.length ?? 'incomplete load audio buffer',
     ]);
-  }
-
-  expose() {
-    const func = {};
-    ['start', 'action', 'onColorScheme'].forEach(name => {
-      func[name] = this[name].bind(this);
-    });
-    return func;
-  }
-}
+  },
+};
 
 createApp({
   setup() {
-    const data = reactive({
+    return reactive({
+      ...Titan,
       actionText: '[⛄ 🍻]',
       welcomeText: 'welcome',
       spanText: 'guest',
@@ -182,11 +160,6 @@ createApp({
       audioContext: undefined,
       audioBuffer: undefined,
     });
-    const titan = new Titan(data);
-    return {
-      ...data,
-      ...titan.expose(),
-    };
   },
 
   mounted() {
