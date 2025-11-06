@@ -209,9 +209,6 @@ const pwa = {
   },
 
   async playSound() {
-    if (this.audioContext.state === 'suspended') {
-      await this.audioContext.resume().catch(e => logger.warn(e.message));
-    }
     const audioSource = this.audioContext.createBufferSource();
     audioSource.buffer = this.audioBuffer;
     audioSource.connect(this.audioContext.destination);
