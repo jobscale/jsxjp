@@ -210,7 +210,7 @@ const pwa = {
 
   async playSound() {
     if (this.audioContext.state === 'suspended') {
-      await this.audioContext.resume().catch(e => logger.warn(e.massage));
+      await this.audioContext.resume().catch(e => logger.warn(e.message));
     }
     const audioSource = this.audioContext.createBufferSource();
     audioSource.buffer = this.audioBuffer;
@@ -220,7 +220,7 @@ const pwa = {
       logger.info('disconnect audioSource');
     });
     Promise.resolve().then(() => audioSource.start())
-    .catch(e => logger.warn(e.massage));
+    .catch(e => logger.warn(e.message));
   },
 
   async trigger() {
