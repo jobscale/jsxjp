@@ -127,8 +127,7 @@ const Titan = {
       audioSource.disconnect();
       logger.info('disconnect audioSource');
     });
-    Promise.resolve().then(() => audioSource.start())
-    .catch(e => logger.warn(e.message));
+    audioSource.start();
   },
 
   async play() {
