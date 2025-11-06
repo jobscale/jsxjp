@@ -5,7 +5,18 @@ const logger = console;
 
 class Titan {
   constructor(data) {
-    Object.assign(this, data);
+    Object.keys(data).forEach(key => {
+      this[key] = new Proxy(data[key], {
+        get(target, prop) {
+          return target[prop];
+        },
+        set(target, prop, value) {
+          target[prop] = value;
+          data[prop] = value;
+          return true;
+        },
+      });
+    });
   }
 
   onColorScheme() {
