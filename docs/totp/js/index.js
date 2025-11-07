@@ -1,15 +1,21 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { logger } from 'https://esm.sh/@jobscale/logger';
 
-const Titan = {
+const self = reactive({});
+
+const Ocean = {
+  token: '',
+  list: [],
+  loading: false,
+
   onSubmit() {
-    if (this.token.length < 5) return;
-    this.loading = true;
-    logger.info('token', this.token);
+    if (self.token.length < 5) return;
+    self.loading = true;
+    logger.info('token', self.token);
     const params = ['/auth/totp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ secret: this.token }),
+      body: JSON.stringify({ secret: self.token }),
     }];
     fetch(...params)
     .then(res => {
@@ -17,17 +23,17 @@ const Titan = {
       return res.json();
     })
     .then(({ list }) => {
-      this.list = list;
+      self.list = list;
     })
     .catch(e => logger.error(e.message))
-    .then(() => setTimeout(() => { this.loading = false; }, 1000));
+    .then(() => setTimeout(() => { self.loading = false; }, 1000));
   },
 
   onCopyToClipboard(index) {
     if (!navigator.clipboard) return;
-    if (!this.list[index].length) return;
-    const el = this.$refs.clipboard[index];
-    navigator.clipboard.writeText(this.list[index])
+    if (!self.list[index].length) return;
+    const el = self.$refs.clipboard[index];
+    navigator.clipboard.writeText(self.list[index])
     .then(() => {
       el.classList.add('try-action');
       el.classList.add('fa-beat-fade');
@@ -49,15 +55,10 @@ const Titan = {
 
 createApp({
   setup() {
-    return reactive({
-      ...Titan,
-      token: '',
-      list: [],
-      loading: false,
-    });
+    return Object.assign(self, Ocean);
   },
 
   async mounted() {
-    setTimeout(() => this.$refs.token.focus(), 200);
+    setTimeout(() => self.$refs.token.focus(), 200);
   },
 }).mount('#app');

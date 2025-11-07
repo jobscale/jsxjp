@@ -3,7 +3,21 @@ import dayjs from 'https://esm.sh/dayjs';
 
 const logger = console;
 
-const Titan = {
+const self = reactive({});
+
+const Ocean = {
+  actionText: '[⛄ 🍻]',
+  welcomeText: 'welcome',
+  spanText: 'guest',
+  dateText: '☃',
+  busyTimes: [],
+  busyText: '',
+  busy: 0,
+  busyList: [],
+  stack: [],
+  audioContext: undefined,
+  audioBuffer: undefined,
+
   onColorScheme() {
     const html = document.querySelector('html');
     html.classList.toggle('dark-scheme');
@@ -12,17 +26,17 @@ const Titan = {
 
   start() {
     logger.info('Start jsx.jp');
-    setTimeout(() => this.interval(), 200);
+    setTimeout(() => self.interval(), 200);
   },
 
   async action() {
-    if (this.audioContext) {
+    if (self.audioContext) {
       logger.info('existing audioContext');
       return;
     }
-    this.actionText = 'loading...';
-    this.preloadContext().then(() => { this.actionText = '☃'; })
-    .then(this.serverName).then(host => { this.welcomeText = host; });
+    self.actionText = 'loading...';
+    self.preloadContext().then(() => { self.actionText = '☃'; })
+    .then(self.serverName).then(host => { self.welcomeText = host; });
   },
 
   async serverName() {
@@ -40,10 +54,10 @@ const Titan = {
   },
 
   updateSpan() {
-    if (!this.stack.length) return;
-    if (this.stack.length > 60) this.stack.length = 60;
-    const span = Math.floor(this.stack.reduce((a, b) => a + b, 0.0)) / this.stack.length;
-    this.spanText = span.toFixed(1);
+    if (!self.stack.length) return;
+    if (self.stack.length > 60) self.stack.length = 60;
+    const span = Math.floor(self.stack.reduce((a, b) => a + b, 0.0)) / self.stack.length;
+    self.spanText = span.toFixed(1);
   },
 
   sign() {
@@ -55,56 +69,56 @@ const Titan = {
   updateDate() {
     const params = {
       begin: performance.now(),
-      warn: setTimeout(() => this.play(), 2000),
+      warn: setTimeout(() => self.play(), 2000),
     };
-    return this.sign()
+    return self.sign()
     .then(res => res.headers.get('date'))
     .then(gmt => {
       clearTimeout(params.warn);
       const span = Math.floor((performance.now() - params.begin) * 10) / 10;
       const serverTime = new Date(new Date(gmt).getTime() + span);
-      if (!this.stack.length) {
+      if (!self.stack.length) {
         const diff = Math.floor((Date.now() - serverTime.getTime()) / 100) / 10;
-        this.actionText += ` ${diff}`;
+        self.actionText += ` ${diff}`;
       }
       const [date, time] = dayjs(serverTime).add(9, 'hour').toISOString().split(/[T.]/);
-      this.dateText = `${date} ${time}`;
-      this.stack.unshift(span);
-      this.updateSpan();
+      self.dateText = `${date} ${time}`;
+      self.stack.unshift(span);
+      self.updateSpan();
     })
     .catch(e => {
-      this.dateText = e.message;
+      self.dateText = e.message;
     });
   },
 
   checkDate() {
-    if (this.busy) {
-      if (this.busy === 1) {
+    if (self.busy) {
+      if (self.busy === 1) {
         const [date, time] = dayjs().add(9, 'hour').toISOString().split(/[T.]/);
-        this.busyList.unshift({ num: 1, date, time });
-        this.busyTimes.unshift(time);
-        if (this.busyTimes.length > 16) this.busyTimes.length = 16;
+        self.busyList.unshift({ num: 1, date, time });
+        self.busyTimes.unshift(time);
+        if (self.busyTimes.length > 16) self.busyTimes.length = 16;
       }
-      this.busyList[0].num++;
-      this.busy++;
-      this.busyText = `${this.busy} 🍺`;
-      if (this.stack.length > 10) this.stack.length = 10;
-      if (!this.stack.length) this.stack.push(1000.0);
-      else this.stack[0] += 1000;
-      this.updateSpan();
+      self.busyList[0].num++;
+      self.busy++;
+      self.busyText = `${self.busy} 🍺`;
+      if (self.stack.length > 10) self.stack.length = 10;
+      if (!self.stack.length) self.stack.push(1000.0);
+      else self.stack[0] += 1000;
+      self.updateSpan();
       return;
     }
-    this.busy = 1;
-    this.updateDate()
+    self.busy = 1;
+    self.updateDate()
     .then(() => {
-      this.busyText = '';
-      this.busy = 0;
+      self.busyText = '';
+      self.busy = 0;
     });
   },
 
   interval() {
     setTimeout(() => {
-      setInterval(() => this.checkDate(), 1000);
+      setInterval(() => self.checkDate(), 1000);
     }, 1000 - (Date.now() % 1000));
   },
 
@@ -112,17 +126,17 @@ const Titan = {
     const arrayBuffer = await fetch('/assets/mp3/warning1.mp3')
     .then(res => res.arrayBuffer())
     .catch(() => new ArrayBuffer());
-    this.audioContext = new AudioContext();
-    this.audioContext.addEventListener('statechange', event => {
+    self.audioContext = new AudioContext();
+    self.audioContext.addEventListener('statechange', event => {
       logger.info('statechange', event);
     });
-    this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+    self.audioBuffer = await self.audioContext.decodeAudioData(arrayBuffer);
   },
 
   async playSound() {
-    const audioSource = this.audioContext.createBufferSource();
-    audioSource.buffer = this.audioBuffer;
-    audioSource.connect(this.audioContext.destination);
+    const audioSource = self.audioContext.createBufferSource();
+    audioSource.buffer = self.audioBuffer;
+    audioSource.connect(self.audioContext.destination);
     audioSource.addEventListener('ended', () => {
       audioSource.disconnect();
       logger.info('disconnect audioSource');
@@ -131,35 +145,22 @@ const Titan = {
   },
 
   async play() {
-    if (this.latest && (this.latest + 60000) > Date.now()) return;
-    this.latest = Date.now();
-    if (this.audioBuffer) await this.playSound();
+    if (self.latest && (self.latest + 60000) > Date.now()) return;
+    self.latest = Date.now();
+    if (self.audioBuffer) await self.playSound();
     logger.info(...['alert play sound.',
-      this.audioBuffer?.length ?? 'incomplete load audio buffer',
+      self.audioBuffer?.length ?? 'incomplete load audio buffer',
     ]);
   },
 };
 
 createApp({
   setup() {
-    return reactive({
-      ...Titan,
-      actionText: '[⛄ 🍻]',
-      welcomeText: 'welcome',
-      spanText: 'guest',
-      dateText: '☃',
-      busyTimes: [],
-      busyText: '',
-      busy: 0,
-      busyList: [],
-      stack: [],
-      audioContext: undefined,
-      audioBuffer: undefined,
-    });
+    return Object.assign(self, Ocean);
   },
 
   mounted() {
-    this.start();
-    setTimeout(() => { this.action(); }, 2000);
+    self.start();
+    setTimeout(() => { self.action(); }, 2000);
   },
 }).mount('#app');
