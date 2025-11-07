@@ -1,7 +1,16 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { logger } from 'https://esm.sh/@jobscale/logger';
 
-const Titan = {
+const self = reactive({});
+
+const Ocean = {
+  signed: undefined,
+  login: '',
+  password: '',
+  confirm: '',
+  statusText: '',
+  loading: false,
+
   sign() {
     return fetch('/auth/sign', {
       method: 'POST',
@@ -13,7 +22,7 @@ const Titan = {
       return res.json();
     })
     .then(payload => {
-      this.signed = payload;
+      self.signed = payload;
     })
     .catch(() => {
       document.location.href = '/auth';
@@ -23,11 +32,11 @@ const Titan = {
   onSubmit() {
     const { login, password, confirm } = this;
     if (password !== confirm) {
-      this.statusText = 'Mismatch Confirmation';
+      self.statusText = 'Mismatch Confirmation';
       return;
     }
-    this.statusText = '';
-    this.loading = true;
+    self.statusText = '';
+    self.loading = true;
     const params = ['/user/reset', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -35,38 +44,30 @@ const Titan = {
     }];
     fetch(...params)
     .then(res => {
-      this.statusText = `${res.status} ${res.statusText}`;
+      self.statusText = `${res.status} ${res.statusText}`;
       if (res.status !== 200) {
         res.json().then(({ message }) => {
-          this.statusText += message;
+          self.statusText += message;
           throw new Error(res.statusText);
         });
       }
     })
     .catch(e => logger.error(e.message))
     .then(() => setTimeout(() => {
-      this.login = '';
-      this.password = '';
-      this.confirm = '';
-      this.loading = false;
+      self.login = '';
+      self.password = '';
+      self.confirm = '';
+      self.loading = false;
     }, 1000));
   },
 };
 
 createApp({
   setup() {
-    return reactive({
-      ...Titan,
-      signed: undefined,
-      login: '',
-      password: '',
-      confirm: '',
-      statusText: '',
-      loading: false,
-    });
+    return Object.assign(self, Ocean);
   },
 
   mounted() {
-    this.sign();
+    self.sign();
   },
 }).mount('#app');

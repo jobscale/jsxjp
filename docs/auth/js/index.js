@@ -1,11 +1,25 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { logger } from 'https://esm.sh/@jobscale/logger';
 
-const Titan = {
+const self = reactive({});
+
+const Ocean = {
+  login: '',
+  password: '',
+  statusText: '',
+  auth: {
+    allow: false,
+    login: '',
+    password: '',
+    code: '',
+    statusText: '',
+  },
+  loading: false,
+
   onSubmit() {
     const { login, password } = this;
-    this.statusText = '';
-    this.loading = true;
+    self.statusText = '';
+    self.loading = true;
     const params = ['/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -13,36 +27,36 @@ const Titan = {
     }];
     fetch(...params)
     .then(res => {
-      this.statusText = `${res.status} ${res.statusText}`;
+      self.statusText = `${res.status} ${res.statusText}`;
       if (res.status !== 200) {
         res.json().then(({ message }) => {
-          this.statusText += message;
+          self.statusText += message;
           throw new Error(res.statusText);
         });
       } else {
-        this.auth.login = this.login;
-        this.auth.password = this.password;
-        this.auth.statusText = '';
-        this.auth.allow = true;
+        self.auth.login = self.login;
+        self.auth.password = self.password;
+        self.auth.statusText = '';
+        self.auth.allow = true;
         res.json().then(data => {
           const href = data?.href;
           if (href) document.location.href = href;
         });
-        setTimeout(() => this.$refs.code.focus(), 200);
+        setTimeout(() => self.$refs.code.focus(), 200);
       }
     })
     .catch(e => logger.error(e.message))
     .then(() => setTimeout(() => {
-      this.login = '';
-      this.password = '';
-      this.loading = false;
+      self.login = '';
+      self.password = '';
+      self.loading = false;
     }, 1000));
   },
 
   onSubmitAuth() {
-    const { login, password, code } = this.auth;
-    this.auth.statusText = '';
-    this.loading = true;
+    const { login, password, code } = self.auth;
+    self.auth.statusText = '';
+    self.loading = true;
     const params = ['/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -50,10 +64,10 @@ const Titan = {
     }];
     fetch(...params)
     .then(res => {
-      this.auth.statusText = `${res.status} ${res.statusText}`;
+      self.auth.statusText = `${res.status} ${res.statusText}`;
       if (res.status !== 200) {
         res.json().then(({ message }) => {
-          this.auth.statusText += message;
+          self.auth.statusText += message;
           throw new Error(res.statusText);
         });
       } else {
@@ -64,27 +78,14 @@ const Titan = {
     })
     .catch(e => logger.error(e.message))
     .then(() => setTimeout(() => {
-      this.auth.code = '';
-      this.loading = false;
+      self.auth.code = '';
+      self.loading = false;
     }, 1000));
   },
 };
 
 createApp({
   setup() {
-    return reactive({
-      ...Titan,
-      login: '',
-      password: '',
-      statusText: '',
-      auth: {
-        allow: false,
-        login: '',
-        password: '',
-        code: '',
-        statusText: '',
-      },
-      loading: false,
-    });
+    return Object.assign(self, Ocean);
   },
 }).mount('#app');

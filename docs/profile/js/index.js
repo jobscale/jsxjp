@@ -1,7 +1,9 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { logger } from 'https://esm.sh/@jobscale/logger';
 
-const Titan = {
+const self = reactive({});
+
+const Ocean = {
   onColorScheme() {
     const html = document.querySelector('html');
     html.classList.toggle('dark-scheme');
@@ -11,9 +13,7 @@ const Titan = {
 
 createApp({
   setup() {
-    return reactive({
-      ...Titan,
-    });
+    return Object.assign(self, Ocean);
   },
 
   mounted() {

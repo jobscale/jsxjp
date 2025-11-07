@@ -1,30 +1,41 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { logger } from 'https://esm.sh/@jobscale/logger';
 
-const Titan = {
+const self = reactive({});
+
+const Ocean = {
+  loading: false,
+  mode: '',
+  plan: '',
+  hubId: undefined,
+  hub: { plan: [] },
+  persons: [],
+  person: { plan: [] },
+  summary: [],
+
   tyyEntry(personId) {
     if (personId) {
-      this.person = this.persons.find(item => item.personId === personId);
+      self.person = self.persons.find(item => item.personId === personId);
     } else {
-      this.person = { plan: [] };
+      self.person = { plan: [] };
     }
-    this.mode = 'entry';
+    self.mode = 'entry';
   },
 
   onCloseEntry() {
-    this.mode = 'hub';
+    self.mode = 'hub';
   },
 
   onRemovePerson() {
-    if (!this.person.personId) return;
+    if (!self.person.personId) return;
 
-    this.loading = true;
+    self.loading = true;
     const params = ['removePerson', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        hubId: this.hubId,
-        personId: this.person.personId,
+        hubId: self.hubId,
+        personId: self.person.personId,
       }),
     }];
     fetch(...params)
@@ -39,22 +50,22 @@ const Titan = {
   },
 
   onEntry() {
-    if (!this.person.name) {
-      this.required(this.$refs.name, true);
+    if (!self.person.name) {
+      self.required(self.$refs.name, true);
       return;
     }
 
-    this.loading = true;
-    for (let i = 0; i < this.hub.plan.length; i++) {
-      if (!this.person.plan[i]) this.person.plan[i] = '0';
+    self.loading = true;
+    for (let i = 0; i < self.hub.plan.length; i++) {
+      if (!self.person.plan[i]) self.person.plan[i] = '0';
     }
     const params = ['putPerson', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        hubId: this.hubId,
-        personId: this.person.personId,
-        person: this.person,
+        hubId: self.hubId,
+        personId: self.person.personId,
+        person: self.person,
       }),
     }];
     fetch(...params)
@@ -63,7 +74,7 @@ const Titan = {
       return res.json();
     })
     .then(({ person }) => {
-      this.person = person;
+      self.person = person;
     })
     .catch(e => logger.error(e.message))
     .then(() => setTimeout(() => {
@@ -76,17 +87,17 @@ const Titan = {
     const search = new URLSearchParams(query);
     const hubId = search.get('hub');
     if (!hubId) {
-      this.mode = 'top';
+      self.mode = 'top';
       return;
     }
-    this.hubId = hubId;
-    this.mode = 'hub';
+    self.hubId = hubId;
+    self.mode = 'hub';
 
-    this.loading = true;
+    self.loading = true;
     const params = ['hub', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ hubId: this.hubId }),
+      body: JSON.stringify({ hubId: self.hubId }),
     }];
     fetch(...params)
     .then(res => {
@@ -101,10 +112,10 @@ const Titan = {
           if (person.plan[index] === '3') acc[2] += 1;
           return acc;
         }, [0, 0, 0]);
-        this.summary[index] = sum;
+        self.summary[index] = sum;
       });
-      this.hub = hub;
-      this.persons = persons.sort((a, b) => {
+      self.hub = hub;
+      self.persons = persons.sort((a, b) => {
         if (a.createdAt < b.createdAt) return -1;
         if (a.createdAt > b.createdAt) return 1;
         return 0;
@@ -114,7 +125,7 @@ const Titan = {
       logger.error(e.message);
       window.location.href = '/plan-pulse';
     })
-    .then(() => setTimeout(() => { this.loading = false; }, 1000));
+    .then(() => setTimeout(() => { self.loading = false; }, 1000));
   },
 
   getLink() {
@@ -122,15 +133,15 @@ const Titan = {
   },
 
   onCreate() {
-    this.plan = this.hub.plan.join('\n');
-    this.mode = 'create';
+    self.plan = self.hub.plan.join('\n');
+    self.mode = 'create';
   },
 
   onClosePlan() {
-    if (this.hubId) {
-      this.mode = 'hub';
+    if (self.hubId) {
+      self.mode = 'hub';
     } else {
-      this.mode = 'top';
+      self.mode = 'top';
     }
   },
 
@@ -145,30 +156,30 @@ const Titan = {
   },
 
   onSubmit() {
-    this.required(this.$refs.plan);
-    this.required(this.$refs.title);
-    const plan = this.plan.split(/[\r\n]+/)
+    self.required(self.$refs.plan);
+    self.required(self.$refs.title);
+    const plan = self.plan.split(/[\r\n]+/)
     .map(item => item.trim())
     .filter(item => item.length);
     let bad = 0;
     if (!plan.length) {
-      this.required(this.$refs.plan, true);
+      self.required(self.$refs.plan, true);
       bad++;
     }
-    if (!this.hub.title) {
-      this.required(this.$refs.title, true);
+    if (!self.hub.title) {
+      self.required(self.$refs.title, true);
       bad++;
     }
     if (bad) return;
-    this.loading = true;
+    self.loading = true;
     logger.info('plan', plan);
-    this.hub.plan = plan;
+    self.hub.plan = plan;
     const params = ['putHub', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        hubId: this.hubId,
-        hub: this.hub,
+        hubId: self.hubId,
+        hub: self.hub,
       }),
     }];
     fetch(...params)
@@ -180,7 +191,7 @@ const Titan = {
       window.location.href = `?hub=${hubId}`;
     })
     .catch(e => logger.error(e.message))
-    .then(() => setTimeout(() => { this.loading = false; }, 1000));
+    .then(() => setTimeout(() => { self.loading = false; }, 1000));
   },
 
   onColorScheme() {
@@ -192,20 +203,10 @@ const Titan = {
 
 createApp({
   setup() {
-    return reactive({
-      ...Titan,
-      loading: false,
-      mode: '',
-      plan: '',
-      hubId: undefined,
-      hub: { plan: [] },
-      persons: [],
-      person: { plan: [] },
-      summary: [],
-    });
+    return Object.assign(self, Ocean);
   },
 
   async mounted() {
-    this.onHub();
+    self.onHub();
   },
 }).mount('#app');

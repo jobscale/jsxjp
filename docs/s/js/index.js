@@ -1,7 +1,14 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { logger } from 'https://esm.sh/@jobscale/logger';
 
-const Titan = {
+const self = reactive({});
+
+const Ocean = {
+  signed: undefined,
+  url: '',
+  shorten: '',
+  loading: false,
+
   sign() {
     return fetch('/auth/sign', {
       method: 'POST',
@@ -13,7 +20,7 @@ const Titan = {
       return res.json();
     })
     .then(payload => {
-      this.signed = payload;
+      self.signed = payload;
     })
     .catch(() => {
       document.location.href = '/auth';
@@ -21,13 +28,13 @@ const Titan = {
   },
 
   onSubmit() {
-    if (this.url.length < 20) return;
-    this.loading = true;
-    logger.info('url', this.url);
+    if (self.url.length < 20) return;
+    self.loading = true;
+    logger.info('url', self.url);
     const params = ['register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ html: this.url }),
+      body: JSON.stringify({ html: self.url }),
     }];
     fetch(...params)
     .then(res => {
@@ -35,22 +42,22 @@ const Titan = {
       return res.json();
     })
     .then(({ id }) => {
-      this.shorten = `jsx.jp/s/${id}`;
+      self.shorten = `jsx.jp/s/${id}`;
     })
     .catch(e => logger.error(e.message))
-    .then(() => setTimeout(() => { this.loading = false; }, 1000));
+    .then(() => setTimeout(() => { self.loading = false; }, 1000));
   },
 
   onCopyToClipboard() {
     if (!navigator.clipboard) return;
-    if (!this.shorten.length) return;
-    navigator.clipboard.writeText(this.shorten)
+    if (!self.shorten.length) return;
+    navigator.clipboard.writeText(self.shorten)
     .then(() => {
-      this.$refs.clipboard.classList.add('try-action');
-      this.$refs.clipboard.classList.add('fa-beat-fade');
+      self.$refs.clipboard.classList.add('try-action');
+      self.$refs.clipboard.classList.add('fa-beat-fade');
       setTimeout(() => {
-        this.$refs.clipboard.classList.remove('try-action');
-        this.$refs.clipboard.classList.remove('fa-beat-fade');
+        self.$refs.clipboard.classList.remove('try-action');
+        self.$refs.clipboard.classList.remove('fa-beat-fade');
       }, 2500);
       logger.debug('Copied to clipboard');
     })
@@ -66,17 +73,11 @@ const Titan = {
 
 createApp({
   setup() {
-    return reactive({
-      ...Titan,
-      signed: undefined,
-      url: '',
-      shorten: '',
-      loading: false,
-    });
+    return Object.assign(self, Ocean);
   },
 
   async mounted() {
-    await this.sign();
-    this.$refs.url.focus();
+    await self.sign();
+    self.$refs.url.focus();
   },
 }).mount('#app');

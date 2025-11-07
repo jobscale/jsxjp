@@ -24,7 +24,24 @@ const logger = createLogger('debug', {
 const strictEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const deepClone = obj => JSON.parse(JSON.stringify(obj));
 
-const Titan = {
+const self = reactive({});
+
+const Ocean = {
+  version,
+  status: version,
+  signed: {},
+  loading: true,
+  refFiles: [],
+  preList: [],
+  list: [],
+  tags: {},
+  imageTags: {},
+  modify: {},
+  showMessage: '',
+  preview: undefined,
+  editTags: [],
+  cacheImage: {},
+
   sign() {
     return fetch('/auth/sign', {
       method: 'POST',
@@ -36,7 +53,7 @@ const Titan = {
       return res.json();
     })
     .then(payload => {
-      this.signed = payload;
+      self.signed = payload;
     })
     .catch(() => {
       document.location.href = '/auth';
@@ -44,79 +61,79 @@ const Titan = {
   },
 
   async onLoad() {
-    const { tags, imageTags } = (await this.getData([
+    const { tags, imageTags } = (await self.getData([
       { name: 'tags' },
       { name: 'imageTags' },
     ])) || {};
-    this.tags = tags || {};
-    this.updateImageTags(imageTags || {});
+    self.tags = tags || {};
+    self.updateImageTags(imageTags || {});
     const { searchParams } = new URL(window.location.href);
     if (searchParams.has('t')) {
       decodeURIComponent(searchParams.get('t')).split(',').forEach(key => {
-        if (this.tags[key] === undefined) return;
-        this.tags[key] = true;
+        if (self.tags[key] === undefined) return;
+        self.tags[key] = true;
       });
     }
-    this.modify = deepClone(this.imageTags);
+    self.modify = deepClone(self.imageTags);
   },
 
   async onSave(tags) {
     if (tags) {
       Object.keys(tags).forEach(key => {
-        this.tags[key] = this.tags[key] || false;
+        self.tags[key] = self.tags[key] || false;
       });
-    } else if (strictEqual(this.modify, this.imageTags)) return;
-    this.updateImageTags(this.modify);
+    } else if (strictEqual(self.modify, self.imageTags)) return;
+    self.updateImageTags(self.modify);
     tags = {};
-    Object.keys(this.tags).forEach(key => { tags[key] = false; });
-    await this.putData({
+    Object.keys(self.tags).forEach(key => { tags[key] = false; });
+    await self.putData({
       tags,
-      imageTags: this.imageTags,
+      imageTags: self.imageTags,
     });
   },
 
   updateImageTags(input) {
     const imageTags = deepClone(input);
-    this.list.forEach(item => {
-      this.imageTags[item.name] = { tags: {} };
-      Object.keys(this.tags).forEach(key => {
-        this.imageTags[item.name].tags[key] = imageTags[item.name].tags[key] || false;
+    self.list.forEach(item => {
+      self.imageTags[item.name] = { tags: {} };
+      Object.keys(self.tags).forEach(key => {
+        self.imageTags[item.name].tags[key] = imageTags[item.name].tags[key] || false;
       });
     });
   },
 
   itemShown(item) {
-    const enabled = Object.keys(this.tags).filter(key => this.tags[key]);
+    const enabled = Object.keys(self.tags).filter(key => self.tags[key]);
     if (!enabled.length) return '';
     for (const key of enabled) {
-      if (this.imageTags[item.name]?.tags[key]) return '';
+      if (self.imageTags[item.name]?.tags[key]) return '';
     }
     return 'hide';
   },
 
   onEdit() {
-    this.editTags = Object.keys(this.tags);
-    if (!Object.keys(this.editTags).length) this.onAddTag();
+    self.editTags = Object.keys(self.tags);
+    if (!Object.keys(self.editTags).length) self.onAddTag();
   },
 
   onAddTag() {
-    this.editTags.push('');
+    self.editTags.push('');
   },
 
   onRemoveTag(index) {
-    this.editTags.splice(index, 1);
+    self.editTags.splice(index, 1);
   },
 
   async onCloseTag() {
-    const editTags = this.editTags.filter(Number);
+    const editTags = self.editTags.filter(Number);
     const tags = {};
     editTags.forEach(key => {
-      tags[key] = !!this.tags[key];
+      tags[key] = !!self.tags[key];
     });
-    if (!strictEqual(tags, this.tags)) {
-      await this.onSave(tags);
+    if (!strictEqual(tags, self.tags)) {
+      await self.onSave(tags);
     }
-    this.editTags = [];
+    self.editTags = [];
   },
 
   async find() {
@@ -124,8 +141,8 @@ const Titan = {
       method: 'POST',
       redirect: 'error',
     }];
-    this.list.length = 0;
-    this.preList.length = 0;
+    self.list.length = 0;
+    self.preList.length = 0;
     return fetch(...params)
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
@@ -133,21 +150,21 @@ const Titan = {
     })
     .then(({ images }) => {
       images.forEach(name => {
-        this.preList.unshift({ name });
+        self.preList.unshift({ name });
       });
-      this.loadNextBatch();
+      self.loadNextBatch();
     })
     .catch(e => logger.error(e.message));
   },
 
   onImageLoad() {
-    this.loadNextBatch();
+    self.loadNextBatch();
   },
 
   loadNextBatch() {
-    if (!this.preList.length) return;
-    const nextItems = this.preList.splice(0, 1);
-    this.list.push(...nextItems);
+    if (!self.preList.length) return;
+    const nextItems = self.preList.splice(0, 1);
+    self.list.push(...nextItems);
   },
 
   async getData(list) {
@@ -172,11 +189,11 @@ const Titan = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(dataset),
     }];
-    this.loading = true;
+    self.loading = true;
     return fetch(...params)
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
-      this.loading = false;
+      self.loading = false;
       return res.json();
     })
     .catch(e => logger.error(e.message));
@@ -185,15 +202,15 @@ const Titan = {
   async onReadFile(event) {
     const { files } = event.target;
     if (!files) return;
-    this.refFiles = [];
-    this.status = `${files.length} `;
+    self.refFiles = [];
+    self.status = `${files.length} `;
     for (const file of files) {
-      await this.readFile(file)
+      await self.readFile(file)
       .then(item => {
-        this.refFiles.push(item);
+        self.refFiles.push(item);
       })
       .catch(e => {
-        this.status += `${e.message} `;
+        self.status += `${e.message} `;
         logger.error(e);
       });
     }
@@ -204,11 +221,11 @@ const Titan = {
       'image/png', 'image/jpeg', 'image/gif', 'image/webp',
     ];
     if (!ALLOW.includes(file.type)) {
-      this.$refs.file.value = '';
-      this.status += 'unsupported content type ';
+      self.$refs.file.value = '';
+      self.status += 'unsupported content type ';
       throw new Error('unsupported content type');
     }
-    const item = await this.sanitizePicture(file, 0.6);
+    const item = await self.sanitizePicture(file, 0.6);
     return item;
   },
 
@@ -222,7 +239,7 @@ const Titan = {
       img.src = event.target.result;
     });
     img.addEventListener('load', () => {
-      const { width, height } = this.adjustSize(img.width, img.height, 2048);
+      const { width, height } = self.adjustSize(img.width, img.height, 2048);
       // Assuming Live Photo duration is 3 seconds (adjust as needed)
       canvas.width = width;
       canvas.height = height;
@@ -280,34 +297,34 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
   },
 
   async onSubmit() {
-    if (!this.$refs.file.files.length) return;
-    this.loading = true;
-    this.modify = deepClone(this.imageTags);
+    if (!self.$refs.file.files.length) return;
+    self.loading = true;
+    self.modify = deepClone(self.imageTags);
     const list = [];
-    for (const item of [...this.refFiles]) {
-      await this.upload(item.file)
+    for (const item of [...self.refFiles]) {
+      await self.upload(item.file)
       .catch(e => {
         logger.error(e.message);
-        this.status = e.message;
+        self.status = e.message;
       });
-      const index = this.refFiles.findIndex(v => item.file.name === v.name);
-      const [data] = this.refFiles.splice(index, 1);
+      const index = self.refFiles.findIndex(v => item.file.name === v.name);
+      const [data] = self.refFiles.splice(index, 1);
       const { name } = data.file;
-      this.modify[name] = { tags: this.tags };
-      this.status = this.refFiles.length.toLocaleString();
+      self.modify[name] = { tags: self.tags };
+      self.status = self.refFiles.length.toLocaleString();
       await new Promise(resolve => { setTimeout(resolve, 200); });
       list.unshift({ name });
     }
-    this.list.unshift(...list);
-    await this.onSave();
-    this.$refs.file.value = '';
-    this.refFiles = [];
-    this.loading = false;
+    self.list.unshift(...list);
+    await self.onSave();
+    self.$refs.file.value = '';
+    self.refFiles = [];
+    self.loading = false;
   },
 
   async remove() {
-    if (!this.preview) return;
-    this.loading = true;
+    if (!self.preview) return;
+    self.loading = true;
     const { preview } = this;
     const params = ['remove', {
       method: 'POST',
@@ -318,16 +335,16 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
     await fetch(...params)
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
-      const index = this.list.findIndex(item => item.name === preview.name);
-      this.list.splice(index, 1);
-      this.preview = undefined;
-      this.$nextTick(() => {
-        window.scrollTo(0, this.scrollY);
+      const index = self.list.findIndex(item => item.name === preview.name);
+      self.list.splice(index, 1);
+      self.preview = undefined;
+      self.$nextTick(() => {
+        window.scrollTo(0, self.scrollY);
       });
       return res.json();
     })
     .catch(e => logger.error(e.message));
-    this.loading = false;
+    self.loading = false;
   },
 
   loadImage(url) {
@@ -347,55 +364,55 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
   },
 
   async showImage() {
-    const { name } = this.preview;
+    const { name } = self.preview;
     const imagePath = `i/${name}`;
-    if (this.cacheImage[imagePath]) {
-      this.preview.imgUrl = this.cacheImage[imagePath];
+    if (self.cacheImage[imagePath]) {
+      self.preview.imgUrl = self.cacheImage[imagePath];
       return;
     }
-    this.loading = true;
-    this.loadImage(imagePath)
-    .catch(() => this.loadImage(`t/${name}`))
+    self.loading = true;
+    self.loadImage(imagePath)
+    .catch(() => self.loadImage(`t/${name}`))
     .then(imgUrl => {
-      this.preview.imgUrl = imgUrl;
-      this.cacheImage[imagePath] = imgUrl;
+      self.preview.imgUrl = imgUrl;
+      self.cacheImage[imagePath] = imgUrl;
     })
     .catch(e => {
       logger.error(e.message);
-      this.showMessage = e.message;
+      self.showMessage = e.message;
     })
     .then(() => {
-      this.loading = false;
+      self.loading = false;
     });
   },
 
   async show(item) {
     if (!item) {
-      await this.onSave();
-      this.preview = undefined;
-      this.$nextTick(() => {
-        window.scrollTo(0, this.scrollY);
+      await self.onSave();
+      self.preview = undefined;
+      self.$nextTick(() => {
+        window.scrollTo(0, self.scrollY);
       });
       return;
     }
-    this.scrollY = window.scrollY;
-    this.showMessage = 'Now Loading...';
-    this.preview = item;
-    this.showImage();
+    self.scrollY = window.scrollY;
+    self.showMessage = 'Now Loading...';
+    self.preview = item;
+    self.showImage();
   },
 
   onShowNext() {
-    const { name } = this.preview;
-    const index = this.list.findIndex(item => item.name === name);
-    this.preview = this.list[index + 1 >= this.list.length ? 0 : index + 1];
-    this.showImage();
+    const { name } = self.preview;
+    const index = self.list.findIndex(item => item.name === name);
+    self.preview = self.list[index + 1 >= self.list.length ? 0 : index + 1];
+    self.showImage();
   },
 
   onShowPrev() {
-    const { name } = this.preview;
-    const index = this.list.findIndex(item => item.name === name);
-    this.preview = this.list[index < 1 ? this.list.length - 1 : index - 1];
-    this.showImage();
+    const { name } = self.preview;
+    const index = self.list.findIndex(item => item.name === name);
+    self.preview = self.list[index < 1 ? self.list.length - 1 : index - 1];
+    self.showImage();
   },
 
   onColorScheme() {
@@ -407,31 +424,15 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
 
 createApp({
   setup() {
-    return reactive({
-      ...Titan,
-      version,
-      status: version,
-      signed: {},
-      loading: true,
-      refFiles: [],
-      preList: [],
-      list: [],
-      tags: {},
-      imageTags: {},
-      modify: {},
-      showMessage: '',
-      preview: undefined,
-      editTags: [],
-      cacheImage: {},
-    });
+    return Object.assign(self, Ocean);
   },
 
   async mounted() {
-    await this.sign();
-    if (!this.list.length) {
-      await this.find();
-      await this.onLoad();
-      setTimeout(() => { this.loading = false; }, 500);
+    await self.sign();
+    if (!self.list.length) {
+      await self.find();
+      await self.onLoad();
+      setTimeout(() => { self.loading = false; }, 500);
     }
   },
 }).mount('#app');
