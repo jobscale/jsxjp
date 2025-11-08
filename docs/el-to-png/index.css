@@ -3,8 +3,8 @@
 
 :root {
   color-scheme: light dark;
-  font-family: 'Mochiy Pop P One', Tangerine, sans-serif;
-  font-size: 2em;
+  font-family: Tangerine, 'Mochiy Pop P One', sans-serif;
+  font-size: 4em;
 }
 
 .wrap {
@@ -22,6 +22,10 @@
   padding: 0;
   width: 128px;
   height: 128px;
+}
+
+.inner {
+  padding-bottom: 10pt;
 }
 
 a {

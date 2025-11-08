@@ -27,5 +27,10 @@ module.exports = {
     'import/extensions': 'off',
     'import/no-unresolved': ['error', { ignore: ['^https://'] }],
     'no-restricted-globals': ['error', 'event', 'name', 'location', 'status'],
+    'import/no-extraneous-dependencies': ['error', {
+      devDependencies: [
+        'scripts/**', // scripts ディレクトリ配下は devDependencies OK
+      ],
+    }],
   },
 };

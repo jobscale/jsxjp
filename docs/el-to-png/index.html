@@ -15,7 +15,11 @@
           <a href="" @click.prevent="action">Click Start</a>
         </div>
         <span class="wrap" v-for="fname of list">
-          <span class="img" :data-name="fname">{{ fname }}</span>
+          <span class="img" :data-name="fname">
+            <span class="inner">
+              {{ fname }}
+            </span>
+          </span>
         </span>
       </section>
     </div>
