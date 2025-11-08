@@ -20,7 +20,7 @@ const Ocean = {
     });
     const link = document.createElement('a');
     link.href = canvas.toDataURL('image/png');
-    link.download = `${fname}.png`;
+    link.download = `${fname.replace(':', '_')}.png`;
     link.click();
   },
 
