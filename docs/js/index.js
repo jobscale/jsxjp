@@ -1,7 +1,16 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
-import dayjs from 'https://esm.sh/dayjs';
 
 const logger = console;
+
+const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
+  timeZone: 'Asia/Tokyo',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+}).format(ts || new Date());
 
 const self = reactive({});
 
@@ -61,7 +70,7 @@ const Ocean = {
     });
   },
 
-  updateDate() {
+  async updateDate() {
     const params = {
       begin: performance.now(),
       warn: setTimeout(() => self.play(), 2000),
@@ -76,8 +85,7 @@ const Ocean = {
         const diff = Math.floor((Date.now() - serverTime.getTime()) / 100) / 10;
         self.actionText += ` ${diff}`;
       }
-      const [date, time] = dayjs(serverTime).add(9, 'hour').toISOString().split(/[T.]/);
-      self.dateText = `${date} ${time}`;
+      self.dateText = formatTimestamp(serverTime);
       self.stack.unshift(span);
       self.updateSpan();
     })
@@ -89,8 +97,9 @@ const Ocean = {
   checkDate() {
     if (self.busy !== undefined) {
       if (self.busy === 0) {
-        const [date, time] = dayjs().add(9, 'hour').toISOString().split(/[T.]/);
+        const [date, time] = formatTimestamp().split(' ');
         self.busyList.unshift({ num: 0, date, time });
+        if (self.busyList.length > 500) self.busyList.pop();
       }
       self.busyList[0].num++;
       self.busy++;
@@ -99,6 +108,7 @@ const Ocean = {
       if (!self.stack.length) self.stack.push(1000.0);
       else self.stack[0] += 1000;
       self.updateSpan();
+      self.drawBusyChart();
       return;
     }
     self.busy = 0;
@@ -113,6 +123,32 @@ const Ocean = {
     setTimeout(() => {
       setInterval(() => self.checkDate(), 1000);
     }, 1000 - (Date.now() % 1000));
+  },
+
+  drawBusyChart() {
+    const colorList = [];
+    for (let i = 0; i < 5; i++) {
+      const r = i * 3;
+      colorList.push(`#${r.toString(16)}8${(15 - r).toString(16)}`);
+    }
+    const canvas = document.getElementById('busyChart');
+    if (!canvas || !canvas.getContext) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = Math.min(
+      self.busyList.length * 3,
+      Math.floor(window.innerWidth * 0.8),
+    );
+    canvas.height = canvas.getBoundingClientRect().height;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const data = self.busyList.map(item => item.num);
+    const max = Math.max(...data, 1);
+    const barWidth = canvas.width / data.length;
+    data.forEach((num, index) => {
+      const barHeight = (num / max) * canvas.height;
+      const color = Math.min(Math.floor(num / 3), colorList.length - 1);
+      ctx.fillStyle = colorList[color];
+      ctx.fillRect(index * barWidth, canvas.height - barHeight, barWidth - 2, barHeight);
+    });
   },
 
   async preloadContext() {
