@@ -41,7 +41,7 @@
       <section>
         <div class="worm">
           <span class="inline-scroll">
-            <span class="busy busy-ts" :title="busyList.map(v => v.time).join('\n')">{{ busyList[0].time }}</span>
+            <span class="busy busy-ts" :title="busyList.map(v => v.time).join('\n')">{{ busyList[0]?.time }}</span>
           </span>
           <span class="inline-scroll">
             <span class="busy">{{ busyText }}</span>
