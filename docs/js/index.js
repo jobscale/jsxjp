@@ -6,6 +6,7 @@ const logger = console;
 const self = reactive({});
 
 const Ocean = {
+  statusText: 'muted',
   actionText: '[⛄ 🍻]',
   welcomeText: 'welcome',
   spanText: 'guest',
@@ -35,7 +36,7 @@ const Ocean = {
       return;
     }
     self.actionText = 'loading...';
-    self.preloadContext().then(() => { self.actionText = '☃'; })
+    await self.preloadContext().then(() => { self.actionText = '☃'; })
     .then(self.serverName).then(host => { self.welcomeText = host; });
   },
 
@@ -162,5 +163,8 @@ createApp({
   mounted() {
     self.start();
     setTimeout(() => { self.action(); }, 2000);
+    document.addEventListener('click', () => {
+      self.statusText = '';
+    });
   },
 }).mount('#app');

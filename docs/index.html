@@ -18,7 +18,7 @@
 
 <body class="smoke">
   <div id="app" class="nav-main">
-    <div @click="action" class="container">
+    <div class="container">
       <section>
         <div class="inner-section">
           <div class="area">
@@ -111,6 +111,8 @@
       </section>
 
       <section>
+        <i :class="statusText === 'muted' ? 'fas fa-volume-mute' : 'fas fa-volume-up'"></i>
+        &nbsp;{{ statusText }}
         <button @click="onColorScheme" class="button">
           <i class="fa-solid fa-bagel"></i>
         </button>
