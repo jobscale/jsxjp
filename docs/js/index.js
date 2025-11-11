@@ -11,7 +11,6 @@ const Ocean = {
   welcomeText: 'welcome',
   spanText: 'guest',
   dateText: '☃',
-  busyTimes: [],
   busyText: '',
   busy: undefined,
   busyList: [],
@@ -92,8 +91,6 @@ const Ocean = {
       if (self.busy === 0) {
         const [date, time] = dayjs().add(9, 'hour').toISOString().split(/[T.]/);
         self.busyList.unshift({ num: 0, date, time });
-        self.busyTimes.unshift(time);
-        if (self.busyTimes.length > 16) self.busyTimes.length = 16;
       }
       self.busyList[0].num++;
       self.busy++;
