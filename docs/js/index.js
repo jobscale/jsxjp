@@ -13,11 +13,10 @@ const Ocean = {
   dateText: '☃',
   busyTimes: [],
   busyText: '',
-  busy: 0,
+  busy: undefined,
   busyList: [],
   stack: [],
-  audioContext: undefined,
-  audioBuffer: undefined,
+  latest: 0,
 
   onColorScheme() {
     const html = document.querySelector('html');
@@ -31,10 +30,6 @@ const Ocean = {
   },
 
   async action() {
-    if (self.audioContext) {
-      logger.info('existing audioContext');
-      return;
-    }
     self.actionText = 'loading...';
     await self.preloadContext().then(() => { self.actionText = '☃'; })
     .then(self.serverName).then(host => { self.welcomeText = host; });
@@ -93,10 +88,10 @@ const Ocean = {
   },
 
   checkDate() {
-    if (self.busy) {
-      if (self.busy === 1) {
+    if (self.busy !== undefined) {
+      if (self.busy === 0) {
         const [date, time] = dayjs().add(9, 'hour').toISOString().split(/[T.]/);
-        self.busyList.unshift({ num: 1, date, time });
+        self.busyList.unshift({ num: 0, date, time });
         self.busyTimes.unshift(time);
         if (self.busyTimes.length > 16) self.busyTimes.length = 16;
       }
@@ -109,11 +104,11 @@ const Ocean = {
       self.updateSpan();
       return;
     }
-    self.busy = 1;
+    self.busy = 0;
     self.updateDate()
     .then(() => {
       self.busyText = '';
-      self.busy = 0;
+      self.busy = undefined;
     });
   },
 
@@ -124,34 +119,34 @@ const Ocean = {
   },
 
   async preloadContext() {
-    const arrayBuffer = await fetch('/assets/mp3/warning1.mp3')
-    .then(res => res.arrayBuffer())
-    .catch(() => new ArrayBuffer());
-    self.audioContext = new AudioContext();
-    self.audioContext.addEventListener('statechange', event => {
-      logger.info('statechange', event);
-    });
-    self.audioBuffer = await self.audioContext.decodeAudioData(arrayBuffer);
+    if (self.audio) return;
+    self.audio = await fetch('/assets/mp3/warning1.mp3')
+    .then(res => res.blob())
+    .then(blob => {
+      const reader = new FileReader();
+      return new Promise((resolve, reject) => {
+        reader.onload = () => {
+          resolve(reader.result);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }).then(base64 => new Audio(base64));
   },
 
   async playSound() {
-    const audioSource = self.audioContext.createBufferSource();
-    audioSource.buffer = self.audioBuffer;
-    audioSource.connect(self.audioContext.destination);
-    audioSource.addEventListener('ended', () => {
-      audioSource.disconnect();
-      logger.info('disconnect audioSource');
-    });
-    audioSource.start();
+    if (!self.audio) return;
+    self.audio.currentTime = 0;
+    await self.audio.play()
+    .then(() => logger.info('audio play sound'))
+    .catch(e => logger.error('fail play sound', e.message));
   },
 
   async play() {
     if (self.latest && (self.latest + 60000) > Date.now()) return;
     self.latest = Date.now();
-    if (self.audioBuffer) await self.playSound();
-    logger.info(...['alert play sound.',
-      self.audioBuffer?.length ?? 'incomplete load audio buffer',
-    ]);
+    logger.info(new Date(), 'alert play sound.');
+    await self.playSound();
   },
 };
 
@@ -163,8 +158,6 @@ createApp({
   mounted() {
     self.start();
     setTimeout(() => { self.action(); }, 2000);
-    document.addEventListener('click', () => {
-      self.statusText = '';
-    });
+    document.addEventListener('click', () => { self.statusText = ''; });
   },
 }).mount('#app');
