@@ -9,10 +9,16 @@
 
 <body>
   <div id="app">
-    <div class="container">
+    <div class="container" :class="`${fontKey} ${fontSize}`">
       <section>
+        <select v-model="fontKey">
+          <option v-for="item of fonts" :value="item.class">{{ item.name }}</option>
+        </select>
+        <select v-model="fontSize">
+          <option v-for="item of sizeList" :value="item.class">{{ item.name }}</option>
+        </select>
         <div>
-          <a href="" @click.prevent="action">Click Start</a>
+          <a href="" @click.prevent="action">Click Download All Start</a>
         </div>
         <span class="wrap" v-for="fname of list">
           <span class="img" :data-name="fname">
