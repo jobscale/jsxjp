@@ -1427,6 +1427,9 @@ header.header {
   justify-content: flex-end;
 }
 
+.muted {
+  opacity: 0.6;
+}
 #busyChart {
   margin-top: 0.4em;
   height: 1.5em;
