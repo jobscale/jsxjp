@@ -176,10 +176,15 @@ const Ocean = {
   },
 
   async play() {
+    if (self.statusText === 'muted') return;
     if (self.latest && (self.latest + 60000) > Date.now()) return;
     self.latest = Date.now();
     logger.info(new Date(), 'alert play sound.');
     await self.playSound();
+  },
+
+  mute() {
+    self.statusText = self.statusText ? '' : 'muted';
   },
 };
 

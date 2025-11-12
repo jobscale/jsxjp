@@ -114,8 +114,10 @@
       </section>
 
       <section>
-        <i :class="statusText === 'muted' ? 'fas fa-volume-mute' : 'fas fa-volume-up'"></i>
-        &nbsp;{{ statusText }}
+        <span @click.stop.prevent="mute" :class="statusText">
+          <i :class="statusText === 'muted' ? 'fas fa-volume-mute' : 'fas fa-volume-up'"></i>
+          &nbsp;{{ statusText }}
+        </span>
         <button @click="onColorScheme" class="button">
           <i class="fa-solid fa-bagel"></i>
         </button>
