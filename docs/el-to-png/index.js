@@ -16,6 +16,8 @@ const Ocean = {
   fonts: [
     { name: 'Mochiy Pop P One', class: 'font-Mochiy-Pop-P-One' },
     { name: 'Monomaniac One', class: 'font-Monomaniac-One' },
+    { name: 'Zen Kurenaido', class: 'font-Zen-Kurenaido' },
+    { name: 'Yusei Magic', class: 'font-Yusei-Magic' },
     { name: '教科書体', class: 'font-book' },
     { name: 'sans-serif', class: 'font-sans-serif' },
     { name: 'system', class: 'font-system' },
