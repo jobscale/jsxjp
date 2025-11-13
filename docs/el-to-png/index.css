@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&family=Monomaniac+One&family=Tangerine:wght@400;700');
+@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&family=Monomaniac+One&family=Tangerine:wght@400;700&family=Zen+Kurenaido&family=Yusei+Magic');
 @import url('https://site-assets.fontawesome.com/releases/v6.3.0/css/all.css');
 
 :root {
@@ -40,6 +40,12 @@
 }
 .font-Monomaniac-One {
   font-family: 'Monomaniac One';
+}
+.font-Zen-Kurenaido {
+  font-family: Zen Kurenaido;
+}
+.font-Yusei-Magic {
+  font-family: Yusei Magic;
 }
 .font-book {
   font-family: '教科書体';
