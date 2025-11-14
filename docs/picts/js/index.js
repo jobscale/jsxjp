@@ -325,7 +325,7 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
   async remove() {
     if (!self.preview) return;
     self.loading = true;
-    const { preview } = this;
+    const { preview } = self;
     const params = ['remove', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
