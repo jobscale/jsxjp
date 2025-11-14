@@ -29,7 +29,7 @@ const Ocean = {
   },
 
   onSubmit() {
-    const { password, confirm } = this;
+    const { password, confirm } = self;
     if (password !== confirm) {
       self.statusText = 'Mismatch Confirmation';
       return;

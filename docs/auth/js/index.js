@@ -17,7 +17,7 @@ const Ocean = {
   loading: false,
 
   onSubmit() {
-    const { login, password } = this;
+    const { login, password } = self;
     self.statusText = '';
     self.loading = true;
     const params = ['/auth/login', {
