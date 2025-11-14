@@ -9,22 +9,21 @@
 
 <body>
   <div id="app">
-    <div class="container" :class="`${fontKey} ${fontSize}`">
+    <div class="container" :class="fontKey" :style="fontSize">
       <section>
         <select v-model="fontKey">
           <option v-for="item of fonts" :value="item.class">{{ item.name }}</option>
         </select>
+        &nbsp;
         <select v-model="fontSize">
-          <option v-for="item of sizeList" :value="item.class">{{ item.name }}</option>
+          <option v-for="item of sizeList" :value="item.style">{{ item.name }}</option>
         </select>
         <div>
           <a href="" @click.prevent="action">Click Download All Start</a>
         </div>
-        <span class="wrap" v-for="fname of list">
-          <span class="img" :data-name="fname">
-            <span class="inner">
-              {{ fname }}
-            </span>
+        <span class="wrap" v-for="name of list">
+          <span class="img" :data-name="name">
+            <span class="inner" v-html="name.replace(/([0]+)/g, '<small>$1</small>')"></span>
           </span>
         </span>
       </section>

@@ -69,6 +69,10 @@
   font-family: 'Comic Sans MS', cursive;
 }
 
+small {
+  font-size: 0.88em;
+}
+
 .wrap {
   margin: 0;
   padding: 0;
