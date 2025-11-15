@@ -42,7 +42,7 @@ const Ocean = {
           const href = data?.href;
           if (href) document.location.href = href;
         });
-        setTimeout(() => self.$refs.code.focus(), 200);
+        setTimeout(() => document.querySelector('input[name="code"]').focus(), 200);
       }
     })
     .catch(e => logger.error(e.message))
