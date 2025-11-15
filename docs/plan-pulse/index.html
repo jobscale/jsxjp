@@ -39,7 +39,7 @@
                 </button>
               </div>
               <label>Title
-                <input v-model="hub.title" ref="title" type="search" placeholder="Vegan Party">
+                <input v-model="hub.title" name="title" type="search" placeholder="Vegan Party">
               </label>
               <label>Description
                 <input v-model="hub.description" type="search" placeholder="Let's have fun together">
@@ -49,7 +49,7 @@
             <div v-if="hubId" class="left margin">
               <div v-for="item of hub.plan">{{ item }}</div>
             </div>
-            <textarea v-model="plan" ref="plan" v-show="!hubId" class="plan-edit" placeholder="Today 8:00 PM in Osaka&#10;Tomorrow 7:30 PM in NewYork&#10;Day after tomorrow 7:00 PM in China&#10;"></textarea>
+            <textarea v-model="plan" name="plan" v-show="!hubId" class="plan-edit" placeholder="Today 8:00 PM in Osaka&#10;Tomorrow 7:30 PM in NewYork&#10;Day after tomorrow 7:00 PM in China&#10;"></textarea>
             <button type="submit" class="btn-submit">
               Register plan
             </button>
@@ -128,7 +128,7 @@
               </tbody>
             </table>
             <div>
-              <input v-model="person.name" ref="name" class="nickname" type="search" maxlength="16" placeholder="nickname">
+              <input v-model="person.name" name="name" class="nickname" type="search" maxlength="16" placeholder="nickname">
               <input v-model="person.comment" class="entry-comment" type="search" maxlength="16" placeholder="comment">
               <button v-if="person.personId" @click.prevent="onRemovePerson" type="button" class="ss-remove" title="remove">
                 <i class="fa-regular fa-trash-can"></i>

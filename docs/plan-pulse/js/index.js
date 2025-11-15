@@ -51,7 +51,8 @@ const Ocean = {
 
   onEntry() {
     if (!self.person.name) {
-      self.required(self.$refs.name, true);
+      const nameRef = document.querySelector('input[name="name"]');
+      self.required(nameRef, true);
       return;
     }
 
@@ -156,18 +157,20 @@ const Ocean = {
   },
 
   onSubmit() {
-    self.required(self.$refs.plan);
-    self.required(self.$refs.title);
+    const planRef = document.querySelector('textarea[name="plan"]');
+    const titleRef = document.querySelector('input[name="title"]');
+    self.required(planRef);
+    self.required(titleRef);
     const plan = self.plan.split(/[\r\n]+/)
     .map(item => item.trim())
     .filter(item => item.length);
     let bad = 0;
     if (!plan.length) {
-      self.required(self.$refs.plan, true);
+      self.required(planRef, true);
       bad++;
     }
     if (!self.hub.title) {
-      self.required(self.$refs.title, true);
+      self.required(titleRef, true);
       bad++;
     }
     if (bad) return;

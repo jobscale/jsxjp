@@ -53,11 +53,12 @@ const Ocean = {
     if (!self.shorten.length) return;
     navigator.clipboard.writeText(self.shorten)
     .then(() => {
-      self.$refs.clipboard.classList.add('try-action');
-      self.$refs.clipboard.classList.add('fa-beat-fade');
+      const clipboardRef = document.querySelector('main[name="clipboard"]');
+      clipboardRef.classList.add('try-action');
+      clipboardRef.classList.add('fa-beat-fade');
       setTimeout(() => {
-        self.$refs.clipboard.classList.remove('try-action');
-        self.$refs.clipboard.classList.remove('fa-beat-fade');
+        clipboardRef.classList.remove('try-action');
+        clipboardRef.classList.remove('fa-beat-fade');
       }, 2500);
       logger.debug('Copied to clipboard');
     })
@@ -78,6 +79,6 @@ createApp({
 
   async mounted() {
     await self.sign();
-    self.$refs.url.focus();
+    document.querySelector('input')?.focus();
   },
 }).mount('#app');

@@ -42,7 +42,7 @@
             <div class="rainbow">
               <p>Input your authorization code</p>
               <form @submit.prevent="onSubmitAuth" class="auth-area">
-                <input ref="code" v-model="auth.code" class="center" placeholder="auth code">
+                <input name="code" v-model="auth.code" class="center" placeholder="auth code">
                 <button type="submit" :disabled="auth.code.length < 6" class="center btn">AUTH</button>
                 <div>{{ auth.statusText }}</div>
               </form>

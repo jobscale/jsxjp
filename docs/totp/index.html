@@ -25,14 +25,14 @@
         </div>
         <section>
           <form @submit.prevent="onSubmit">
-            <input ref="token" v-model="token" class="input" type="search" maxlength="2048" placeholder="TOTP Token"><br>
+            <input name="token" v-model="token" class="input" type="search" maxlength="2048" placeholder="TOTP Token"><br>
             <button :disabled="token.length < 5" type="submit" :class="token.length >= 5 ? 'fa-beat' : ''">
               <i class="fa-regular fa-down-left-and-up-right-to-center fa-rotate-45 fa-size-big"></i>
             </button>
           </form>
         </section>
         <section v-for="(item, index) of list">
-          <main ref="clipboard">
+          <main name="clipboard">
             <input v-model="item" class="output code-6" type="search" :readonly="true">
             <button @click="onCopyToClipboard(index)">
               <i class="fa-regular fa-clone"></i>
