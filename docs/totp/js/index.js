@@ -32,7 +32,8 @@ const Ocean = {
   onCopyToClipboard(index) {
     if (!navigator.clipboard) return;
     if (!self.list[index].length) return;
-    const el = self.$refs.clipboard[index];
+    const clipboardRef = document.querySelector('main[name="clipboard"]');
+    const el = clipboardRef[index];
     navigator.clipboard.writeText(self.list[index])
     .then(() => {
       el.classList.add('try-action');
@@ -59,6 +60,6 @@ createApp({
   },
 
   async mounted() {
-    setTimeout(() => self.$refs.token.focus(), 200);
+    document.querySelector('input')?.focus();
   },
 }).mount('#app');

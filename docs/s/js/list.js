@@ -86,18 +86,18 @@ const Ocean = {
 
   showPopup(text, el) {
     clearTimeout(self.popupId);
-    const { popup } = self.$refs;
-    popup.style.opacity = '0';
+    const popupRef = document.querySelector('div[name="popup"]');
+    popupRef.style.opacity = '0';
     self.popupText = text;
     setTimeout(() => {
       const { left, right, top, bottom } = el.getBoundingClientRect();
       const x = (left + right) / 2;
       const y = top - (bottom - top);
-      popup.style.left = `${x - (popup.offsetWidth / 2)}px`;
-      popup.style.top = `${y - popup.offsetHeight}px`;
-      popup.style.opacity = '100';
-      self.popupId = setTimeout(() => {
-        self.popupText = '';
+      popupRef.style.left = `${x - (popupRef.offsetWidth / 2)}px`;
+      popupRef.style.top = `${y - popupRef.offsetHeight}px`;
+      popupRef.style.opacity = '100';
+      self.popupRefId = setTimeout(() => {
+        self.popupRefText = '';
       }, 2000);
     }, 100);
   },

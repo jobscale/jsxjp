@@ -221,7 +221,8 @@ const Ocean = {
       'image/png', 'image/jpeg', 'image/gif', 'image/webp',
     ];
     if (!ALLOW.includes(file.type)) {
-      self.$refs.file.value = '';
+      const fileRef = document.querySelector('input[name="file"]');
+      fileRef.value = '';
       self.status += 'unsupported content type ';
       throw new Error('unsupported content type');
     }
@@ -297,7 +298,8 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
   },
 
   async onSubmit() {
-    if (!self.$refs.file.files.length) return;
+    const fileRef = document.querySelector('input[name="file"]');
+    if (!fileRef.files.length) return;
     self.loading = true;
     self.modify = deepClone(self.imageTags);
     const list = [];
@@ -317,7 +319,7 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
     }
     self.list.unshift(...list);
     await self.onSave();
-    self.$refs.file.value = '';
+    fileRef.value = '';
     self.refFiles = [];
     self.loading = false;
   },
