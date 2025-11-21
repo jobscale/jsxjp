@@ -1,11 +1,3 @@
-/* eslint-disable
-  no-shadow,
-  no-unused-expressions,
-  no-bitwise,
-  no-multi-assign,
-  no-return-assign,
-*/
-
 class Svelte {
   constructor() {
     setTimeout(() => this.svelte(), 1e3);
