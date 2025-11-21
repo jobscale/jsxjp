@@ -1,4 +1,4 @@
-/* eslint-disable no-shadow */
+/* eslint-disable no-shadow, no-unused-expressions */
 
 class Svelte {
   constructor() {
@@ -331,7 +331,7 @@ class Svelte {
         name: 'world',
       },
     };
-    params.target.addEventListener('click', () => opts.raf = !opts.raf);
+    params.target.addEventListener('click', () => { opts.raf = !opts.raf; });
     S({}, params, M, I, s, {});
   }
 }

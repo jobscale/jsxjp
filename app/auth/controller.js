@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import createHttpError from 'http-errors';
 import { logger } from '@jobscale/logger';
-import { service as authService } from './service.js';
 import { service as apiService } from '../api/service.js';
+import { service as authService } from './service.js';
 
 export class Controller {
   login(req, res) {
