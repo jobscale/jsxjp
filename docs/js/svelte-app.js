@@ -1,3 +1,5 @@
+/* eslint-disable no-shadow */
+
 class Svelte {
   constructor() {
     setTimeout(() => this.svelte(), 1e3);
