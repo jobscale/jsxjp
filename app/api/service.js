@@ -1,6 +1,6 @@
 import os from 'os';
-import webPush from 'web-push';
 import { createHash } from 'crypto';
+import webPush from 'web-push';
 import nodemailer from 'nodemailer';
 import { logger } from '@jobscale/logger';
 import { Slack } from '@jobscale/slack';

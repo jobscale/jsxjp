@@ -1,6 +1,6 @@
 import { Router } from '../router.js';
-import { controller } from './controller.js';
 import { controller as authController } from '../auth/controller.js';
+import { controller } from './controller.js';
 
 const router = new Router();
 router.add('POST', '/upload', async (req, res) => {

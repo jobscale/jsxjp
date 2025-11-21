@@ -15,7 +15,12 @@ const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
 }).format(ts || new Date());
 
 const parseData = async data => {
-  try { return data.json(); } catch (e) { return { title: ',,Ծ‸Ծ,,', body: await data.text() }; }
+  try {
+    return data.json();
+  } catch (e) {
+    logger.debug(e.message);
+    return { title: ',,Ծ‸Ծ,,', body: await data.text() };
+  }
 };
 
 class ServiceWorker {

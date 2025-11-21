@@ -1,8 +1,8 @@
 import { createHash } from 'crypto';
 import createHttpError from 'http-errors';
 import speakeasy from 'speakeasy';
-import { auth } from './index.js';
 import { db } from '../db.js';
+import { auth } from './index.js';
 
 const jwtSecret = 'node-express-ejs';
 const getSecret = () => 'JSXJPX6EY4BMPXIRSSR74';

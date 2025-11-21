@@ -1,6 +1,6 @@
 import createHttpError from 'http-errors';
-import { service } from './service.js';
 import { service as authService } from '../auth/service.js';
+import { service } from './service.js';
 
 export class Controller {
   find(req, res) {

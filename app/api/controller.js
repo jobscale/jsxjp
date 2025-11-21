@@ -1,6 +1,6 @@
 import { logger } from '@jobscale/logger';
-import { service } from './service.js';
 import { service as authService } from '../auth/service.js';
+import { service } from './service.js';
 
 export class Controller {
   slack(req, res) {
