@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import createHttpError from 'http-errors';
-import { db } from '../db.js';
+import { db } from '../s3.js';
 
 const { ENV } = process.env;
 const { tableName } = {
