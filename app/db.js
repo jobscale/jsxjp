@@ -141,7 +141,4 @@ export class DB {
 export const db = new DB();
 export const connection = tableName => db.connection(tableName);
 
-export default {
-  db,
-  connection,
-};
+export default { db, connection };

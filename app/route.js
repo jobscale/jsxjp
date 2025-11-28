@@ -24,6 +24,4 @@ router.add('GET', '', controller.page);
 
 export const route = { router };
 
-export default {
-  route,
-};
+export default { route };

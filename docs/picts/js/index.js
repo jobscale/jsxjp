@@ -2,16 +2,26 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { createLogger } from 'https://esm.sh/@jobscale/logger';
 
+const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
+  timeZone: 'Asia/Tokyo',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+}).format(ts ? new Date(ts) : new Date());
+
 const version = 'v=0.5';
 const client = mqtt.connect('wss://mqtt.jsx.jp/mqtt');
 const publish = payload => {
   const topic = `chat/logs-${version}/speak`;
   client.publish(topic, JSON.stringify({
     ...payload,
-    time: new Date().toISOString(),
+    time: formatTimestamp(),
     userId: 'browser',
     name: 'browser',
-    id: Math.floor(Date.now() % 10000),
+    id: crypto.randomUUID().slice(-6),
   }));
 };
 

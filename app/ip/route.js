@@ -6,6 +6,4 @@ router.add('GET', '', controller.ip);
 
 export const route = { router };
 
-export default {
-  route,
-};
+export default { route };

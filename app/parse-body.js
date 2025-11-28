@@ -57,6 +57,4 @@ export const parseBody = async req => {
   });
 };
 
-export default {
-  parseBody,
-};
+export default { parseBody };

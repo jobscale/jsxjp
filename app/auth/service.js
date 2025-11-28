@@ -7,9 +7,19 @@ import { auth } from './index.js';
 const jwtSecret = 'node-express-ejs';
 const getSecret = () => 'JSXJPX6EY4BMPXIRSSR74';
 
+const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
+  timeZone: 'Asia/Tokyo',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+}).format(ts ? new Date(ts) : new Date());
+
 export class Service {
   async now() {
-    return new Date().toISOString();
+    return formatTimestamp();
   }
 
   generateSecret() {
@@ -39,7 +49,7 @@ export class Service {
   async login(rest) {
     const { login, password, code } = rest;
     if (!login || !password) throw createHttpError(400);
-    const ts = new Date().toISOString();
+    const ts = formatTimestamp();
     const hash = createHash('sha3-256').update(`${login}/${password}`).digest('base64');
     const item = await db.getValue('user', login);
     if (!item || item.hash !== hash) throw createHttpError(401);
@@ -82,7 +92,4 @@ export class Service {
 
 export const service = new Service();
 
-export default {
-  Service,
-  service,
-};
+export default { Service, service };
