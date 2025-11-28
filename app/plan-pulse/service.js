@@ -1,88 +1,77 @@
+import { randomUUID } from 'crypto';
 import createHttpError from 'http-errors';
-import { connection } from '../db.js';
+import { db } from '../db.js';
 
 const { ENV } = process.env;
-const { hubTable, personTable } = {
+const { tableName } = {
   stg: {
-    hubTable: 'stg-pp-hub',
-    personTable: 'stg-pp-person',
+    tableName: 'stg-plan-pulse',
   },
   dev: {
-    hubTable: 'pp-hub',
-    personTable: 'pp-person',
+    tableName: 'plan-pulse',
   },
   test: {
-    hubTable: 'pp-hub',
-    personTable: 'pp-person',
+    tableName: 'plan-pulse',
   },
 }[ENV];
 
+const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
+  timeZone: 'Asia/Tokyo',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+}).format(ts ? new Date(ts) : new Date());
+
 export class Service {
+  async putHub({ hubId, hub }) {
+    if (hubId && !await db.getValue(tableName, hubId)) throw createHttpError(400);
+    hubId = randomUUID().replace(/-/g, '').slice(-18);
+    const { key } = await db.setValue(tableName, hubId, hub);
+    return { hubId: key };
+  }
+
+  async putPerson({ hubId, personId, person }) {
+    const record = await db.getValue(tableName, hubId);
+    if (!record) throw createHttpError(404);
+    const personTable = `${tableName}/${hubId}`;
+    if (!personId) {
+      personId = randomUUID().replace(/-/g, '').slice(-8);
+      person.createdAt = formatTimestamp();
+    } else {
+      const exist = await db.getValue(personTable, personId);
+      if (!exist) throw createHttpError(400);
+      person = { ...exist, ...person };
+    }
+    const { key } = await db.setValue(personTable, personId, person);
+    return { personId: key };
+  }
+
   async hub({ hubId }) {
-    const hubDb = await connection(hubTable);
-    const personDb = await connection(personTable);
-    const item = await hubDb.get(hubId);
+    const item = await db.getValue(tableName, hubId);
     if (!item) throw createHttpError(404);
-    const data = await personDb.fetch({ hubId });
+    const personTable = `${tableName}/${hubId}`;
+    const persons = await db.list(personTable);
     return {
-      hubId: item.key,
-      hub: item.hub,
-      persons: data.items.map(v => ({
-        personId: v.key,
-        ...v.person,
+      hubId,
+      hub: item,
+      persons: persons.map(v => ({
+        ...v, personId: v.key,
       })),
     };
   }
 
-  async putHub({ hubId, hub }) {
-    const hubDb = await connection(hubTable);
-    return (async () => undefined)()
-    .then(async () => {
-      if (hubId && !await hubDb.get(hubId)) throw createHttpError(400);
-    })
-    .then(() => hubDb.put({ key: hubId, hub }))
-    .then(({ key }) => ({ hubId: key }));
-  }
-
-  async putPerson({ hubId, personId, person }) {
-    const hubDb = await connection(hubTable);
-    const personDb = await connection(personTable);
-    return hubDb.get(hubId)
-    .then(record => {
-      if (!record) throw createHttpError(404);
-      return record;
-    })
-    .then(async () => {
-      if (!personId) return {};
-      const exist = await personDb.get(personId);
-      if (!exist) throw createHttpError(400);
-      return exist.person;
-    })
-    .then(exist => {
-      person.createdAt = exist.createdAt || new Date().toISOString();
-      return personDb.put({ key: personId, hubId, person });
-    })
-    .then(({ key }) => ({ personId: key }));
-  }
-
   async removePerson({ hubId, personId }) {
-    const hubDb = await connection(hubTable);
-    const personDb = await connection(personTable);
-    return hubDb.get(hubId)
-    .then(record => {
-      if (!record) throw createHttpError(404);
-      return record;
-    })
-    .then(async () => {
-      if (!await personDb.get(personId)) throw createHttpError(400);
-    })
-    .then(() => personDb.delete(personId));
+    const record = await db.getValue(tableName, hubId);
+    if (!record) throw createHttpError(404);
+    const personTable = `${tableName}/${hubId}`;
+    if (!await db.getValue(personTable, personId)) throw createHttpError(400);
+    await db.deleteValue(personTable, personId);
+    return {};
   }
 }
 
 export const service = new Service();
-
-export default {
-  Service,
-  service,
-};
+export default { Service, service };

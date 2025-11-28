@@ -62,7 +62,4 @@ export class Router {
 }
 
 export const router = new Router();
-export default {
-  Router,
-  router,
-};
+export default { Router, router };

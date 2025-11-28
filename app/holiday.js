@@ -37,7 +37,4 @@ export const isHoliday = async () => {
   return Boolean(holidays[today.unix()]);
 };
 
-export default {
-  getHoliday,
-  isHoliday,
-};
+export default { getHoliday, isHoliday };
