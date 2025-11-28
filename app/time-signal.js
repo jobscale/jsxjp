@@ -15,7 +15,7 @@ const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
   hour: '2-digit',
   minute: '2-digit',
   second: '2-digit',
-}).format(ts || new Date());
+}).format(ts ? new Date(ts) : new Date());
 
 const sliceByUnit = (array, unit) => {
   const count = Math.ceil(array.length / unit);
@@ -88,7 +88,4 @@ export class TimeSignal {
 
 export const timeSignal = new TimeSignal();
 
-export default {
-  TimeSignal,
-  timeSignal,
-};
+export default { TimeSignal, timeSignal };

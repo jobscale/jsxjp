@@ -55,6 +55,4 @@ export const parseCookies = (req, res) => {
   createCookieManager(req, res);
 };
 
-export default {
-  parseCookies,
-};
+export default { parseCookies };

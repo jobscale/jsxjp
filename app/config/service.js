@@ -9,6 +9,16 @@ const tableName = {
   test: 'config',
 }[ENV];
 
+const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
+  timeZone: 'Asia/Tokyo',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+}).format(ts ? new Date(ts) : new Date());
+
 export class Service {
   async register(rest) {
     const { name, data } = rest;
@@ -16,7 +26,7 @@ export class Service {
     return db.setValue(tableName, name, {
       name,
       data,
-      registerAt: new Date().toISOString(),
+      registerAt: formatTimestamp(),
     });
   }
 
@@ -38,7 +48,4 @@ export class Service {
 
 export const service = new Service();
 
-export default {
-  Service,
-  service,
-};
+export default { Service, service };

@@ -37,9 +37,4 @@ const plan = pen => () => decode(pen);
 export const planNine = plan(sample.planNine);
 export const pinky = plan(sample.pinky);
 
-export default {
-  planNine,
-  pinky,
-  encode,
-  decode,
-};
+export default { planNine, pinky, encode, decode };

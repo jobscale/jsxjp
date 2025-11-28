@@ -14,6 +14,4 @@ router.add('POST', '/remove', controller.remove);
 
 export const route = { router };
 
-export default {
-  route,
-};
+export default { route };

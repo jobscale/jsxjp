@@ -130,7 +130,4 @@ export class Store {
 export const store = new Store();
 export const connection = tableName => store.connection(tableName);
 
-export default {
-  store,
-  connection,
-};
+export default { store, connection };

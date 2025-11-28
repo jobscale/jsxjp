@@ -1,6 +1,5 @@
 import { createHash } from 'crypto';
 import createHttpError from 'http-errors';
-import dayjs from 'dayjs';
 import { JSDOM } from 'jsdom';
 import { db } from '../db.js';
 
@@ -16,9 +15,17 @@ const tableHash = {
   test: 'shorten-hash',
 }[ENV];
 
-const showDate = (date, defaultValue) => (date ? dayjs(date).add(9, 'hours').toISOString()
-.replace(/T/, ' ')
-.replace(/\..*$/, '') : defaultValue);
+const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
+  timeZone: 'Asia/Tokyo',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+}).format(ts ? new Date(ts) : new Date());
+
+const showDate = (date, defaultValue) => (date ? formatTimestamp(date) : defaultValue);
 
 const random = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -48,7 +55,7 @@ export class Service {
         caption,
         html,
         deletedAt: 0,
-        registerAt: new Date().toISOString(),
+        registerAt: formatTimestamp(),
         count: 0,
       });
     })
@@ -98,7 +105,7 @@ export class Service {
     })
     .then(data => db.setValue(tableName, key, {
       ...data,
-      lastAccess: new Date().toISOString(),
+      lastAccess: formatTimestamp(),
       count: (parseInt(data.count, 10) || 0) + 1,
     }).then(() => data))
     .then(({ html }) => ({ html }));
@@ -107,7 +114,4 @@ export class Service {
 
 export const service = new Service();
 
-export default {
-  Service,
-  service,
-};
+export default { Service, service };

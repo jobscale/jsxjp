@@ -21,6 +21,4 @@ router.add('POST', '/remove', async (req, res) => {
 
 export const route = { router };
 
-export default {
-  route,
-};
+export default { route };

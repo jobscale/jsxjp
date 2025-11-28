@@ -6,7 +6,4 @@ const app = {
 export const login = app.login();
 export const base32 = app.base32();
 
-export default {
-  login,
-  base32,
-};
+export default { login, base32 };

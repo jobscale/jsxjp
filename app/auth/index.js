@@ -29,7 +29,4 @@ export class Auth {
 
 export const auth = new Auth();
 
-export default {
-  Auth,
-  auth,
-};
+export default { Auth, auth };

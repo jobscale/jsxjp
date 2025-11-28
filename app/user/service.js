@@ -10,11 +10,11 @@ const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
   hour: '2-digit',
   minute: '2-digit',
   second: '2-digit',
-}).format(ts || new Date());
+}).format(ts ? new Date(ts) : new Date());
 
 export class Service {
   async now() {
-    return new Date().toISOString();
+    return formatTimestamp();
   }
 
   async find() {
@@ -38,7 +38,7 @@ export class Service {
       const hash = createHash('sha3-256').update(`${login}/${password}`).digest('base64');
       return db.setValue('user', login, {
         deletedAt: 0,
-        registerAt: new Date().toISOString(),
+        registerAt: formatTimestamp(),
         hash,
       });
     });
@@ -67,7 +67,7 @@ export class Service {
       if (item.deletedAt) return db.deleteValue('user', key);
       return db.setValue('user', key, {
         ...item,
-        deletedAt: new Date().toISOString(),
+        deletedAt: formatTimestamp(),
       });
     });
   }
@@ -75,7 +75,4 @@ export class Service {
 
 export const service = new Service();
 
-export default {
-  Service,
-  service,
-};
+export default { Service, service };

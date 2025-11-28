@@ -55,7 +55,6 @@ const Ocean = {
       self.required(nameRef, true);
       return;
     }
-
     self.loading = true;
     for (let i = 0; i < self.hub.plan.length; i++) {
       if (!self.person.plan[i]) self.person.plan[i] = '0';
@@ -74,8 +73,8 @@ const Ocean = {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();
     })
-    .then(({ person }) => {
-      self.person = person;
+    .then(({ personId }) => {
+      self.person.personId = personId;
     })
     .catch(e => logger.error(e.message))
     .then(() => setTimeout(() => {
@@ -93,7 +92,6 @@ const Ocean = {
     }
     self.hubId = hubId;
     self.mode = 'hub';
-
     self.loading = true;
     const params = ['hub', {
       method: 'POST',
@@ -162,8 +160,7 @@ const Ocean = {
     self.required(planRef);
     self.required(titleRef);
     const plan = self.plan.split(/[\r\n]+/)
-    .map(item => item.trim())
-    .filter(item => item.length);
+    .map(item => item.trim()).filter(Boolean);
     let bad = 0;
     if (!plan.length) {
       self.required(planRef, true);

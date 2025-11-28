@@ -18,6 +18,4 @@ router.add('POST', '/removePerson', async (req, res) => {
 
 export const route = { router };
 
-export default {
-  route,
-};
+export default { route };

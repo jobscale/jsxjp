@@ -21,6 +21,4 @@ const main = async () => {
   return app;
 };
 
-export default {
-  server: main(),
-};
+export default await main();

@@ -12,7 +12,7 @@ const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
   hour: '2-digit',
   minute: '2-digit',
   second: '2-digit',
-}).format(ts || new Date());
+}).format(ts ? new Date(ts) : new Date());
 
 const parseData = async data => {
   try {
