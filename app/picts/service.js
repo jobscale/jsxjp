@@ -8,25 +8,13 @@ import { service as configService } from '../config/service.js';
 
 const { ENV } = process.env;
 const { Bucket, forceCreate } = {
-  stg: {
-    Bucket: 'stg-store-jsx-picture',
-  },
-  dev: {
-    Bucket: 'dev-store-jsx-picture',
-  },
-  test: {
-    Bucket: 'test-store',
-    forceCreate: true,
-  },
+  stg: { Bucket: 'stg-store-jsx-picture' },
+  dev: { Bucket: 'dev-store-jsx-picture' },
+  test: { Bucket: 'test-store', forceCreate: true },
 }[ENV];
-
 const config = {
-  stg: {
-    region: 'us-east-1',
-  },
-  dev: {
-    region: 'us-east-1',
-  },
+  stg: { region: 'us-east-1' },
+  dev: { region: 'us-east-1' },
   test: {
     region: 'ap-northeast-1',
     endpoint: 'https://lo-stack.jsx.jp',
@@ -43,11 +31,11 @@ const config = {
   },
 }[ENV];
 
-const fetchObjectChunk = res => new Promise((resolve, reject) => {
-  const dataChunks = [];
-  res.Body.once('error', e => reject(e));
-  res.Body.on('data', chunk => dataChunks.push(chunk));
-  res.Body.once('end', () => resolve(dataChunks.join('')));
+const collectStream = stream => new Promise((resolve, reject) => {
+  const chunks = [];
+  stream.on('data', chunk => chunks.push(chunk));
+  stream.on('error', reject);
+  stream.on('end', () => resolve(Buffer.concat(chunks)));
 });
 
 export class Service {
@@ -143,8 +131,8 @@ export class Service {
       dataset[name] = await s3.send(new GetObjectCommand({
         Bucket, Key,
       }))
-      .then(res => fetchObjectChunk(res))
-      .then(body => JSON.parse(body))
+      .then(res => collectStream(res.Body))
+      .then(body => JSON.parse(body.toString()))
       .catch(e => {
         if (e.Code === 'NoSuchKey') return;
         logger.error(e);
@@ -183,5 +171,4 @@ export class Service {
 }
 
 export const service = new Service();
-
 export default { Service, service };
