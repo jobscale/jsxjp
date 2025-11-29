@@ -1,3 +1,4 @@
+import { logger } from '@jobscale/logger';
 import {
   SSMClient, GetParameterCommand, PutParameterCommand,
   GetParametersByPathCommand, DeleteParameterCommand,
@@ -42,7 +43,10 @@ export class DB {
       Name,
       WithDecryption: true,
     }))
-    .catch(() => ({}));
+    .catch(e => {
+      logger.error(e.message);
+      return {};
+    });
     if (!Parameter) return undefined;
     return JSON.parse(Parameter.Value);
   }
@@ -73,7 +77,7 @@ export class DB {
     if (!this.cache) this.cache = {};
     if (this.cache[tableName]) return this.cache[tableName];
     this.cache[tableName] = new SSMClient({
-      ...(await connect.credentials()),
+      ...await connect.credentials(),
       ...config,
     });
     return this.cache[tableName];

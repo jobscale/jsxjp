@@ -159,7 +159,7 @@ const pwa = {
 
   toUint8Array(base64String) {
     base64String = base64String.trim();
-    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
     const base64 = `${base64String}${padding}`
     .replace(/-/g, '+')
     .replace(/_/g, '/');
@@ -268,7 +268,7 @@ const entry = async () => {
   }
 
   // browser
-  window.pwa = { ...(window.pwa ?? {}), ...pwa };
+  window.pwa = { ...window.pwa ?? {}, ...pwa };
   window.pwa.register();
 };
 

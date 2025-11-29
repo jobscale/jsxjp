@@ -25,7 +25,7 @@ const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
   second: '2-digit',
 }).format(ts ? new Date(ts) : new Date());
 
-const showDate = (date, defaultValue) => (date ? formatTimestamp(date) : defaultValue);
+const showDate = (date, defaultValue) => date ? formatTimestamp(date) : defaultValue;
 
 const random = (length = 7) => {
   const bytes = crypto.randomBytes(16).toString('hex');
@@ -55,7 +55,7 @@ export class Service {
       const pattern = '^https://raw.githubusercontent.com/jobscale/_/main/infra/(.+)';
       const regExp = new RegExp(pattern);
       const [, key] = html.match(regExp) || [undefined, random(7)];
-      const caption = (await this.getCaption({ html })) || key;
+      const caption = await this.getCaption({ html }) || key;
       await db.setValue(tableHash, hash, { code: key });
       return db.setValue(tableName, key, {
         caption,

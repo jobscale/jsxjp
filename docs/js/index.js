@@ -122,7 +122,7 @@ const Ocean = {
   interval() {
     setTimeout(() => {
       setInterval(() => self.checkDate(), 1000);
-    }, 1000 - (Date.now() % 1000));
+    }, 1000 - Date.now() % 1000);
   },
 
   drawBusyChart() {
@@ -144,7 +144,7 @@ const Ocean = {
     const max = Math.max(...data, 1);
     const barWidth = canvas.width / data.length;
     data.forEach((num, index) => {
-      const barHeight = (num / max) * canvas.height;
+      const barHeight = num / max * canvas.height;
       const color = Math.min(Math.floor(num / 3), colorList.length - 1);
       ctx.fillStyle = colorList[color];
       ctx.fillRect(index * barWidth, canvas.height - barHeight, barWidth - 2, barHeight);
@@ -177,7 +177,7 @@ const Ocean = {
 
   async play() {
     if (self.statusText === 'muted') return;
-    if (self.latest && (self.latest + 60000) > Date.now()) return;
+    if (self.latest && self.latest + 60000 > Date.now()) return;
     self.latest = Date.now();
     logger.info(new Date(), 'alert play sound.');
     await self.playSound();
