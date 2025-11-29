@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import crypto from 'crypto';
 import createHttpError from 'http-errors';
 import { db } from '../s3.js';
 
@@ -15,6 +15,20 @@ const { tableName } = {
   },
 }[ENV];
 
+const random = (length = 7) => {
+  const bytes = crypto.randomBytes(16).toString('hex');
+  const num = BigInt(`0x${bytes}`);
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const r = BigInt(chars.length);
+  let result = '';
+  let n = num;
+  while (n > 0n) {
+    result = `${chars[Number.parseInt(n % r, 10)]}${result}`;
+    n /= r;
+  }
+  return result.slice(-length);
+};
+
 const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
   timeZone: 'Asia/Tokyo',
   year: 'numeric',
@@ -28,7 +42,7 @@ const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
 export class Service {
   async putHub({ hubId, hub }) {
     if (hubId && !await db.getValue(tableName, hubId)) throw createHttpError(400);
-    hubId = randomUUID().replace(/-/g, '').slice(-18);
+    hubId = random(12);
     const { key } = await db.setValue(tableName, hubId, hub);
     return { hubId: key };
   }
@@ -38,7 +52,7 @@ export class Service {
     if (!record) throw createHttpError(404);
     const personTable = `${tableName}/${hubId}`;
     if (!personId) {
-      personId = randomUUID().replace(/-/g, '').slice(-8);
+      personId = random(8);
       person.createdAt = formatTimestamp();
     } else {
       const exist = await db.getValue(personTable, personId);

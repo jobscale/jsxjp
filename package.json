@@ -1,7 +1,7 @@
 {
   "name": "jsxjp",
   "private": true,
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "nodejs http and vue custom template SSR MVC",
   "author": "jobscale <jobscale@users.noreply.github.com>",
   "license": "MIT",
@@ -32,7 +32,7 @@
     "web-push": "^3.6.7"
   },
   "devDependencies": {
-    "@jobscale/eslint-plugin-standard": "^0.0.4",
+    "@jobscale/eslint-plugin-standard": "^0.0.6",
     "eslint": "^9.39.1",
     "eslint-plugin-jest": "^29.2.1",
     "pre-commit": "^1.2.2",
