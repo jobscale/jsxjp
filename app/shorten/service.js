@@ -27,12 +27,18 @@ const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
 
 const showDate = (date, defaultValue) => (date ? formatTimestamp(date) : defaultValue);
 
-const random = () => {
+const random = (length = 7) => {
+  const bytes = crypto.randomBytes(16).toString('hex');
+  const num = BigInt(`0x${bytes}`);
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  return Array.from(
-    { length: 6 },
-    () => chars.charAt((Math.floor(Math.random() * 1000) + Date.now()) % chars.length),
-  ).join('');
+  const r = BigInt(chars.length);
+  let result = '';
+  let n = num;
+  while (n > 0n) {
+    result = `${chars[Number.parseInt(n % r, 10)]}${result}`;
+    n /= r;
+  }
+  return result.slice(-length);
 };
 
 export class Service {
@@ -48,7 +54,7 @@ export class Service {
       }
       const pattern = '^https://raw.githubusercontent.com/jobscale/_/main/infra/(.+)';
       const regExp = new RegExp(pattern);
-      const [, key] = html.match(regExp) || [undefined, random()];
+      const [, key] = html.match(regExp) || [undefined, random(7)];
       const caption = (await this.getCaption({ html })) || key;
       await db.setValue(tableHash, hash, { code: key });
       return db.setValue(tableName, key, {
@@ -113,5 +119,4 @@ export class Service {
 }
 
 export const service = new Service();
-
 export default { Service, service };

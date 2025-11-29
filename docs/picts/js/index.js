@@ -2,6 +2,20 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { createLogger } from 'https://esm.sh/@jobscale/logger';
 
+const random = (length = 7) => {
+  const bytes = crypto.randomBytes(16).toString('hex');
+  const num = BigInt(`0x${bytes}`);
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const r = BigInt(chars.length);
+  let result = '';
+  let n = num;
+  while (n > 0n) {
+    result = `${chars[Number.parseInt(n % r, 10)]}${result}`;
+    n /= r;
+  }
+  return result.slice(-length);
+};
+
 const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
   timeZone: 'Asia/Tokyo',
   year: 'numeric',
@@ -21,7 +35,7 @@ const publish = payload => {
     time: formatTimestamp(),
     userId: 'browser',
     name: 'browser',
-    id: crypto.randomUUID().slice(-6),
+    id: random(6),
   }));
 };
 
