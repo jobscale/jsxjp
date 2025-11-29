@@ -30,12 +30,11 @@ const config = {
   },
 }[ENV];
 
-const collectStream = stream => new Promise((resolve, reject) => {
+const expandStream = async stream => {
   const chunks = [];
-  stream.on('data', chunk => chunks.push(chunk));
-  stream.on('error', reject);
-  stream.on('end', () => resolve(Buffer.concat(chunks)));
-});
+  for await (const chunk of stream) { chunks.push(chunk); }
+  return Buffer.concat(chunks);
+};
 
 export class DB {
   async list(tableName, ContinuationToken, opt = { list: [] }) {
@@ -68,7 +67,7 @@ export class DB {
     }))
     .catch(() => ({}));
     if (!Body) return undefined;
-    const encoded = await collectStream(Body);
+    const encoded = await expandStream(Body);
     return JSON.parse(zlib.gunzipSync(encoded).toString('utf-8'));
   }
 
