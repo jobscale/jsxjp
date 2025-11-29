@@ -78,7 +78,8 @@ class ServiceWorker {
       const cache = await caches.open('pwa-builder-offline');
       await Promise.all(
         ['GET /', 'GET /favicon.ico'].map(async path => {
-          await self.fetch(path)
+          const [method, pathname] = path.split(' ');
+          await self.fetch(pathname, { method })
           .then(async res => {
             logger.debug(`[PWA Builder] Cached offline page during Install ${res.url}`);
             await cache.put(path, res);
