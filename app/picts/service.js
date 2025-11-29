@@ -31,12 +31,11 @@ const config = {
   },
 }[ENV];
 
-const collectStream = stream => new Promise((resolve, reject) => {
+const expandStream = async stream => {
   const chunks = [];
-  stream.on('data', chunk => chunks.push(chunk));
-  stream.on('error', reject);
-  stream.on('end', () => resolve(Buffer.concat(chunks)));
-});
+  for await (const chunk of stream) { chunks.push(chunk); }
+  return Buffer.concat(chunks);
+};
 
 export class Service {
   async find({ login }) {
@@ -131,7 +130,7 @@ export class Service {
       dataset[name] = await s3.send(new GetObjectCommand({
         Bucket, Key,
       }))
-      .then(res => collectStream(res.Body))
+      .then(res => expandStream(res.Body))
       .then(body => JSON.parse(body.toString()))
       .catch(e => {
         if (e.Code === 'NoSuchKey') return;
