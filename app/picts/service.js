@@ -41,7 +41,7 @@ const collectStream = stream => new Promise((resolve, reject) => {
 export class Service {
   async find({ login }) {
     const s3 = new S3Client({
-      ...(await this.credentials()),
+      ...await this.credentials(),
       ...config,
     });
     if (forceCreate) {
@@ -60,7 +60,7 @@ export class Service {
   async image({ login, type, fname }) {
     const dir = type === 'i' ? 'picts' : 'thumbnail';
     const s3 = new S3Client({
-      ...(await this.credentials()),
+      ...await this.credentials(),
       ...config,
     });
     const Key = `${login}/${dir}/${fname}`;
@@ -73,7 +73,7 @@ export class Service {
   async upload({ login, files }) {
     if (!login) throw new Error('login must be string');
     const s3 = new S3Client({
-      ...(await this.credentials()),
+      ...await this.credentials(),
       ...config,
     });
     for (const file of files) {
@@ -102,7 +102,7 @@ export class Service {
   async remove({ login, fname }) {
     if (!login) throw new Error('login must be string');
     const s3 = new S3Client({
-      ...(await this.credentials()),
+      ...await this.credentials(),
       ...config,
     });
     const Key = `${login}/picts/${fname}`;
@@ -120,7 +120,7 @@ export class Service {
   async getData({ login, list }) {
     if (!login) throw new Error('login must be string');
     const s3 = new S3Client({
-      ...(await this.credentials()),
+      ...await this.credentials(),
       ...config,
     });
     const dataset = {};
@@ -145,7 +145,7 @@ export class Service {
   async putData({ login, dataset }) {
     if (!login) throw new Error('login must be string');
     const s3 = new S3Client({
-      ...(await this.credentials()),
+      ...await this.credentials(),
       ...config,
     });
     for (const [name, item] of Object.entries(dataset)) {

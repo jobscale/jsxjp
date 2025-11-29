@@ -20,7 +20,7 @@ class Svelte {
       return typeof t === 'function';
     }
     function s(t, e) {
-      return t !== e || (t && typeof t === 'object') || typeof t === 'function';
+      return t !== e || t && typeof t === 'object' || typeof t === 'function';
     }
     function c(t, e) {
       t.appendChild(e);
@@ -307,10 +307,10 @@ class Svelte {
       raf: true,
       step: 1e3,
     };
-    const delay = () => opts.step - (Date.now() % opts.step);
-    const anime = interval => (opts.raf
+    const delay = () => opts.step - Date.now() % opts.step;
+    const anime = interval => opts.raf
       ? requestAnimationFrame(interval)
-      : setTimeout(interval, delay()));
+      : setTimeout(interval, delay());
     function M(t, e, n) {
       let [c, o, r, s] = [new Date()];
       const interval = () => {
@@ -321,7 +321,7 @@ class Svelte {
       t.$$.update = () => {
         8 & t.$$.dirty && n(2, o = c.getHours());
         8 & t.$$.dirty && n(1, r = c.getMinutes());
-        8 & t.$$.dirty && n(0, s = c.getSeconds() + (c.getMilliseconds() / 1e3));
+        8 & t.$$.dirty && n(0, s = c.getSeconds() + c.getMilliseconds() / 1e3);
       };
       return [s, r, o, c];
     }
