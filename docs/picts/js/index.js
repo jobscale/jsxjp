@@ -85,12 +85,12 @@ const Ocean = {
   },
 
   async onLoad() {
-    const { tags, imageTags } = (await self.getData([
+    const { tags, imageTags } = await self.getData([
       { name: 'tags' },
       { name: 'imageTags' },
-    ])) || {};
-    self.tags = tags || {};
-    self.updateImageTags(imageTags || {});
+    ]) ?? {};
+    self.tags = tags ?? {};
+    self.updateImageTags(imageTags ?? {});
     const { searchParams } = new URL(window.location.href);
     if (searchParams.has('t')) {
       decodeURIComponent(searchParams.get('t')).split(',').forEach(key => {
@@ -294,11 +294,11 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       if (width > height) {
         return {
           width: max,
-          height: Math.round((height * max) / width),
+          height: Math.round(height * max / width),
         };
       }
       return {
-        width: Math.round((width * max) / height),
+        width: Math.round(width * max / height),
         height: max,
       };
     }

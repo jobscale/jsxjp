@@ -93,7 +93,7 @@ const Ocean = {
       const { left, right, top, bottom } = el.getBoundingClientRect();
       const x = (left + right) / 2;
       const y = top - (bottom - top);
-      popupRef.style.left = `${x - (popupRef.offsetWidth / 2)}px`;
+      popupRef.style.left = `${x - popupRef.offsetWidth / 2}px`;
       popupRef.style.top = `${y - popupRef.offsetHeight}px`;
       popupRef.style.opacity = '100';
       self.popupRefId = setTimeout(() => {

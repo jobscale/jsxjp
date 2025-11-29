@@ -97,7 +97,7 @@ export class DB {
     if (!this.cache) this.cache = {};
     if (this.cache[bucketName]) return this.cache[bucketName];
     this.cache[bucketName] = new S3Client({
-      ...(await this.credentials()),
+      ...await this.credentials(),
       ...config,
     });
     return this.cache[bucketName];

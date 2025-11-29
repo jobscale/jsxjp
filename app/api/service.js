@@ -40,7 +40,7 @@ export class Service {
       ts, ua, host,
     } = rest;
     const subscription = { endpoint, expirationTime, keys: { auth, p256dh } };
-    const users = (await store.getValue('web/users', 'info')) || {};
+    const users = await store.getValue('web/users', 'info') ?? {};
     const hash = createHash('sha3-256').update(endpoint).digest('base64');
     if (users[hash]) {
       if (!login || users[hash].login === login) return { exist: true };

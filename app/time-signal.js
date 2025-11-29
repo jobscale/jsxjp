@@ -80,7 +80,7 @@ export class TimeSignal {
   async startTimeSignal() {
     const loop = async () => {
       await this.timeSignal();
-      setTimeout(loop, 1000 - (Date.now() % 1000));
+      setTimeout(loop, 1000 - Date.now() % 1000);
     };
     loop();
   }
