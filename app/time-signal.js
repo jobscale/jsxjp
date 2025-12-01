@@ -7,7 +7,7 @@ import { getHoliday } from './holiday.js';
 
 const logger = new Logger({ timestamp: true, noPathName: true });
 
-const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
+const formatTimestamp = (ts = Date.now()) => new Intl.DateTimeFormat('sv-SE', {
   timeZone: 'Asia/Tokyo',
   year: 'numeric',
   month: '2-digit',
@@ -15,7 +15,7 @@ const formatTimestamp = ts => new Intl.DateTimeFormat('sv-SE', {
   hour: '2-digit',
   minute: '2-digit',
   second: '2-digit',
-}).format(ts ? new Date(ts) : new Date());
+}).format(new Date(ts));
 
 const sliceByUnit = (array, unit) => {
   const count = Math.ceil(array.length / unit);
