@@ -11,6 +11,7 @@
     "start": "node index.js",
     "lint": "eslint",
     "pretest": "date -Iseconds",
+    "posttest": "npm run lint",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand --coverage --collectCoverage"
   },
   "pre-commit": [
