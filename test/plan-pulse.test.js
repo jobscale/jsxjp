@@ -48,7 +48,7 @@ describe('Plan Pulse', () => {
       it('should throw 400 if hubId exists but db.getValue returns false', async () => {
         mockDb.getValue.mockResolvedValue(null);
         await expect(service.putHub({ hubId: 'existing-id', hub: {} }))
-          .rejects.toThrow();
+        .rejects.toThrow();
       });
 
       it('should update hub if hubId exists and is valid', async () => {
@@ -63,7 +63,7 @@ describe('Plan Pulse', () => {
       it('should throw 404 if hub does not exist', async () => {
         mockDb.getValue.mockResolvedValue(null);
         await expect(service.putPerson({ hubId: 'hub-id', person: {} }))
-          .rejects.toThrow();
+        .rejects.toThrow();
       });
 
       it('should create new person if personId is not provided', async () => {
@@ -75,8 +75,8 @@ describe('Plan Pulse', () => {
 
       it('should update person if personId is provided and exists', async () => {
         mockDb.getValue
-          .mockResolvedValueOnce({}) // hub check
-          .mockResolvedValueOnce({ name: 'existing' }); // person check
+        .mockResolvedValueOnce({}) // hub check
+        .mockResolvedValueOnce({ name: 'existing' }); // person check
         mockDb.setValue.mockResolvedValue({ key: 'person-id' });
 
         const result = await service.putPerson({
@@ -89,15 +89,15 @@ describe('Plan Pulse', () => {
 
       it('should throw 400 if personId is provided but does not exist', async () => {
         mockDb.getValue
-          .mockResolvedValueOnce({}) // hub check
-          .mockResolvedValueOnce(null); // person check
+        .mockResolvedValueOnce({}) // hub check
+        .mockResolvedValueOnce(null); // person check
 
         await expect(service.putPerson({
           hubId: 'hub-id',
           personId: 'person-id',
           person: {},
         }))
-          .rejects.toThrow();
+        .rejects.toThrow();
       });
     });
 
@@ -119,15 +119,15 @@ describe('Plan Pulse', () => {
       it('should throw 404 if hub does not exist', async () => {
         mockDb.getValue.mockResolvedValue(null);
         await expect(service.hub({ hubId: 'hub-id' }))
-          .rejects.toThrow();
+        .rejects.toThrow();
       });
     });
 
     describe('removePerson', () => {
       it('should remove person', async () => {
         mockDb.getValue
-          .mockResolvedValueOnce({}) // hub check
-          .mockResolvedValueOnce({}); // person check
+        .mockResolvedValueOnce({}) // hub check
+        .mockResolvedValueOnce({}); // person check
         mockDb.deleteValue.mockResolvedValue({});
 
         const result = await service.removePerson({ hubId: 'hub-id', personId: 'person-id' });
@@ -138,16 +138,16 @@ describe('Plan Pulse', () => {
       it('should throw 404 if hub does not exist', async () => {
         mockDb.getValue.mockResolvedValue(null);
         await expect(service.removePerson({ hubId: 'hub-id', personId: 'person-id' }))
-          .rejects.toThrow();
+        .rejects.toThrow();
       });
 
       it('should throw 400 if person does not exist', async () => {
         mockDb.getValue
-          .mockResolvedValueOnce({}) // hub check
-          .mockResolvedValueOnce(null); // person check
+        .mockResolvedValueOnce({}) // hub check
+        .mockResolvedValueOnce(null); // person check
 
         await expect(service.removePerson({ hubId: 'hub-id', personId: 'person-id' }))
-          .rejects.toThrow();
+        .rejects.toThrow();
       });
     });
   });
