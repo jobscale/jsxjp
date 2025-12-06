@@ -15,14 +15,8 @@ const mockLogger = {
   debug: jest.fn(),
 };
 
-jest.unstable_mockModule('../app/db.js', () => ({
-  db: mockDb,
-}));
-
-jest.unstable_mockModule('@jobscale/logger', () => ({
-  logger: mockLogger,
-}));
-
+jest.unstable_mockModule('../app/db.js', () => ({ db: mockDb }));
+jest.unstable_mockModule('@jobscale/logger', () => ({ logger: mockLogger }));
 // Mock other routes
 const mockRouter = {
   router: {
@@ -41,17 +35,9 @@ jest.unstable_mockModule('../app/picts/route.js', () => ({ route: mockRouter }))
 const mockAuth = {
   decode: jest.fn(),
 };
-jest.unstable_mockModule('../app/auth/index.js', () => ({
-  auth: mockAuth,
-}));
-
-jest.unstable_mockModule('@aws-sdk/client-s3', () => ({
-  S3Client: jest.fn(),
-}));
-
-jest.unstable_mockModule('sharp', () => ({
-  default: jest.fn(),
-}));
+jest.unstable_mockModule('../app/auth/index.js', () => ({ auth: mockAuth }));
+jest.unstable_mockModule('@aws-sdk/client-s3', () => ({ S3Client: jest.fn() }));
+jest.unstable_mockModule('sharp', () => ({ default: jest.fn() }));
 
 const { app } = await import('../app/index.js');
 
