@@ -17,14 +17,8 @@ const mockLogger = {
   debug: jest.fn(),
 };
 
-jest.unstable_mockModule('../app/db.js', () => ({
-  db: mockDb,
-}));
-
-jest.unstable_mockModule('@jobscale/logger', () => ({
-  logger: mockLogger,
-}));
-
+jest.unstable_mockModule('../app/db.js', () => ({ db: mockDb }));
+jest.unstable_mockModule('@jobscale/logger', () => ({ logger: mockLogger }));
 // Mock shorten route to avoid pulling in jsdom via shorten/service.js
 const mockRouter = {
   router: {
@@ -43,18 +37,10 @@ jest.unstable_mockModule('../app/picts/route.js', () => ({ route: mockRouter }))
 const mockAuthService = {
   decode: jest.fn().mockResolvedValue({ login: 'alice' }),
 };
-jest.unstable_mockModule('../app/auth/service.js', () => ({
-  service: mockAuthService,
-}));
-
+jest.unstable_mockModule('../app/auth/service.js', () => ({ service: mockAuthService }));
 // Mock other dependencies to avoid side effects
-jest.unstable_mockModule('@aws-sdk/client-s3', () => ({
-  S3Client: jest.fn(),
-}));
-
-jest.unstable_mockModule('sharp', () => ({
-  default: jest.fn(),
-}));
+jest.unstable_mockModule('@aws-sdk/client-s3', () => ({ S3Client: jest.fn() }));
+jest.unstable_mockModule('sharp', () => ({ default: jest.fn() }));
 
 const { app } = await import('../app/index.js');
 
