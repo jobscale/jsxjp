@@ -17,7 +17,6 @@ router.add('POST', '/subscription', async (req, res) => {
 router.add('POST', '/hostname', controller.hostname);
 
 export const route = { router };
-
 export default {
   route: { router },
 };
