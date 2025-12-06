@@ -1,5 +1,6 @@
-import { Readable } from 'stream';
+
 import { describe, expect, jest, beforeEach } from '@jest/globals';
+import request from 'supertest';
 
 process.env.ENV = 'test';
 
@@ -58,78 +59,6 @@ jest.unstable_mockModule('sharp', () => ({
 const { app } = await import('../app/index.js');
 
 describe('User Routing via app/index.js', () => {
-  const request = (method, url, body = null, headers = {}) => new Promise((resolve) => {
-    const req = new Readable();
-    req.method = method;
-    req.url = url;
-    req.headers = { ...headers, host: 'localhost' };
-    req.socket = { encrypted: false, remoteAddress: '127.0.0.1' };
-
-    if (body) {
-      if (typeof body === 'object') {
-        req.push(JSON.stringify(body));
-        req.headers['content-type'] = 'application/json';
-      } else {
-        req.push(body);
-      }
-    }
-    req.push(null);
-
-    const res = {
-      statusCode: 200,
-      headers: {},
-      body: [],
-      setHeader(name, value) {
-        this.headers[name.toLowerCase()] = value;
-      },
-      getHeader(name) {
-        return this.headers[name.toLowerCase()];
-      },
-      getHeaders() {
-        return this.headers;
-      },
-      writeHead(statusCode, h) {
-        this.statusCode = statusCode;
-        if (h) {
-          for (const [key, value] of Object.entries(h)) {
-            this.headers[key.toLowerCase()] = value;
-          }
-        }
-      },
-      end(chunk) {
-        if (chunk) this.body.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
-        if (this.onFinish) this.onFinish();
-        resolve({
-          statusCode: this.statusCode,
-          headers: this.headers,
-          body: Buffer.concat(this.body).toString(),
-        });
-      },
-      write(chunk) {
-        this.body.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
-      },
-      on(event, cb) {
-        if (event === 'finish') this.onFinish = cb;
-      },
-      once(event, cb) {
-        if (event === 'finish') this.onFinish = cb;
-      },
-      emit(event) {
-        if (event === 'finish' && this.onFinish) this.onFinish();
-      },
-      writableEnded: false,
-    };
-
-    // Hook into end to set writableEnded (like picts.test.js)
-    const originalEnd = res.end;
-    res.end = function (...args) {
-      this.writableEnded = true;
-      originalEnd.apply(this, args);
-    };
-
-    app(req, res);
-  });
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -142,10 +71,10 @@ describe('User Routing via app/index.js', () => {
       ];
       mockDb.list.mockResolvedValue(users);
 
-      const res = await request('POST', '/user/find');
+      const res = await request(app).post('/user/find');
 
       expect(res.statusCode).toBe(200);
-      const data = JSON.parse(res.body);
+      const data = res.body;
       expect(data.rows).toHaveLength(2);
       expect(data.rows[0].id).toBe('user1');
       expect(mockDb.list).toHaveBeenCalledWith('user');
@@ -157,10 +86,12 @@ describe('User Routing via app/index.js', () => {
       mockDb.getValue.mockResolvedValue(null);
       mockDb.setValue.mockResolvedValue({});
 
-      const res = await request('POST', '/user/register', { login: 'testuser', password: 'password' });
+      const res = await request(app)
+      .post('/user/register')
+      .send({ login: 'testuser', password: 'password' });
 
       expect(res.statusCode).toBe(200);
-      expect(JSON.parse(res.body)).toEqual({ login: 'testuser' });
+      expect(res.body).toEqual({ login: 'testuser' });
       expect(mockDb.getValue).toHaveBeenCalledWith('user', 'testuser');
       expect(mockDb.setValue).toHaveBeenCalledWith('user', 'testuser', expect.objectContaining({
         deletedAt: 0,
@@ -171,13 +102,17 @@ describe('User Routing via app/index.js', () => {
     it('should fail if user already exists', async () => {
       mockDb.getValue.mockResolvedValue({ login: 'testuser' });
 
-      const res = await request('POST', '/user/register', { login: 'testuser', password: 'password' });
+      const res = await request(app)
+      .post('/user/register')
+      .send({ login: 'testuser', password: 'password' });
 
       expect(res.statusCode).toBe(400);
     });
 
     it('should fail if missing login or password', async () => {
-      const res = await request('POST', '/user/register', { login: 'testuser' });
+      const res = await request(app)
+      .post('/user/register')
+      .send({ login: 'testuser' });
       expect(res.statusCode).toBe(400);
     });
   });
@@ -188,10 +123,12 @@ describe('User Routing via app/index.js', () => {
       mockDb.getValue.mockResolvedValue(existingUser);
       mockDb.setValue.mockResolvedValue({});
 
-      const res = await request('POST', '/user/reset', { login: 'testuser', password: 'newpassword' });
+      const res = await request(app)
+      .post('/user/reset')
+      .send({ login: 'testuser', password: 'newpassword' });
 
       expect(res.statusCode).toBe(200);
-      expect(JSON.parse(res.body)).toEqual({ login: 'testuser' });
+      expect(res.body).toEqual({ login: 'testuser' });
       expect(mockDb.setValue).toHaveBeenCalledWith('user', 'testuser', expect.objectContaining({
         ...existingUser,
         hash: expect.any(String),
@@ -202,7 +139,9 @@ describe('User Routing via app/index.js', () => {
     it('should fail if user does not exist', async () => {
       mockDb.getValue.mockResolvedValue(null);
 
-      const res = await request('POST', '/user/reset', { login: 'testuser', password: 'password' });
+      const res = await request(app)
+      .post('/user/reset')
+      .send({ login: 'testuser', password: 'password' });
 
       expect(res.statusCode).toBe(400);
     });
@@ -214,10 +153,12 @@ describe('User Routing via app/index.js', () => {
       mockDb.getValue.mockResolvedValue(existingUser);
       mockDb.setValue.mockResolvedValue({ deletedAt: '2023-01-01' });
 
-      const res = await request('POST', '/user/remove', { id: 'user1' });
+      const res = await request(app)
+      .post('/user/remove')
+      .send({ id: 'user1' });
 
       expect(res.statusCode).toBe(200);
-      expect(JSON.parse(res.body)).toEqual({ deletedAt: expect.any(String) });
+      expect(res.body).toEqual({ deletedAt: expect.any(String) });
       expect(mockDb.setValue).toHaveBeenCalledWith('user', 'user1', expect.objectContaining({
         deletedAt: expect.any(String),
       }));
@@ -228,7 +169,9 @@ describe('User Routing via app/index.js', () => {
       mockDb.getValue.mockResolvedValue(existingUser);
       mockDb.deleteValue.mockResolvedValue({});
 
-      const res = await request('POST', '/user/remove', { id: 'user1' });
+      const res = await request(app)
+      .post('/user/remove')
+      .send({ id: 'user1' });
 
       expect(res.statusCode).toBe(200);
       expect(mockDb.deleteValue).toHaveBeenCalledWith('user', 'user1');

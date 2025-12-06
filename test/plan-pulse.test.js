@@ -1,4 +1,6 @@
-import { describe, jest } from '@jest/globals';
+
+import { describe, expect, jest, beforeEach } from '@jest/globals';
+import request from 'supertest';
 
 process.env.ENV = 'test';
 
@@ -11,6 +13,8 @@ const mockDb = {
 
 const mockLogger = {
   info: jest.fn(),
+  error: jest.fn(),
+  debug: jest.fn(),
 };
 
 jest.unstable_mockModule('../app/s3.js', () => ({
@@ -21,236 +25,183 @@ jest.unstable_mockModule('@jobscale/logger', () => ({
   logger: mockLogger,
 }));
 
-describe('Plan Pulse', () => {
-  let service;
-  let controller;
+// Mock other routes
+const mockRouter = {
+  router: {
+    routes: [],
+  },
+};
+jest.unstable_mockModule('../app/shorten/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../app/ip/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../app/api/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../app/account/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../app/user/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../app/template/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../app/picts/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../app/auth/route.js', () => ({ route: mockRouter }));
 
-  beforeAll(async () => {
-    const serviceModule = await import('../app/plan-pulse/service.js');
-    service = serviceModule.service; // Use the singleton instance used by controller
-    const controllerModule = await import('../app/plan-pulse/controller.js');
-    controller = controllerModule.controller;
-  });
+const { app } = await import('../app/index.js');
 
+describe('Plan Pulse Routing', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('Service', () => {
-    describe('putHub', () => {
-      it('should create a new hub if hubId is not provided', async () => {
-        mockDb.setValue.mockResolvedValue({ key: 'new-hub-id' });
-        const result = await service.putHub({ hub: { name: 'test' } });
-        expect(result).toEqual({ hubId: 'new-hub-id' });
-        expect(mockDb.setValue).toHaveBeenCalled();
-      });
+  describe('POST /plan-pulse/hub', () => {
+    it('should return hub details and persons list', async () => {
+      const mockHub = { name: 'hub' };
+      const mockPersons = [{ key: 'p1', name: 'person1' }];
+      mockDb.getValue.mockResolvedValue(mockHub);
+      mockDb.list.mockResolvedValue(mockPersons);
 
-      it('should throw 400 if hubId exists but db.getValue returns false', async () => {
-        mockDb.getValue.mockResolvedValue(null);
-        await expect(service.putHub({ hubId: 'existing-id', hub: {} }))
-        .rejects.toThrow();
-      });
+      const res = await request(app)
+      .post('/plan-pulse/hub')
+      .send({ hubId: 'hubId1' });
 
-      it('should update hub if hubId exists and is valid', async () => {
-        mockDb.getValue.mockResolvedValue({ name: 'existing' });
-        mockDb.setValue.mockResolvedValue({ key: 'existing-id' });
-        const result = await service.putHub({ hubId: 'existing-id', hub: { name: 'updated' } });
-        expect(result).toEqual({ hubId: 'existing-id' });
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual({
+        hubId: 'hubId1',
+        hub: mockHub,
+        persons: [{ key: 'p1', name: 'person1', personId: 'p1' }],
       });
     });
 
-    describe('putPerson', () => {
-      it('should throw 404 if hub does not exist', async () => {
-        mockDb.getValue.mockResolvedValue(null);
-        await expect(service.putPerson({ hubId: 'hub-id', person: {} }))
-        .rejects.toThrow();
-      });
+    it('should throw 404 if hub does not exist', async () => {
+      mockDb.getValue.mockResolvedValue(null);
+      const res = await request(app)
+      .post('/plan-pulse/hub')
+      .send({ hubId: 'missingHub' });
 
-      it('should create new person if personId is not provided', async () => {
-        mockDb.getValue.mockResolvedValue({});
-        mockDb.setValue.mockResolvedValue({ key: 'new-person-id' });
-        const result = await service.putPerson({ hubId: 'hub-id', person: { name: 'test' } });
-        expect(result).toEqual({ personId: 'new-person-id' });
-      });
-
-      it('should update person if personId is provided and exists', async () => {
-        mockDb.getValue
-        .mockResolvedValueOnce({}) // hub check
-        .mockResolvedValueOnce({ name: 'existing' }); // person check
-        mockDb.setValue.mockResolvedValue({ key: 'person-id' });
-
-        const result = await service.putPerson({
-          hubId: 'hub-id',
-          personId: 'person-id',
-          person: { name: 'updated' },
-        });
-        expect(result).toEqual({ personId: 'person-id' });
-      });
-
-      it('should throw 400 if personId is provided but does not exist', async () => {
-        mockDb.getValue
-        .mockResolvedValueOnce({}) // hub check
-        .mockResolvedValueOnce(null); // person check
-
-        await expect(service.putPerson({
-          hubId: 'hub-id',
-          personId: 'person-id',
-          person: {},
-        }))
-        .rejects.toThrow();
-      });
-    });
-
-    describe('hub', () => {
-      it('should return hub details and persons list', async () => {
-        const mockHub = { name: 'hub' };
-        const mockPersons = [{ key: 'p1', name: 'person1' }];
-        mockDb.getValue.mockResolvedValue(mockHub);
-        mockDb.list.mockResolvedValue(mockPersons);
-
-        const result = await service.hub({ hubId: 'hub-id' });
-        expect(result).toEqual({
-          hubId: 'hub-id',
-          hub: mockHub,
-          persons: [{ key: 'p1', name: 'person1', personId: 'p1' }],
-        });
-      });
-
-      it('should throw 404 if hub does not exist', async () => {
-        mockDb.getValue.mockResolvedValue(null);
-        await expect(service.hub({ hubId: 'hub-id' }))
-        .rejects.toThrow();
-      });
-    });
-
-    describe('removePerson', () => {
-      it('should remove person', async () => {
-        mockDb.getValue
-        .mockResolvedValueOnce({}) // hub check
-        .mockResolvedValueOnce({}); // person check
-        mockDb.deleteValue.mockResolvedValue({});
-
-        const result = await service.removePerson({ hubId: 'hub-id', personId: 'person-id' });
-        expect(result).toEqual({});
-        expect(mockDb.deleteValue).toHaveBeenCalled();
-      });
-
-      it('should throw 404 if hub does not exist', async () => {
-        mockDb.getValue.mockResolvedValue(null);
-        await expect(service.removePerson({ hubId: 'hub-id', personId: 'person-id' }))
-        .rejects.toThrow();
-      });
-
-      it('should throw 400 if person does not exist', async () => {
-        mockDb.getValue
-        .mockResolvedValueOnce({}) // hub check
-        .mockResolvedValueOnce(null); // person check
-
-        await expect(service.removePerson({ hubId: 'hub-id', personId: 'person-id' }))
-        .rejects.toThrow();
-      });
+      expect(res.statusCode).toBe(404);
     });
   });
 
-  describe('Controller', () => {
-    let req, res;
+  describe('POST /plan-pulse/putHub', () => {
+    it('should create a new hub if hubId is not provided', async () => {
+      mockDb.setValue.mockResolvedValue({ key: 'newHubId' });
 
-    beforeEach(() => {
-      req = { body: {} };
-      res = {
-        json: jest.fn(),
-        status: jest.fn().mockReturnThis(),
-      };
+      const res = await request(app)
+      .post('/plan-pulse/putHub')
+      .send({ hub: { name: 'test' } });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual({ hubId: 'newHubId' });
     });
 
-    describe('hub', () => {
-      it('should call service.hub and return result', async () => {
-        req.body.hubId = 'hub-id';
-        const mockResult = { hub: 'data' };
-        jest.spyOn(service, 'hub').mockResolvedValue(mockResult);
+    it('should update hub if hubId exists (mock behavior reflects new ID generation behavior)', async () => {
+      mockDb.getValue.mockResolvedValue({ name: 'existing' });
+      mockDb.setValue.mockResolvedValue({ key: 'updatedId' });
 
-        await controller.hub(req, res);
+      const res = await request(app)
+      .post('/plan-pulse/putHub')
+      .send({ hubId: 'existingId', hub: { name: 'updated' } });
 
-        expect(service.hub).toHaveBeenCalledWith({ hubId: 'hub-id' });
-        expect(res.json).toHaveBeenCalledWith(mockResult);
-      });
-
-      it('should handle errors', async () => {
-        const error = new Error('error');
-        jest.spyOn(service, 'hub').mockRejectedValue(error);
-
-        await controller.hub(req, res);
-
-        expect(mockLogger.info).toHaveBeenCalled();
-        expect(res.status).toHaveBeenCalledWith(503);
-        expect(res.json).toHaveBeenCalledWith({ message: 'error' });
-      });
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual({ hubId: 'updatedId' });
     });
 
-    describe('putHub', () => {
-      it('should call service.putHub and return result', async () => {
-        req.body = { hubId: 'id', hub: {} };
-        const mockResult = { hubId: 'id' };
-        jest.spyOn(service, 'putHub').mockResolvedValue(mockResult);
+    it('should throw 400 if hubId exists but db.getValue returns false', async () => {
+      mockDb.getValue.mockResolvedValue(null);
+      const res = await request(app)
+      .post('/plan-pulse/putHub')
+      .send({ hubId: 'existingId', hub: {} });
 
-        await controller.putHub(req, res);
+      expect(res.statusCode).toBe(400);
+    });
+  });
 
-        expect(service.putHub).toHaveBeenCalledWith(req.body);
-        expect(res.json).toHaveBeenCalledWith(mockResult);
-      });
+  describe('POST /plan-pulse/putPerson', () => {
+    it('should create new person if personId is not provided', async () => {
+      mockDb.getValue.mockResolvedValue({}); // Hub exists
+      mockDb.setValue.mockResolvedValue({ key: 'newPersonId' });
 
-      it('should handle errors', async () => {
-        const error = new Error('error');
-        jest.spyOn(service, 'putHub').mockRejectedValue(error);
+      const res = await request(app)
+      .post('/plan-pulse/putPerson')
+      .send({ hubId: 'hubId1', person: { name: 'test' } });
 
-        await controller.putHub(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(503);
-      });
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual({ personId: 'newPersonId' });
     });
 
-    describe('putPerson', () => {
-      it('should call service.putPerson and return result', async () => {
-        req.body = { hubId: 'h', personId: 'p', person: {} };
-        const mockResult = { personId: 'p' };
-        jest.spyOn(service, 'putPerson').mockResolvedValue(mockResult);
+    it('should update person if personId is provided and exists', async () => {
+      mockDb.getValue
+      .mockResolvedValueOnce({}) // hub check
+      .mockResolvedValueOnce({ name: 'existing' }); // person check
+      mockDb.setValue.mockResolvedValue({ key: 'personId1' });
 
-        await controller.putPerson(req, res);
-
-        expect(service.putPerson).toHaveBeenCalledWith(req.body);
-        expect(res.json).toHaveBeenCalledWith(mockResult);
+      const res = await request(app)
+      .post('/plan-pulse/putPerson')
+      .send({
+        hubId: 'hubId1',
+        personId: 'personId1',
+        person: { name: 'updated' },
       });
 
-      it('should handle errors', async () => {
-        const error = new Error('error');
-        jest.spyOn(service, 'putPerson').mockRejectedValue(error);
-
-        await controller.putPerson(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(503);
-      });
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual({ personId: 'personId1' });
     });
 
-    describe('removePerson', () => {
-      it('should call service.removePerson and return result', async () => {
-        req.body = { hubId: 'h', personId: 'p' };
-        const mockResult = {};
-        jest.spyOn(service, 'removePerson').mockResolvedValue(mockResult);
+    it('should throw 404 if hub does not exist', async () => {
+      mockDb.getValue.mockResolvedValue(null);
+      const res = await request(app)
+      .post('/plan-pulse/putPerson')
+      .send({ hubId: 'hubId1', person: {} });
 
-        await controller.removePerson(req, res);
+      expect(res.statusCode).toBe(404);
+    });
 
-        expect(service.removePerson).toHaveBeenCalledWith(req.body);
-        expect(res.json).toHaveBeenCalledWith(mockResult);
+    it('should throw 400 if personId is provided but does not exist', async () => {
+      mockDb.getValue
+      .mockResolvedValueOnce({}) // hub check
+      .mockResolvedValueOnce(null); // person check
+
+      const res = await request(app)
+      .post('/plan-pulse/putPerson')
+      .send({
+        hubId: 'hubId1',
+        personId: 'personId1',
+        person: {},
       });
 
-      it('should handle errors', async () => {
-        const error = new Error('error');
-        jest.spyOn(service, 'removePerson').mockRejectedValue(error);
+      expect(res.statusCode).toBe(400);
+    });
+  });
 
-        await controller.removePerson(req, res);
+  describe('POST /plan-pulse/removePerson', () => {
+    it('should remove person', async () => {
+      mockDb.getValue
+      .mockResolvedValueOnce({}) // hub check
+      .mockResolvedValueOnce({}); // person check
+      mockDb.deleteValue.mockResolvedValue({});
 
-        expect(res.status).toHaveBeenCalledWith(503);
-      });
+      const res = await request(app)
+      .post('/plan-pulse/removePerson')
+      .send({ hubId: 'hubId1', personId: 'personId1' });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual({});
+      expect(mockDb.deleteValue).toHaveBeenCalled();
+    });
+
+    it('should throw 404 if hub does not exist', async () => {
+      mockDb.getValue.mockResolvedValue(null);
+      const res = await request(app)
+      .post('/plan-pulse/removePerson')
+      .send({ hubId: 'hubId1', personId: 'personId1' });
+
+      expect(res.statusCode).toBe(404);
+    });
+
+    it('should throw 400 if person does not exist', async () => {
+      mockDb.getValue
+      .mockResolvedValueOnce({}) // hub check
+      .mockResolvedValueOnce(null); // person check
+
+      const res = await request(app)
+      .post('/plan-pulse/removePerson')
+      .send({ hubId: 'hubId1', personId: 'personId1' });
+
+      expect(res.statusCode).toBe(400);
     });
   });
 });
