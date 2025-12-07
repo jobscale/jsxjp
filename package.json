@@ -3,6 +3,10 @@
   "private": true,
   "version": "0.3.7",
   "description": "nodejs http and vue custom template SSR MVC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jobscale/jsxjp.git"
+  },
   "author": "jobscale <jobscale@users.noreply.github.com>",
   "license": "MIT",
   "type": "module",
@@ -17,6 +21,9 @@
   "pre-commit": [
     "test"
   ],
+  "jest": {
+    "verbose": true
+  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.940.0",
     "@aws-sdk/client-ssm": "^3.940.0",
@@ -41,9 +48,5 @@
     "pre-commit": "^1.2.2",
     "puppeteer": "^24.31.0",
     "supertest": "^7.1.4"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jobscale/jsxjp.git"
   }
 }
