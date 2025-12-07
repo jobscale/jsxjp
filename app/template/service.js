@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 
 const formatTimestamp = (ts = Date.now()) => new Intl.DateTimeFormat('sv-SE', {
   timeZone: 'Asia/Tokyo',
@@ -13,8 +13,9 @@ const formatTimestamp = (ts = Date.now()) => new Intl.DateTimeFormat('sv-SE', {
 export class Service {
   async load(id) {
     const template = id.split('-').join('/');
-    const html = fs.readFileSync(`views/${template}.html`, 'utf-8');
-    return html.replace('{{timestamp}}', await this.now());
+    return fs.readFile(`views/${template}.html`, 'utf-8')
+    .then(async html => html.replace('{{timestamp}}', await this.now()))
+    .catch(() => '');
   }
 
   async now() {
@@ -23,5 +24,4 @@ export class Service {
 }
 
 export const service = new Service();
-
 export default { Service, service };
