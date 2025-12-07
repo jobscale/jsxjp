@@ -156,8 +156,8 @@ describe('API Routing via app/index.js', () => {
 
     it('should update existing subscription', async () => {
       // Let's rely on standard crypto for the test to set up the mock correctly
-      const { createHash } = await import('crypto');
-      const hash = createHash('sha3-256').update(subscription.endpoint).digest('base64');
+      const crypto = await import('crypto');
+      const hash = crypto.createHash('sha3-256').update(subscription.endpoint).digest('base64');
 
       const users = { [hash]: { login: 'test' } };
       mockStore.getValue.mockResolvedValue(users);

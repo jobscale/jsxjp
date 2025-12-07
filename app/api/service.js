@@ -1,5 +1,5 @@
 import os from 'os';
-import { createHash } from 'crypto';
+import crypto from 'crypto';
 import webPush from 'web-push';
 import nodemailer from 'nodemailer';
 import { logger } from '@jobscale/logger';
@@ -41,7 +41,7 @@ export class Service {
     } = rest;
     const subscription = { endpoint, expirationTime, keys: { auth, p256dh } };
     const users = await store.getValue('web/users', 'info') ?? {};
-    const hash = createHash('sha3-256').update(endpoint).digest('base64');
+    const hash = crypto.createHash('sha3-256').update(endpoint).digest('base64');
     if (users[hash]) {
       if (!login || users[hash].login === login) return { exist: true };
       users[hash].login = login;

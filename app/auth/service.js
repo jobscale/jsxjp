@@ -1,4 +1,4 @@
-import { createHash } from 'crypto';
+import crypto from 'crypto';
 import createHttpError from 'http-errors';
 import speakeasy from 'speakeasy';
 import { db } from '../db.js';
@@ -50,7 +50,7 @@ export class Service {
     const { login, password, code } = rest;
     if (!login || !password) throw createHttpError(400);
     const ts = formatTimestamp();
-    const hash = createHash('sha3-256').update(`${login}/${password}`).digest('base64');
+    const hash = crypto.createHash('sha3-256').update(`${login}/${password}`).digest('base64');
     const item = await db.getValue('user', login);
     if (!item || item.hash !== hash) throw createHttpError(401);
     if (code && !this.verifyCode(code)) throw createHttpError(401);
