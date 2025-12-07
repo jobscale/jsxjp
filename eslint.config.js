@@ -7,8 +7,16 @@ export default [{
     ...standard.configs.standard.ignores,
   ],
 }, {
-  ...standard.configs.standard,
-  name: 'standard base rule',
+  ...standard.configs.browser,
+  name: 'browser rule',
+  files: ['docs/*.js', 'public/*.js'],
+  rules: {
+    ...standard.configs.standard.rules,
+  },
+}, {
+  ...standard.configs.node,
+  name: 'node rule',
+  files: ['app/*.js', 'src/*.js', '**/*.test.js', '**/__tests__/**/*.js'],
   rules: {
     ...standard.configs.standard.rules,
   },
