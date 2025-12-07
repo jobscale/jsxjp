@@ -4,8 +4,6 @@ import { service as authService } from '../auth/service.js';
 import { service } from './service.js';
 
 export class Controller {
-  // res.render(view, options);
-
   register(req, res) {
     const { login, password } = req.body;
     return service.register({ login, password })
