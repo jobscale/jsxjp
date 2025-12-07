@@ -51,8 +51,8 @@ describe('Auth Routing via app/index.js', () => {
 
   describe('POST /auth/login', () => {
     it('should trigger 2FA if no code provided', async () => {
-      const { createHash } = await import('crypto');
-      const hash = createHash('sha3-256').update('user/pass').digest('base64');
+      const crypto = await import('crypto');
+      const hash = crypto.createHash('sha3-256').update('user/pass').digest('base64');
 
       mockDb.getValue.mockResolvedValue({ hash });
       mockDb.setValue.mockResolvedValue({});
@@ -67,8 +67,8 @@ describe('Auth Routing via app/index.js', () => {
     });
 
     it('should login successfully with valid code', async () => {
-      const { createHash } = await import('crypto');
-      const hash = createHash('sha3-256').update('user/pass').digest('base64');
+      const crypto = await import('crypto');
+      const hash = crypto.createHash('sha3-256').update('user/pass').digest('base64');
       const code = speakeasy.totp({ secret: TOTP_SECRET, encoding: 'base32' });
 
       mockDb.getValue.mockResolvedValue({ hash });
@@ -84,8 +84,8 @@ describe('Auth Routing via app/index.js', () => {
     });
 
     it('should login successfully for orange user (bypass 2FA check in controller)', async () => {
-      const { createHash } = await import('crypto');
-      const hash = createHash('sha3-256').update('orangeUser/pass').digest('base64');
+      const crypto = await import('crypto');
+      const hash = crypto.createHash('sha3-256').update('orangeUser/pass').digest('base64');
 
       mockDb.getValue.mockResolvedValue({ hash });
       mockDb.setValue.mockResolvedValue({});
@@ -116,8 +116,8 @@ describe('Auth Routing via app/index.js', () => {
     });
 
     it('should throw 401 if code is invalid', async () => {
-      const { createHash } = await import('crypto');
-      const hash = createHash('sha3-256').update('user/pass').digest('base64');
+      const crypto = await import('crypto');
+      const hash = crypto.createHash('sha3-256').update('user/pass').digest('base64');
       mockDb.getValue.mockResolvedValue({ hash });
 
       const res = await request(app)

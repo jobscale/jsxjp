@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow, no-unused-expressions */
 class Svelte {
   constructor() {
     setTimeout(() => this.svelte(), 1e3);

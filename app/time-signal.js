@@ -1,4 +1,4 @@
-import { createHash } from 'crypto';
+import crypto from 'crypto';
 import webPush from 'web-push';
 import { Logger } from '@jobscale/logger';
 import { db } from './db.js';
@@ -33,7 +33,7 @@ export class TimeSignal {
         .then(() => logger.info('sendNotification', JSON.stringify(user)))
         .catch(e => {
           logger.error(e, JSON.stringify(user));
-          const hash = createHash('sha3-256').update(subscription.endpoint).digest('base64');
+          const hash = crypto.createHash('sha3-256').update(subscription.endpoint).digest('base64');
           delete this.users[hash];
         });
       }),

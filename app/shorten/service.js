@@ -1,4 +1,4 @@
-import crypto, { createHash } from 'crypto';
+import crypto from 'crypto';
 import createHttpError from 'http-errors';
 import { JSDOM } from 'jsdom';
 import { db } from '../db.js';
@@ -45,7 +45,7 @@ export class Service {
   async register(rest) {
     const { html } = rest;
     if (!html) throw createHttpError(400);
-    const hash = createHash('sha256').update(html).digest('hex');
+    const hash = crypto.createHash('sha256').update(html).digest('hex');
     return db.getValue(tableHash, hash)
     .then(async exist => {
       if (exist) {
