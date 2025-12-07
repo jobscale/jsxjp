@@ -11,6 +11,13 @@ jest.unstable_mockModule('jsdom', () => ({
   },
 }));
 
+const mockLogger = {
+  info: jest.fn(),
+  error: jest.fn(),
+  debug: jest.fn(),
+};
+jest.unstable_mockModule('@jobscale/logger', () => ({ logger: mockLogger }));
+
 describe('IP Module', () => {
   let request;
   let app;

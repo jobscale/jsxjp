@@ -74,3 +74,4 @@ package-lock.json
 .vercel
 .aws-sam/
 .env*
+.*/
