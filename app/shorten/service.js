@@ -1,4 +1,4 @@
-import { createHash } from 'crypto';
+import crypto, { createHash } from 'crypto';
 import createHttpError from 'http-errors';
 import { JSDOM } from 'jsdom';
 import { db } from '../db.js';
