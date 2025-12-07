@@ -1,9 +1,11 @@
 import globals from 'globals';
-import standard from '@jobscale/eslint-plugin-standard';
 import jestPlugin from 'eslint-plugin-jest';
+import standard from '@jobscale/eslint-plugin-standard';
 
 export default [{
-  ignores: ['**/coverage/**', '**/assets/**', '**/*.min.js'],
+  ignores: [
+    ...standard.configs.standard.ignores,
+  ],
 }, {
   ...standard.configs.standard,
   name: 'standard base rule',
