@@ -4,6 +4,12 @@
 import { jest } from '@jest/globals';
 
 jest.unstable_mockModule('jsdom', () => ({ JSDOM: jest.fn() }));
+const mockLogger = {
+  info: jest.fn(),
+  error: jest.fn(),
+  debug: jest.fn(),
+};
+jest.unstable_mockModule('@jobscale/logger', () => ({ logger: mockLogger }));
 
 describe('Template Module', () => {
   let request;
