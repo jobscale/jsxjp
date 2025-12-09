@@ -31,6 +31,27 @@ export class Validation {
     await next(req, res);
   }
 
+  async sendmail(req, res, next) {
+    const { body } = req;
+    const { error } = Joi.object({
+      secret: Joi.object({
+        data: Joi.string().required().min(1).max(2 ** 16 - 1),
+        iv: Joi.string().required().min(1).max(2 ** 16 - 1),
+        tag: Joi.string().required().min(1).max(2 ** 16 - 1),
+      }),
+      digit: Joi.string().required().min(4).max(4),
+      content: Joi.object({
+        subject: Joi.string().required().min(1).max(2 ** 8 - 1),
+        text: Joi.string().required().min(1).max(2 ** 16 - 1),
+      }),
+    }).validate(body);
+    if (error) {
+      res.status(400).json({ message: error.message });
+      return;
+    }
+    await next(req, res);
+  }
+
   async subscription(req, res, next) {
     const { body } = req;
     const { error } = Joi.object({
