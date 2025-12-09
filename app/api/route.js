@@ -10,6 +10,10 @@ router.add('POST', '/slack', async (req, res) => {
 router.add('POST', '/email', async (req, res) => {
   await validation.email(req, res, controller.email);
 });
+router.add('POST', '/getNumber', controller.getNumber);
+router.add('POST', '/sendmail', async (req, res) => {
+  await validation.sendmail(req, res, controller.sendmail);
+});
 router.add('GET', '/public', controller.public);
 router.add('POST', '/subscription', async (req, res) => {
   await validation.subscription(req, res, controller.subscription);
