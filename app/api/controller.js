@@ -33,6 +33,27 @@ export class Controller {
     });
   }
 
+  getNumber(req, res) {
+    return service.getNumber()
+    .then(result => res.json(result))
+    .catch(e => {
+      logger.error({ message: e.toString() });
+      if (!e.status) e.status = 500;
+      res.status(e.status).json({ message: e.message });
+    });
+  }
+
+  sendmail(req, res) {
+    const { body: { secret, digit, content } } = req;
+    return service.sendmail({ secret, digit, content })
+    .then(result => res.json(result))
+    .catch(e => {
+      logger.error({ message: e.toString() });
+      if (!e.status) e.status = 500;
+      res.status(e.status).json({ message: e.message });
+    });
+  }
+
   public(req, res) {
     return service.public()
     .then(result => res.end(result))

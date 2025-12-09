@@ -2,13 +2,25 @@ import os from 'os';
 import crypto from 'crypto';
 import webPush from 'web-push';
 import nodemailer from 'nodemailer';
+import createHttpError from 'http-errors';
 import { logger } from '@jobscale/logger';
 import { Slack } from '@jobscale/slack';
 import { service as configService } from '../config/service.js';
 import { db } from '../db.js';
 import { store } from '../store.js';
+import { genDigit, verifyDigit } from './index.js';
 
 const { PARTNER_HOST } = process.env;
+
+const formatTimestamp = (ts = Date.now()) => new Intl.DateTimeFormat('sv-SE', {
+  timeZone: 'Asia/Tokyo',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+}).format(new Date(ts));
 
 export class Service {
   async slack(rest) {
@@ -27,6 +39,17 @@ export class Service {
     })
     .then(res => logger.info(res))
     .catch(e => logger.error(e));
+  }
+
+  async getNumber() {
+    return genDigit();
+  }
+
+  async sendmail({ secret, digit, content }) {
+    const ok = await verifyDigit(secret, digit);
+    if (!ok) throw createHttpError(503);
+    await this.email(content);
+    return { ts: formatTimestamp() };
   }
 
   async public() {
