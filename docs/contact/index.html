@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>入力フォーム</title>
+  <title>Contact - jsx.jp</title>
   <style>
     :root {
       color-scheme: light dark;
@@ -166,6 +166,47 @@
   :root:has(#language option[value="en"]:checked) .en {
     display: initial;
   }
+
+  .blink-bg {
+    padding: 1em;
+    text-align: center;
+    background-color: #222;
+    border-radius: 0.5em;
+    animation: fade-bg 1.5s infinite;
+  }
+
+  @keyframes fade-bg {
+    0%   { opacity: 1; }
+    50%  { opacity: 0.3; }
+    100% { opacity: 1; }
+  }
+
+  .loading {
+    position: fixed;
+    opacity: 0.7;
+    background: #223;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .spinner {
+    width: 8em;
+    height: 8em;
+    border: 1em solid #ccc;
+    border-top: 1em solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
   </style>
 </head>
 
@@ -191,7 +232,7 @@
         <div class="field">
           <label class="lang-content en" for="digit">Image Numeric</label>
           <label class="lang-content ja" for="digit">画像の数字</label>
-          <input v-model="digit" name="digit" type="text" inputmode="numeric" pattern="\d{4}" maxlength="4" required />
+          <input v-model="digit" name="digit" type="text" inputmode="numeric" pattern="\d{4}" maxlength="4" required autocomplete="new-password" />
         </div>
 
         <div class="field">
@@ -209,12 +250,15 @@
           </div>
         </div>
 
+        <div v-show="status" class="blink-bg">{{ status }}</div>
         <div class="actions">
           <button type="submit">送信</button>
         </div>
       </form>
-      <div>{{ status }}</div>
 
+    </div>
+    <div v-show="loading" class="loading">
+      <div class="spinner"></div>
     </div>
   </div>
   <script defer type="module" src="js/index.js"></script>
