@@ -1,4 +1,4 @@
-import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
+import { createApp, reactive, nextTick } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { logger } from 'https://esm.sh/@jobscale/logger';
 
 const self = reactive({});
@@ -38,11 +38,18 @@ const Ocean = {
       return res.json();
     })
     .then(() => {
-      self.status = 'Succeeded';
+      nextTick(() => {
+        document.querySelector('div[name="text"]').textContent = '';
+        self.digit = '';
+        self.subject = '';
+        self.status = 'Succeeded';
+        self.getNumber();
+        setTimeout(() => { self.status = ''; }, 15000);
+      });
     })
     .catch(e => {
       logger.error(e.message);
-      self.status = 'Failed';
+      self.status = `Failed: ${e.message}`;
     })
     .then(() => setTimeout(() => { self.loading = false; }, 1000));
   },
@@ -72,6 +79,10 @@ createApp({
 
   async mounted() {
     await self.getNumber();
-    document.querySelector('input')?.focus();
+    await nextTick();
+    setTimeout(() => {
+      document.querySelector('input')?.focus();
+      self.loading = false;
+    }, 2000);
   },
 }).mount('#app');

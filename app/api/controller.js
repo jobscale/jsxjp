@@ -19,12 +19,8 @@ export class Controller {
     const to = [
       'jobscalespam@gmail.com',
       'jobscalespam@na-cat.com',
-    ];
-    return service.email({
-      to: to.join(','),
-      subject,
-      text,
-    })
+    ].join(',');
+    return service.email({ to, subject, text })
     .then(result => res.json(result))
     .catch(e => {
       logger.error({ message: e.toString() });
@@ -45,7 +41,11 @@ export class Controller {
 
   sendmail(req, res) {
     const { body: { secret, digit, content } } = req;
-    return service.sendmail({ secret, digit, content })
+    const to = [
+      'jobscalespam@gmail.com',
+      'jobscalespam@na-cat.com',
+    ].join(',');
+    return service.sendmail({ secret, digit, content: { ...content, to } })
     .then(result => res.json(result))
     .catch(e => {
       logger.error({ message: e.toString() });
