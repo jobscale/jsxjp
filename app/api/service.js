@@ -32,13 +32,16 @@ export class Service {
 
   async email(rest) {
     const env = await configService.getEnv('smtp');
-    const smtp = nodemailer.createTransport(env);
+    const smtp = nodemailer.createTransport(env.auth);
     return smtp.sendMail({
       ...rest,
-      from: 'no-reply@jsx.jp',
+      from: env.from,
     })
     .then(res => logger.info(res))
-    .catch(e => logger.error(e));
+    .catch(e => {
+      logger.error(e);
+      throw e;
+    });
   }
 
   async getNumber() {
@@ -47,7 +50,7 @@ export class Service {
 
   async sendmail({ secret, digit, content }) {
     const ok = await verifyDigit(secret, digit);
-    if (!ok) throw createHttpError(503);
+    if (!ok) throw createHttpError(403);
     await this.email(content);
     return { ts: formatTimestamp() };
   }
