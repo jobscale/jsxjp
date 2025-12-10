@@ -102,6 +102,7 @@ describe('API Routing via app/index.js', () => {
 
   describe('POST /api/email', () => {
     it('should send email', async () => {
+      mockConfigService.getEnv.mockResolvedValue({ auth: {}, from: 'test@example.com' });
       mockNodemailer.createTransport().sendMail.mockResolvedValue('ok');
       const body = { subject: 'test', text: 'body' };
       const res = await request(app).post('/api/email').send(body);
