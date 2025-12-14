@@ -76,6 +76,44 @@ describe('API Routing via app/index.js', () => {
     jest.clearAllMocks();
   });
 
+  describe('POST /api/getNumber', () => {
+    it('should return encrypted image object', async () => {
+      const body = '';
+      const res = await request(app).post('/api/getNumber').send(body);
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual({
+        image: expect.stringMatching(/^data:image\/png;base64,/),
+        secret: {
+          iv: expect.stringMatching(/^[0-9a-fA-F]+$/),
+          data: expect.stringMatching(/^[0-9a-fA-F]+$/),
+          tag: expect.stringMatching(/^[0-9a-fA-F]+$/),
+        },
+      });
+    });
+
+    it('should get random number', async () => {
+      const body = '';
+      const res = await request(app).post('/api/getNumber').send(body);
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toEqual({
+        image: expect.stringMatching(/^data:image\/png;base64,/),
+        secret: {
+          iv: expect.stringMatching(/^[0-9a-fA-F]+$/),
+          data: expect.stringMatching(/^[0-9a-fA-F]+$/),
+          tag: expect.stringMatching(/^[0-9a-fA-F]+$/),
+        },
+      });
+      const style = '<style>:root { color-scheme: light dark; }</style>';
+      const script = '<script>setTimeout(window.close, 3000)</script>';
+      const html = `${style}<img src="${res.body.image}">${script}`;
+      const fs = await import('fs');
+      const fname = `/tmp/${Date.now()}.html`;
+      fs.writeFileSync(fname, html);
+      const { spawn } = await import('child_process');
+      spawn('google-chrome', ['--new-window', `--app=file://${fname}`], { detached: true });
+    });
+  });
+
   describe('POST /api/slack', () => {
     it('should send slack message', async () => {
       mockSlug.send.mockResolvedValue('ok');

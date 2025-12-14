@@ -23,7 +23,7 @@
         </div>
         <span class="wrap" v-for="name of list">
           <span class="img" :data-name="name">
-            <span class="inner" v-html="name.replace(/([0]+)/g, '<small>$1</small>')"></span>
+            <span class="inner" v-html="name.replace(/([0:]+)/g, '<small>$1</small>')"></span>
           </span>
         </span>
       </section>

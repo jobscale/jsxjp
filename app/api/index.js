@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { createCanvas } from 'canvas';
+import { createCanvas, registerFont } from 'canvas';
 
 const algorithm = 'aes-256-gcm';
 const salt = 'server-secret';
@@ -29,7 +29,7 @@ export const genDigit = async () => {
   const digit = `${Math.floor(num % 10000)}`.padStart(4, '0');
 
   const width = 100;
-  const height = 40;
+  const height = 42;
   const canvas = createCanvas(width, height);
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = '#333';
@@ -45,16 +45,19 @@ export const genDigit = async () => {
     ctx.fill();
   }
 
+  registerFont('docs/fonts/Tangerine.ttf', { family: 'Tangerine' });
+
   ctx.beginPath();
-  ctx.font = '30px Arial, sans-serif';
+  ctx.font = '54px Tangerine';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#111';
-  ctx.fillText(digit, width / 2 - 2, height / 2 - 2);
-  ctx.fillText(digit, width / 2 + 2, height / 2 + 2);
+  const [x, y] = [width / 2, height / 2 - 4];
+  ctx.fillText(digit, x - 2, y - 2);
+  ctx.fillText(digit, x + 2, y + 2);
   ctx.shadowColor = '#111';
   ctx.fillStyle = '#ccc';
-  ctx.fillText(digit, width / 2, height / 2);
+  ctx.fillText(digit, x, y);
 
   const buffer = canvas.toBuffer('image/png');
   const base64 = buffer.toString('base64');
