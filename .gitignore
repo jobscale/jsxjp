@@ -73,5 +73,5 @@ package-lock.json
 .space
 .vercel
 .aws-sam/
+.cache/
 .env*
-.*/
