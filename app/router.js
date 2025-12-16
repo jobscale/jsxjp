@@ -56,8 +56,9 @@ export class Router {
       return true;
     });
     if (!route) return;
-    const prom = route.handler(req, res);
-    if (prom instanceof Promise) await prom;
+    for (const handler of [route.handler].flat()) {
+      await handler(req, res);
+    }
   }
 }
 

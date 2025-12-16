@@ -4,9 +4,7 @@ import { controller } from './controller.js';
 
 const router = new Router();
 router.add('POST', '/upload', async (req, res) => {
-  await authController.verify(req, res, async () => {
-    await controller.upload(req, res);
-  });
+  await authController.verify(req, res, controller.upload);
 });
 router.add('POST', '/find', async (req, res) => {
   await authController.verify(req, res, controller.find);
