@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 export class Validation {
-  async slack(req, res, next) {
+  async slack(req, res) {
     const { body } = req;
     const { error } = Joi.object({
       text: Joi.string().required().min(1).max(2 ** 16 - 1),
@@ -13,12 +13,10 @@ export class Validation {
     }).validate(body);
     if (error) {
       res.status(400).json({ message: error.message });
-      return;
     }
-    await next(req, res);
   }
 
-  async email(req, res, next) {
+  async email(req, res) {
     const { body } = req;
     const { error } = Joi.object({
       subject: Joi.string().required().min(1).max(2 ** 8 - 1),
@@ -26,12 +24,10 @@ export class Validation {
     }).validate(body);
     if (error) {
       res.status(400).json({ message: error.message });
-      return;
     }
-    await next(req, res);
   }
 
-  async sendmail(req, res, next) {
+  async sendmail(req, res) {
     const { body } = req;
     const { error } = Joi.object({
       secret: Joi.object({
@@ -47,12 +43,10 @@ export class Validation {
     }).validate(body);
     if (error) {
       res.status(400).json({ message: error.message });
-      return;
     }
-    await next(req, res);
   }
 
-  async subscription(req, res, next) {
+  async subscription(req, res) {
     const { body } = req;
     const { error } = Joi.object({
       endpoint: Joi.string().required().min(64).max(256),
@@ -66,9 +60,7 @@ export class Validation {
     }).validate(body);
     if (error) {
       res.status(400).json({ message: error.message });
-      return;
     }
-    await next(req, res);
   }
 }
 

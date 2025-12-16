@@ -82,7 +82,7 @@ export class Controller {
     });
   }
 
-  verify(req, res, next) {
+  verify(req, res) {
     const { cookies: { token } } = req;
     return authService.verify(token)
     .then(() => {
@@ -90,7 +90,6 @@ export class Controller {
         expires: dayjs().add(1, 'hour'),
       });
     })
-    .then(() => next(req, res))
     .catch(e => {
       logger.info({ ...e });
       if (req.method === 'GET') {
