@@ -57,6 +57,7 @@ export class Router {
     });
     if (!route) return;
     for (const handler of [route.handler].flat()) {
+      if (res.writableEnded) return;
       await handler(req, res);
     }
   }

@@ -22,7 +22,7 @@ const mockAuthService = {
 };
 
 const mockAuthController = {
-  verify: jest.fn((req, res, next) => next(req, res)),
+  verify: jest.fn(),
 };
 
 jest.unstable_mockModule('../app/db.js', () => ({ db: mockDb }));

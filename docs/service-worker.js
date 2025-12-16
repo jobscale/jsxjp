@@ -52,7 +52,7 @@ class ServiceWorker {
       const controlled = await self.clients.matchAll({ type: 'window' });
       const [client] = controlled.length ? controlled
         : await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-      const num = Number.parseInt(crypto.randomBytes(2).toString('hex'), 16);
+      const [num] = crypto.getRandomValues(new Uint16Array(1));
       await new Promise(resolve => { setTimeout(resolve, Math.floor(num % 2000)); });
       client?.postMessage({ type: 'push-received', title, body, version: VERSION });
       await self.registration.showNotification(title, { body, icon, image: image ?? icon, data: { url: '/' } });
