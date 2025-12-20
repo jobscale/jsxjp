@@ -37,10 +37,12 @@
               <div v-for="item of items" class="note">
                 <div :title="item.caption">{{ item.id }}</div>
                 <div class="row2">
-                  <span class="inb">{{ item.registerAt }}</span><span class="inb">{{ item.lastAccess }}</span>
+                  <span class="inb">{{ showTS(item.registerAt) || '-' }}</span>
+                  <span class="inb">{{ showTS(item.lastAccess) || '-' }}</span>
                 </div>
                 <div class="row2">
-                  <span class="inb">{{ item.deletedAt || 'Allow' }}</span><span class="inb">{{ item.count }}</span>
+                  <span class="inb">{{ showTS(item.deletedAt) || 'Allow' }}</span>
+                  <span class="inb">{{ item.count }}</span>
                 </div>
                 <div class="one-line">
                   {{ item.html || item.login }}
