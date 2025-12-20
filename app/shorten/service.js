@@ -15,17 +15,19 @@ const tableHash = {
   test: 'shorten-hash',
 }[ENV];
 
-const formatTimestamp = (ts = Date.now()) => new Intl.DateTimeFormat('sv-SE', {
-  timeZone: 'Asia/Tokyo',
-  year: 'numeric',
-  month: '2-digit',
-  day: '2-digit',
-  hour: '2-digit',
-  minute: '2-digit',
-  second: '2-digit',
-}).format(new Date(ts));
-
-const showDate = (date, defaultValue) => date ? formatTimestamp(date) : defaultValue;
+const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
+  const timestamp = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).format(new Date(ts));
+  if (withoutTimezone) return timestamp;
+  return `${timestamp}+9`;
+};
 
 const random = (length = 7) => {
   const bytes = crypto.randomBytes(16).toString('hex');
@@ -79,9 +81,6 @@ export class Service {
   async find() {
     return db.list(tableName)
     .then(items => items.map(item => {
-      item.registerAt = showDate(item.registerAt, '-');
-      item.lastAccess = showDate(item.lastAccess, '-');
-      item.deletedAt = showDate(item.deletedAt);
       item.id = item.key;
       delete item.key;
       return item;
@@ -109,11 +108,14 @@ export class Service {
       if (data.deletedAt) throw createHttpError(501);
       return data;
     })
-    .then(data => db.setValue(tableName, key, {
-      ...data,
-      lastAccess: formatTimestamp(),
-      count: (parseInt(data.count, 10) || 0) + 1,
-    }).then(() => data))
+    .then(data => {
+      const lastAccess = formatTimestamp();
+      return db.setValue(tableName, key, {
+        ...data,
+        lastAccess,
+        count: (parseInt(data.count, 10) || 0) + 1,
+      }).then(() => data);
+    })
     .then(({ html }) => ({ html }));
   }
 }
