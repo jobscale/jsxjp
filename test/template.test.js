@@ -32,6 +32,6 @@ describe('Template Module', () => {
     .send({ id: 'test-view' });
 
     expect(res.status).toBe(200);
-    expect(res.text).toMatch(/^<html>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}<\/html>\n$/);
+    expect(res.text).toMatch(/^<html>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\+9<\/html>\n$/);
   });
 });
