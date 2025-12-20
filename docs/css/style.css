@@ -706,7 +706,7 @@ div .note:has(.tag) a {
   background-color: #000;
   color: #fff;
   text-align: center;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 .confirmation-button {
   display: flex;
@@ -733,6 +733,9 @@ div .note:has(.tag) a {
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: center;
+  display: grid;
+  justify-content: center;
+  align-content: center;
 }
 
 .loader {
