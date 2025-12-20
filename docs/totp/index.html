@@ -26,6 +26,9 @@
         <section>
           <form @submit.prevent="onSubmit">
             <input name="token" v-model="token" class="input" type="search" maxlength="2048" placeholder="TOTP Token"><br>
+            <div>
+              {{ status }}
+            </div>
             <button :disabled="token.length < 5" type="submit" :class="token.length >= 5 ? 'fa-beat' : ''">
               <i class="fa-regular fa-down-left-and-up-right-to-center fa-rotate-45 fa-size-big"></i>
             </button>

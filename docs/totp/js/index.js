@@ -6,6 +6,7 @@ const self = reactive({});
 const Ocean = {
   token: '',
   list: [],
+  status: '',
   loading: false,
 
   onSubmit() {
@@ -17,15 +18,20 @@ const Ocean = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ secret: self.token }),
     }];
+    self.status = '';
+    self.list = [];
     fetch(...params)
     .then(res => {
-      if (res.status !== 200) throw new Error(res.statusText);
+      if (res.status !== 200) throw new Error(`${res.status} ${res.statusText}`);
       return res.json();
     })
     .then(({ list }) => {
       self.list = list;
     })
-    .catch(e => logger.error(e.message))
+    .catch(e => {
+      logger.error(e.message);
+      self.status = e.message;
+    })
     .then(() => setTimeout(() => { self.loading = false; }, 1000));
   },
 
