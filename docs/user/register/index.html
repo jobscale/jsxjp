@@ -3,37 +3,43 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Tangerine'>
-    <link rel="stylesheet" href="/css/form.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/input.css">
     <link rel="stylesheet" href="/css/menu.css">
     <title>Register User - jsx.jp</title>
   </head>
 
   <body>
     <div id="app" class="nav-main">
-      <div v-if="signed" class="container">
-        <div>
-          <h2>Register User</h2>
-        </div>
-        <section>
-          <form @submit.prevent="onSubmit" name="form" class="login">
-            <p>
-              <label for="login">User:</label>
-              <input v-model="login" type="text" id="login" placeholder="user">
-            </p>
-            <p>
-              <label for="password">Password:</label>
-              <input v-model="password" type="password" id="password" placeholder="password">
-            </p>
-            <p>
-              <label for="confirm">Confirm:</label>
-              <input v-model="confirm" type="password" id="confirm" placeholder="password">
-            </p>
-            <p class="register-submit">
-              <button type="submit" class="register-button arrow-btn">Register</button>
-            </p>
-            <div class="center error" id="status">{{ statusText }}</div>
-          </form>
+      <div class="container">
+        <section class="input">
+          <div class="login-box">
+            <h2>Register User</h2>
+            <form @submit.prevent="onSubmit">
+              <div class="user-box">
+                <input v-model="login" type="text" name="" required="">
+                <label>User</label>
+              </div>
+              <div class="user-box">
+                <input v-model="password" type="password" name="" required="">
+                <label>Password</label>
+              </div>
+              <div class="user-box">
+                <input v-model="confirm" type="password" name="" required="">
+                <label>Confirm</label>
+              </div>
+              <div class="center error">{{ statusText }}</div>
+              <button type="submit" class="a">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                Register
+              </button>
+            </form>
+          </div>
         </section>
       </div>
       <div v-if="loading" id="loading" class="loading"></div>
