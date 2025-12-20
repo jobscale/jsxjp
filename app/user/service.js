@@ -24,9 +24,6 @@ export class Service {
   async find() {
     return db.list('user')
     .then(items => items.map(item => {
-      item.registerAt = item.registerAt ? formatTimestamp(item.registerAt) : '-';
-      item.lastAccess = item.lastAccess ? formatTimestamp(item.lastAccess) : '-';
-      item.deletedAt = item.deletedAt ? formatTimestamp(item.deletedAt) : undefined;
       item.id = item.key;
       delete item.key;
       return item;
