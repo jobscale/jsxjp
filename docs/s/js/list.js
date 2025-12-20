@@ -124,7 +124,7 @@ const Ocean = {
   onRemove(event) {
     const { target: { parentElement: el } } = event;
     const { id } = el.dataset;
-    el.parentElement.parentElement.style = 'opacity: 0.3';
+    el.parentElement.parentElement.style.opacity = '0.3';
     logger.info({ id });
     self.confirmation.title = 'Are you remove this item?';
     self.confirmation.message = `Be trying to remove item "${id}".<br>Are you sure?`;
@@ -135,6 +135,7 @@ const Ocean = {
     };
     self.confirmation.cancel = () => {
       logger.info({ run: 'Cancel' });
+      el.parentElement.parentElement.style.opacity = '1';
       self.confirmation.show = false;
     };
     self.confirmation.show = true;
