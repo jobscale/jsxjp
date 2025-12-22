@@ -12,6 +12,10 @@ router.add('POST', '/email', [
   validation.email,
   controller.email,
 ]);
+router.add('POST', '/webPush', [
+  validation.webPush,
+  controller.webPush,
+]);
 router.add('POST', '/getNumber', controller.getNumber);
 router.add('POST', '/sendmail', [
   await validation.sendmail,
