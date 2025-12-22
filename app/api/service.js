@@ -1,5 +1,6 @@
 import os from 'os';
 import crypto from 'crypto';
+import dayjs from 'dayjs';
 import webPush from 'web-push';
 import nodemailer from 'nodemailer';
 import createHttpError from 'http-errors';
@@ -46,6 +47,65 @@ export class Service {
       logger.error(e);
       throw e;
     });
+  }
+
+  async webPushData() {
+    if (!this.cert) {
+      this.cert = await db.getValue('config/certificate', 'secret');
+      webPush.setVapidDetails(
+        'mailto:jobscale@example.com',
+        this.cert.public,
+        this.cert.key,
+      );
+    }
+    if (!this.users) {
+      this.users = await store.getValue('web/users', 'info');
+      // refresh 10 minutes
+      setTimeout(() => { delete this.users; }, 600_000);
+    }
+  }
+
+  render(template, data) {
+    return Object.entries({
+      TEMPLATE_LOGIN: data.login ?? 'anonymous',
+      TEMPLATE_HOST: data.host ?? 'unknown host',
+    }).reduce(
+      (str, [key, value]) => str.replaceAll(`{{${key}}}`, value ?? ''),
+      template,
+    );
+  }
+
+  async webPublish(payload, users) {
+    await Promise.all(
+      users.filter(user => user.subscription)
+      .map(user => {
+        const { subscription } = user;
+        const body = this.render(payload.body, user);
+        const notification = { ...payload, body };
+        logger.info(JSON.stringify(notification));
+        return webPush.sendNotification(subscription, JSON.stringify(notification))
+        .then(() => logger.info('sendNotification', JSON.stringify(user)))
+        .catch(e => {
+          logger.error(e, JSON.stringify(user));
+        });
+      }),
+    );
+  }
+
+  async webPush(rest) {
+    const { title } = rest;
+    await this.webPushData();
+    const expired = formatTimestamp(dayjs().add(22, 'minute'));
+    const body = [
+      rest.body,
+      '',
+      '{{TEMPLATE_LOGIN}} - {{TEMPLATE_HOST}}',
+    ].join('\n');
+    const payload = {
+      title, expired, body, icon: '/icon/cat-hand-black.png',
+    };
+    const users = Object.values(this.users).filter(user => user.login === 'alice');
+    await this.webPublish(payload, users);
   }
 
   async getNumber() {

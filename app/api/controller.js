@@ -29,6 +29,17 @@ export class Controller {
     });
   }
 
+  webPush(req, res) {
+    const { body } = req;
+    return service.webPush(body)
+    .then(result => res.json(result))
+    .catch(e => {
+      logger.error({ message: e.toString() });
+      if (!e.status) e.status = 500;
+      res.status(e.status).json({ message: e.message });
+    });
+  }
+
   getNumber(req, res) {
     return service.getNumber()
     .then(result => res.json(result))

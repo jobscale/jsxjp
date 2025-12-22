@@ -27,6 +27,17 @@ export class Validation {
     }
   }
 
+  async webPush(req, res) {
+    const { body } = req;
+    const { error } = Joi.object({
+      title: Joi.string().required().min(1).max(2 ** 8 - 1),
+      body: Joi.string().required().min(1).max(2 ** 10 - 1),
+    }).validate(body);
+    if (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
   async sendmail(req, res) {
     const { body } = req;
     const { error } = Joi.object({
