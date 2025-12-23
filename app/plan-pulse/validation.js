@@ -12,7 +12,7 @@ export class Validation {
 
   async putHub(req, res) {
     const { error } = Joi.object({
-      hubId: Joi.string().alphanum().max(30),
+      hubId: Joi.string().required().alphanum().max(30),
       hub: Joi.object().required(),
     }).validate(req.body);
     if (error) {
@@ -23,7 +23,7 @@ export class Validation {
   async putPerson(req, res) {
     const { error } = Joi.object({
       hubId: Joi.string().required().alphanum().max(30),
-      personId: Joi.string().alphanum().max(30),
+      personId: Joi.string().required().alphanum().max(30),
       person: Joi.object().required(),
     }).validate(req.body);
     if (error) {

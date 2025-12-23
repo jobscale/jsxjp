@@ -1,3 +1,7 @@
+:root {
+  color-scheme: light dark;
+}
+
 #popup {
   position: fixed;
   top: 0;

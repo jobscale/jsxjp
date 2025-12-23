@@ -141,18 +141,18 @@
     button[type="submit"] {
       appearance: none;
       border: none;
-      border-radius: 10px;
-      background: var(--primary);
-      color: var(--primary-text);
-      padding: 10px 16px;
-      font-size: 1rem;
-      font-weight: 600;
+      border-radius: 0.5em;
+      background: var(--input-bg);
+      color: var(--text);
+      padding: 1em 3em;
       cursor: pointer;
       transition: filter 0.15s ease, opacity 0.15s ease;
     }
 
+    button[type="submit"]:focus,
     button[type="submit"]:hover {
-      filter: brightness(1.05);
+      background: var(--primary);
+      outline: 2px solid var(--primary);
     }
 
     button[type="submit"]:active {
@@ -253,7 +253,8 @@
 
           <div v-show="status" class="blink-bg">{{ status }}</div>
           <div class="actions">
-            <button type="submit">送信</button>
+            <button type="submit" class="lang-content en">Submit</button>
+            <button type="submit" class="lang-content ja">送信</button>
           </div>
         </form>
 

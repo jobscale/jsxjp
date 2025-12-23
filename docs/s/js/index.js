@@ -1,9 +1,7 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { logger } from 'https://esm.sh/@jobscale/logger';
 
-const self = reactive({});
-
-const Ocean = {
+const self = reactive({
   signed: undefined,
   url: '',
   shorten: '',
@@ -70,11 +68,11 @@ const Ocean = {
     html.classList.toggle('dark-scheme');
     html.classList.toggle('light-scheme');
   },
-};
+});
 
 createApp({
   setup() {
-    return Object.assign(self, Ocean);
+    return self;
   },
 
   async mounted() {

@@ -5,8 +5,8 @@ import { service } from './service.js';
 
 export class Controller {
   register(req, res) {
-    const { login, password } = req.body;
-    return service.register({ login, password })
+    const { login, password, role } = req.body;
+    return service.register({ login, password, role })
     .then(() => {
       res.json({ login });
     })
@@ -18,8 +18,8 @@ export class Controller {
   }
 
   reset(req, res) {
-    const { login, password } = req.body;
-    return service.reset({ login, password })
+    const { login, password, role } = req.body;
+    return service.reset({ login, password, role })
     .then(item => {
       res.json({ login: item.login });
     })

@@ -1,6 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&family=Monomaniac+One&family=Tangerine:wght@400;700');
 @import url('https://site-assets.fontawesome.com/releases/v6.3.0/css/all.css');
 
+:root {
+  color-scheme: light dark;
+}
+
 /********************************
 Main Project
 ********************************/

@@ -16,9 +16,7 @@ const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   return `${timestamp}+9`;
 };
 
-const self = reactive({});
-
-const Ocean = {
+const self = reactive({
   statusText: 'muted',
   actionText: '[⛄ 🍻]',
   welcomeText: 'welcome',
@@ -36,7 +34,7 @@ const Ocean = {
     html.classList.toggle('light-scheme');
   },
 
-  start() {
+  async start() {
     logger.info('Start jsx.jp');
     setTimeout(() => self.interval(), 200);
   },
@@ -190,15 +188,15 @@ const Ocean = {
   mute() {
     self.statusText = self.statusText ? '' : 'muted';
   },
-};
+});
 
 createApp({
   setup() {
-    return Object.assign(self, Ocean);
+    return self;
   },
 
-  mounted() {
-    self.start();
+  async mounted() {
+    await self.start();
     setTimeout(() => { self.action(); }, 2000);
     document.addEventListener('click', () => { self.statusText = ''; });
   },

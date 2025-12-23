@@ -15,9 +15,7 @@ const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   return `${timestamp}+9`;
 };
 
-const self = reactive({});
-
-const Ocean = {
+const self = reactive({
   signed: undefined,
   loading: true,
   items: [],
@@ -68,7 +66,7 @@ const Ocean = {
     })
     .then(({ rows }) => {
       const tag = item => {
-        if (!item.role) return 'guest';
+        if (item.role.match(/guest/)) return 'guest';
         if (item.role.match(/staff/)) return 'staff';
         if (item.role.match(/admin/)) return 'admin';
         return 'guest';
@@ -89,6 +87,12 @@ const Ocean = {
       const tb = new Date(b.lastAccess).getTime() || 0;
       return ta - tb;
     });
+  },
+
+  onReset(event) {
+    const { target: { parentElement: el } } = event;
+    const { id } = el.dataset;
+    location.href = `/user/reset/?l=${id}`;
   },
 
   onRemove(event) {
@@ -132,11 +136,11 @@ const Ocean = {
     html.classList.toggle('dark-scheme');
     html.classList.toggle('light-scheme');
   },
-};
+});
 
 createApp({
   setup() {
-    return Object.assign(self, Ocean);
+    return self;
   },
 
   async mounted() {

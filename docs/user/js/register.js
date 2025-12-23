@@ -1,13 +1,12 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { logger } from 'https://esm.sh/@jobscale/logger';
 
-const self = reactive({});
-
-const Ocean = {
+const self = reactive({
   signed: undefined,
   login: '',
   password: '',
   confirm: '',
+  role: 'guest',
   statusText: '',
   loading: false,
 
@@ -30,7 +29,7 @@ const Ocean = {
   },
 
   onSubmit() {
-    const { login, password, confirm } = self;
+    const { login, password, confirm, role } = self;
     if (password !== confirm) {
       self.statusText = 'Mismatch Confirmation';
       return;
@@ -40,7 +39,7 @@ const Ocean = {
     const params = ['/user/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ login, password }),
+      body: JSON.stringify({ login, password, role }),
     }];
     fetch(...params)
     .then(res => {
@@ -60,14 +59,14 @@ const Ocean = {
       self.loading = false;
     }, 1000));
   },
-};
+});
 
 createApp({
   setup() {
-    return Object.assign(self, Ocean);
+    return self;
   },
 
-  mounted() {
-    self.sign();
+  async mounted() {
+    await self.sign();
   },
 }).mount('#app');

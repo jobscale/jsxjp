@@ -45,12 +45,12 @@ export class Validation {
         data: Joi.string().required().min(1).max(2 ** 16 - 1),
         iv: Joi.string().required().min(1).max(2 ** 16 - 1),
         tag: Joi.string().required().min(1).max(2 ** 16 - 1),
-      }),
+      }).required(),
       digit: Joi.string().required().min(4).max(4),
       content: Joi.object({
         subject: Joi.string().required().min(1).max(2 ** 8 - 1),
         text: Joi.string().required().min(1).max(2 ** 16 - 1),
-      }),
+      }).required(),
     }).validate(body);
     if (error) {
       res.status(400).json({ message: error.message });
@@ -61,11 +61,11 @@ export class Validation {
     const { body } = req;
     const { error } = Joi.object({
       endpoint: Joi.string().required().min(64).max(256),
-      expirationTime: Joi.string().allow(null).min(10).max(30),
+      expirationTime: Joi.string().required().allow(null).min(10).max(30),
       keys: Joi.object({
         auth: Joi.string().required().min(16).max(32),
         p256dh: Joi.string().required().min(64).max(128),
-      }),
+      }).required(),
       ts: Joi.string().required().min(10).max(30),
       ua: Joi.string().required().min(4).max(256),
     }).validate(body);

@@ -59,20 +59,19 @@ export class Ingress {
   usePublic(req, res) {
     if (!['GET', 'HEAD'].includes(req.method)) return false;
     const headers = new Headers(req.headers);
-    const { url } = req;
     const protocol = req.socket.encrypted ? 'https' : 'http';
     const host = headers.get('host');
-    const { pathname } = new URL(`${protocol}://${host}${url}`);
+    const url = new URL(`${protocol}://${host}${req.url}`);
     const baseDir = path.join(process.cwd(), 'docs');
     const file = {
-      path: path.join(baseDir, pathname),
+      path: path.join(baseDir, url.pathname),
     };
     if (!file.path.startsWith(baseDir)) return false;
     file.stat = fs.existsSync(file.path) && fs.statSync(file.path);
     if (!file.stat) return false;
     if (file.stat.isDirectory()) {
       if (!file.path.endsWith('/')) {
-        res.writeHead(307, { Location: `${url}/` });
+        res.writeHead(307, { Location: `${url.pathname}/${url.search}` });
         res.end();
         return true;
       }

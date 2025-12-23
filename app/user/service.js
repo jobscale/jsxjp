@@ -26,27 +26,30 @@ export class Service {
     .then(items => items.map(item => {
       item.id = item.key;
       delete item.key;
+      delete item.hash;
+      if (!item.role) item.role = 'guest';
       return item;
     }));
   }
 
   async register(rest) {
-    const { login, password } = rest;
+    const { login, password, role } = rest;
     if (!login || !password) throw createHttpError(400);
     return db.getValue('user', login)
     .then(item => {
       if (item) throw createHttpError(400);
       const hash = crypto.createHash('sha3-256').update(`${login}/${password}`).digest('base64');
       return db.setValue('user', login, {
-        deletedAt: 0,
         registerAt: formatTimestamp(),
         hash,
+        role,
+        deletedAt: 0,
       });
     });
   }
 
   async reset(rest) {
-    const { login, password } = rest;
+    const { login, password, role } = rest;
     if (!login || !password) throw createHttpError(400);
     return db.getValue('user', login)
     .then(item => {
@@ -55,6 +58,7 @@ export class Service {
       return db.setValue('user', login, {
         ...item,
         hash,
+        role,
         deletedAt: 0,
       }, item.key).then(() => item);
     });

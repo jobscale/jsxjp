@@ -15,9 +15,7 @@ const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   return `${timestamp}+9`;
 };
 
-const self = reactive({});
-
-const Ocean = {
+const self = reactive({
   signed: undefined,
   loading: true,
   popupText: '',
@@ -162,11 +160,11 @@ const Ocean = {
     html.classList.toggle('dark-scheme');
     html.classList.toggle('light-scheme');
   },
-};
+});
 
 createApp({
   setup() {
-    return Object.assign(self, Ocean);
+    return self;
   },
 
   async mounted() {
