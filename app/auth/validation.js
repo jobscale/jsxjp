@@ -6,7 +6,7 @@ export class Validation {
     const { error } = Joi.object({
       login: Joi.string().required().pattern(login).max(2 ** 5 - 1),
       password: Joi.string().required().max(2 ** 5 - 1),
-      code: Joi.string().required(),
+      code: Joi.string(),
     }).validate(req.body);
     if (error) {
       res.status(400).json({ message: error.message });
