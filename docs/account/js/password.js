@@ -1,9 +1,7 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { logger } from 'https://esm.sh/@jobscale/logger';
 
-const self = reactive({});
-
-const Ocean = {
+const self = reactive({
   signed: undefined,
   password: '',
   confirm: '',
@@ -56,14 +54,14 @@ const Ocean = {
       document.location.href = '/auth/logout';
     }, 1000));
   },
-};
+});
 
 createApp({
   setup() {
-    return Object.assign(self, Ocean);
+    return self;
   },
 
-  mounted() {
-    self.sign();
+  async mounted() {
+    await self.sign();
   },
 }).mount('#app');

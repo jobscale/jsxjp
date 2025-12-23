@@ -71,6 +71,7 @@ section.input {
   margin-bottom: 40px;
 }
 
+.login-box .user-box select,
 .login-box .user-box input {
   width: 100%;
   padding: 15px 0;
@@ -84,6 +85,11 @@ section.input {
   transition: var(--transition);
 }
 
+.login-box .user-box select option {
+  background-color: #0b1220;
+}
+
+.login-box .user-box select:focus,
 .login-box .user-box input:focus {
   border-bottom-color: var(--primary-color);
 }
@@ -99,6 +105,7 @@ section.input {
   transition: var(--transition);
 }
 
+.login-box .user-box select ~ label,
 .login-box .user-box input:focus ~ label,
 .login-box .user-box input:valid ~ label {
   top: -20px;
@@ -128,7 +135,9 @@ section.input {
   text-align: center;
 }
 
+.login-box .a:focus,
 .login-box .a:hover {
+  outline: none;
   background: var(--primary-color);
   color: #000;
   box-shadow: 0 0 20px var(--primary-color),

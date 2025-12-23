@@ -52,9 +52,7 @@ const logger = createLogger('debug', {
 const strictEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const deepClone = obj => JSON.parse(JSON.stringify(obj));
 
-const self = reactive({});
-
-const Ocean = {
+const self = reactive({
   version,
   status: version,
   signed: {},
@@ -450,11 +448,11 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
     html.classList.toggle('dark-scheme');
     html.classList.toggle('light-scheme');
   },
-};
+});
 
 createApp({
   setup() {
-    return Object.assign(self, Ocean);
+    return self;
   },
 
   async mounted() {

@@ -30,6 +30,14 @@
                 <input v-model="confirm" type="password" name="" required="">
                 <label>Confirm</label>
               </div>
+              <div class="user-box">
+                <select v-model="role">
+                  <option value="guest">Guest</option>
+                  <option value="staff">Staff</option>
+                  <option value="admin">Admin</option>
+                </select>
+                <label>Role</label>
+              </div>
               <div class="center error">{{ statusText }}</div>
               <button type="submit" class="a">
                 <span></span>

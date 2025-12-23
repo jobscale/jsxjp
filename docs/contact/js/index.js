@@ -1,9 +1,7 @@
 import { createApp, reactive, nextTick } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { logger } from 'https://esm.sh/@jobscale/logger';
 
-const self = reactive({});
-
-const Ocean = {
+const self = reactive({
   image: undefined,
   secret: undefined,
   digit: '',
@@ -70,11 +68,11 @@ const Ocean = {
       self.secret = res.secret;
     });
   },
-};
+});
 
 createApp({
   setup() {
-    return Object.assign(self, Ocean);
+    return self;
   },
 
   async mounted() {

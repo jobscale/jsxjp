@@ -52,7 +52,7 @@
                   <a v-if="item.html && !item.deletedAt" :href="`/s/${item.id}`" target="_blank">
                     <i class="fa-regular fa-up-right-from-square fa-bounce"></i>
                   </a>
-                  <button v-if="!item.deletedAt" class="button" :data-id="item.id">
+                  <button v-if="!item.deletedAt" @click.prevent="onReset" class="button" :data-id="item.id">
                     <i class="fa-light fa-pen-nib"></i>
                   </button>
                   <button v-if="!item.deletedAt" @click.prevent="onRemove" class="button btn-remove" :data-id="item.id">
