@@ -74,7 +74,7 @@ describe('User Routing via app/index.js', () => {
 
       const res = await request(app)
       .post('/user/register')
-      .send({ login: 'testuser', password: 'password' });
+      .send({ login: 'testuser', password: 'password', role: 'guest' });
 
       expect(res.statusCode).toBe(200);
       expect(res.body).toEqual({ login: 'testuser' });
@@ -111,7 +111,7 @@ describe('User Routing via app/index.js', () => {
 
       const res = await request(app)
       .post('/user/reset')
-      .send({ login: 'testuser', password: 'newpassword' });
+      .send({ login: 'testuser', password: 'newpassword', role: 'staff' });
 
       expect(res.statusCode).toBe(200);
       expect(res.body).toEqual({ login: 'testuser' });
