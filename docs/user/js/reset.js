@@ -70,5 +70,6 @@ createApp({
     await self.sign();
     const params = new URLSearchParams(location.search);
     self.login = params.get('l') ?? '';
+    document.querySelectorAll('input')[self.login ? 1 : 0]?.focus();
   },
 }).mount('#app');

@@ -63,5 +63,6 @@ createApp({
 
   async mounted() {
     await self.sign();
+    document.querySelector('input')?.focus();
   },
 }).mount('#app');

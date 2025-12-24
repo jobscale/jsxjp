@@ -4,7 +4,7 @@
   color: #bbb;
   --primary-color: #00acc1;
   --secondary-color: #eee;
-  --bg-gradient: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  --bg-gradient: linear-gradient(135deg, #1b2936 0%, #040c14 100%);
   --box-bg: rgba(0, 0, 0, 0.5);
   --box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
   --border-radius: 15px;
@@ -21,6 +21,38 @@ html, body {
   overflow-x: hidden;
 }
 
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0 1rem;
+}
+
+.lang-content {
+  display: none;
+}
+:root:has(#language option[value="ja"]:checked) .ja,
+:root:has(#language option[value="en"]:checked) .en {
+  display: initial;
+}
+
+details {
+  cursor: pointer;
+}
+
+button {
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+section + section {
+  margin-top: 1.5em;
+}
+
 section.input {
   margin: 0;
   padding: 0;
@@ -32,7 +64,7 @@ section.input {
   height: 100vh;
 }
 
-.login-box {
+.main-box {
   position: relative;
   width: 450px;
   padding: 50px;
@@ -48,16 +80,16 @@ section.input {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translate(-50%, -60%);
+    transform: translate(0%, -200%);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, -50%);
+    transform: translate(0%, 0%);
   }
 }
 
-.login-box h2 {
-  margin: 0 0 40px;
+.main-box h2 {
+  margin: 0 0 1.5em;
   padding: 0;
   color: var(--secondary-color);
   text-align: center;
@@ -66,13 +98,13 @@ section.input {
   letter-spacing: 2px;
 }
 
-.login-box .user-box {
+.main-box .field-box {
   position: relative;
-  margin-bottom: 40px;
+  margin-bottom: 1.5em;
 }
 
-.login-box .user-box select,
-.login-box .user-box input {
+.main-box .field-box select,
+.main-box .field-box input {
   width: 100%;
   padding: 15px 0;
   font-size: 1.2em;
@@ -85,16 +117,16 @@ section.input {
   transition: var(--transition);
 }
 
-.login-box .user-box select option {
+.main-box .field-box select option {
   background-color: #0b1220;
 }
 
-.login-box .user-box select:focus,
-.login-box .user-box input:focus {
+.main-box .field-box select:focus,
+.main-box .field-box input:focus {
   border-bottom-color: var(--primary-color);
 }
 
-.login-box .user-box label {
+.main-box .field-box label {
   position: absolute;
   top: 15px;
   left: 0;
@@ -105,9 +137,9 @@ section.input {
   transition: var(--transition);
 }
 
-.login-box .user-box select ~ label,
-.login-box .user-box input:focus ~ label,
-.login-box .user-box input:valid ~ label {
+.main-box .field-box select ~ label,
+.main-box .field-box input:focus ~ label,
+.main-box .field-box input:valid ~ label {
   top: -20px;
   left: 0;
   color: var(--primary-color);
@@ -115,7 +147,7 @@ section.input {
   font-weight: 500;
 }
 
-.login-box form .a {
+.main-box form .a {
   position: relative;
   display: inline-block;
   padding: 15px 30px;
@@ -135,8 +167,8 @@ section.input {
   text-align: center;
 }
 
-.login-box .a:focus,
-.login-box .a:hover {
+.main-box .a:focus,
+.main-box .a:hover {
   outline: none;
   background: var(--primary-color);
   color: #000;
@@ -146,12 +178,12 @@ section.input {
   transform: translateY(-2px);
 }
 
-.login-box .a span {
+.main-box .a span {
   position: absolute;
   display: block;
 }
 
-.login-box .a span:nth-child(1) {
+.main-box .a span:nth-child(1) {
   top: 0;
   left: -100%;
   width: 100%;
@@ -169,7 +201,7 @@ section.input {
   }
 }
 
-.login-box .a span:nth-child(2) {
+.main-box .a span:nth-child(2) {
   top: -100%;
   right: 0;
   width: 2px;
@@ -188,7 +220,7 @@ section.input {
   }
 }
 
-.login-box .a span:nth-child(3) {
+.main-box .a span:nth-child(3) {
   bottom: 0;
   right: -100%;
   width: 100%;
@@ -207,7 +239,7 @@ section.input {
   }
 }
 
-.login-box .a span:nth-child(4) {
+.main-box .a span:nth-child(4) {
   bottom: -100%;
   left: 0;
   width: 2px;
@@ -228,22 +260,31 @@ section.input {
 
 /* Responsive Design */
 @media (max-width: 480px) {
-  .login-box {
+  .main-box {
     width: 90%;
     padding: 30px;
   }
 
-  .login-box h2 {
+  .main-box h2 {
     font-size: 2em;
   }
 
-  .login-box .user-box input,
-  .login-box .user-box label {
+  .main-box .field-box input,
+  .main-box .field-box label {
     font-size: 1em;
   }
 
-  .login-box form .a {
+  .main-box form .a {
     font-size: 1em;
     padding: 12px 20px;
   }
+}
+
+.align-right {
+  text-align: right;
+}
+
+.field-box.align-right input.code-6 {
+  width: 7em;
+  text-align: center;
 }
