@@ -8,10 +8,12 @@ router.add('POST', '/slack', [
   await validation.slack,
   controller.slack,
 ]);
+router.add('OPTIONS', '/email', (req, res) => res.end());
 router.add('POST', '/email', [
   validation.email,
   controller.email,
 ]);
+router.add('OPTIONS', '/webPush', (req, res) => res.end());
 router.add('POST', '/webPush', [
   validation.webPush,
   controller.webPush,

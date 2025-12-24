@@ -15,22 +15,22 @@
     <div id="app" class="nav-main">
       <div class="container">
         <section class="input">
-          <div class="login-box">
+          <div class="main-box">
             <h2>Register User</h2>
             <form @submit.prevent="onSubmit">
-              <div class="user-box">
+              <div class="field-box">
                 <input v-model="login" type="text" name="" required="">
                 <label>User</label>
               </div>
-              <div class="user-box">
+              <div class="field-box">
                 <input v-model="password" type="password" name="" required="">
                 <label>Password</label>
               </div>
-              <div class="user-box">
+              <div class="field-box">
                 <input v-model="confirm" type="password" name="" required="">
                 <label>Confirm</label>
               </div>
-              <div class="user-box">
+              <div class="field-box">
                 <select v-model="role">
                   <option value="guest">Guest</option>
                   <option value="staff">Staff</option>

@@ -86,4 +86,8 @@ createApp({
   setup() {
     return self;
   },
+
+  async mounted() {
+    document.querySelector('input')?.focus();
+  },
 }).mount('#app');
