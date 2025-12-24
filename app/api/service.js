@@ -83,7 +83,7 @@ export class Service {
         const body = this.render(payload.body, user);
         const notification = { ...payload, body };
         logger.info(JSON.stringify(notification));
-        return webPush.sendNotification(subscription, JSON.stringify(notification))
+        return webPush.sendNotification(subscription, JSON.stringify(notification), { TTL: 3_600 })
         .then(() => logger.info('sendNotification', JSON.stringify(user)))
         .catch(e => {
           logger.error(e, JSON.stringify(user));
