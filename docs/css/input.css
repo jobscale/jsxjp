@@ -53,17 +53,6 @@ section + section {
   margin-top: 1.5em;
 }
 
-section.input {
-  margin: 0;
-  padding: 0;
-  font-family: 'Roboto', sans-serif;
-  background: var(--bg-gradient);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
 .main-box {
   position: relative;
   width: 450px;
