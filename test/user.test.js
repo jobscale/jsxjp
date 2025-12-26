@@ -19,7 +19,6 @@ const mockLogger = {
 
 jest.unstable_mockModule('../app/db.js', () => ({ db: mockDb }));
 jest.unstable_mockModule('@jobscale/logger', () => ({ logger: mockLogger }));
-// Mock shorten route to avoid pulling in jsdom via shorten/service.js
 const mockRouter = {
   router: {
     routes: [],

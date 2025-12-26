@@ -1,6 +1,5 @@
 import crypto from 'crypto';
 import createHttpError from 'http-errors';
-import { JSDOM } from 'jsdom';
 import { db } from '../db.js';
 
 const { ENV } = process.env;
@@ -57,7 +56,7 @@ export class Service {
       const pattern = '^https://raw.githubusercontent.com/jobscale/_/main/infra/(.+)';
       const regExp = new RegExp(pattern);
       const [, key] = html.match(regExp) || [undefined, random(7)];
-      const caption = await this.getCaption({ html }) || key;
+      const caption = key;
       await db.setValue(tableHash, hash, { code: key });
       return db.setValue(tableName, key, {
         caption,
@@ -68,14 +67,6 @@ export class Service {
       });
     })
     .then(({ key: id }) => ({ id }));
-  }
-
-  async getCaption({ html }) {
-    return fetch(html)
-    .then(res => res.text())
-    .then(body => new JSDOM(body).window.document)
-    .then(document => document.querySelector('title'))
-    .then(title => title && title.textContent);
   }
 
   async find() {

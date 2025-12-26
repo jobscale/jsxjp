@@ -5,7 +5,7 @@ version = 0.1
 [dev.deploy.parameters]
 stack_name = "dev-jsxjp"
 s3_prefix = "dev-jsxjp"
-s3_bucket = "sam-deploy-jsxjp"
+s3_bucket = "sam-deployment-jsxjp"
 region = "us-east-1"
 capabilities = "CAPABILITY_NAMED_IAM"
 parameter_overrides = "StageName=\"v1\" Env=\"dev\""
@@ -15,7 +15,7 @@ parameter_overrides = "StageName=\"v1\" Env=\"dev\""
 [prod.deploy.parameters]
 stack_name = "prod-jsxjp"
 s3_prefix = "prod-jsxjp"
-s3_bucket = "sam-deploy-jsxjp"
+s3_bucket = "sam-deployment-jsxjp"
 region = "us-east-1"
 capabilities = "CAPABILITY_NAMED_IAM"
 parameter_overrides = "StageName=\"v1\" Env=\"prod\""

@@ -27,15 +27,6 @@ const mockAuthController = {
 
 jest.unstable_mockModule('../app/db.js', () => ({ db: mockDb }));
 jest.unstable_mockModule('@jobscale/logger', () => ({ logger: mockLogger }));
-const mockJSDOMInstance = {
-  window: {
-    document: {
-      querySelector: jest.fn(() => ({ textContent: 'Mock Title' })),
-    },
-  },
-};
-const MockJSDOM = jest.fn(() => mockJSDOMInstance);
-jest.unstable_mockModule('jsdom', () => ({ JSDOM: MockJSDOM }));
 jest.unstable_mockModule('../app/auth/service.js', () => ({ service: mockAuthService }));
 jest.unstable_mockModule('../app/auth/controller.js', () => ({ controller: mockAuthController }));
 
