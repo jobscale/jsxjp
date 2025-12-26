@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -eu
+
+build() {
+  echo "Building..."
+  sam build
+}
+
+deploy() {
+  echo "Deploying to 'dev' environment..."
+  sam deploy --config-env dev
+}
+
+main() {
+  build
+  deploy
+  echo "Deployment complete."
+}
+
+main

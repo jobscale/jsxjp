@@ -26,9 +26,9 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-path
       CodeUri: .
       Handler: lambda.handler
-      MemorySize: 128
+      MemorySize: 512
       Timeout: 10
-      Runtime: nodejs18.x
+      Runtime: nodejs24.x
       Tags:
         Env: !Sub ${Env}
       Environment:
@@ -39,7 +39,7 @@ Resources:
     Type: AWS::Serverless::HttpApi
     Properties:
       Name: !Sub ${AWS::StackName}-http-api
-      StageName: !Ref StageName
+      StageName: $default
       Tags:
         Env: !Sub ${Env}
       StageVariables:
@@ -47,28 +47,7 @@ Resources:
       FailOnWarnings: true
       AccessLogSettings:
         DestinationArn: !GetAtt AccessLogs.Arn
-        Format: '
-          {
-            "accountId":"$context.accountId",
-            "requestTime":"$context.requestTime",
-            "requestId":"$context.requestId",
-            "ip":"$context.identity.sourceIp",
-            "userAgent":"$context.identity.userAgent",
-            "httpMethod":"$context.httpMethod",
-            "resourcePath":"$context.path",
-            "status":"$context.status",
-            "protocol":"$context.protocol",
-            "responseLength":"$context.responseLength",
-            "integrationErrorMessage":"$context.integrationErrorMessage",
-            "integrationStatus":"$context.integration.status",
-            "integrationLatency":"$context.integration.latency",
-            "integrationError":"$context.integration.error",
-            "authorizerPrincipalId":"$context.authorizer.principalId",
-            "body":"$context.authorizer.body",
-            "authorizerError":"$context.authorizer.error",
-            "responseType":"$context.error.responseType",
-            "message":"$context.error.message"
-          }'
+        Format: ' { "accountId":"$context.accountId", "requestTime":"$context.requestTime", "requestId":"$context.requestId", "ip":"$context.identity.sourceIp", "userAgent":"$context.identity.userAgent", "httpMethod":"$context.httpMethod", "resourcePath":"$context.path", "status":"$context.status", "protocol":"$context.protocol", "responseLength":"$context.responseLength", "integrationErrorMessage":"$context.integrationErrorMessage", "integrationStatus":"$context.integration.status", "integrationLatency":"$context.integration.latency", "integrationError":"$context.integration.error", "authorizerPrincipalId":"$context.authorizer.principalId", "body":"$context.authorizer.body", "authorizerError":"$context.authorizer.error", "responseType":"$context.error.responseType", "message":"$context.error.message" }'
 
   PathLambdaRoute:
     Type: AWS::ApiGatewayV2::Route
@@ -84,17 +63,23 @@ Resources:
       ConnectionType: INTERNET
       IntegrationType: AWS_PROXY
       IntegrationMethod: POST
-      IntegrationUri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${PathLambda}/invocations
+      IntegrationUri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${PathLambda.Arn}/invocations
       CredentialsArn: !GetAtt LambdaProxyRole.Arn
       TimeoutInMillis: 20000
-      PayloadFormatVersion: '1.0'
+      PayloadFormatVersion: '2.0'
 
   LambdaProxyRole:
     Type: AWS::IAM::Role
     Properties:
       Path: /
       RoleName: !Sub ${AWS::StackName}-apigw-lambda-proxy-role
-      AssumeRolePolicyDocument: {"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"apigateway.amazonaws.com"},"Action":"sts:AssumeRole"}]}
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: "Allow"
+          Principal:
+            Service: "apigateway.amazonaws.com"
+          Action: "sts:AssumeRole"
       MaxSessionDuration: 3600
       ManagedPolicyArns:
       - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
@@ -116,7 +101,7 @@ Outputs:
   HttpApiUrl:
     Description: URL of your API endpoint
     Value:
-      Fn::Sub: https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/${StageName}/
+      Fn::Sub: https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/
   HttpApiId:
     Description: Api id of HttpApi
     Value:
