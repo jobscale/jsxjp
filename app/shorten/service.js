@@ -14,6 +14,9 @@ const tableHash = {
   test: 'shorten-hash',
 }[ENV];
 
+const userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
+const headers = { 'accept-language': 'ja', 'user-agent': userAgent };
+
 const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   const timestamp = new Intl.DateTimeFormat('sv-SE', {
     timeZone: 'Asia/Tokyo',
@@ -56,7 +59,7 @@ export class Service {
       const pattern = '^https://raw.githubusercontent.com/jobscale/_/main/infra/(.+)';
       const regExp = new RegExp(pattern);
       const [, key] = html.match(regExp) || [undefined, random(7)];
-      const caption = key;
+      const caption = await this.parseCaption(html, key);
       await db.setValue(tableHash, hash, { code: key });
       return db.setValue(tableName, key, {
         caption,
@@ -67,6 +70,14 @@ export class Service {
       });
     })
     .then(({ key: id }) => ({ id }));
+  }
+
+  async parseCaption(url, key) {
+    let fallback = key;
+    const html = await fetch(url, { headers }).then(res => res.text()).catch(e => { fallback = e.cause || e.message; });
+    const match = html?.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+    const title = match ? match[1].trim() : fallback;
+    return title;
   }
 
   async find() {
