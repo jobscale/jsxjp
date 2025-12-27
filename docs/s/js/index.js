@@ -41,6 +41,7 @@ const self = reactive({
     })
     .then(({ id }) => {
       self.shorten = `jsx.jp/s/${id}`;
+      self.url = '';
     })
     .catch(e => logger.error(e.message))
     .then(() => setTimeout(() => { self.loading = false; }, 1000));

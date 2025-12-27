@@ -26,7 +26,7 @@
         <section>
           <form @submit.prevent="onSubmit">
             <input name="url" v-model="url" class="input" type="search" maxlength="2048" placeholder="URL"><br>
-            <button :disabled="url.length < 20 || shorten.length > 0" type="submit" :class="url.length >= 20 ? 'fa-beat' : ''">
+            <button :disabled="url.length < 20" type="submit" :class="url.length >= 20 ? 'fa-beat' : ''">
               <i class="fa-regular fa-down-left-and-up-right-to-center fa-rotate-45 fa-size-big"></i>
             </button>
           </form>
@@ -44,7 +44,7 @@
             <i class="fa-solid fa-bagel"></i>
           </button>
         </section>
-        <footer style="text-align:right;margin:0.5em;"><a href="https://jsx.jp" target="_blank">powered by jsx.jp</a></footer>
+        <footer style="text-align:right;margin:0.5em;"><a href="https://jsx.jp" target="_blank" class="tip" data-tip="open link">powered by jsx.jp</a></footer>
       </div>
       <div v-show="loading" class="loading">
         <div class="loader">

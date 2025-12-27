@@ -1330,6 +1330,9 @@ div .note:has(.tag) a {
   display: inline-flex;
   cursor: none;
   margin: 1em;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .item-box {
@@ -1437,4 +1440,29 @@ header.header {
 #busyChart {
   margin-top: 0.4em;
   height: 1.5em;
+}
+
+.tip {
+  position: relative;
+}
+
+.tip::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 125%;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: #fff;
+  background: #333;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
+.tip:hover::after {
+  opacity: 1;
 }
