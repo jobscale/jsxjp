@@ -112,8 +112,9 @@ const self = reactive({
       const y = top - (bottom - top);
       popupRef.style.left = `${x - popupRef.offsetWidth / 2}px`;
       popupRef.style.top = `${y - popupRef.offsetHeight}px`;
-      popupRef.style.opacity = '100';
+      popupRef.style.opacity = '1';
       self.popupRefId = setTimeout(() => {
+        popupRef.style.opacity = '0';
         self.popupRefText = '';
       }, 2000);
     }, 100);
