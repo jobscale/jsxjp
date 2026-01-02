@@ -63,12 +63,6 @@ const self = reactive({
     })
     .catch(e => logger.error(e.message));
   },
-
-  onColorScheme() {
-    const html = document.querySelector('html');
-    html.classList.toggle('dark-scheme');
-    html.classList.toggle('light-scheme');
-  },
 });
 
 createApp({

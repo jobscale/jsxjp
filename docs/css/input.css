@@ -55,8 +55,8 @@ section + section {
 
 .main-box {
   position: relative;
-  width: 450px;
-  padding: 50px;
+  width: 30em;
+  padding: 4em;
   background: var(--box-bg);
   backdrop-filter: blur(10px);
   box-sizing: border-box;
@@ -276,4 +276,17 @@ section + section {
 .field-box.align-right input.code-6 {
   width: 7em;
   text-align: center;
+}
+
+.field-box.align-right input.code-16 {
+  width: 17em;
+  text-align: center;
+}
+
+summary {
+  margin-bottom: 1rem;
+}
+
+.main-box.wide {
+  width: 46em;
 }
