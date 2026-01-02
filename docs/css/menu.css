@@ -224,7 +224,7 @@ Navigation
   }
 }
 
-#powered {
+.nav a.nav-footer.powered {
   margin: 1em 0 0;
   font-family: 'Tangerine';
   font-size: 2.5em;

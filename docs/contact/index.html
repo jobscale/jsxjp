@@ -207,6 +207,13 @@
     0%   { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+
+  summary {
+    color: var(--muted);
+  }
+  summary, details {
+    margin-bottom: 1rem;
+  }
   </style>
 </head>
 
@@ -228,6 +235,47 @@
             <option value="ja">日本語</option>
           </select>
         </div>
+
+        <section>
+          <details>
+            <summary>
+              <div class="lang-content en">Terms of Use</div>
+              <div class="lang-content ja">利用規約</div>
+            </summary>
+            <div class="lang-content en">
+              <div>
+                <div>Prohibited Actions</div>
+                <ul>
+                  <li>Any behavior that violates public order or moral standards is strictly prohibited.</li>
+                  <li>Offensive, abusive, or antisocial use of this service is not allowed.</li>
+                </ul>
+              </div>
+              <div>
+                <div>Disclaimer</div>
+                <ul>
+                  <li>We are not responsible for any issues, damages, or disputes that may arise from its use.</li>
+                  <li>We do not accept inquiries or provide individual responses under any circumstances.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="lang-content ja">
+              <div>
+                <div>禁止事項</div>
+                <ul>
+                  <li>公序良俗に反する行為は禁止します。</li>
+                  <li>攻撃的・暴力的・反社会的な利用は禁止します。</li>
+                </ul>
+              </div>
+              <div>
+                <div>免責事項</div>
+                <ul>
+                  <li>利用によって生じたいかなる問題・損害・トラブルについても、当方は一切責任を負いません。</li>
+                  <li>いかなるお問い合わせにも対応しておりません。</li>
+                </ul>
+              </div>
+            </div>
+          </details>
+        </section>
 
         <form @submit.prevent="onSubmit">
           <div class="field">
