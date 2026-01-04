@@ -87,7 +87,7 @@ const self = reactive({
         const diff = Math.floor((Date.now() - serverTime.getTime()) / 100) / 10;
         self.actionText += ` ${diff}`;
       }
-      self.dateText = formatTimestamp(serverTime);
+      self.dateText = formatTimestamp(serverTime, true);
       self.stack.unshift(span);
       self.updateSpan();
     })
@@ -99,7 +99,7 @@ const self = reactive({
   checkDate() {
     if (self.busy !== undefined) {
       if (self.busy === 0) {
-        const [date, time] = formatTimestamp().split(' ');
+        const [date, time] = formatTimestamp(Date.now(), true).split(' ');
         self.busyList.unshift({ num: 0, date, time });
         if (self.busyList.length > 500) self.busyList.pop();
       }
