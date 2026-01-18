@@ -190,7 +190,7 @@ describe('API Routing via app/index.js', () => {
 
       const res = await request(app).post('/api/subscription').send(subscription);
       expect(res.statusCode).toBe(200);
-      expect(res.body).toEqual({ succeeded: true });
+      expect(res.body).toEqual({ register: true });
     });
 
     it('should update existing subscription', async () => {
