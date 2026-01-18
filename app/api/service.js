@@ -11,7 +11,7 @@ import { db } from '../db.js';
 import { store } from '../store.js';
 import { genDigit, verifyDigit } from './index.js';
 
-const { PARTNER_HOST } = process.env;
+const LIMIT_TTL = 5_400; // seconds
 
 const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   const timestamp = new Intl.DateTimeFormat('sv-SE', {
@@ -49,69 +49,6 @@ export class Service {
     });
   }
 
-  async webPushData() {
-    if (!this.cert) {
-      this.cert = await db.getValue('config/certificate', 'secret');
-      webPush.setVapidDetails(
-        'mailto:jobscale@example.com',
-        this.cert.public,
-        this.cert.key,
-      );
-    }
-    if (!this.users) {
-      this.users = await store.getValue('web/users', 'info');
-      // refresh 10 minutes
-      setTimeout(() => { delete this.users; }, 600_000);
-    }
-  }
-
-  render(template, data) {
-    return Object.entries({
-      TEMPLATE_LOGIN: data.login ?? 'anonymous',
-      TEMPLATE_HOST: data.host ?? 'unknown host',
-    }).reduce(
-      (str, [key, value]) => str.replaceAll(`{{${key}}}`, value ?? ''),
-      template,
-    );
-  }
-
-  async webPublish(payload, users) {
-    await Promise.all(
-      users.filter(user => user.subscription)
-      .map(user => {
-        const { subscription } = user;
-        const body = this.render(payload.body, user);
-        const notification = { ...payload, body };
-        logger.info(JSON.stringify(notification));
-        return webPush.sendNotification(subscription, JSON.stringify(notification), { TTL: 3_600 })
-        .then(() => logger.info('sendNotification', JSON.stringify(user)))
-        .catch(e => {
-          logger.error(e, JSON.stringify(user));
-        });
-      }),
-    );
-  }
-
-  async webPush(rest) {
-    const { title } = rest;
-    await this.webPushData();
-    const expired = formatTimestamp(dayjs().add(22, 'minute'));
-    const body = [
-      rest.body,
-      '',
-      '{{TEMPLATE_LOGIN}} - {{TEMPLATE_HOST}}',
-    ].join('\n');
-    const payload = {
-      title, expired, body, icon: '/icon/cat-hand-black.png',
-    };
-    const users = Object.values(this.users).filter(user => user.login === 'alice');
-    await this.webPublish(payload, users);
-  }
-
-  async getNumber() {
-    return genDigit();
-  }
-
   async sendmail({ secret, digit, content }) {
     const ok = await verifyDigit(secret, digit);
     if (!ok) throw createHttpError(403);
@@ -124,29 +61,17 @@ export class Service {
     return cert.public;
   }
 
-  async subscription(rest, login) {
-    const {
-      endpoint, expirationTime, keys: { auth, p256dh },
-      ts, ua, host,
-    } = rest;
-    const subscription = { endpoint, expirationTime, keys: { auth, p256dh } };
-    const users = await store.getValue('web/users', 'info') ?? {};
-    const hash = crypto.createHash('sha3-256').update(endpoint).digest('base64');
-    if (users[hash]) {
-      if (!login || users[hash].login === login) return { exist: true };
-      users[hash].login = login;
-      users[hash].host = host;
-      await store.setValue('web/users', 'info', users);
-      await this.publish(subscription, '通知先を「更新」しました');
-      return { update: true };
-    }
-    users[hash] = { login, host, subscription, ts, ua };
-    await store.setValue('web/users', 'info', users);
-    await this.publish(subscription, '通知先を「登録」しました');
-    return { succeeded: true };
+  render(template, data) {
+    return Object.entries({
+      TEMPLATE_LOGIN: data.login ?? 'anonymous',
+      TEMPLATE_HOST: data.host ?? 'unknown host',
+    }).reduce(
+      (str, [key, value]) => str.replaceAll(`{{${key}}}`, value ?? ''),
+      template,
+    );
   }
 
-  async publish(subscription, body) {
+  async publish(payload, users) {
     if (!this.cert) {
       this.cert = await db.getValue('config/certificate', 'secret');
       webPush.setVapidDetails(
@@ -156,16 +81,103 @@ export class Service {
       );
     }
 
+    await Promise.all(
+      users.filter(user => user.subscription)
+      .map(async user => {
+        const { subscription } = user;
+        const body = this.render(payload.body, user);
+        const notification = { ...payload, body };
+        logger.info(JSON.stringify(notification));
+        if (subscription.token) {
+          // FCM for Capacitor
+          await this.publishFcm(subscription, notification);
+          return;
+        }
+        // Web Push
+        await this.publishWeb(subscription, notification);
+      }),
+    );
+  }
+
+  async publishWeb(subscription, notification) {
+    await webPush.sendNotification(subscription, JSON.stringify(notification), { TTL: LIMIT_TTL })
+    .then(res => logger.info('publishWeb', JSON.stringify({ ...res }, notification)))
+    .catch(e => logger.error('publishWeb', JSON.stringify({ ...e }, notification)));
+  }
+
+  async publishFcm(subscription, notification) {
+    const fcmKey = await configService.getEnv('fcm');
     const payload = {
-      title: '通知',
-      body,
-      icon: '/favicon.ico',
+      to: subscription.token,
+      notification,
+      time_to_live: LIMIT_TTL,
     };
-    return webPush.sendNotification(subscription, JSON.stringify(payload))
-    .then(() => logger.info('sendNotification', JSON.stringify(subscription)))
-    .catch(e => {
-      logger.error(e, JSON.stringify(subscription));
-    });
+    await fetch('https://fcm.googleapis.com/fcm/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `key=${fcmKey}`,
+      },
+      body: JSON.stringify(payload),
+    })
+    .then(res => res.json())
+    .then(res => logger.info('publishFcm', JSON.stringify({ ...res }, notification)))
+    .catch(e => logger.error('publishFcm', JSON.stringify({ ...e }, notification)));
+  }
+
+  async webPush(rest) {
+    const { title } = rest;
+    const expired = formatTimestamp(dayjs().add(22, 'minute'));
+    const body = [
+      rest.body,
+      '',
+      '{{TEMPLATE_LOGIN}} - {{TEMPLATE_HOST}}',
+    ].join('\n');
+    const payload = {
+      title, expired, body, icon: '/icon/cat-hand-black.png',
+    };
+    if (!this.users) {
+      this.users = await store.getValue('web/users', 'info');
+      // refresh 10 minutes
+      setTimeout(() => { delete this.users; }, 600_000);
+    }
+    const users = Object.values(this.users).filter(user => user.login === 'alice');
+    await this.publish(payload, users);
+  }
+
+  async subscription(rest, login) {
+    const {
+      endpoint, expirationTime, keys, token,
+      ts, ua, host,
+    } = rest;
+    let subscription;
+    let hash;
+    if (token) {
+      // Capacitor FCM token
+      subscription = { token };
+      hash = crypto.createHash('sha3-256').update(token).digest('base64');
+    } else {
+      // Web Push subscription
+      subscription = { endpoint, expirationTime, keys };
+      hash = crypto.createHash('sha3-256').update(endpoint).digest('base64');
+    }
+    const users = await store.getValue('web/users', 'info') ?? {};
+    if (users[hash]) {
+      if (!login || users[hash].login === login) return { exist: true };
+      users[hash].login = login;
+      users[hash].host = host;
+      await store.setValue('web/users', 'info', users);
+      await this.publish({ title: '通知', body: '通知先を「更新」しました' }, [users[hash]]);
+      return { update: true };
+    }
+    users[hash] = { login, host, subscription, ts, ua };
+    await store.setValue('web/users', 'info', users);
+    await this.publish({ title: '通知', body: '通知先を「登録」しました' }, [users[hash]]);
+    return { register: true };
+  }
+
+  async getNumber() {
+    return genDigit();
   }
 
   async hostname() {
@@ -175,36 +187,7 @@ export class Service {
       .then(res => res.text()).catch(e => e.message),
     };
   }
-
-  async allowInsecure(use) {
-    if (use === false) delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
-    else process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-  }
-
-  fetchEnv() {
-    if (!this.cache) this.cache = {};
-    if (this.cache.env) return Promise.resolve(this.cache.env);
-    const params = {
-      host: 'https://partner.credentials.svc.cluster.local',
-    };
-    if (PARTNER_HOST) {
-      params.host = PARTNER_HOST;
-    }
-    const Cookie = 'X-AUTH=X0X0X0X0X0X0X0X';
-    const request = [
-      `${params.host}/slack.env.json`,
-      { headers: { Cookie } },
-    ];
-    return this.allowInsecure()
-    .then(() => fetch.get(...request))
-    .then(res => this.allowInsecure(false) && res)
-    .then(res => {
-      this.cache.env = res.data;
-      return this.cache.env;
-    });
-  }
 }
 
 export const service = new Service();
-
 export default { Service, service };
