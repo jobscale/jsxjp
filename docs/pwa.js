@@ -50,19 +50,35 @@ class PWAClient {
   }
 
   async generateSubscription() {
+    if (window.Capacitor && window.Capacitor.Plugins.PushNotifications) {
+      // Capacitor natively handles subscription
+      const { PushNotifications } = window.Capacitor.Plugins;
+      await PushNotifications.register();
+      PushNotifications.addListener('registration', token => {
+        this.sendToServer({ token: token.value });
+      });
+      return;
+    }
     const { pushManager } = await navigator.serviceWorker.ready;
     const exist = await pushManager.getSubscription();
-    if (exist) return exist;
-    const publicPem = await fetch('/api/public').then(res => res.text());
-    const applicationServerKey = this.toUint8Array(publicPem);
-    const subscription = await pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey,
-    });
-    return subscription;
+    const subscription = async () => {
+      const publicPem = await fetch('/api/public').then(res => res.text());
+      const applicationServerKey = this.toUint8Array(publicPem);
+      return pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey,
+      });
+    };
+    this.sendToServer(exist || await subscription())
+    .catch(e => logger.warn({ ...e }));
   }
 
   async notification(info = {}) {
+    if (window.Capacitor) {
+      // Capacitor handles permissions automatically via device settings
+      await this.generateSubscription();
+      return;
+    }
     if (Notification.permission === 'denied') return;
     if (Notification.permission !== 'granted') {
       const permission = await Notification.requestPermission();
@@ -70,9 +86,7 @@ class PWAClient {
       logger.info('通知が有効になりました！');
       info.trigger = 'init';
     }
-    await this.generateSubscription()
-    .then(subscription => this.sendToServer(subscription))
-    .catch(e => logger.warn(e));
+    await this.generateSubscription();
     if (info.condition && info.condition !== info.trigger) return;
     await new Promise(resolve => { setTimeout(resolve, 5000); });
     const notification = new Notification(info.title, {
