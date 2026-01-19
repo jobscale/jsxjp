@@ -1,4 +1,3 @@
-
 import { describe, expect, jest, beforeEach } from '@jest/globals';
 import request from 'supertest';
 
@@ -84,6 +83,7 @@ describe('API Routing via app/index.js', () => {
       expect(res.body).toEqual({
         image: expect.stringMatching(/^data:image\/png;base64,/),
         secret: {
+          salt: expect.stringMatching(/^[0-9a-fA-F]+$/),
           iv: expect.stringMatching(/^[0-9a-fA-F]+$/),
           data: expect.stringMatching(/^[0-9a-fA-F]+$/),
           tag: expect.stringMatching(/^[0-9a-fA-F]+$/),
@@ -98,6 +98,7 @@ describe('API Routing via app/index.js', () => {
       expect(res.body).toEqual({
         image: expect.stringMatching(/^data:image\/png;base64,/),
         secret: {
+          salt: expect.stringMatching(/^[0-9a-fA-F]+$/),
           iv: expect.stringMatching(/^[0-9a-fA-F]+$/),
           data: expect.stringMatching(/^[0-9a-fA-F]+$/),
           tag: expect.stringMatching(/^[0-9a-fA-F]+$/),
