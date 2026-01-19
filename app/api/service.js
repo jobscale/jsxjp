@@ -145,6 +145,20 @@ export class Service {
     await this.publish(payload, users);
   }
 
+  async subscribeUser(text, user) {
+    const title = '通知';
+    const expired = formatTimestamp(dayjs().add(22, 'minute'));
+    const body = [
+      text,
+      '',
+      '{{TEMPLATE_LOGIN}} - {{TEMPLATE_HOST}}',
+    ].join('\n');
+    const payload = {
+      title, expired, body, icon: '/icon/cat-walk.svg',
+    };
+    await this.publish(payload, [user]);
+  }
+
   async subscription(rest, login) {
     const {
       endpoint, expirationTime, keys, token,
@@ -167,12 +181,12 @@ export class Service {
       users[hash].login = login;
       users[hash].host = host;
       await store.setValue('web/users', 'info', users);
-      await this.publish({ title: '通知', body: '通知先を「更新」しました' }, [users[hash]]);
+      await this.subscribeUser('通知先を「更新」しました', users[hash]);
       return { update: true };
     }
     users[hash] = { login, host, subscription, ts, ua };
     await store.setValue('web/users', 'info', users);
-    await this.publish({ title: '通知', body: '通知先を「登録」しました' }, [users[hash]]);
+    await this.subscribeUser('通知先を「登録」しました', users[hash]);
     return { register: true };
   }
 
