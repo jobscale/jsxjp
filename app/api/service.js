@@ -135,7 +135,7 @@ export class Service {
       '{{TEMPLATE_LOGIN}} - {{TEMPLATE_HOST}}',
     ].join('\n');
     const payload = {
-      title, expired, body, icon: '/icon/cat-hand-black.png',
+      title, expired, body, icon: '/icon/cat-point.svg',
     };
     if (!this.users) {
       this.users = await store.getValue('web/users', 'info');
