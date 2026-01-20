@@ -42,6 +42,7 @@ export class Validation {
     const { body } = req;
     const { error } = Joi.object({
       secret: Joi.object({
+        salt: Joi.string().required().min(1).max(2 ** 16 - 1),
         data: Joi.string().required().min(1).max(2 ** 16 - 1),
         iv: Joi.string().required().min(1).max(2 ** 16 - 1),
         tag: Joi.string().required().min(1).max(2 ** 16 - 1),
