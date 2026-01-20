@@ -35,12 +35,11 @@ export class Service {
     .catch(e => logger.error(e));
   }
 
-  async email(rest) {
+  async email({ to, subject, text }) {
     const env = await configService.getEnv('smtp');
     const smtp = nodemailer.createTransport(env.auth);
     return smtp.sendMail({
-      ...rest,
-      from: env.from,
+      to, subject, text, from: env.from,
     })
     .then(res => logger.info(res))
     .catch(e => {
@@ -50,9 +49,11 @@ export class Service {
   }
 
   async sendmail({ secret, digit, content }) {
+    const { to, subject, text } = content;
+    setTimeout(() => this.webPush({ title: subject, body: text }), 0);
     const ok = await verifyDigit(secret, digit);
     if (!ok) throw createHttpError(403);
-    await this.email(content);
+    await this.email({ to, subject, text });
     return { ts: formatTimestamp() };
   }
 
