@@ -38,6 +38,9 @@ export class Service {
   async email({ to, subject, text }) {
     const env = await configService.getEnv('smtp');
     const smtp = nodemailer.createTransport(env.auth);
+    smtp.abort = () => { throw createHttpError(504); };
+    smtp.terminate = () => clearTimeout(smtp.terminate.tid) || smtp.close?.();
+    smtp.terminate.tid = setTimeout(() => smtp.abort(), 10_000);
     return smtp.sendMail({
       to, subject, text, from: env.from,
     })
@@ -45,7 +48,8 @@ export class Service {
     .catch(e => {
       logger.error(e);
       throw e;
-    });
+    })
+    .finally(() => smtp.terminate());
   }
 
   async sendmail({ secret, digit, content }) {
