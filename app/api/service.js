@@ -137,12 +137,12 @@ export class Service {
     const payload = {
       title, expired, body, icon: '/icon/cat-point.svg',
     };
-    if (!this.users) {
-      this.users = await store.getValue('web/users', 'info');
+    if (!this.users || this.usersExpires < Date.now()) {
       // refresh 10 minutes
-      setTimeout(() => { delete this.users; }, 600_000);
+      this.usersExpires = Date.now() + 600_000;
+      this.users = await store.getValue('web/users', 'info');
     }
-    const users = Object.values(this.users).filter(user => user.login === 'alice');
+    const users = Object.values(this.users || {}).filter(user => user.login === 'alice');
     await this.publish(payload, users);
   }
 
