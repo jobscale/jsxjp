@@ -82,12 +82,7 @@ describe('API Routing via app/index.js', () => {
       expect(res.statusCode).toBe(200);
       expect(res.body).toEqual({
         image: expect.stringMatching(/^data:image\/png;base64,/),
-        secret: {
-          salt: expect.stringMatching(/^[0-9a-fA-F]+$/),
-          iv: expect.stringMatching(/^[0-9a-fA-F]+$/),
-          data: expect.stringMatching(/^[0-9a-fA-F]+$/),
-          tag: expect.stringMatching(/^[0-9a-fA-F]+$/),
-        },
+        secret: expect.stringMatching(/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/),
       });
     });
 
@@ -97,12 +92,7 @@ describe('API Routing via app/index.js', () => {
       expect(res.statusCode).toBe(200);
       expect(res.body).toEqual({
         image: expect.stringMatching(/^data:image\/png;base64,/),
-        secret: {
-          salt: expect.stringMatching(/^[0-9a-fA-F]+$/),
-          iv: expect.stringMatching(/^[0-9a-fA-F]+$/),
-          data: expect.stringMatching(/^[0-9a-fA-F]+$/),
-          tag: expect.stringMatching(/^[0-9a-fA-F]+$/),
-        },
+        secret: expect.stringMatching(/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/),
       });
       const style = '<style>:root { color-scheme: light dark; }</style>';
       const script = '<script>setTimeout(window.close, 3000)</script>';

@@ -1,28 +1,6 @@
 import crypto from 'crypto';
 import { createCanvas, registerFont } from 'canvas';
-
-const algorithm = 'aes-256-gcm';
-
-export const encrypt = async (text, password) => {
-  const salt = crypto.randomBytes(16).toString('hex');
-  const key = crypto.scryptSync(password, salt, 32);
-  const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv(algorithm, key, iv);
-  const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
-  const tag = cipher.getAuthTag(); // 認証タグ
-  return { salt, iv: iv.toString('hex'), data: encrypted.toString('hex'), tag: tag.toString('hex') };
-};
-
-export const decrypt = async (encrypted, password) => {
-  const key = crypto.scryptSync(password, encrypted.salt, 32);
-  const decipher = crypto.createDecipheriv(algorithm, key, Buffer.from(encrypted.iv, 'hex'));
-  decipher.setAuthTag(Buffer.from(encrypted.tag, 'hex'));
-  const decrypted = Buffer.concat([
-    decipher.update(Buffer.from(encrypted.data, 'hex')),
-    decipher.final(),
-  ]);
-  return decrypted.toString('utf8');
-};
+import { cipher } from '../cipher.js';
 
 export const genDigit = async () => {
   const num = Number.parseInt(crypto.randomBytes(2).toString('hex'), 16);
@@ -63,12 +41,12 @@ export const genDigit = async () => {
   const base64 = buffer.toString('base64');
   const image = `data:image/png;base64,${base64}`;
   const ts = new Date().toISOString();
-  const secret = await encrypt(JSON.stringify({ ts, digit }), digit);
+  const secret = await cipher.encrypt(JSON.stringify({ ts, digit }), digit);
   return { image, secret };
 };
 
 export const verifyDigit = async (secret, digit) => {
-  const result = await decrypt(secret, digit).then(JSON.parse).catch(() => ({}));
+  const result = await cipher.decrypt(secret, digit).then(JSON.parse).catch(() => ({}));
   if (result.digit !== digit) return false;
   const ts = new Date(result.ts).getTime();
   const diffMinutes = (Date.now() - ts) / (1000 * 60);
