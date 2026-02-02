@@ -41,6 +41,7 @@ const mockWebPush = {
 const mockNodemailer = {
   createTransport: jest.fn().mockReturnValue({
     sendMail: jest.fn(),
+    close: jest.fn(),
   }),
 };
 
