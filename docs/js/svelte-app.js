@@ -303,7 +303,7 @@ class Svelte {
       };
     }
     const opts = {
-      raf: true,
+      raf: false,
       step: 1e3,
     };
     const delay = () => opts.step - Date.now() % opts.step;
