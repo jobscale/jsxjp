@@ -41,12 +41,7 @@ export class Validation {
   async sendmail(req, res) {
     const { body } = req;
     const { error } = Joi.object({
-      secret: Joi.object({
-        salt: Joi.string().required().min(1).max(2 ** 16 - 1),
-        data: Joi.string().required().min(1).max(2 ** 16 - 1),
-        iv: Joi.string().required().min(1).max(2 ** 16 - 1),
-        tag: Joi.string().required().min(1).max(2 ** 16 - 1),
-      }).required(),
+      secret: Joi.string().required().min(1).max(2 ** 16 - 1).required(),
       digit: Joi.string().required().min(4).max(4),
       content: Joi.object({
         subject: Joi.string().required().min(1).max(2 ** 8 - 1),
