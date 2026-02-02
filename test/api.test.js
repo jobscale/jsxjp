@@ -145,6 +145,69 @@ describe('API Routing via app/index.js', () => {
     });
   });
 
+  describe('POST /api/sendmail', () => {
+    it('should send mail with secret and digit', async () => {
+      mockConfigService.getEnv.mockResolvedValue({ auth: {}, from: 'test@example.com' });
+      mockDb.getValue.mockResolvedValue({ public: 'pub', key: 'priv' });
+      mockNodemailer.createTransport().sendMail.mockResolvedValue('ok');
+      const body = {
+        secret: 'test-secret',
+        digit: '1234',
+        content: { subject: 'test', text: 'body' },
+      };
+      const res = await request(app).post('/api/sendmail').send(body);
+      expect(res.statusCode).toBe(403);
+      expect(res.body).toEqual({ message: 'Forbidden' });
+    });
+
+    it('should validate required fields', async () => {
+      const res = await request(app).post('/api/sendmail').send({});
+      expect(res.statusCode).toBe(400);
+    });
+
+    it('should validate secret field', async () => {
+      const body = {
+        digit: '1234',
+        content: { subject: 'test', text: 'body' },
+      };
+      const res = await request(app).post('/api/sendmail').send(body);
+      expect(res.statusCode).toBe(400);
+    });
+
+    it('should validate digit field length', async () => {
+      const body = {
+        secret: 'test-secret',
+        digit: '12345',
+        content: { subject: 'test', text: 'body' },
+      };
+      const res = await request(app).post('/api/sendmail').send(body);
+      expect(res.statusCode).toBe(400);
+    });
+
+    it('should validate content field', async () => {
+      const body = {
+        secret: 'test-secret',
+        digit: '1234',
+      };
+      const res = await request(app).post('/api/sendmail').send(body);
+      expect(res.statusCode).toBe(400);
+    });
+
+    it('should handle send error', async () => {
+      mockConfigService.getEnv.mockResolvedValue({ auth: {}, from: 'test@example.com' });
+      mockDb.getValue.mockResolvedValue({ public: 'pub', key: 'priv' });
+      mockNodemailer.createTransport().sendMail.mockRejectedValueOnce(new Error('send error'));
+      const body = {
+        secret: 'test-secret',
+        digit: '1234',
+        content: { subject: 'test', text: 'body' },
+      };
+      const res = await request(app).post('/api/sendmail').send(body);
+      expect(res.statusCode).toBe(403);
+      expect(res.body).toEqual({ message: 'Forbidden' });
+    });
+  });
+
   describe('GET /api/public', () => {
     it('should return public cert', async () => {
       mockDb.getValue.mockResolvedValue({ public: 'public-cert' });
