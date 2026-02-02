@@ -37,19 +37,19 @@ export class Service {
 
   async email({ to, subject, text }) {
     const env = await configService.getEnv('smtp');
+    const racer = runner => new Promise((_, reject) => {
+      setTimeout(() => { runner.close?.(); reject(createHttpError(504)); }, 10_000);
+    });
     const smtp = nodemailer.createTransport(env.auth);
-    smtp.abort = () => { throw createHttpError(504); };
-    smtp.terminate = () => clearTimeout(smtp.terminate.tid) || smtp.close?.();
-    smtp.terminate.tid = setTimeout(() => smtp.abort(), 10_000);
-    return smtp.sendMail({
-      to, subject, text, from: env.from,
-    })
+    return Promise.race([
+      smtp.sendMail({ to, subject, text, from: env.from }),
+      racer(smtp),
+    ])
     .then(res => logger.info(res))
     .catch(e => {
       logger.error(e);
       throw e;
-    })
-    .finally(() => smtp.terminate());
+    });
   }
 
   async sendmail({ secret, digit, content }) {
