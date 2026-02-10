@@ -11,7 +11,7 @@ const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
     second: '2-digit',
   }).format(new Date(ts));
   if (withoutTimezone) return timestamp;
-  return `${timestamp}+9`;
+  return `${timestamp}+09:00`;
 };
 
 class PWAClient {
@@ -19,7 +19,7 @@ class PWAClient {
     subscription = {
       ...JSON.parse(JSON.stringify(subscription)),
       ua: navigator.userAgent,
-      ts: `${formatTimestamp()} GMT+9`,
+      ts: formatTimestamp(),
     };
     logger.info('subscription', subscription);
     return fetch('/api/subscription', {
