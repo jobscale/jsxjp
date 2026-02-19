@@ -37,7 +37,6 @@ let self = {
   async start() {
     logger.info('Start jsx.jp');
     setTimeout(() => self.interval(), 200);
-    setTimeout(() => document.body.click(), 2000);
   },
 
   async action() {
