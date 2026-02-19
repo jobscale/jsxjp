@@ -15,7 +15,7 @@ const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   return `${timestamp}+09:00`;
 };
 
-const self = reactive({
+let self = {
   signed: undefined,
   loading: true,
   items: [],
@@ -136,7 +136,8 @@ const self = reactive({
     html.classList.toggle('dark-scheme');
     html.classList.toggle('light-scheme');
   },
-});
+};
+self = reactive(self);
 
 createApp({
   setup() {

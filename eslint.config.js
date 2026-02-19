@@ -18,6 +18,7 @@ export default [{
   files: ['docs/**/*.js', 'public/**/*.js', 'src/**/*.js'],
   rules: {
     ...standard.rules,
+    'no-loop-func': 'off',
   },
 }, {
   ...standard.configs.jest,

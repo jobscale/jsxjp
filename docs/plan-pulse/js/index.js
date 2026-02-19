@@ -1,7 +1,7 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { logger } from 'https://esm.sh/@jobscale/logger';
 
-const self = reactive({
+let self = {
   loading: false,
   mode: '',
   plan: '',
@@ -197,7 +197,8 @@ const self = reactive({
     html.classList.toggle('dark-scheme');
     html.classList.toggle('light-scheme');
   },
-});
+};
+self = reactive(self);
 
 createApp({
   setup() {
