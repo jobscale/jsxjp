@@ -16,7 +16,7 @@ const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   return `${timestamp}+09:00`;
 };
 
-const self = reactive({
+let self = {
   statusText: 'muted',
   actionText: '[⛄ 🍻]',
   welcomeText: 'welcome',
@@ -37,6 +37,7 @@ const self = reactive({
   async start() {
     logger.info('Start jsx.jp');
     setTimeout(() => self.interval(), 200);
+    setTimeout(() => document.body.click(), 2000);
   },
 
   async action() {
@@ -188,7 +189,8 @@ const self = reactive({
   mute() {
     self.statusText = self.statusText ? '' : 'muted';
   },
-});
+};
+self = reactive(self);
 
 createApp({
   setup() {
