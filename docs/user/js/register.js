@@ -1,7 +1,7 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { logger } from 'https://esm.sh/@jobscale/logger';
 
-const self = reactive({
+let self = {
   signed: undefined,
   login: '',
   password: '',
@@ -59,7 +59,8 @@ const self = reactive({
       self.loading = false;
     }, 1000));
   },
-});
+};
+self = reactive(self);
 
 createApp({
   setup() {

@@ -1,7 +1,7 @@
 import { createApp, reactive, nextTick } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { logger } from 'https://esm.sh/@jobscale/logger';
 
-const self = reactive({
+let self = {
   image: undefined,
   secret: undefined,
   digit: '',
@@ -68,7 +68,8 @@ const self = reactive({
       self.secret = res.secret;
     });
   },
-});
+};
+self = reactive(self);
 
 createApp({
   setup() {

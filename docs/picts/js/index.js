@@ -52,7 +52,7 @@ const logger = createLogger('debug', {
 const strictEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const deepClone = obj => JSON.parse(JSON.stringify(obj));
 
-const self = reactive({
+let self = {
   version,
   status: version,
   signed: {},
@@ -232,9 +232,7 @@ const self = reactive({
     self.status = `${files.length} `;
     for (const file of files) {
       await self.readFile(file)
-      .then(item => {
-        self.refFiles.push(item);
-      })
+      .then(item => self.refFiles.push(item))
       .catch(e => {
         self.status += `${e.message} `;
         logger.error(e);
@@ -448,7 +446,8 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
     html.classList.toggle('dark-scheme');
     html.classList.toggle('light-scheme');
   },
-});
+};
+self = reactive(self);
 
 createApp({
   setup() {
