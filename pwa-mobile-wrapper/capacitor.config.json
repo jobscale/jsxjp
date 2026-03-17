@@ -1,0 +1,21 @@
+{
+  "appId": "jp.jsx",
+  "appName": "pwa-mobile-wrapper",
+  "server": {
+    "url": "https://jsx.jp",
+    "cleartext": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    }
+  },
+  "cordova": {
+    "preferences": {
+      "OverrideUserAgent": "CapacitorPWA"
+    }
+  }
+}

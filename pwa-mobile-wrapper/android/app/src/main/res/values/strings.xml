@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">pwa-mobile-wrapper</string>
+    <string name="title_activity_main">pwa-mobile-wrapper</string>
+    <string name="package_name">jp.jsx</string>
+    <string name="custom_url_scheme">jp.jsx</string>
+</resources>
