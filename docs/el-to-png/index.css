@@ -76,22 +76,20 @@ small {
 .wrap {
   margin: 0;
   padding: 0;
-}
-
-.img {
-  background-color: #222;
-  border-radius: 2em;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin: 4px 12px 5px 12px;
-  padding: 0;
-  width: 128px;
-  height: 128px;
-}
-
-.inner {
-  padding-bottom: 10pt;
+  .img {
+    background-color: #222;
+    border-radius: 1.5em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 4px 12px 5px 12px;
+    padding: 0;
+    width: 128px;
+    height: 98px;
+    .inner {
+      padding-bottom: 10pt;
+    }
+  }
 }
 
 a {
