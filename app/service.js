@@ -16,6 +16,10 @@ export class Service {
   async now() {
     return formatTimestamp();
   }
+
+  async nowWithoutTimezone() {
+    return formatTimestamp(Date.now(), true);
+  }
 }
 
 export const service = new Service();
