@@ -42,12 +42,13 @@ export class Ingress {
     if (req.method === 'GET') {
       res.setHeader('Link', '</icon/cat-hand.svg>; rel="icon"; type="image/svg+xml"');
     }
-    const scheme = protocol === 'http' ? 'http:' : 'https:';
-    const nonce = crypto.randomUUID();
+    const inlinePolicy = req.path !== '/' ? 'unsafe-inline' : `nonce-${crypto.randomBytes(7).toString('base64')}`;
+    const scheme = protocol === 'http' ? 'http: ws:' : 'https: wss:';
     const csp = [
       "default-src 'self'",
-      `script-src 'self' 'nonce-${nonce}'`,
-      "style-src 'self' 'unsafe-inline'",
+      `script-src 'self' '${inlinePolicy}' https:`,
+      "style-src 'self' 'unsafe-inline' https:",
+      "font-src 'self' https: data:",
       "img-src 'self' data:",
       `connect-src 'self' ${scheme}`,
       "object-src 'none'",
