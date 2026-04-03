@@ -8,8 +8,6 @@ import { parseCookies } from './parse-cookie.js';
 import { route } from './route.js';
 import { parseBody } from './parse-body.js';
 
-const { XDG_SESSION_DESKTOP } = process.env;
-
 const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   const timestamp = new Intl.DateTimeFormat('sv-SE', {
     timeZone: 'Asia/Tokyo',
@@ -27,7 +25,12 @@ const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
 export class Ingress {
   useHeader(req, res) {
     const headers = new Headers(req.headers);
-    const protocol = req.socket.encrypted ? 'https' : 'http';
+    const getProtocol = () => {
+      const x = headers.get('x-forwarded-proto')?.split(',')[0].trim();
+      if (x) return x;
+      return req.socket.encrypted ? 'https' : 'http';
+    };
+    const protocol = getProtocol();
     const host = headers.get('host');
     const origin = headers.get('origin') || `${protocol}://${host}`;
     res.setHeader('ETag', 'false');
@@ -39,15 +42,19 @@ export class Ingress {
     if (req.method === 'GET') {
       res.setHeader('Link', '</icon/cat-hand.svg>; rel="icon"; type="image/svg+xml"');
     }
+    const scheme = protocol === 'http' ? 'http:' : 'https:';
+    const nonce = crypto.randomUUID();
     const csp = [
-      "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https: wss:",
+      "default-src 'self'",
+      `script-src 'self' 'nonce-${nonce}'`,
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data:",
+      `connect-src 'self' ${scheme}`,
+      "object-src 'none'",
       "base-uri 'none'",
+      "frame-ancestors 'self'",
     ];
-    if (!['plasma', 'cinnamon'].includes(XDG_SESSION_DESKTOP)) {
-      res.setHeader('Content-Security-Policy', csp.join('; '));
-    } else {
-      res.setHeader('Content-Security-Policy', csp.map(v => v.replace('https:', 'http:')).map(v => v.replace('wss:', 'ws:')).join('; '));
-    }
+    res.setHeader('Content-Security-Policy', csp.join('; '));
     res.setHeader('Permissions-Policy', 'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()');
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubdomains; preload');
