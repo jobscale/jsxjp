@@ -1,24 +1,29 @@
-app = "jsxjp"
-primary_region = "nrt"
+# fly.toml app configuration file generated for jsxjp-blue-frog-7046 on 2026-04-03T12:38:29+09:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'jsxjp'
+primary_region = 'nrt'
 
 [build]
-image = "ghcr.io/jobscale/jsxjp:latest"
+  image = 'ghcr.io/jobscale/jsxjp:main'
 
 [[services]]
-internal_port = 3_000
-protocol = "tcp"
+  protocol = 'tcp'
+  internal_port = 3000
 
   [[services.ports]]
-  handlers = [ "http" ]
-  port = 80
+    port = 80
+    handlers = ['http']
 
   [[services.ports]]
-  handlers = [ "tls", "http" ]
-  port = 443
+    port = 443
+    handlers = ['tls', 'http']
 
 [[vm]]
-memory = "256mb"
-size = "shared-cpu-1x"
+  size = 'shared-cpu-1x'
+  memory = '256mb'
 
-[scale]
-count = 1
+[deploy]
+  min_machines_running = 0
