@@ -1,6 +1,7 @@
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
+import crypto from 'crypto';
 import mime from 'mime';
 import createHttpError from 'http-errors';
 import { logger } from '@jobscale/logger';
@@ -42,7 +43,8 @@ export class Ingress {
     if (req.method === 'GET') {
       res.setHeader('Link', '</icon/cat-hand.svg>; rel="icon"; type="image/svg+xml"');
     }
-    const inlinePolicy = req.url !== '/' ? 'unsafe-inline' : `nonce-${crypto.randomBytes(7).toString('base64')}`;
+    const nonce = crypto.randomBytes(7).toString('base64');
+    const inlinePolicy = req.url !== '/' ? 'unsafe-inline' : `nonce-${nonce}`;
     const scheme = protocol === 'http' ? 'http: ws:' : 'https: wss:';
     const csp = [
       "default-src 'self'",
