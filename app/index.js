@@ -51,6 +51,7 @@ export class Ingress {
       "style-src 'self' 'unsafe-inline' https:",
       "font-src 'self' https: data:",
       "img-src 'self' data:",
+      "media-src 'self' data:",
       `connect-src 'self' ${scheme}`,
       "object-src 'none'",
       "base-uri 'none'",
