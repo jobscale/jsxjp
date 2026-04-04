@@ -4,6 +4,39 @@
   color-scheme: light dark;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color: #def;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --color: #123;
+  }
+}
+
+:root.dark-scheme {
+  color-scheme: dark;
+  --color: #cef;
+}
+
+:root.light-scheme {
+  color-scheme: light;
+  --color: #123;
+}
+
+button, a, icon {
+  > svg {
+    width: 1.4em;
+    height: auto;
+    color: var(--color);
+  }
+  &.btn-remove svg {
+    color: #a33;
+  }
+}
+
 /********************************
 Main Project
 ********************************/
@@ -247,15 +280,4 @@ Navigation
   display: grid;
   justify-content: center;
   align-content: center;
-}
-
-button, a {
-  > svg {
-    width: 1.4em;
-    height: auto;
-    color: aqua;
-  }
-  &.btn-remove svg {
-    color: #a33;
-  }
 }
