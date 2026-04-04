@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&family=Monomaniac+One&family=Tangerine:wght@400;700');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
 
 :root {
   color-scheme: light dark;
@@ -117,13 +116,6 @@ section {
 
 .busy {
   cursor: default;
-}
-
-.fa-bagel {
-  opacity: 0.5;
-}
-.fa-bagel:hover {
-  opacity: 1;
 }
 
 .worm {
@@ -384,24 +376,6 @@ table.ss-table * {
   border-radius: 5em;
   padding: 0 0.3em;
   min-width: 1.1em;
-}
-.dark-scheme .plan-entry i.fa-check, .dark-scheme .ss-p1 {
-  color: rgb(0, 255, 0);
-}
-.dark-scheme .plan-entry i.fa-question, .dark-scheme .ss-p2 {
-  color: rgb(230, 230, 0);
-}
-.dark-scheme .plan-entry i.fa-slash, .dark-scheme .ss-p3 {
-  color: rgb(255, 30, 30);
-}
-.light-scheme .plan-entry i.fa-check, .light-scheme .ss-p1 {
-  background-color: rgba(0, 255, 0, 0.9);
-}
-.light-scheme .plan-entry i.fa-question, .light-scheme .ss-p2 {
-  background-color: rgba(230, 230, 0, 0.9);
-}
-.light-scheme .plan-entry i.fa-slash, .light-scheme .ss-p3 {
-  background-color: rgba(255, 30, 30, 0.9);
 }
 
 .radio-area label {

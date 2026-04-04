@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&family=Monomaniac+One&family=Tangerine:wght@400;700');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
 
 :root {
   color-scheme: light dark;
@@ -248,4 +247,15 @@ Navigation
   display: grid;
   justify-content: center;
   align-content: center;
+}
+
+button, a {
+  > svg {
+    width: 1.4em;
+    height: auto;
+    color: aqua;
+  }
+  &.btn-remove svg {
+    color: #a33;
+  }
 }
