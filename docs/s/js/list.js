@@ -91,7 +91,7 @@ let self = {
   },
 
   onCopy(event) {
-    const { target: { parentElement: el } } = event;
+    const { currentTarget: el } = event;
     const { id } = el.dataset;
     const html = `${window.location.origin.replace(/https?:\/\//, '')}/s/${id}`;
     navigator.clipboard.writeText(html)
@@ -121,7 +121,7 @@ let self = {
   },
 
   onRemove(event) {
-    const { target: { parentElement: el } } = event;
+    const { currentTarget: el } = event;
     const { id } = el.dataset;
     el.parentElement.parentElement.style.opacity = '0.3';
     logger.info({ id });

@@ -295,7 +295,7 @@
             <label class="lang-content ja" for="text">内容</label>
             <div name="text" contenteditable="true"
               :textContent="text"
-              @input="text = $event.target.innerText">
+              @input="text = $event.currentTarget.innerText">
             </div>
           </div>
 

@@ -226,7 +226,7 @@ let self = {
   },
 
   async onReadFile(event) {
-    const { files } = event.target;
+    const { files } = event.currentTarget;
     if (!files) return;
     self.refFiles = [];
     self.status = `${files.length} `;
@@ -261,7 +261,7 @@ let self = {
     const img = new Image();
     const canvas = document.createElement('canvas');
     reader.addEventListener('load', event => {
-      img.src = event.target.result;
+      img.src = event.currentTarget.result;
     });
     img.addEventListener('load', () => {
       const { width, height } = self.adjustSize(img.width, img.height, 2048);
