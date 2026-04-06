@@ -90,7 +90,7 @@ let self = {
   },
 
   onReset(event) {
-    const { target: { parentElement: el } } = event;
+    const { currentTarget: el } = event;
     const { id } = el.dataset;
     location.href = `/user/reset/?l=${id}`;
   },
