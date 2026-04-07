@@ -403,8 +403,17 @@ table.ss-table * {
 .radio-area input:checked + label {
   color: black;
 }
+.ss-p1, .ss-p1 svg {
+  color: rgba(0, 197, 0, 0.8);
+}
+.ss-p2, .ss-p2 svg {
+  color: rgba(230, 230, 0, 0.8);
+}
+.ss-p3, .ss-p3 svg {
+  color: rgba(255, 30, 30, 0.8);
+}
 .radio-area input:nth-child(1):checked + label {
-  background-color: rgba(0, 255, 0, 0.9);
+  background-color: rgba(0, 197, 0, 0.9);
 }
 .radio-area input:nth-child(3):checked + label {
   background-color: rgba(230, 230, 0, 0.9);
@@ -413,7 +422,7 @@ table.ss-table * {
   background-color: rgba(255, 30, 30, 0.9);
 }
 .radio-area input:nth-child(1) + label:hover {
-  background-color: rgba(0, 255, 0, 0.5);
+  background-color: rgba(0, 197, 0, 0.5);
 }
 .radio-area input:nth-child(3) + label:hover {
   background-color: rgba(230, 230, 0, 0.5);
