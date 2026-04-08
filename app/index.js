@@ -1,30 +1,14 @@
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
-import net from 'net';
 import crypto from 'crypto';
-import { WebSocketServer } from 'ws';
 import mime from 'mime';
 import createHttpError from 'http-errors';
 import { logger } from '@jobscale/logger';
 import { parseCookies } from './parse-cookie.js';
 import { route } from './route.js';
 import { parseBody } from './parse-body.js';
-
-const wsServer = new WebSocketServer({
-  noServer: true,
-  perMessageDeflate: false,
-});
-const target = 'a.jsx.jp:22';
-
-wsServer.on('connection', ws => {
-  const [host, port] = target.split(':');
-  const ssh = net.connect(Number.parseInt(port, 10), host);
-  ws.on('message', data => ssh.write(data));
-  ssh.on('data', chunk => ws.send(chunk));
-  ws.on('close', () => ssh.end());
-  ssh.on('close', () => ws.close());
-});
+import { sshConnection } from './ssh-connect.js';
 
 const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   const timestamp = new Intl.DateTimeFormat('sv-SE', {
@@ -197,10 +181,8 @@ export class Ingress {
     const headers = new Headers(req.headers);
     const upgrade = headers.get('upgrade');
     logger.info({ url: req.url, upgrade });
-    if (upgrade === 'websocket' && req.url.startsWith('/ssh')) {
-      wsServer.handleUpgrade(req, socket, head, ws => {
-        wsServer.emit('connection', ws, req);
-      });
+    if (upgrade === 'websocket' && req.url.startsWith('/ssh/')) {
+      sshConnection(req, socket, head);
       return;
     }
     socket.destroy();
