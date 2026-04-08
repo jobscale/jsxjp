@@ -67,7 +67,14 @@ const createWebSocketServer = target => {
 const webSocketServer = new Map();
 
 export const sshConnection = (req, socket, head) => {
-  const [, , host, port] = req.url.split('/');
+  const [, , token, salt, host, port] = req.url.split('/');
+  const dimension = BigInt(Number.parseInt(salt, 36));
+  const num = BigInt(Number.parseInt(token, 36)) ^ dimension;
+  if (BigInt(Date.now()) - num > 10_1000) {
+    logger.warn(`Ignoring connection with invalid token: ${token}`);
+    socket.destroy();
+    return;
+  }
   const target = `${host}:${port}`;
   if (!webSocketServer.has(target)) {
     webSocketServer.set(target, createWebSocketServer(target));
