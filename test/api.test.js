@@ -102,7 +102,7 @@ describe('API Routing via app/index.js', () => {
       const fname = `/tmp/${Date.now()}.html`;
       fs.writeFileSync(fname, html);
       const { spawn } = await import('child_process');
-      spawn('google-chrome', ['--new-window', `--app=file://${fname}`], { detached: true });
+      if (process.env.GDMSESSION) spawn('google-chrome', ['--new-window', `--app=file://${fname}`], { detached: true });
     });
   });
 

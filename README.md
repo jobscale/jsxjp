@@ -16,6 +16,12 @@ npm run lint --if-present
 npm test
 ```
 
+## test on docker
+
+```
+docker build . -t local/jsxjp --target test
+```
+
 ## debugging
 
 ```
