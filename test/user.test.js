@@ -38,7 +38,14 @@ const mockAuthService = {
 };
 jest.unstable_mockModule('../app/auth/service.js', () => ({ service: mockAuthService }));
 // Mock other dependencies to avoid side effects
-jest.unstable_mockModule('@aws-sdk/client-s3', () => ({ S3Client: jest.fn() }));
+jest.unstable_mockModule('@aws-sdk/client-s3', () => ({
+  S3Client: jest.fn(),
+  PutObjectCommand: jest.fn(),
+  GetObjectCommand: jest.fn(),
+  ListObjectsV2Command: jest.fn(),
+  DeleteObjectCommand: jest.fn(),
+  CreateBucketCommand: jest.fn(),
+}));
 jest.unstable_mockModule('sharp', () => ({ default: jest.fn() }));
 
 const { app } = await import('../app/index.js');

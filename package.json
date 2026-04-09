@@ -1,7 +1,7 @@
 {
   "name": "jsxjp",
   "private": true,
-  "version": "0.3.14",
+  "version": "0.3.15",
   "description": "nodejs http and vue custom template SSR MVC",
   "repository": {
     "type": "git",
