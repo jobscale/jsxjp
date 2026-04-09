@@ -1,6 +1,6 @@
 import { Readable } from 'stream';
 
-export const request = (app, method, url, body = null, headers = {}) => new Promise((resolve) => {
+export const request = (app, method, url, body = null, headers = {}) => new Promise(resolve => {
   const req = new Readable();
   req.method = method;
   req.url = url;

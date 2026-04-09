@@ -45,7 +45,7 @@ export class Controller {
       if (login !== 'alice') throw createHttpError(403);
     })
     .then(() => service.find())
-    .then((rows) => {
+    .then(rows => {
       res.json({ rows });
     })
     .catch(e => {
@@ -57,7 +57,7 @@ export class Controller {
   remove(req, res) {
     const { id: key } = req.body;
     return service.remove({ key })
-    .then((rows) => {
+    .then(rows => {
       res.json({ rows });
     })
     .catch(e => {

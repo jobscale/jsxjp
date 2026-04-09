@@ -38,7 +38,7 @@ export class Controller {
       if (login !== 'alice') throw createHttpError(403);
     })
     .then(() => service.find())
-    .then((rows) => {
+    .then(rows => {
       res.json({ rows });
     })
     .catch(e => {
