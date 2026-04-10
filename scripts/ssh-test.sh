@@ -32,8 +32,8 @@ nc -vz -w 1 127.0.0.1 3000 || {
 }
 
 # test ssh connection
-ssh -o "ProxyCommand ./client.js ws://127.0.0.1:3000  %h %p" x.a.jsx.jp -p 22 echo "hello $(date +%7N)"
-ssh -o "ProxyCommand ./client.js ws://127.0.0.1:3000  %h %p" y.a.jsx.jp -p 22 echo "hello $(date +%7N)"
-ssh -o "ProxyCommand ./client.js ws://127.0.0.1:3000  %h %p" z.a.jsx.jp -p 22 echo "hello $(date +%7N)"
-ssh -o "ProxyCommand ./client.js ws://127.0.0.1:3000  %h %p" us.jsx.jp -p 22 echo "hello $(date +%7N)"
+ssh -o "ProxyCommand client.js ws://127.0.0.1:3000  %h %p" x.a.jsx.jp -p 22 echo "hello $(date +%7N)"
+ssh -o "ProxyCommand client.js ws://127.0.0.1:3000  %h %p" y.a.jsx.jp -p 22 echo "hello $(date +%7N)"
+ssh -o "ProxyCommand client.js ws://127.0.0.1:3000  %h %p" z.a.jsx.jp -p 22 echo "hello $(date +%7N)"
+ssh -o "ProxyCommand client.js ws://127.0.0.1:3000  %h %p" us.jsx.jp -p 22 echo "hello $(date +%7N)"
 echo "SSH connection test passed"
