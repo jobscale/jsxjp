@@ -71,8 +71,8 @@ export const sshConnection = (req, socket, head) => {
   const [, , token, salt, host, port] = req.url.split('/');
   const target = `${host}:${port}`;
   const dimension = BigInt(Number.parseInt(salt, 36));
-  const num = BigInt(Number.parseInt(token, 36)) ^ dimension;
-  if (BigInt(Date.now()) - num > 10_1000) {
+  const num = Date.now() - Number.parseFloat(BigInt(Number.parseInt(token, 36)) ^ dimension);
+  if (num < 0 || num > 10_000) {
     const alert = `Ignoring connection with invalid token: ${token} for target ${target}`;
     service.webPush({ title: 'WSS Connection', body: alert });
     service.slack({ icon_emoji: ':octopus:', username: 'WSS Connection', text: alert });
