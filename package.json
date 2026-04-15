@@ -1,7 +1,7 @@
 {
   "name": "jsxjp",
   "private": true,
-  "version": "0.3.16",
+  "version": "0.3.17",
   "description": "nodejs http and vue custom template SSR MVC",
   "repository": {
     "type": "git",
@@ -22,9 +22,9 @@
     "test"
   ],
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1028.0",
-    "@aws-sdk/client-ssm": "^3.1028.0",
-    "@jobscale/logger": "^0.10.5",
+    "@aws-sdk/client-s3": "^3.1030.0",
+    "@aws-sdk/client-ssm": "^3.1030.0",
+    "@jobscale/logger": "^0.11.1",
     "@jobscale/slack": "^0.3.2",
     "canvas": "^3.2.3",
     "dayjs": "^1.11.20",
@@ -40,7 +40,7 @@
   "devDependencies": {
     "@jobscale/eslint-plugin-standard": "^0.0.14",
     "eslint": "^10.2.0",
-    "eslint-plugin-jest": "^29.15.1",
+    "eslint-plugin-jest": "^29.15.2",
     "jest": "^30.3.0",
     "pre-commit": "^1.2.2",
     "puppeteer": "^24.40.0",

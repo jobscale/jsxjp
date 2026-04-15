@@ -31,9 +31,23 @@ nc -vz -w 1 127.0.0.1 3000 || {
   exit 1
 }
 
-# test ssh connection
-ssh -o "ProxyCommand client.js ws://127.0.0.1:3000/ssh %h %p" x.a.jsx.jp -p 22 echo "hello $(date +%7N)"
-ssh -o "ProxyCommand client.js ws://127.0.0.1:3000/ssh %h %p" y.a.jsx.jp -p 22 echo "hello $(date +%7N)"
-ssh -o "ProxyCommand client.js ws://127.0.0.1:3000/ssh %h %p" z.a.jsx.jp -p 22 echo "hello $(date +%7N)"
-ssh -o "ProxyCommand client.js ws://127.0.0.1:3000/ssh %h %p" us.jsx.jp -p 22 echo "hello $(date +%7N)"
-echo "SSH connection test passed"
+# test ssh over ws connection
+ws-test() {
+  ssh -o "ProxyCommand client.js ws://127.0.0.1:3000/ssh %h %p" x.a.jsx.jp -p 22 echo "hello $(date +%7N)"
+  ssh -o "ProxyCommand client.js ws://127.0.0.1:3000/ssh %h %p" y.a.jsx.jp -p 22 echo "hello $(date +%7N)"
+  ssh -o "ProxyCommand client.js ws://127.0.0.1:3000/ssh %h %p" z.a.jsx.jp -p 22 echo "hello $(date +%7N)"
+  ssh -o "ProxyCommand client.js ws://127.0.0.1:3000/ssh %h %p" us.jsx.jp -p 22 echo "hello $(date +%7N)"
+  echo "SSH over WS connection test passed"
+}
+
+# test ssh over http connection
+http-test() {
+  ssh -o "ProxyCommand client.js http://127.0.0.1:3128 %h %p" x.dark.jsx.jp -p 22 echo "hello $(date +%7N)"
+  ssh -o "ProxyCommand client.js http://127.0.0.1:3128 %h %p" y.dark.jsx.jp -p 22 echo "hello $(date +%7N)"
+  ssh -o "ProxyCommand client.js http://127.0.0.1:3128 %h %p" z.dark.jsx.jp -p 22 echo "hello $(date +%7N)"
+  ssh -o "ProxyCommand client.js http://127.0.0.1:3128 %h %p" us.jsx.jp -p 22 echo "hello $(date +%7N)"
+  echo "SSH over HTTP connection test passed"
+}
+
+ws-test
+http-test

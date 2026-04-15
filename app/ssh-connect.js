@@ -1,3 +1,4 @@
+import dns from 'dns';
 import net from 'net';
 import { WebSocketServer } from 'ws';
 import { service } from './api/service.js';
@@ -80,8 +81,14 @@ export const sshConnection = (req, socket, head) => {
     socket.destroy();
     return;
   }
-  service.webPush({ title: 'WSS Connection', body: `Connecting to ${target}` });
-  service.slack({ icon_emoji: ':seal:', username: 'WSS Connection', text: `Connecting to ${target}` });
+
+  const url = new URL(`ssh://${target}`);
+  dns.lookup(url.hostname, { all: true, verbatim: true }, (e, addresses) => {
+    const address = e ?? addresses.map(item => item.address).join('\n');
+    const text = `Connecting to ${url.hostname} (${address}) on port ${url.port}`;
+    service.webPush({ title: 'WSS Connection', body: text });
+    service.slack({ icon_emoji: ':seal:', username: 'WSS Connection', text });
+  });
   if (!webSocketServer.has(target)) {
     webSocketServer.set(target, createWebSocketServer(target));
   }
