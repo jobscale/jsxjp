@@ -200,5 +200,7 @@ createApp({
     await self.start();
     setTimeout(() => { self.action(); }, 2000);
     document.addEventListener('click', () => { self.statusText = ''; });
+    setTimeout(() => { document.querySelector('.muted')?.focus(); }, 1500);
+    setTimeout(() => { document.querySelector('.muted')?.click(); }, 2000);
   },
 }).mount('#app');
