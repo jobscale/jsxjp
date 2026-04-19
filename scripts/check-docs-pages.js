@@ -1,9 +1,9 @@
-/* eslint-disable semi */
 import fs from 'fs';
 import path from 'path';
 import mime from 'mime';
 import puppeteer from 'puppeteer';
 
+const nativeLogger = console;
 const docsDir = path.join(process.cwd(), 'docs');
 const settleMs = 2800;
 const transparentPng = Buffer.from(
@@ -537,14 +537,14 @@ const run = async () => {
 
   const failed = results.filter(result => result.failures.length);
   if (!failed.length) {
-    console.log(`Checked ${results.length} docs pages with Puppeteer: all passed`);
+    nativeLogger.info(`Checked ${results.length} docs pages with Puppeteer: all passed`);
     return;
   }
 
   for (const result of failed) {
-    console.error(`[fail] ${result.route}`);
+    nativeLogger.error(`[fail] ${result.route}`);
     for (const failure of result.failures) {
-      console.error(`  - ${failure}`);
+      nativeLogger.error(`  - ${failure}`);
     }
   }
   throw new Error(`Docs smoke check failed on ${failed.length}/${results.length} pages`);
