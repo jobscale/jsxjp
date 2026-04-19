@@ -1,7 +1,7 @@
 {
   "name": "jsxjp",
   "private": true,
-  "version": "0.3.17",
+  "version": "0.3.18",
   "description": "nodejs http and vue custom template SSR MVC",
   "repository": {
     "type": "git",
@@ -13,10 +13,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "check:jest": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand --coverage --collectCoverage --verbose",
+    "check:docs": "node scripts/check-docs-pages.js",
     "lint": "eslint",
     "pretest": "date -Iseconds",
     "posttest": "npm run lint",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand --coverage --collectCoverage --verbose"
+    "test": "npm run check:jest && npm run check:docs"
   },
   "pre-commit": [
     "test"
