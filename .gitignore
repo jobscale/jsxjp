@@ -75,3 +75,4 @@ package-lock.json
 .aws-sam/
 .cache/
 .env*
+.codex
