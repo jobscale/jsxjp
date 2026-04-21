@@ -6,11 +6,12 @@ COPY --chown=node:staff package.json .
 RUN npm i
 COPY --chown=node:staff docs docs
 COPY --chown=node:staff views views
+COPY --chown=node:staff acl acl
 COPY --chown=node:staff app app
 COPY --chown=node:staff index.js .
 COPY --chown=node:staff eslint.config.js .
 COPY --chown=node:staff test test
-RUN npm test
+RUN npm run check:jest
 
 FROM node:lts-trixie-slim
 SHELL ["bash", "-c"]
@@ -20,6 +21,7 @@ COPY --chown=node:staff package.json .
 RUN npm i --omit=dev
 COPY --chown=node:staff docs docs
 COPY --chown=node:staff views views
+COPY --chown=node:staff acl acl
 COPY --chown=node:staff app app
 COPY --chown=node:staff index.js .
 EXPOSE 3000
