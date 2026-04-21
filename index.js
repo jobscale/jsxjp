@@ -2,24 +2,23 @@ import http from 'http';
 import './app/config/index.js';
 import { logger } from '@jobscale/logger';
 import { app, upgradeHandler, errorHandler } from './app/index.js';
+import { proxyConnect } from './app/proxy-connect.js';
 
 const PORT = Number.parseInt(process.env.PORT || 3000, 10);
 
-const main = async () => {
+const httpServer = (port, bind = '127.0.0.1') => {
   const server = http.createServer(app);
+  server.on('connection', socket => socket.on('error', logger.error));
   server.on('upgrade', upgradeHandler);
+  server.on('connect', proxyConnect);
   server.on('error', errorHandler);
-  const options = {
-    host: '0.0.0.0',
-    port: PORT,
-  };
-  server.listen(options, () => {
+  server.listen(port, bind, () => {
     logger.info(JSON.stringify({
       Server: 'Started',
-      'Listen on': `http://127.0.0.1:${options.port}`,
+      'Listen on': `http://127.0.0.1:${port}`,
     }, null, 2));
   });
   return app;
 };
 
-export default await main();
+export default httpServer(PORT, '0.0.0.0');
