@@ -85,7 +85,7 @@ let self = {
       const serverTime = new Date(new Date(gmt).getTime() + span);
       if (!self.stack.length) {
         const diff = Math.floor((Date.now() - serverTime.getTime()) / 100) / 10;
-        self.actionText += ` ${diff}`;
+        if (diff) self.actionText += ` ${diff}`;
       }
       self.dateText = formatTimestamp(serverTime, true);
       self.stack.unshift(span);
