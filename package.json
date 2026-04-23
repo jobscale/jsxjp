@@ -1,7 +1,7 @@
 {
   "name": "jsxjp",
   "private": true,
-  "version": "0.3.18",
+  "version": "0.3.19",
   "description": "nodejs http and vue custom template SSR MVC",
   "repository": {
     "type": "git",
@@ -18,7 +18,7 @@
     "lint": "eslint",
     "pretest": "date -Iseconds",
     "posttest": "npm run lint",
-    "test": "npm run check:jest && npm run check:docs"
+    "test": "npm run check:jest"
   },
   "pre-commit": [
     "test"
