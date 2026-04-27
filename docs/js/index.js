@@ -20,7 +20,10 @@ let self = {
   statusText: 'muted',
   actionText: '[⛄ 🍻]',
   welcomeText: 'welcome',
-  spanText: 'guest',
+  spanText: '☃',
+  xUser: '☃',
+  xAddress: '☃',
+  refresh: '☃',
   dateText: '☃',
   busyText: '',
   busy: undefined,
@@ -78,7 +81,15 @@ let self = {
       warn: setTimeout(() => self.play(), 2000),
     };
     return self.sign()
-    .then(res => res.headers.get('date'))
+    .then(res => {
+      self.xUser = res.headers.get('x-user') ?? 'guest';
+      const xAddress = res.headers.get('x-address') ?? 'broken';
+      if (self.xAddress !== xAddress) {
+        self.xAddress = xAddress;
+        self.refresh = formatTimestamp(Date.now(), true);
+      }
+      return res.headers.get('date');
+    })
     .then(gmt => {
       clearTimeout(params.warn);
       const span = Math.floor((performance.now() - params.begin) * 10) / 10;

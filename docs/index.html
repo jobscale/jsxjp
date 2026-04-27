@@ -39,6 +39,11 @@
         </div>
       </section>
       <section>
+        <div class="title m-b-md">
+          <div :title="refresh">{{ xUser }} @ {{ xAddress }}</div>
+        </div>
+      </section>
+      <section>
         <div class="worm">
           <span class="inline-scroll">
             <span class="busy busy-ts" :title="busyList.map(v => v.time).join('\n')">{{ busyList[0]?.time }}</span>

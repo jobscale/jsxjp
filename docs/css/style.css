@@ -80,6 +80,7 @@ main {
 .inner-section {
   display: flex;
   justify-content: space-evenly;
+  align-items: center;
 }
 
 section {
@@ -87,9 +88,7 @@ section {
 }
 
 .area {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
+  margin: 0;
 }
 
 #svelte-app {
@@ -102,9 +101,8 @@ section {
 }
 
 .title {
-  font-size: 2em;
+  font-size: 1.8em;
   letter-spacing: 0.1em;
-  margin: 0.4em 0;
 }
 .title span {
   margin: 0 0.5em;

@@ -43,6 +43,10 @@ export class Controller {
 
   sign(req, res) {
     const { cookies: { token } } = req;
+    const setHeader = (user = {}) => {
+      res.setHeader('X-User', user.login ?? 'Guest');
+      res.setHeader('X-Address', req.headers['x-forwarded-for']?.split(',')[0]?.trim() ?? req.socket.remoteAddress ?? 'broken');
+    };
     return authService.decode(token)
     .then(payload => {
       res.setCookie('token', token, {
@@ -52,6 +56,7 @@ export class Controller {
     })
     .then(payload => {
       if (req.method === 'HEAD') {
+        setHeader(payload);
         res.end();
         return;
       }
@@ -59,6 +64,7 @@ export class Controller {
     })
     .catch(e => {
       if (req.method === 'HEAD') {
+        setHeader();
         res.end();
         return;
       }
