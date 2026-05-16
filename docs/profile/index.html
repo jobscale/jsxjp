@@ -1,11 +1,126 @@
 <!doctype html>
-<html class="dark-scheme">
+<html>
 <head>
+  <meta charset="utf-8">
+  <meta name="charset" content="utf-8">
   <meta name="description" content="my profile card site with laravel5. powerd by jsx.jp">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome</title>
   <link rel="icon" type="image/svg" href="/assets/img/okutani.svg">
-  <link rel="stylesheet" href="../assets/css/profile.css">
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&family=Monomaniac+One&family=Tangerine:wght@400;700');
+
+:root {
+  color-scheme: light dark;
+  font-family: 'Mochiy Pop P One', 'Noto Sans Math', sans-serif;
+}
+
+* {
+  font-size: 4vmin;
+  border: none;
+  background: transparent;
+}
+
+body {
+  margin: 0;
+}
+
+#app {
+  height: 100%;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button {
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+button:hover {
+  opacity: 1;
+}
+
+.circle-area {
+  margin: 20em 0 1em 0;
+}
+
+.circle-button {
+  width: 2em;
+  height: 2em;
+  padding: 0.1em;
+  background-color: #ef8;
+  border: none;
+  border-radius: 1.5em;
+  box-shadow: 0 0.1em 0.1em rgba(186, 229, 137, 0.4);
+  transition: all 0.3s ease 0s;
+  outline: none;
+}
+
+.circle-button:hover {
+  background-color: #2EE59D;
+  box-shadow: 0 0.2em 1em rgba(46, 229, 157, 0.4);
+}
+
+.circle-button img {
+  width: 100%;
+}
+
+.container {
+  text-align: center;
+}
+
+.title {
+  font-weight: normal;
+  font-size: 1.8rem;
+}
+
+.title small {
+  font-size: 1.2rem;
+}
+
+.title strong {
+  font-size: 2rem;
+  font-weight: Ultra-Bold;
+}
+
+.comment {
+  font-family: 'Open Sans Condensed';
+  font-size: 0.7rem;
+}
+
+.mail {
+  margin: 1em 0 0 0;
+  font-family: 'Tangerine';
+  font-size: 3rem;
+  font-weight: normal;
+}
+
+.mail small {
+  font-size: 2rem;
+}
+
+.phone {
+  font-family: 'Tangerine';
+  font-size: 1.8rem;
+  margin-top: 0.3em;
+}
+
+.phone small {
+  font-size: 1.6rem;
+}
+
+.spacer {
+  min-height: 2rem;
+}
+
+.link {
+  display:flex;
+  justify-content: space-evenly;
+}
+  </style>
 </head>
 
 <body>
