@@ -93,7 +93,14 @@
 
         </div>
       </div>
-      <footer style="position:fixed;bottom:0.5em;right:0.5em"><a style="text-decoration:none" href="https://jsx.jp" target="_blank">powered by jsx.jp</a></footer>
+      <style>
+        .powered-footer {
+          position: fixed;
+          bottom: 0.5em;
+          right: 0.5em;
+        }
+      </style>
+      <footer class="powered-footer"><a style="text-decoration:none" href="https://jsx.jp" target="_blank">powered by jsx.jp</a></footer>
       <div v-show="loading" class="loading">
         <div class="loader">
           <i></i><i></i><i></i><i></i><i></i><i></i>
