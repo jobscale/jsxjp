@@ -4,25 +4,10 @@
   color-scheme: light dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color: #def;
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --color: #123;
-  }
-}
-
-:root.dark-scheme {
-  color-scheme: dark;
+:root.dark {
   --color: #cef;
 }
-
-:root.light-scheme {
-  color-scheme: light;
+:root.light {
   --color: #123;
 }
 

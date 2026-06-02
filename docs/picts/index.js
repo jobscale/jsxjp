@@ -442,9 +442,21 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
   },
 
   onColorScheme() {
-    const html = document.querySelector('html');
-    html.classList.toggle('dark-scheme');
-    html.classList.toggle('light-scheme');
+    const html = document.documentElement;
+    if (html.style.colorScheme === 'dark') {
+      html.style.colorScheme = 'light';
+      html.classList.toggle('light', true);
+      html.classList.toggle('dark', false);
+    } else if (html.style.colorScheme === 'light') {
+      html.style.colorScheme = 'dark';
+      html.classList.toggle('light', false);
+      html.classList.toggle('dark', true);
+    } else {
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      html.style.colorScheme = isDark ? 'dark' : 'light';
+      html.classList.toggle('light', !isDark);
+      html.classList.toggle('dark', isDark);
+    }
   },
 };
 self = reactive(self);
@@ -455,6 +467,7 @@ createApp({
   },
 
   async mounted() {
+    self.onColorScheme();
     await self.sign();
     if (!self.list.length) {
       await self.find();

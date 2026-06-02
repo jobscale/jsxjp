@@ -20,24 +20,20 @@
 a { text-decoration: none; }
 
 /* System color */
-@media (prefers-color-scheme: dark) {
-  :root { color-scheme: dark; }
+:root.dark {
+  --border-color: #ddd;
+  a:link { color: rgb(188, 188, 255); }
+  a:visited { color: rgba(250, 195, 195, 0.5); }
+  a:hover { color: rgb(134, 134, 250); }
 }
-@media (prefers-color-scheme: light) {
-  :root { color-scheme: light; }
-}
-
-/* Custom color */
-.dark-scheme { color-scheme: dark; }
-.dark-scheme a:link { color: rgb(188, 188, 255); }
-.dark-scheme a:visited { color: rgba(250, 195, 195, 0.5); }
-.dark-scheme a:hover { color: rgb(134, 134, 250); }
-
-.light-scheme { color-scheme: light; background-color: #ccc; }
-.light-scheme a:link { color: rgb(55, 55, 255); }
-.light-scheme a:visited { color: rgba(10, 10, 10, 0.5); }
-.light-scheme a:hover {
-  filter: blur(1px) contrast(200%) brightness(25%);
+:root.light {
+  --border-color: #333;
+  background-color: #ccc;
+  a:link { color: rgb(55, 55, 255); }
+  a:visited { color: rgba(10, 10, 10, 0.5); }
+  a:hover {
+    filter: blur(1px) contrast(200%) brightness(25%);
+  }
 }
 
 body {
@@ -569,12 +565,6 @@ table.ss-table * {
 .admin, .staff, .guest,
 .shorten, .personal, .github, .xvideos {
   background-color: var(--tagColor);
-}
-.dark-scheme {
-  --border-color: #ddd;
-}
-.light-scheme {
-  --border-color: #333;
 }
 label input[type="checkbox"] {
   display: none;
