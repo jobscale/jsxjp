@@ -3,7 +3,7 @@ svg.svelte-1xs85ek {
   height: 100%;
 }
 
-:root.dark {
+:root[data-theme="dark"] {
   .clock-face.svelte-1xs85ek {
     stroke: #ccc;
     fill: #333;
@@ -24,7 +24,7 @@ svg.svelte-1xs85ek {
     stroke: rgb(180,0,0);
   }
 }
-:root.light {
+:root[data-theme="light"] {
   .clock-face.svelte-1xs85ek {
     stroke: #aaa;
     fill: #ccc;

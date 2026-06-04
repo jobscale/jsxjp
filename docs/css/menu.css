@@ -4,10 +4,10 @@
   color-scheme: light dark;
 }
 
-:root.dark {
+:root[data-theme="dark"] {
   --color: #cef;
 }
-:root.light {
+:root[data-theme="light"] {
   --color: #123;
 }
 

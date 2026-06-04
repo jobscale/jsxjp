@@ -20,13 +20,13 @@
 a { text-decoration: none; }
 
 /* System color */
-:root.dark {
+:root[data-theme="dark"] {
   --border-color: #ddd;
   a:link { color: rgb(188, 188, 255); }
   a:visited { color: rgba(250, 195, 195, 0.5); }
   a:hover { color: rgb(134, 134, 250); }
 }
-:root.light {
+:root[data-theme="light"] {
   --border-color: #333;
   background-color: #ccc;
   a:link { color: rgb(55, 55, 255); }
