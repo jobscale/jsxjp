@@ -19,7 +19,7 @@
 
 a { text-decoration: none; }
 
-/* System color */
+/* Theme color */
 :root[data-theme="dark"] {
   --border-color: #ddd;
   a:link { color: rgb(188, 188, 255); }
@@ -33,6 +33,34 @@ a { text-decoration: none; }
   a:visited { color: rgba(10, 10, 10, 0.5); }
   a:hover {
     filter: blur(1px) contrast(200%) brightness(25%);
+  }
+}
+
+/* Theme color */
+:root[data-theme="dark"] {
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color: #444;
+    border-radius: 3px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+}
+:root[data-theme="light"] {
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background: #888;
+    border-radius: 3px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: 3px;
   }
 }
 
@@ -423,34 +451,6 @@ table.ss-table * {
 }
 .radio-area input:nth-child(5) + label:hover {
   background-color: rgba(255, 30, 30, 0.5);
-}
-
-/* System color */
-@media (prefers-color-scheme: dark) {
-  *::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-    background-color: #444;
-    border-radius: 3px;
-  }
-
-  *::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 3px;
-  }
-}
-@media (prefers-color-scheme: light) {
-  *::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-    background: #888;
-    border-radius: 3px;
-  }
-
-  *::-webkit-scrollbar-thumb {
-    background-color: #444;
-    border-radius: 3px;
-  }
 }
 
 .pos-abs {
