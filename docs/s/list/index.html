@@ -131,17 +131,18 @@
 
   visibility: hidden;
   animation: fade-in linear both;
-  @supports (animation-timeline: scroll()) {
-    .back-to-top {
-      visibility: hidden;
-      animation: fade-in linear both;
-      animation-timeline: scroll();
-      animation-range: 0 20em;
-    }
-  }
   svg {
     width: 1.5em;
     height: 1.5em;
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  .back-to-top {
+    visibility: hidden;
+    animation: fade-in linear both;
+    animation-timeline: scroll();
+    animation-range: 0 20em;
   }
 }
 
