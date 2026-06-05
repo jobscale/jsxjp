@@ -1,28 +1,44 @@
 :root {
   --font-size: 16px;
+  --border-radius: 15px;
+  --transition: all 0.3s ease;
+
   --base-color: #bbb;
   --primary-color: #00acc1;
   --secondary-color: #eee;
   --bg-gradient: linear-gradient(135deg, #1b2936 0%, #040c14 100%);
   --box-bg: rgba(0, 0, 0, 0.5);
   --box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-  --border-radius: 15px;
-  --transition: all 0.3s ease;
+  --box-border: rgba(255, 255, 255, 0.2);
+  --input-border: rgba(255, 255, 255, 0.3);
+  --label-color: rgba(255, 255, 255, 0.7);
+  --select-option-bg: #0b1220;
+  --button-hover-text: #fff;
 }
 
 :root[data-theme="light"] {
   --base-color: #222;
   --primary-color: #00acc1;
   --secondary-color: #333;
-  --bg-gradient: linear-gradient(135deg, #bbf 0%, #77f 100%);
+  --bg-gradient: linear-gradient(135deg, #77f 0%, #bbf 100%);
   --box-bg: rgba(200, 200, 200, 0.5);
   --box-shadow: 0 15px 35px rgba(80, 80, 80, 0.5);
+  --box-border: rgba(0, 0, 0, 0.2);
+  --input-border: rgba(0, 0, 0, 0.3);
+  --label-color: rgba(0, 0, 0, 0.7);
+  --select-option-bg: #eef;
+  --button-hover-text: #000;
 }
 
 :root {
   color-scheme: dark light;
   font-size: var(--font-size, 16px);
   color: var(--base-color);
+}
+
+*:disabled {
+  opacity: 0.4;
+  cursor: initial;
 }
 
 html, body {
@@ -76,7 +92,7 @@ section + section {
   box-sizing: border-box;
   box-shadow: var(--box-shadow);
   border-radius: var(--border-radius);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--box-border);
   animation: fadeIn 1s ease-in-out;
 }
 
@@ -114,14 +130,14 @@ section + section {
   color: var(--secondary-color);
   margin-bottom: 0;
   border: none;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 2px solid var(--input-border);
   outline: none;
   background: transparent;
   transition: var(--transition);
 }
 
 .main-box .field-box select option {
-  background-color: #0b1220;
+  background-color: var(--select-option-bg);
 }
 
 .main-box .field-box select:focus,
@@ -135,7 +151,7 @@ section + section {
   left: 0;
   padding: 0;
   font-size: 1.2em;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--label-color);
   pointer-events: none;
   transition: var(--transition);
 }
@@ -174,7 +190,7 @@ section + section {
 .main-box .a:hover {
   outline: none;
   background: var(--primary-color);
-  color: #000;
+  color: var(--button-hover-text);
   box-shadow: 0 0 20px var(--primary-color),
               0 0 40px var(--primary-color),
               0 0 80px var(--primary-color);
