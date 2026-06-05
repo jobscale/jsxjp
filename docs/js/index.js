@@ -150,10 +150,11 @@ let self = {
     const canvas = document.getElementById('busyChart');
     if (!canvas || !canvas.getContext) return;
     const ctx = canvas.getContext('2d');
-    canvas.width = Math.min(
-      self.busyList.length * 3,
-      Math.floor(window.innerWidth * 0.8),
+    const papaWidth = Math.min(
+      canvas.parentElement.clientWidth,
+      document.documentElement.clientWidth,
     );
+    canvas.width = Math.min(self.busyList.length * 3, Math.floor(papaWidth * 0.8));
     canvas.height = canvas.getBoundingClientRect().height;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const data = self.busyList.map(item => item.num);
