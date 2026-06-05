@@ -152,6 +152,8 @@ let self = {
     const ctx = canvas.getContext('2d');
     const width = self.busyList.length * 3;
     const height = 40;
+    ctx.canvas.width = width;
+    ctx.canvas.height = height;
     ctx.clearRect(0, 0, width, height);
     const data = self.busyList.map(item => Math.min(20, item.num));
     const max = Math.max(...data, 1);
