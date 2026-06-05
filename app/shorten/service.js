@@ -69,7 +69,7 @@ export class Service {
         count: 0,
       });
     })
-    .then(({ key: id }) => ({ id }));
+    .then(item => ({ ...item, id: item.key, key: undefined }));
   }
 
   async parseCaption(url, key) {

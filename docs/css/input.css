@@ -1,7 +1,6 @@
 :root {
-  color-scheme: light dark;
-  font-size: 16px;
-  color: #bbb;
+  --font-size: 16px;
+  --base-color: #bbb;
   --primary-color: #00acc1;
   --secondary-color: #eee;
   --bg-gradient: linear-gradient(135deg, #1b2936 0%, #040c14 100%);
@@ -9,6 +8,21 @@
   --box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
   --border-radius: 15px;
   --transition: all 0.3s ease;
+}
+
+:root[data-theme="light"] {
+  --base-color: #222;
+  --primary-color: #00acc1;
+  --secondary-color: #333;
+  --bg-gradient: linear-gradient(135deg, #bbf 0%, #77f 100%);
+  --box-bg: rgba(200, 200, 200, 0.5);
+  --box-shadow: 0 15px 35px rgba(80, 80, 80, 0.5);
+}
+
+:root {
+  color-scheme: dark light;
+  font-size: var(--font-size, 16px);
+  color: var(--base-color);
 }
 
 html, body {
@@ -273,6 +287,10 @@ section + section {
   text-align: right;
 }
 
+.align-center {
+  text-align: center;
+}
+
 .field-box.align-right input.code-6 {
   width: 7em;
   text-align: center;
@@ -289,4 +307,9 @@ summary {
 
 .main-box.wide {
   width: 46em;
+}
+
+.powered-footer {
+  text-align:right;
+  margin:0.5em;
 }

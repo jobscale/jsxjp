@@ -1,10 +1,26 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { logger } from 'https://esm.sh/@jobscale/logger';
 
+const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
+  const timestamp = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).format(new Date(ts));
+  if (withoutTimezone) return timestamp;
+  return `${timestamp}+09:00`;
+};
+
 let self = {
   signed: undefined,
   url: '',
   shorten: '',
+  registerAt: '',
+  status: '',
   loading: false,
 
   sign() {
@@ -39,11 +55,15 @@ let self = {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();
     })
-    .then(({ id }) => {
-      self.shorten = `jsx.jp/s/${id}`;
+    .then(item => {
+      self.registerAt = formatTimestamp(item.registerAt, true);
+      self.shorten = `jsx.jp/s/${item.id}`;
       self.url = '';
     })
-    .catch(e => logger.error(e.message))
+    .catch(e => {
+      self.status = e.message;
+      logger.error(e.message);
+    })
     .then(() => setTimeout(() => { self.loading = false; }, 1000));
   },
 

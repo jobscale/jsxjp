@@ -266,3 +266,9 @@ Navigation
   justify-content: center;
   align-content: center;
 }
+
+.powered-footer {
+  position: fixed;
+  bottom: 0.5em;
+  right: 0.5em;
+}

@@ -1441,8 +1441,3 @@ canvas.graph {
 .tip:hover::after {
   opacity: 1;
 }
-
-.powered-footer {
-  text-align:right;
-  margin:0.5em;
-}

@@ -12,7 +12,7 @@ export class Controller {
     }
 
     return service.register({ html })
-    .then(({ id }) => res.json({ id }))
+    .then(item => res.json(item))
     .catch(e => {
       if (!e.statusCode) e.statusCode = 500;
       res.status(e.statusCode).json({ message: e.message });

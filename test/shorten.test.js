@@ -116,7 +116,7 @@ describe('Shorten Module Tests', () => {
       .send({ html: 'http://example.com' });
 
       expect(res.statusCode).toBe(200);
-      expect(res.body).toEqual({ id: 'existing-key' });
+      expect({ id: res.body.id }).toEqual({ id: 'existing-key' });
     });
 
     it('should validation error if html is missing', async () => {
