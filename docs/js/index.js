@@ -150,21 +150,17 @@ let self = {
     const canvas = document.getElementById('busyChart');
     if (!canvas || !canvas.getContext) return;
     const ctx = canvas.getContext('2d');
-    const papaWidth = Math.min(
-      canvas.parentElement.clientWidth,
-      document.documentElement.clientWidth,
-    );
-    canvas.width = Math.min(self.busyList.length * 3, Math.floor(papaWidth * 0.8));
-    canvas.height = canvas.getBoundingClientRect().height;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const width = self.busyList.length * 3;
+    const height = 40;
+    ctx.clearRect(0, 0, width, height);
     const data = self.busyList.map(item => Math.min(20, item.num));
     const max = Math.max(...data, 1);
-    const barWidth = canvas.width / data.length;
+    const barWidth = width / data.length;
     data.forEach((num, index) => {
-      const barHeight = num / max * canvas.height;
+      const barHeight = num / max * height;
       const color = Math.min(Math.floor(num / 3), colorList.length - 1);
       ctx.fillStyle = colorList[color];
-      ctx.fillRect(index * barWidth, canvas.height - barHeight, barWidth - 2, barHeight);
+      ctx.fillRect(index * barWidth, height - barHeight, barWidth - 2, barHeight);
     });
   },
 
