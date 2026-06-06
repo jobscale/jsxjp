@@ -325,7 +325,7 @@ class Svelte {
       return [s, r, o, c];
     }
     const params = {
-      target: document.querySelector('#svelte-app'),
+      target: document.querySelector('#analog-clock'),
       props: {
         name: 'world',
       },

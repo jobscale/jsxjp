@@ -26,8 +26,8 @@ svg.svelte-1xs85ek {
 }
 :root[data-theme="light"] {
   .clock-face.svelte-1xs85ek {
-    stroke: #aaa;
-    fill: #ccc;
+    stroke: #666;
+    fill: #bbb;
   }
   .minor.svelte-1xs85ek {
     stroke: #777;
