@@ -256,12 +256,12 @@ Navigation
   top: 0;
   width: 100vw;
   height: 100vh;
-  background-color: black;
-  opacity: 0.8;
+  background-color: rgba(0, 0, 0, 0.8);
   background-image: url("/img/loading.svg");
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: center;
+  background-size: 30% auto;
   display: grid;
   justify-content: center;
   align-content: center;

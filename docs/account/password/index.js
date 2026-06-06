@@ -54,6 +54,15 @@ let self = {
       document.location.href = '/auth/logout';
     }, 1000));
   },
+
+  onColorScheme() {
+    const html = document.documentElement;
+    const current = html.style.colorScheme;
+    const next = current ? current === 'dark' ? 'light' : 'dark'
+    : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    html.style.colorScheme = next;
+    html.dataset.theme = next;
+  },
 };
 self = reactive(self);
 
@@ -63,6 +72,7 @@ createApp({
   },
 
   async mounted() {
+    self.onColorScheme();
     await self.sign();
     document.querySelector('input')?.focus();
   },
