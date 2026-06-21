@@ -1,4 +1,4 @@
-import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
+import { createApp, reactive, computed } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 
 const logger = console;
 
@@ -201,6 +201,8 @@ let self = {
   mute() {
     self.statusText = self.statusText ? '' : 'muted';
   },
+
+  busyLatests: computed(() => self.busyList.slice(0, 12).map(v => v.time).join('\n')),
 };
 self = reactive(self);
 
