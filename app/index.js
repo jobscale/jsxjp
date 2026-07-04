@@ -28,13 +28,13 @@ export class Ingress {
   useHeader(req, res) {
     const headers = new Headers(req.headers);
     const getProtocol = () => {
-      const x = headers.get('x-forwarded-proto')?.split(',')[0].trim();
+      const x = headers.get('X-Forwarded-Proto')?.split(',')[0].trim();
       if (x) return x;
       return req.socket.encrypted ? 'https' : 'http';
     };
     const protocol = getProtocol();
-    const host = headers.get('host');
-    const origin = headers.get('origin') || `${protocol}://${host}`;
+    const host = headers.get('Host');
+    const origin = headers.get('Origin') || `${protocol}://${host}`;
     res.setHeader('ETag', 'false');
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, HEAD');
@@ -109,11 +109,11 @@ export class Ingress {
     const ts = formatTimestamp();
     const progress = () => {
       const headers = new Headers(req.headers);
-      const ip = req.socket.remoteAddress || req.ip;
-      const remoteIp = headers.get('X-Real-Ip') || headers.get('X-Forwarded-For') || ip;
+      const globalIp = headers.get('X-Forwarded-For')?.split(',')[0]?.trim() ?? req.socket.remoteAddress;
+      const remoteIp = globalIp ?? headers.get('X-Real-Ip');
       const { method, url } = req;
       const protocol = req.socket.encrypted ? 'https' : 'http';
-      const host = headers.get('host');
+      const host = headers.get('Host');
       logger.info({
         ts,
         req: JSON.stringify({

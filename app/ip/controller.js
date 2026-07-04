@@ -1,8 +1,8 @@
 export class Controller {
   ip(req, res) {
     const headers = new Headers(req.headers);
-    const ip = req.socket.remoteAddress || req.ip;
-    const remoteIp = headers.get('X-Real-Ip') || headers.get('X-Forwarded-For') || ip;
+    const globalIp = headers.get('X-Forwarded-For')?.split(',')[0]?.trim() ?? req.socket.remoteAddress;
+    const remoteIp = globalIp ?? headers.get('X-Real-Ip');
     res.setHeader('Content-Type', 'text/plain');
     res.end(remoteIp);
   }

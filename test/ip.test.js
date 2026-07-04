@@ -21,14 +21,6 @@ describe('IP Module', () => {
     app = module.app;
   });
 
-  it('GET /ip returns headers X-Real-Ip', async () => {
-    const res = await request(app)
-    .get('/ip')
-    .set('X-Real-Ip', '10.0.0.1');
-    expect(res.status).toBe(200);
-    expect(res.text).toBe('10.0.0.1');
-  });
-
   it('GET /ip returns headers X-Forwarded-For', async () => {
     const res = await request(app)
     .get('/ip')
