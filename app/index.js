@@ -106,28 +106,29 @@ export class Ingress {
   }
 
   useLogging(req, res) {
-    const ts = formatTimestamp();
+    const start = Date.now();
     const progress = () => {
       const headers = new Headers(req.headers);
-      const globalIp = headers.get('X-Forwarded-For')?.split(',')[0]?.trim() ?? req.socket.remoteAddress;
-      const remoteIp = globalIp ?? headers.get('X-Real-Ip');
+      const { remoteAddress } = req.socket;
       const { method, url } = req;
       const protocol = req.socket.encrypted ? 'https' : 'http';
       const host = headers.get('Host');
       logger.info({
-        ts,
+        ts: formatTimestamp(),
         req: JSON.stringify({
-          remoteIp, protocol, host, method, url,
+          remoteAddress, protocol, host, method, url,
         }),
         headers: JSON.stringify(Object.fromEntries(headers.entries())),
       });
     };
     progress();
     res.on('finish', () => {
+      const duration = Date.now() - start;
       const { statusCode, statusMessage } = res;
       const headers = JSON.stringify(res.getHeaders());
       logger.info({
-        ts, statusCode, statusMessage, headers,
+        ts: formatTimestamp(),
+        statusCode, statusMessage, headers, duration,
       });
     });
   }
