@@ -46,9 +46,9 @@ export class Controller {
     const headers = new Headers(req.headers);
     const setHeader = (user = {}) => {
       res.setHeader('X-User', user.login ?? 'Guest');
-      const globalIp = headers.get('X-Forwarded-For')?.split(',')[0]?.trim() ?? req.socket.remoteAddress;
-      const remoteIp = globalIp ?? headers.get('X-Real-Ip');
-      res.setHeader('X-Address', remoteIp);
+      const remoteAddress = headers.get('X-Remote-Address');
+      const globalIp = remoteAddress ?? headers.get('X-Forwarded-For')?.split(',')[0]?.trim() ?? req.socket.remoteAddress;
+      res.setHeader('X-Address', globalIp);
     };
     return authService.decode(token)
     .then(payload => {
