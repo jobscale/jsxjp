@@ -216,14 +216,6 @@ createApp({
     await self.start();
     setTimeout(() => { self.action(); }, 2000);
     document.addEventListener('click', () => { self.statusText = ''; });
-    setTimeout(() => {
-      const button = document.querySelector('.muted');
-      if (button) {
-        button.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
-        setTimeout(() => {
-          button.dispatchEvent(new MouseEvent('mouseup', { bubbles: true, cancelable: true }));
-        }, 200);
-      }
-    }, 1500);
+    setTimeout(() => { document.querySelector('.muted')?.focus(); }, 1000);
   },
 }).mount('#app');
