@@ -179,12 +179,15 @@ section {
 
 small, small > * {
   font-size: 0.8em;
-  text-align: left;
 }
 @media screen and (max-width: 640px) {
   small, small > * {
     font-size: 1em;
   }
+}
+
+.fit {
+  text-fit: shrink;
 }
 
 button {
