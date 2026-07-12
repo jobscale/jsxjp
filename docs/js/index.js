@@ -208,11 +208,10 @@ let self = {
       self.speedText = 'performance entry not found';
       return;
     }
-    const downloadTimeMs = Math.max(entry.responseEnd - entry.responseStart, 1);
+    const downloadTimeMs = Math.max(Math.round(entry.responseEnd - entry.responseStart), 1);
     const mbps = blob.size * 8 / (downloadTimeMs / 1000) / 1000000;
-    const rtt = entry.responseStart - entry.startTime;
-    const rttNoise = safeDuration - downloadTimeMs;
-    self.speedText = `${mbps.toFixed(2)} Mbps (${downloadTimeMs.toFixed(2)} ms), RTT: ${rtt.toFixed(2)} ms, +Noise: ${rttNoise.toFixed(2)} ms`;
+    const rtt = Math.round(entry.responseStart - entry.startTime);
+    self.speedText = `${mbps.toFixed(2)} Mbps (${downloadTimeMs} ms), RTT: ${rtt} ms`;
   },
 
   async preloadContext() {
