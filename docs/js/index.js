@@ -83,7 +83,10 @@ let self = {
   async updateDate() {
     const params = {
       begin: performance.now(),
-      warn: setTimeout(() => self.play(), 2000),
+      warn: setTimeout(() => {
+        self.onSpeed();
+        self.play();
+      }, 2000),
     };
     return self.sign()
     .then(res => {
@@ -169,6 +172,8 @@ let self = {
   },
 
   onSpeed() {
+    self.realSpeedText = 'measuring...';
+    self.speedText = 'measuring...';
     self.speed().catch(e => {
       logger.error(e.message);
       self.realSpeedText = e.message;
@@ -177,6 +182,8 @@ let self = {
   },
 
   async speed() {
+    self.latestSpeed = Date.now();
+    if (self.latestSpeed + 2_000 > Date.now()) throw new Error('... too fast request');
     const url = '/api/speed';
     performance.clearResourceTimings();
     const start = Date.now();
@@ -231,7 +238,7 @@ let self = {
 
   async play() {
     if (self.statusText === 'muted') return;
-    if (self.latest && self.latest + 60000 > Date.now()) return;
+    if (self.latest && self.latest + 60_000 > Date.now()) return;
     self.latest = Date.now();
     logger.info(new Date(), 'alert play sound.');
     await self.playSound();
