@@ -191,7 +191,7 @@ let self = {
     logger.debug(`received size: ${blob.size} / ${2 ** 20 / 8} bytes in ${duration} ms`);
     // 全体の経過時間での計算 (RTT含む)
     const safeDuration = Math.max(duration, 1);
-    self.realSpeedText = `${(blob.size * 8 / safeDuration / 1000).toFixed(2)} Mbps (${duration} ms)`;
+    self.realSpeedText = `Real ${(blob.size * 8 / safeDuration / 1000).toFixed(2)} Mbps (${duration} ms)`;
     // Performance API での計算 (純粋なダウンロード時間)
     const entry = performance.getEntriesByName(new URL(url, window.location.origin).href).pop();
     if (!entry) {
@@ -200,7 +200,9 @@ let self = {
     }
     const downloadTimeMs = Math.max(entry.responseEnd - entry.responseStart, 1);
     const mbps = blob.size * 8 / (downloadTimeMs / 1000) / 1000000;
-    self.speedText = `${mbps.toFixed(2)} Mbps (${downloadTimeMs.toFixed(2)} ms)`;
+    const rtt = entry.responseStart - entry.startTime;
+    const rttNoise = safeDuration - downloadTimeMs;
+    self.speedText = `${mbps.toFixed(2)} Mbps (${downloadTimeMs.toFixed(2)} ms), RTT: ${rtt.toFixed(2)} ms, +Noise: ${rttNoise.toFixed(2)} ms`;
   },
 
   async preloadContext() {
