@@ -29,7 +29,7 @@ let self = {
   busy: undefined,
   busyList: [],
   stack: [],
-  latest: 0,
+  latestPlay: 0,
   latestSpeed: 0,
   speedText: '☃',
   realSpeedText: '☃',
@@ -240,8 +240,8 @@ let self = {
 
   async play() {
     if (self.statusText === 'muted') return;
-    if (self.latest && self.latest + 60_000 > Date.now()) return;
-    self.latest = Date.now();
+    if (self.latestPlay && self.latestPlay + 60_000 > Date.now()) return;
+    self.latestPlay = Date.now();
     logger.info(new Date(), 'alert play sound.');
     await self.playSound();
   },
@@ -251,6 +251,7 @@ let self = {
   },
 
   busyLatests: computed(() => self.busyList.slice(0, 12).map(v => v.time).join('\n')),
+  speedLatest: computed(() => formatTimestamp(self.latestSpeed, true)),
 };
 self = reactive(self);
 
