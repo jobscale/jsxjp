@@ -98,6 +98,24 @@ export class Controller {
       res.status(e.status).json({ message: e.message });
     });
   }
+
+  async speed(req, res) {
+    const { body: timestamp } = req;
+    await service.speed({ timestamp })
+    .then(result => {
+      res.writeHead(200, {
+        'Content-Type': 'application/octet-stream',
+        'Cache-Control': 'no-store',
+        'Content-Encoding': 'identity',
+      });
+      res.end(result);
+    })
+    .catch(e => {
+      logger.error({ message: e.toString() });
+      if (!e.status) e.status = 500;
+      res.status(e.status).json({ message: e.message });
+    });
+  }
 }
 
 export const controller = new Controller();

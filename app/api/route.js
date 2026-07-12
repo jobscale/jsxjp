@@ -29,6 +29,7 @@ router.add('POST', '/subscription', [
   controller.subscription,
 ]);
 router.add('POST', '/hostname', controller.hostname);
+router.add('POST', '/speed', controller.speed);
 
 export const route = { router };
 export default {

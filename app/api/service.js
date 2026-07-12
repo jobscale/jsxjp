@@ -1,5 +1,5 @@
 import os from 'os';
-import crypto from 'crypto';
+import crypto, { randomBytes } from 'crypto';
 import dayjs from 'dayjs';
 import webPush from 'web-push';
 import nodemailer from 'nodemailer';
@@ -206,6 +206,16 @@ export class Service {
       ip: await fetch('https://inet-ip.info/ip')
       .then(res => res.text()).catch(e => e.message),
     };
+  }
+
+  async speed({ timestamp }) {
+    if (!timestamp) {
+      throw createHttpError(400);
+    }
+    if (Math.abs(Date.now() - timestamp) > 5_000) {
+      throw createHttpError(403);
+    }
+    return randomBytes(Math.floor(2 ** 20 / 8));
   }
 }
 

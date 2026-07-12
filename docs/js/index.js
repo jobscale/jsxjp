@@ -30,6 +30,8 @@ let self = {
   busyList: [],
   stack: [],
   latest: 0,
+  speedText: '☃',
+  realSpeedText: '☃',
 
   onColorScheme() {
     const html = document.documentElement;
@@ -164,6 +166,41 @@ let self = {
       ctx.fillStyle = colorList[color];
       ctx.fillRect(index * barWidth, height - barHeight, barWidth - 2, barHeight);
     });
+  },
+
+  onSpeed() {
+    self.speed().catch(e => {
+      logger.error(e.message);
+      self.realSpeedText = e.message;
+      self.speedText = e.message;
+    });
+  },
+
+  async speed() {
+    const url = '/api/speed';
+    performance.clearResourceTimings();
+    const start = Date.now();
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ timestamp: start }),
+    });
+    if (!res.ok) throw new Error(`HTTP unsuccessful: ${res.status}`);
+    const blob = await res.blob();
+    const duration = Date.now() - start;
+    logger.debug(`received size: ${blob.size} / ${2 ** 20 / 8} bytes in ${duration} ms`);
+    // 全体の経過時間での計算 (RTT含む)
+    const safeDuration = Math.max(duration, 1);
+    self.realSpeedText = `${(blob.size * 8 / safeDuration / 1000).toFixed(2)} Mbps (${duration} ms)`;
+    // Performance API での計算 (純粋なダウンロード時間)
+    const entry = performance.getEntriesByName(new URL(url, window.location.origin).href).pop();
+    if (!entry) {
+      self.speedText = 'performance entry not found';
+      return;
+    }
+    const downloadTimeMs = Math.max(entry.responseEnd - entry.responseStart, 1);
+    const mbps = blob.size * 8 / (downloadTimeMs / 1000) / 1000000;
+    self.speedText = `${mbps.toFixed(2)} Mbps (${downloadTimeMs.toFixed(2)} ms)`;
   },
 
   async preloadContext() {
