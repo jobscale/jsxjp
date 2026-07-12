@@ -30,6 +30,7 @@ let self = {
   busyList: [],
   stack: [],
   latest: 0,
+  latestSpeed: 0,
   speedText: '☃',
   realSpeedText: '☃',
 
@@ -182,8 +183,10 @@ let self = {
   },
 
   async speed() {
-    self.latestSpeed = Date.now();
-    if (self.latestSpeed + 2_000 > Date.now()) throw new Error('... too fast request');
+    const now = Date.now();
+    if (self.latestSpeed + 2_000 > now) throw new Error('... too fast request');
+    self.latestSpeed = now;
+
     const url = '/api/speed';
     performance.clearResourceTimings();
     const start = Date.now();
@@ -262,6 +265,7 @@ createApp({
     await self.start();
     setTimeout(() => { self.action(); }, 2000);
     document.addEventListener('click', () => { self.statusText = ''; });
+    // unmute via user interaction for audio autoplay policy
     setTimeout(() => { document.querySelector('.muted')?.focus(); }, 1000);
   },
 }).mount('#app');
