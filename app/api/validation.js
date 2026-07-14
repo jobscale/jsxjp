@@ -1,5 +1,11 @@
 import Joi from 'joi';
 
+const logger = new Proxy(console, {
+  get(target, prop) {
+    return target[prop];
+  },
+});
+
 export class Validation {
   async slack(req, res) {
     const { body } = req;
@@ -66,11 +72,11 @@ export class Validation {
       ua: Joi.string().required().min(4).max(256),
     }).validate(body);
     if (error) {
+      logger.error(error, JSON.stringify(body, null, 2));
       res.status(400).json({ message: error.message });
     }
   }
 }
 
 export const validation = new Validation();
-
 export default { Validation, validation };

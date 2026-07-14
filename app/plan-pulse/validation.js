@@ -43,5 +43,4 @@ export class Validation {
 }
 
 export const validation = new Validation();
-
 export default { Validation, validation };

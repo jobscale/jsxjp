@@ -68,5 +68,4 @@ export class Controller {
 }
 
 export const controller = new Controller();
-
 export default { Controller, controller };
