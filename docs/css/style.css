@@ -181,6 +181,17 @@ small, small > * {
   font-size: 0.8em;
 }
 
+.small {
+  display: inline-block;
+  scale: 0.9;
+  color: rgb(from currentColor r g b / 0.7);
+}
+
+.small:hover {
+  display: inline-block;
+  color: inherit;
+}
+
 .fit {
   text-fit: shrink;
 }

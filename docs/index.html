@@ -60,10 +60,12 @@
           <canvas id="busyChart" class="graph"></canvas>
         </div>
       </section>
-      <section @click="onSpeed" class="speed-section">
-        <div class="title m-b-md" :title="speedLatest">
-          <div><small class="fit">{{ speedText }}</small></div>
-          <div>{{ realSpeedText }}</div>
+      <section>
+        <div class="small" @click="onSpeed">
+          <div :title="speedLatest">
+            <div><small class="fit">{{ speedText }}</small></div>
+            <div>{{ realSpeedText }}</div>
+          </div>
         </div>
       </section>
       <section>
