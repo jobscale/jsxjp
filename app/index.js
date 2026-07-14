@@ -109,14 +109,14 @@ export class Ingress {
     const start = Date.now();
     const progress = () => {
       const headers = new Headers(req.headers);
-      const { remoteAddress } = req.socket;
+      const globalIp = headers.get('X-Forwarded-For')?.split(',')[0]?.trim() ?? req.socket.remoteAddress;
       const { method, url } = req;
       const protocol = req.socket.encrypted ? 'https' : 'http';
       const host = headers.get('Host');
       logger.info({
         ts: formatTimestamp(),
         req: JSON.stringify({
-          remoteAddress, protocol, host, method, url,
+          globalIp, protocol, host, method, url,
         }),
         headers: JSON.stringify(Object.fromEntries(headers.entries())),
       });

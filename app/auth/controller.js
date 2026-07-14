@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import createHttpError from 'http-errors';
 import { logger } from '@jobscale/logger';
 import { service as apiService } from '../api/service.js';
+import { service as ipService } from '../ip/service.js';
 import { service as authService } from './service.js';
 
 export class Controller {
@@ -43,11 +44,9 @@ export class Controller {
 
   sign(req, res) {
     const { cookies: { token } } = req;
-    const headers = new Headers(req.headers);
     const setHeader = (user = {}) => {
       res.setHeader('X-User', user.login ?? 'Guest');
-      const globalIp = headers.get('X-Forwarded-For')?.split(',')[0]?.trim() ?? req.socket.remoteAddress;
-      res.setHeader('X-Address', globalIp);
+      res.setHeader('X-Address', ipService.ip(req, true));
     };
     return authService.decode(token)
     .then(payload => {

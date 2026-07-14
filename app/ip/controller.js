@@ -1,9 +1,18 @@
+import { logger } from '@jobscale/logger';
+import { service } from './service.js';
+
 export class Controller {
-  ip(req, res) {
-    const headers = new Headers(req.headers);
-    const globalIp = headers.get('X-Forwarded-For')?.split(',')[0]?.trim() ?? req.socket.remoteAddress;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end(globalIp);
+  async ip(req, res) {
+    await Promise.resolve(service.ip(req))
+    .then(globalIp => {
+      res.setHeader('Content-Type', 'text/plain');
+      res.end(globalIp);
+    })
+    .catch(e => {
+      logger.error({ message: e.toString() });
+      if (!e.status) e.status = 500;
+      res.status(e.status).json({ message: e.message });
+    });
   }
 }
 
