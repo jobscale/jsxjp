@@ -177,12 +177,15 @@ section {
   margin-left: 0.8em;
 }
 
+.ib {
+  display: inline-block;
+}
+
 small, small > * {
   font-size: 0.8em;
 }
 
 .small {
-  display: inline-block;
   scale: 0.9;
   color: rgb(from currentColor r g b / 0.7);
 }
