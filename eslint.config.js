@@ -4,6 +4,7 @@ import standard from '@jobscale/eslint-plugin-standard';
 export default [{
   ignores: [
     ...standard.configs.standard.ignores,
+    '**/target/debug/**',
   ],
 }, {
   ...standard.configs.node,
@@ -15,7 +16,7 @@ export default [{
 }, {
   ...standard.configs.browser,
   name: 'browser rule',
-  files: ['docs/**/*.js', 'public/**/*.js', 'src/**/*.js'],
+  files: ['docs/**/*.js', 'public/**/*.js', 'src/**/*.js', 'tauri-app/src/**/*.js'],
   rules: {
     ...standard.rules,
     'no-loop-func': 'off',
