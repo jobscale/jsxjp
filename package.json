@@ -14,7 +14,7 @@
   "scripts": {
     "start": "node index.js",
     "tauri": "(cd tauri-app && npm run tauri dev)",
-    "bundle": "(cd tauri-app && npm run tauri build && npm run tauri bundle)",
+    "build": "bash -c 'time (cd tauri-app && npm run tauri build)'",
     "check:jest": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand --coverage --collectCoverage --verbose",
     "check:docs": "node scripts/check-docs-pages.js",
     "lint": "eslint",

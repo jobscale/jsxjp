@@ -201,7 +201,7 @@ let self = {
     logger.debug(`received size: ${blob.size} / ${2 ** 20 / 8} bytes in ${duration} ms`);
     // 全体の経過時間での計算 (RTT含む)
     const safeDuration = Math.max(duration, 1);
-    self.realSpeedText = `Real ${(blob.size * 8 / safeDuration / 1000).toFixed(2)} Mbps (${duration} ms)`;
+    self.realSpeedText = `${(blob.size * 8 / safeDuration / 1000).toFixed(2)} Mbps (${duration} ms) real`;
     // Performance API での計算 (純粋なダウンロード時間)
     const entry = performance.getEntriesByName(new URL(url, window.location.origin).href).pop();
     if (!entry) {

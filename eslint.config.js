@@ -4,7 +4,7 @@ import standard from '@jobscale/eslint-plugin-standard';
 export default [{
   ignores: [
     ...standard.configs.standard.ignores,
-    '**/target/debug/**',
+    '**/target/*/build/**',
   ],
 }, {
   ...standard.configs.node,
