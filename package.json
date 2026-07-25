@@ -1,7 +1,7 @@
 {
   "name": "jsxjp",
   "private": true,
-  "version": "0.3.23",
+  "version": "0.3.24",
   "description": "nodejs http and vue custom template SSR MVC",
   "repository": {
     "type": "git",
@@ -24,8 +24,8 @@
     "test"
   ],
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1075.0",
-    "@aws-sdk/client-ssm": "^3.1075.0",
+    "@aws-sdk/client-s3": "^3.1095.0",
+    "@aws-sdk/client-ssm": "^3.1095.0",
     "@jobscale/logger": "^0.11.1",
     "@jobscale/slack": "^0.3.2",
     "canvas": "^3.2.3",
@@ -34,18 +34,18 @@
     "joi": "^18.2.3",
     "jws": "^4.0.1",
     "mime": "^4.1.0",
-    "nodemailer": "^9.0.1",
-    "sharp": "^0.35.2",
+    "nodemailer": "^9.0.3",
+    "sharp": "^0.35.3",
     "speakeasy": "^2.0.0",
     "web-push": "^3.6.7"
   },
   "devDependencies": {
-    "@jobscale/eslint-plugin-standard": "^0.1.0",
-    "eslint": "^10.5.0",
-    "eslint-plugin-jest": "^29.15.2",
+    "@jobscale/eslint-plugin-standard": "^0.1.1",
+    "eslint": "^10.8.0",
+    "eslint-plugin-jest": "^29.16.0",
     "jest": "^30.4.2",
     "pre-commit": "^2.0.0",
-    "puppeteer": "^25.2.0",
+    "puppeteer": "^25.3.0",
     "supertest": "^7.2.2"
   }
 }
