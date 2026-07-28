@@ -1,5 +1,8 @@
 use tauri::Manager;
 use tauri::image::Image;
+use tauri::tray::TrayIconBuilder;
+
+const TRAY_ID: &str = "main";
 
 #[tauri::command]
 fn change_app_icon(app: tauri::AppHandle, status: String) {
@@ -10,19 +13,46 @@ fn change_app_icon(app: tauri::AppHandle, status: String) {
         _              => "assets/icon-normal.png",
     };
 
-    if let Ok(resource_path) = app.path().resolve(icon_path, tauri::path::BaseDirectory::Resource) {
-        if let Ok(image) = Image::from_path(&resource_path) {
-            if let Some(window) = app.get_webview_window("main") {
-                println!("Setting icon for window 'main': {}", status);
-                let _ = window.set_icon(image);
-            } else {
-                println!("Failed to get window 'main' to set icon.");
-            }
-        } else {
-            println!("Failed to load image from path: {}", resource_path.display());
+    let resource_path = match app.path().resolve(icon_path, tauri::path::BaseDirectory::Resource) {
+        Ok(p) => p,
+        Err(e) => {
+            println!("Failed to resolve resource path for icon '{}': {:?}", icon_path, e);
+            return;
+        }
+    };
+
+    let image = match Image::from_path(&resource_path) {
+        Ok(img) => img,
+        Err(e) => {
+            println!("Failed to load image from '{}': {:?}", resource_path.display(), e);
+            return;
+        }
+    };
+
+    // Window icon + badge count
+    if let Some(window) = app.get_webview_window("main") {
+        match window.set_icon(image.clone()) {
+            Ok(_) => println!("window.set_icon OK: {}", status),
+            Err(e) => println!("window.set_icon FAILED: {:?}", e),
+        }
+
+        let badge = if status == "notification" { Some(1) } else { None };
+        match window.set_badge_count(badge) {
+            Ok(_) => println!("window.set_badge_count OK: {:?}", badge),
+            Err(e) => println!("window.set_badge_count FAILED: {:?}", e),
         }
     } else {
-        println!("Failed to resolve resource path for icon: {}", icon_path);
+        println!("Failed to get window 'main'.");
+    }
+
+    // Tray icon
+    if let Some(tray) = app.tray_by_id(TRAY_ID) {
+        match tray.set_icon(Some(image)) {
+            Ok(_) => println!("tray.set_icon OK: {}", status),
+            Err(e) => println!("tray.set_icon FAILED: {:?}", e),
+        }
+    } else {
+        println!("Failed to get tray '{}'.", TRAY_ID);
     }
 }
 
@@ -57,8 +87,16 @@ pub fn run() {
                 .build()
         )
         .invoke_handler(tauri::generate_handler![greet, change_app_icon])
-        .setup(|_app| {
-            // setup 内での個別の window.on_navigation 登録は不要になったため削除
+        .setup(|app| {
+            // 起動時にトレイアイコンを作成しておき、後から tray_by_id(TRAY_ID) で取得して差し替える
+            let default_icon = app
+                .default_window_icon()
+                .cloned()
+                .ok_or("default window icon is not set")?;
+            TrayIconBuilder::with_id(TRAY_ID)
+                .icon(default_icon)
+                .tooltip("tauri-app")
+                .build(app)?;
             Ok(())
         })
         .run(tauri::generate_context!())
