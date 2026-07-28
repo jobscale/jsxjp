@@ -1,3 +1,4 @@
+use std::fs;
 use tauri::Manager;
 use tauri::image::Image;
 use tauri::tray::TrayIconBuilder;
@@ -72,17 +73,24 @@ pub fn run() {
             tauri::plugin::Builder::<tauri::Wry>::new("navigation-hook")
                 .on_navigation(|webview, url| {
                     if url.as_str().contains("jsx.jp") {
-                        println!("jsx.jp detected! Executing user script...");
-                        let user_script = "
-                            console.log('jsx.jp detected! Changing link background colors...');
-                            document.querySelectorAll('a').forEach(el => {
-                                el.style.backgroundColor = '#0f0';
-                            });
-                        ";
-                        // webview インスタンスに対して直接 JavaScript を実行
-                        let _ = webview.eval(user_script);
+                        println!("jsx.jp detected! Loading user script from assets...");
+                        let app = webview.app_handle();
+                        if let Ok(script_path) = app.path().resolve("assets/user-script.js", tauri::path::BaseDirectory::Resource) {
+                            // load the user script from the resolved path and execute it
+                            match fs::read_to_string(&script_path) {
+                                Ok(user_script) => {
+                                    println!("Successfully loaded user-script.js. Executing...");
+                                    let _ = webview.eval(&user_script);
+                                }
+                                Err(e) => {
+                                    println!("Failed to read user-script.js: {}", e);
+                                }
+                            }
+                        } else {
+                            println!("Failed to resolve resource path for user-script.js");
+                        }
                     }
-                    true // true を返して遷移を許可
+                    true
                 })
                 .build()
         )
