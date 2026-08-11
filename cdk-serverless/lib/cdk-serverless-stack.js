@@ -14,9 +14,9 @@ export class CdkServerlessStack extends cdk.Stack {
       excludeResourceTypes: ['AWS::ApiGatewayV2::Api'],
     });
 
-    const helloFunction = new lambdaNodejs.NodejsFunction(this, 'HelloFunction', {
+    const ipFunction = new lambdaNodejs.NodejsFunction(this, 'IpFunction', {
       runtime: lambda.Runtime.NODEJS_LATEST,
-      entry: path.join(process.cwd(), 'lib', 'functions', 'hello', 'index.js'),
+      entry: path.join(process.cwd(), 'lib', 'functions', 'ip', 'index.js'),
       handler: 'handler',
       environment: {
         ENV: envName,
@@ -47,9 +47,9 @@ export class CdkServerlessStack extends cdk.Stack {
           },
         }],
         paths: {
-          '/hello': {
+          '/ip': {
             get: {
-              operationId: 'hello',
+              operationId: 'ip',
               responses: {
                 200: {
                   description: '200 OK',
@@ -60,7 +60,7 @@ export class CdkServerlessStack extends cdk.Stack {
                 payloadFormatVersion: '2.0',
                 uri: cdk.Fn.sub(
                   integrationArn, {
-                    LambdaArn: helloFunction.functionArn,
+                    LambdaArn: ipFunction.functionArn,
                   },
                 ),
               },
@@ -120,7 +120,7 @@ export class CdkServerlessStack extends cdk.Stack {
       },
     );
     [
-      helloFunction, welcomeFunction,
+      ipFunction, welcomeFunction,
     ].forEach(fn => {
       fn.addPermission('HttpApiInvokePermission', {
         principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
@@ -130,16 +130,16 @@ export class CdkServerlessStack extends cdk.Stack {
     });
 
     new cdk.CfnOutput(this, 'HttpApiEndpoint', {
-      value: cdk.Fn.join('', [httpApi.attrApiEndpoint, '/hello']),
-      description: 'HTTP API endpoint for /hello',
+      value: cdk.Fn.join('', [httpApi.attrApiEndpoint, '/ip']),
+      description: 'HTTP API endpoint for /ip',
     });
     new cdk.CfnOutput(this, 'CustomDomain CNAME', {
       value: httpApiDomainName.attrRegionalDomainName,
       description: 'Custom domain CNAME',
     });
     new cdk.CfnOutput(this, 'CustomDomainEndpoint', {
-      value: cdk.Fn.join('', ['https://', httpApiDomainName.domainName, '/hello']),
-      description: 'Custom domain endpoint for /hello',
+      value: cdk.Fn.join('', ['https://', httpApiDomainName.domainName, '/ip']),
+      description: 'Custom domain endpoint for /ip',
     });
   }
 }
