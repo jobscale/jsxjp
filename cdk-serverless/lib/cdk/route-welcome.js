@@ -13,6 +13,9 @@ export const route = (stack, httpApi, envName, integrationArn, sourceArn) => {
     environment: {
       ENV: envName,
     },
+    bundling: {
+      externalModules: ['@aws-sdk/*'],
+    },
   });
 
   const welcomeIntegration = new apigwv2.CfnIntegration(stack, 'WelcomeIntegration', {
@@ -27,7 +30,7 @@ export const route = (stack, httpApi, envName, integrationArn, sourceArn) => {
 
   new apigwv2.CfnRoute(stack, 'UserWelcomeRoute', {
     apiId: httpApi.ref,
-    routeKey: 'GET /user/welcome',
+    routeKey: 'POST /user/welcome',
     target: cdk.Fn.join('', ['integrations/', welcomeIntegration.ref]),
   });
 

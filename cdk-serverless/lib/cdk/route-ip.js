@@ -13,6 +13,9 @@ export const route = (stack, httpApi, envName, integrationArn, sourceArn) => {
     environment: {
       ENV: envName,
     },
+    bundling: {
+      externalModules: ['@aws-sdk/*'],
+    },
   });
 
   const ipIntegration = new apigwv2.CfnIntegration(stack, 'IpIntegration', {
