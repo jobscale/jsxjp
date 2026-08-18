@@ -151,8 +151,7 @@ class Svelte {
         } else {
           g.fragment && g.fragment.c();
         }
-        let x; let
-          b;
+        let x;
         c.intro && (
           (x = s.$$.fragment) && x.i && (A.delete(x), x.i(b))
         );
