@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib/core';
 import * as apigwv2 from 'aws-cdk-lib/aws-apigatewayv2';
-import { route as routeIp } from './cdk/route-ip.js';
-import { route as routeWelcome } from './cdk/route-welcome.js';
+import { route as ipRoute } from './cdk/route-ip.js';
+import { route as proxyRoute } from './cdk/route-proxy.js';
 
 export class CdkServerlessStack extends cdk.Stack {
   constructor(scope, id, props = {}) {
@@ -30,8 +30,8 @@ export class CdkServerlessStack extends cdk.Stack {
       },
     );
 
-    routeIp(this, httpApi, envName, integrationArn, sourceArn);
-    routeWelcome(this, httpApi, envName, integrationArn, sourceArn);
+    ipRoute(this, httpApi, envName, integrationArn, sourceArn);
+    proxyRoute(this, httpApi, envName, integrationArn, sourceArn);
 
     const httpApiStage = new apigwv2.CfnStage(this, 'HttpApiStage', {
       apiId: httpApi.ref,

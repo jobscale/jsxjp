@@ -7,6 +7,7 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand --coverage --collectCoverage --verbose",
     "lint": "eslint",
     "predeploy": "npm run lint",
+    "validate": "ENV=${ENV:-dev} && cdk validate --build --unstable=validate --context env=$ENV",
     "synth": "ENV=${ENV:-dev} && cdk synth --context env=$ENV",
     "diff": "ENV=${ENV:-dev} && cdk diff --context env=$ENV",
     "deploy": "ENV=${ENV:-dev} && cdk deploy --context env=$ENV",
@@ -19,7 +20,7 @@
   },
   "devDependencies": {
     "@jobscale/eslint-plugin-standard": "^0.1.1",
-    "aws-cdk": "^2.1135.1",
+    "aws-cdk": "^2.1137.0",
     "eslint-plugin-jest": "^29.16.0",
     "jest": "^30.4.2"
   }

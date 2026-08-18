@@ -6,6 +6,12 @@ const logger = new Proxy(console, {
   },
 });
 
+const headers = {
+  'Content-Type': 'application/json; charset=utf-8',
+  'X-Env': ENV,
+  server: 'jsx.jp',
+};
+
 export const handler = async event => {
   logger.info('EVENT:', JSON.stringify(event, null, 2));
 
@@ -15,10 +21,9 @@ export const handler = async event => {
   return {
     statusCode: 200,
     headers: {
+      ...headers,
       'Content-Type': 'text/plain; charset=utf-8',
-      'x-env': ENV,
-      server: 'jsx.jp',
     },
-    body: `${ip}\n`,
+    body: ip,
   };
 };

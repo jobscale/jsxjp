@@ -6,9 +6,9 @@ import * as apigwv2 from 'aws-cdk-lib/aws-apigatewayv2';
 import path from 'path';
 
 export const route = (stack, httpApi, envName, integrationArn, sourceArn) => {
-  const welcomeFunction = new lambdaNodejs.NodejsFunction(stack, 'WelcomeFunction', {
+  const container = new lambdaNodejs.NodejsFunction(stack, 'ProxyFunction', {
     runtime: lambda.Runtime.NODEJS_LATEST,
-    entry: path.join(process.cwd(), 'lib', 'functions', 'user', 'welcome', 'index.js'),
+    entry: path.join(process.cwd(), 'lib', 'functions', 'proxy', 'index.js'),
     handler: 'handler',
     environment: {
       ENV: envName,
@@ -18,23 +18,23 @@ export const route = (stack, httpApi, envName, integrationArn, sourceArn) => {
     },
   });
 
-  const welcomeIntegration = new apigwv2.CfnIntegration(stack, 'WelcomeIntegration', {
+  const integration = new apigwv2.CfnIntegration(stack, 'ProxyIntegration', {
     apiId: httpApi.ref,
     integrationType: 'AWS_PROXY',
     integrationUri: cdk.Fn.sub(integrationArn, {
-      LambdaArn: welcomeFunction.functionArn,
+      LambdaArn: container.functionArn,
     }),
     payloadFormatVersion: '2.0',
     integrationMethod: 'POST',
   });
 
-  new apigwv2.CfnRoute(stack, 'UserWelcomeRoute', {
+  new apigwv2.CfnRoute(stack, 'ProxyRoute', {
     apiId: httpApi.ref,
-    routeKey: 'POST /user/welcome',
-    target: cdk.Fn.join('', ['integrations/', welcomeIntegration.ref]),
+    routeKey: 'ANY /v1/{proxy+}',
+    target: cdk.Fn.join('', ['integrations/', integration.ref]),
   });
 
-  welcomeFunction.addPermission('HttpApiInvokePermission', {
+  container.addPermission('HttpApiInvokePermission', {
     principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
     action: 'lambda:InvokeFunction',
     sourceArn,
