@@ -15,8 +15,17 @@
     "ls": "ENV=${ENV:-dev} && cdk ls --context env=$ENV"
   },
   "dependencies": {
+    "@jobscale/logger": "^0.11.1",
+    "@jobscale/slack": "^0.3.2",
     "aws-cdk-lib": "^2.263.0",
-    "constructs": "^10.8.1"
+    "constructs": "^10.8.1",
+    "dayjs": "^1.11.23",
+    "http-errors": "^2.0.1",
+    "joi": "^18.2.3",
+    "nodemailer": "^9.0.5",
+    "sharp": "^0.35.3",
+    "speakeasy": "^2.0.0",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@jobscale/eslint-plugin-standard": "^0.1.1",

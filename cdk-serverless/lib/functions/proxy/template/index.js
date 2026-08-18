@@ -1,6 +1,6 @@
 import createHttpError from 'http-errors';
-import { validation } from '../../../../../app/template/validation.js';
-import { service } from '../../../../../app/template/service.js';
+import { validation } from '../../../../app/template/validation.js';
+import { service } from '../../../../app/template/service.js';
 
 export class Template {
   async load(req, res) {

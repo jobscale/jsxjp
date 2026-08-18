@@ -1,6 +1,6 @@
 import createHttpError from 'http-errors';
-import { service as auth } from '../../../../../app/auth/service.js';
-import { service } from '../../../../../app/picts/service.js';
+import { service as auth } from '../../../../app/auth/service.js';
+import { service } from '../../../../app/picts/service.js';
 
 export class Picts {
   async login(req) {

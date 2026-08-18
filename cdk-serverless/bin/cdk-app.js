@@ -16,12 +16,22 @@ const envConfigs = {
   dev: {
     account: '393035998684',
     certificateId: '9d6f7e65-704e-4395-a3d5-641276b383d0',
-    domainName: 'dev-serverless.jsx.jp',
+    domainName: `${envName}-serverless.jsx.jp`,
+    front: {
+      certificateId: '9d6f7e65-704e-4395-a3d5-641276b383d0',
+      domainName: `${envName}-front.jsx.jp`,
+      bucketName: `${envName}-static-content`,
+    },
   },
   stg: {
     account: '123035998684',
     certificateId: '123f7e65-704e-4395-a3d5-641276b383d0',
-    domainName: 'stg-serverless.jsx.jp',
+    domainName: `${envName}-serverless.jsx.jp`,
+    front: {
+      certificateId: '123f7e65-704e-4395-a3d5-641276b383d0',
+      domainName: `${envName}-front.jsx.jp`,
+      bucketName: `${envName}-static-content`,
+    },
   },
 };
 

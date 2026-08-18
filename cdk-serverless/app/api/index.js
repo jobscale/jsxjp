@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { createCanvas, registerFont } from 'canvas';
+import { createCanvas, registerFont } from 'https://esm.sh/canvas';
 import { cipher } from '../cipher.js';
 
 export const genDigit = async () => {

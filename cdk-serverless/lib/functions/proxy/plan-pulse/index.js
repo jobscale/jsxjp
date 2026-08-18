@@ -1,6 +1,6 @@
 import createHttpError from 'http-errors';
-import { validation } from '../../../../../app/plan-pulse/validation.js';
-import { service } from '../../../../../app/plan-pulse/service.js';
+import { validation } from '../../../../app/plan-pulse/validation.js';
+import { service } from '../../../../app/plan-pulse/service.js';
 
 const validate = async (method, req, res) => {
   await validation[method](req, res);

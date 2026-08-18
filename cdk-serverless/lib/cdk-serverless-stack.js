@@ -2,6 +2,7 @@ import * as cdk from 'aws-cdk-lib/core';
 import * as apigwv2 from 'aws-cdk-lib/aws-apigatewayv2';
 import { route as ipRoute } from './cdk/route-ip.js';
 import { route as proxyRoute } from './cdk/route-proxy.js';
+import { frontCache } from './cdk/front.js';
 
 export class CdkServerlessStack extends cdk.Stack {
   constructor(scope, id, props = {}) {
@@ -71,5 +72,7 @@ export class CdkServerlessStack extends cdk.Stack {
       value: cdk.Fn.join('', ['https://', httpApiDomainName.domainName, '/ip']),
       description: 'Custom domain endpoint for /ip',
     });
+
+    frontCache(this, stackProps.front);
   }
 }
