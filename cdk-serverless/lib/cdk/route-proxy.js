@@ -10,12 +10,27 @@ export const route = (stack, httpApi, envName, integrationArn, sourceArn) => {
     runtime: lambda.Runtime.NODEJS_LATEST,
     entry: path.join(process.cwd(), 'lib', 'functions', 'proxy', 'index.js'),
     handler: 'handler',
+    timeout: cdk.Duration.seconds(15),
+    memorySize: 512,
     environment: {
       ENV: envName,
+      NODE_OPTIONS: '--enable-source-maps',
     },
     bundling: {
       externalModules: ['@aws-sdk/*'],
-      nodeModules: ['canvas'],
+      nodeModules: ['@napi-rs/canvas', 'sharp'],
+      loader: { '.json': 'json' },
+      sourceMap: true,
+      commandHooks: {
+        beforeBundling(inputDir, outputDir, init = []) { return init; },
+        beforeInstall(inputDir, outputDir, init = []) { return init; },
+        afterBundling(inputDir, outputDir) {
+          return [
+            `rm -f ${outputDir}/package-lock.json`,
+            // `(cd "${outputDir}/node_modules" && find . -maxdepth 1 -not -name "." -not -name "canvas" -exec rm -rf {} +)`,
+          ];
+        },
+      },
     },
   });
 

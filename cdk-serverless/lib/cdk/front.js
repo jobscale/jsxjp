@@ -11,6 +11,8 @@ export const frontCache = (stack, front) => {
     blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
     encryption: s3.BucketEncryption.S3_MANAGED,
     enforceSSL: true,
+    removalPolicy: cdk.RemovalPolicy.DESTROY,
+    autoDeleteObjects: true,
   });
 
   const frontCertificateArn = cdk.Fn.sub(

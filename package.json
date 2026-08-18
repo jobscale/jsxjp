@@ -30,7 +30,7 @@
     "@aws-sdk/client-ssm": "^3.1095.0",
     "@jobscale/logger": "^0.11.1",
     "@jobscale/slack": "^0.3.2",
-    "canvas": "^3.2.3",
+    "@napi-rs/canvas": "^1.0.7",
     "dayjs": "^1.11.21",
     "http-errors": "^2.0.1",
     "joi": "^18.2.3",

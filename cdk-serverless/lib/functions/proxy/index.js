@@ -74,7 +74,7 @@ const getResponseHeaders = res => {
 };
 
 const router = async (req, res) => {
-  const { http: { httpMethod, httpPath } } = req.requestContext;
+  const { http: { method: httpMethod, path: httpPath } } = req.requestContext;
   const route = `${httpMethod} ${httpPath.replace(/^\/v[0-9]+/, '')}`;
   const { routeKey } = req.requestContext;
   logger.info({ route, routeKey });

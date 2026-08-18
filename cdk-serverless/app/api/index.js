@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { createCanvas, registerFont } from 'canvas';
+import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
 import { cipher } from '../cipher.js';
 
 export const genDigit = async () => {
@@ -23,7 +23,7 @@ export const genDigit = async () => {
     ctx.fill();
   }
 
-  registerFont('docs/fonts/Tangerine.ttf', { family: 'Tangerine' });
+  GlobalFonts.registerFromPath('docs/fonts/Tangerine.ttf', 'Tangerine');
 
   ctx.beginPath();
   ctx.font = '54px Tangerine';
