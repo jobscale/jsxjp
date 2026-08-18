@@ -20,7 +20,7 @@ const envConfigs = {
     front: {
       certificateId: '9d6f7e65-704e-4395-a3d5-641276b383d0',
       domainName: `${envName}-front.jsx.jp`,
-      bucketName: `${envName}-static-content`,
+      bucketName: `${envName}-static-content-393035998684`,
     },
   },
   stg: {
@@ -30,7 +30,7 @@ const envConfigs = {
     front: {
       certificateId: '123f7e65-704e-4395-a3d5-641276b383d0',
       domainName: `${envName}-front.jsx.jp`,
-      bucketName: `${envName}-static-content`,
+      bucketName: `${envName}-static-content-123035998684`,
     },
   },
 };

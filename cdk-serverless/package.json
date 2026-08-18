@@ -18,6 +18,7 @@
     "@jobscale/logger": "^0.11.1",
     "@jobscale/slack": "^0.3.2",
     "aws-cdk-lib": "^2.263.0",
+    "canvas": "^3.2.3",
     "constructs": "^10.8.1",
     "dayjs": "^1.11.23",
     "http-errors": "^2.0.1",

@@ -15,6 +15,7 @@ export const route = (stack, httpApi, envName, integrationArn, sourceArn) => {
     },
     bundling: {
       externalModules: ['@aws-sdk/*'],
+      nodeModules: ['canvas'],
     },
   });
 
