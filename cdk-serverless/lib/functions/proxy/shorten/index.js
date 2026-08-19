@@ -7,30 +7,31 @@ export class Shorten {
     return auth.decode(req.cookies?.token);
   }
 
-  async register(req) {
+  async register(req, res) {
     await this.verify(req);
     const { html } = req.body || {};
     if (!html) throw createHttpError(400);
-    return service.register({ html });
+    const result = await service.register({ html });
+    res.json(result);
   }
 
-  async find(req) {
+  async find(req, res) {
     const payload = await this.verify(req);
     if (payload.login !== 'alice') throw createHttpError(403);
     const rows = await service.find();
-    return { rows };
+    res.json({ rows });
   }
 
-  async remove(req) {
+  async remove(req, res) {
     await this.verify(req);
     const rows = await service.remove({ key: req.body?.id });
-    return { rows };
+    res.json({ rows });
   }
 
   async redirect(req, res, id) {
     const { html } = await service.redirect({ id });
     res.setHeader('Location', html);
-    res.status(302).end('');
+    res.status(307).end('');
   }
 }
 

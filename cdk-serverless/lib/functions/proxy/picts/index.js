@@ -9,33 +9,34 @@ export class Picts {
     return payload.login;
   }
 
-  async upload(req) {
+  async upload(req, res) {
     const login = await this.login(req);
     await service.upload({ login, files: req.files || [] });
-    return { ok: true };
+    res.json({ ok: true });
   }
 
-  async find(req) {
+  async find(req, res) {
     const login = await this.login(req);
     const { images } = await service.find({ login });
-    return { images };
+    res.json({ images });
   }
 
-  async remove(req) {
+  async remove(req, res) {
     const login = await this.login(req);
     await service.remove({ login, fname: req.body?.name });
-    return { ok: true };
+    res.json({ ok: true });
   }
 
-  async getData(req) {
+  async getData(req, res) {
     const login = await this.login(req);
-    return service.getData({ login, list: req.body });
+    const result = await service.getData({ login, list: req.body });
+    res.json(result);
   }
 
-  async putData(req) {
+  async putData(req, res) {
     const login = await this.login(req);
     await service.putData({ login, dataset: req.body });
-    return { ok: true };
+    res.json({ ok: true });
   }
 
   async image(req, res, type, fname) {
@@ -44,7 +45,7 @@ export class Picts {
     const chunks = [];
     for await (const chunk of Body) chunks.push(chunk);
     res.headers.set('Content-Type', ContentType);
-    return Buffer.concat(chunks);
+    res.end(Buffer.concat(chunks));
   }
 }
 

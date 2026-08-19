@@ -12,7 +12,7 @@ export class Account {
       password: req.body.password,
       token: req.cookies?.token,
     });
-    return { login: item.key };
+    res.json({ login: item.key });
   }
 }
 

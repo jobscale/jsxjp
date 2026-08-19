@@ -10,7 +10,7 @@ export class User {
       throw createHttpError(res.statusCode, res.body.message);
     }
     await service.register(req.body);
-    return { login: req.body.login };
+    res.json({ login: req.body.login });
   }
 
   async reset(req, res) {
@@ -19,19 +19,19 @@ export class User {
       throw createHttpError(res.statusCode, res.body.message);
     }
     const item = await service.reset(req.body);
-    return { login: item.login };
+    res.json({ login: item.login });
   }
 
-  async find(req) {
+  async find(req, res) {
     const payload = await auth.decode(req.cookies?.token);
     if (payload.login !== 'alice') throw createHttpError(403);
     const rows = await service.find();
-    return { rows };
+    res.json({ rows });
   }
 
-  async remove(req) {
+  async remove(req, res) {
     const item = await service.remove({ key: req.body.id });
-    return { deletedAt: item.deletedAt };
+    res.json({ deletedAt: item.deletedAt });
   }
 }
 

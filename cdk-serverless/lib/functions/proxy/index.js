@@ -19,7 +19,7 @@ const logger = new Proxy(console, {
 const headers = {
   'Content-Type': 'application/json; charset=utf-8',
   'X-Env': ENV,
-  server: 'jsx.jp',
+  Server: 'jsx.jp',
 };
 
 const serializeCookie = (name, value, options = {}) => {
@@ -62,17 +62,6 @@ const parseMultipart = (body, contentType) => {
   return files;
 };
 
-const getResponseHeaders = res => {
-  const extra = Object.fromEntries(res.headers.entries());
-  const contentType = extra['content-type'];
-  delete extra['content-type'];
-  if (contentType) extra['Content-Type'] = contentType;
-  return {
-    ...headers,
-    ...extra,
-  };
-};
-
 const router = async (req, res) => {
   const { http: { method: httpMethod, path: httpPath } } = req.requestContext;
   const route = `${httpMethod} ${httpPath}`;
@@ -80,80 +69,105 @@ const router = async (req, res) => {
   logger.info({ route, routeKey });
 
   if (route === 'HEAD /auth/sign') {
-    return auth.sign(req, res, true);
+    await auth.sign(req, res, true);
+    return;
   }
   if (route === 'POST /auth/sign') {
-    return auth.sign(req, res);
+    await auth.sign(req, res);
+    return;
   }
   if (route === 'POST /auth/login') {
-    return auth.login(req, res);
+    await auth.login(req, res);
+    return;
   }
   if (route === 'POST /auth/totp') {
-    return auth.totp(req, res);
+    await auth.totp(req, res);
+    return;
   }
   if (route === 'POST /account/password') {
-    return account.password(req, res);
+    await account.password(req, res);
+    return;
   }
   if (route === 'POST /api/slack') {
-    return api.slack(req, res);
+    await api.slack(req, res);
+    return;
   }
   if (route === 'POST /api/email') {
-    return api.email(req, res);
+    await api.email(req, res);
+    return;
   }
   if (route === 'POST /api/webPush') {
-    return api.webPush(req, res);
+    await api.webPush(req, res);
+    return;
   }
   if (route === 'POST /api/sendmail') {
-    return api.sendmail(req, res);
+    await api.sendmail(req, res);
+    return;
   }
   if (route === 'POST /api/subscription') {
-    return api.subscription(req, res);
+    await api.subscription(req, res);
+    return;
   }
   if (route === 'POST /api/getNumber') {
-    return api.getNumber();
+    await api.getNumber(req, res);
+    return;
   }
   if (route === 'GET /api/public') {
-    return api.public();
+    await api.public(req, res);
+    return;
   }
   if (route === 'POST /api/hostname') {
-    return api.hostname();
+    await api.hostname(req, res);
+    return;
   }
   if (route === 'POST /api/speed') {
-    return api.speed(req, res);
+    await api.speed(req, res);
+    return;
   }
   if (route === 'POST /picts/upload') {
-    return picts.upload(req);
+    await picts.upload(req, res);
+    return;
   }
   if (route === 'POST /picts/find') {
-    return picts.find(req);
+    await picts.find(req, res);
+    return;
   }
   if (route === 'POST /picts/remove') {
-    return picts.remove(req);
+    await picts.remove(req, res);
+    return;
   }
   if (route === 'POST /picts/getData') {
-    return picts.getData(req);
+    await picts.getData(req, res);
+    return;
   }
   if (route === 'POST /picts/putData') {
-    return picts.putData(req);
+    await picts.putData(req, res);
+    return;
   }
   if (route === 'POST /plan-pulse/hub') {
-    return planPulse.hub(req, res);
+    await planPulse.hub(req, res);
+    return;
   }
   if (route === 'POST /plan-pulse/putHub') {
-    return planPulse.putHub(req, res);
+    await planPulse.putHub(req, res);
+    return;
   }
   if (route === 'POST /plan-pulse/putPerson') {
-    return planPulse.putPerson(req, res);
+    await planPulse.putPerson(req, res);
+    return;
   }
   if (route === 'POST /plan-pulse/removePerson') {
-    return planPulse.removePerson(req, res);
+    await planPulse.removePerson(req, res);
+    return;
   }
   if (route === 'POST /template') {
-    return template.load(req, res);
+    await template.load(req, res);
+    return;
   }
   if (route.startsWith('GET /picts/')) {
     const [, type, ...parts] = route.slice('GET /picts/'.length).split('/');
-    return picts.image(req, res, type, parts.join('/'));
+    await picts.image(req, res, type, parts.join('/'));
+    return;
   }
   if (route === 'GET /picts') {
     await picts.login(req);
@@ -161,31 +175,41 @@ const router = async (req, res) => {
   }
   if (route === 'GET /s') {
     await shorten.verify(req);
-    return 'i am shorten';
+    res.headers.set('Content-Type', 'text/plain; charset=utf-8');
+    res.end('i am shorten');
+    return;
   }
   if (route.startsWith('GET /s/')) {
-    return shorten.redirect(req, res, route.slice('GET /s/'.length));
+    await shorten.redirect(req, res, route.slice('GET /s/'.length));
+    return;
   }
   if (route === 'POST /s/register') {
-    return shorten.register(req);
+    await shorten.register(req, res);
+    return;
   }
   if (route === 'POST /s/find') {
-    return shorten.find(req);
+    await shorten.find(req, res);
+    return;
   }
   if (route === 'POST /s/remove') {
-    return shorten.remove(req);
+    await shorten.remove(req, res);
+    return;
   }
   if (route === 'POST /user/register') {
-    return user.register(req, res);
+    await user.register(req, res);
+    return;
   }
   if (route === 'POST /user/reset') {
-    return user.reset(req, res);
+    await user.reset(req, res);
+    return;
   }
   if (route === 'POST /user/find') {
-    return user.find(req, res);
+    await user.find(req, res);
+    return;
   }
   if (route === 'POST /user/remove') {
-    return user.remove(req, res);
+    await user.remove(req, res);
+    return;
   }
 
   throw createHttpError(405);
@@ -219,7 +243,8 @@ const createServer = event => {
       return res;
     },
     json(value) {
-      res.body = value;
+      res.headers.set('Content-Type', 'application/json; charset=utf-8');
+      res.body = JSON.stringify(value, null, 2);
       res.writableEnded = true;
       return res;
     },
@@ -235,6 +260,9 @@ const createServer = event => {
   res.setCookie = (name, value, options) => {
     res.cookies.push(serializeCookie(name, value, options));
   };
+  res.clearCookie = (name, options = {}) => {
+    res.cookies.push(serializeCookie(name, '', { ...options, expires: new Date(0) }));
+  };
   return { req, res };
 };
 
@@ -242,28 +270,21 @@ export const handler = async event => {
   logger.info('EVENT:', JSON.stringify(event, null, 2));
 
   const { req, res } = createServer(event);
-  const result = await router(req, res)
+  await router(req, res)
   .catch(e => {
     logger.info({ message: e });
     if (!e.status) e.status = 500;
     res.status(e.status).json({ message: e.message });
   });
-  const responseHeaders = getResponseHeaders(res);
-  const contentType = responseHeaders['Content-Type'] || '';
-  const isBinary = Buffer.isBuffer(result)
-    || /^image\//.test(contentType)
-    || contentType === 'application/octet-stream';
+  const isBinary = Buffer.isBuffer(res.body);
   const response = {
     statusCode: res.statusCode,
-    headers: responseHeaders,
+    headers: {
+      ...headers,
+      ...Object.fromEntries(res.headers.entries()),
+    },
     cookies: res.cookies,
-    body: isBinary
-      ? result?.toString('base64') || ''
-      : result === undefined && res.body === undefined
-        ? ''
-        : typeof (result === undefined ? res.body : result) === 'string'
-          ? result === undefined ? res.body : result
-          : JSON.stringify(result === undefined ? res.body : result, null, 2),
+    body: isBinary ? res.body.toString('base64') : res.body ?? '',
   };
   if (isBinary) response.isBase64Encoded = true;
   return response;

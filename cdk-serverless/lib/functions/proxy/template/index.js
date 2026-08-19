@@ -8,8 +8,9 @@ export class Template {
     if (res.writableEnded) {
       throw createHttpError(res.statusCode, res.body.message);
     }
+    const html = await service.load(req.body.id);
     res.headers.set('Content-Type', 'text/html; charset=utf-8');
-    return service.load(req.body.id);
+    res.end(html);
   }
 }
 

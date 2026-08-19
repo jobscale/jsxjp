@@ -12,25 +12,29 @@ const validate = async (method, req, res) => {
 export class PlanPulse {
   async hub(req, res) {
     await validate('hub', req, res);
-    return service.hub({ hubId: req.body.hubId });
+    const result = await service.hub({ hubId: req.body.hubId });
+    res.json(result);
   }
 
   async putHub(req, res) {
     await validate('putHub', req, res);
     const { hubId, hub } = req.body;
-    return service.putHub({ hubId, hub });
+    const result = await service.putHub({ hubId, hub });
+    res.json(result);
   }
 
   async putPerson(req, res) {
     await validate('putPerson', req, res);
     const { hubId, personId, person } = req.body;
-    return service.putPerson({ hubId, personId, person });
+    const result = await service.putPerson({ hubId, personId, person });
+    res.json(result);
   }
 
   async removePerson(req, res) {
     await validate('removePerson', req, res);
     const { hubId, personId } = req.body;
-    return service.removePerson({ hubId, personId });
+    const result = await service.removePerson({ hubId, personId });
+    res.json(result);
   }
 }
 

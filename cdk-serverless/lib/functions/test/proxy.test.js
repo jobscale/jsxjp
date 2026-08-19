@@ -4,50 +4,51 @@ const auth = {
   sign: jest.fn((req, res, head) => {
     res.headers.set('X-User', 'alice');
     res.headers.set('X-Address', '127.0.0.1');
-    return head ? undefined : { login: 'alice' };
+    if (head) return res.end();
+    return res.json({ login: 'alice' });
   }),
   login: jest.fn((req, res) => {
     res.setCookie('token', 'token-value');
-    return { token: 'token-value' };
+    res.json({ token: 'token-value' });
   }),
-  totp: jest.fn(() => ({ code: '123456', list: ['123456'] })),
+  totp: jest.fn((req, res) => res.json({ code: '123456', list: ['123456'] })),
 };
 
 const account = {
-  password: jest.fn(() => ({ login: 'alice' })),
+  password: jest.fn((req, res) => res.json({ login: 'alice' })),
 };
 
 const api = {
-  slack: jest.fn(() => ({ ok: true })),
-  email: jest.fn(() => ({ ok: true })),
-  webPush: jest.fn(() => ({ ok: true })),
-  sendmail: jest.fn(() => ({ ts: '2026-08-18 00:00:00' })),
-  subscription: jest.fn(() => ({ register: true })),
-  getNumber: jest.fn(() => ({ number: '1234' })),
-  public: jest.fn(() => 'public-key'),
-  hostname: jest.fn(() => ({ hostname: 'test-host' })),
+  slack: jest.fn((req, res) => res.json({ ok: true })),
+  email: jest.fn((req, res) => res.json({ ok: true })),
+  webPush: jest.fn((req, res) => res.json({ ok: true })),
+  sendmail: jest.fn((req, res) => res.json({ ts: '2026-08-18 00:00:00' })),
+  subscription: jest.fn((req, res) => res.json({ register: true })),
+  getNumber: jest.fn((req, res) => res.json({ number: '1234' })),
+  public: jest.fn((req, res) => res.end('public-key')),
+  hostname: jest.fn((req, res) => res.json({ hostname: 'test-host' })),
   speed: jest.fn((req, res) => {
     res.headers.set('Content-Type', 'application/octet-stream');
-    return Buffer.from('speed');
+    res.end(Buffer.from('speed'));
   }),
 };
 
 const planPulse = {
-  hub: jest.fn(() => ({ hubId: 'hub-1' })),
-  putHub: jest.fn(() => ({ hubId: 'hub-2' })),
-  putPerson: jest.fn(() => ({ personId: 'person-1' })),
-  removePerson: jest.fn(() => ({})),
+  hub: jest.fn((req, res) => res.json({ hubId: 'hub-1' })),
+  putHub: jest.fn((req, res) => res.json({ hubId: 'hub-2' })),
+  putPerson: jest.fn((req, res) => res.json({ personId: 'person-1' })),
+  removePerson: jest.fn((req, res) => res.json({})),
 };
 
 const picts = {
-  upload: jest.fn(() => ({ ok: true })),
-  find: jest.fn(() => ({ images: ['one.png'] })),
-  remove: jest.fn(() => ({ ok: true })),
-  getData: jest.fn(() => ({ settings: { enabled: true } })),
-  putData: jest.fn(() => ({ ok: true })),
+  upload: jest.fn((req, res) => res.json({ ok: true })),
+  find: jest.fn((req, res) => res.json({ images: ['one.png'] })),
+  remove: jest.fn((req, res) => res.json({ ok: true })),
+  getData: jest.fn((req, res) => res.json({ settings: { enabled: true } })),
+  putData: jest.fn((req, res) => res.json({ ok: true })),
   image: jest.fn((req, res) => {
     res.headers.set('Content-Type', 'image/png');
-    return Buffer.from('image');
+    res.end(Buffer.from('image'));
   }),
   login: jest.fn(),
 };
@@ -56,25 +57,25 @@ const shorten = {
   verify: jest.fn(),
   redirect: jest.fn((req, res) => {
     res.setHeader('Location', 'https://example.com');
-    res.status(302).end('');
+    res.status(307).end('');
   }),
-  register: jest.fn(() => ({ id: 'short-1' })),
-  find: jest.fn(() => ({ rows: [] })),
-  remove: jest.fn(() => ({ rows: [] })),
+  register: jest.fn((req, res) => res.json({ id: 'short-1' })),
+  find: jest.fn((req, res) => res.json({ rows: [] })),
+  remove: jest.fn((req, res) => res.json({ rows: [] })),
 };
 
 const template = {
   load: jest.fn((req, res) => {
     res.headers.set('Content-Type', 'text/html; charset=utf-8');
-    return '<h1>template</h1>';
+    res.end('<h1>template</h1>');
   }),
 };
 
 const user = {
-  register: jest.fn(() => ({ login: 'alice' })),
-  reset: jest.fn(() => ({ login: 'alice' })),
-  find: jest.fn(() => ({ rows: [] })),
-  remove: jest.fn(() => ({ deletedAt: '2026-08-18' })),
+  register: jest.fn((req, res) => res.json({ login: 'alice' })),
+  reset: jest.fn((req, res) => res.json({ login: 'alice' })),
+  find: jest.fn((req, res) => res.json({ rows: [] })),
+  remove: jest.fn((req, res) => res.json({ deletedAt: '2026-08-18' })),
 };
 
 jest.unstable_mockModule('../proxy/auth/index.js', () => ({ auth }));
@@ -155,14 +156,14 @@ test('returns cookies and response headers', async () => {
   const result = await call('POST', '/auth/login', {});
 
   expect(result.cookies).toEqual(['token=token-value; Path=/; HttpOnly; Secure; SameSite=Strict']);
-  expect(result.headers['Content-Type']).toBe('application/json; charset=utf-8');
+  expect(result.headers['content-type']).toBe('application/json; charset=utf-8');
   expect(result.body).toContain('token-value');
 });
 
 test('returns HTML without JSON encoding', async () => {
   const result = await call('POST', '/template', { id: 'auth-login' });
 
-  expect(result.headers['Content-Type']).toBe('text/html; charset=utf-8');
+  expect(result.headers['content-type']).toBe('text/html; charset=utf-8');
   expect(result.body).toBe('<h1>template</h1>');
   expect(result.isBase64Encoded).toBeUndefined();
 });
@@ -170,7 +171,7 @@ test('returns HTML without JSON encoding', async () => {
 test('returns binary data as base64', async () => {
   const result = await call('GET', '/picts/i/photo.png');
 
-  expect(result.headers['Content-Type']).toBe('image/png');
+  expect(result.headers['content-type']).toBe('image/png');
   expect(result.body).toBe(Buffer.from('image').toString('base64'));
   expect(result.isBase64Encoded).toBe(true);
 });
@@ -178,7 +179,7 @@ test('returns binary data as base64', async () => {
 test('returns redirect response', async () => {
   const result = await call('GET', '/s/short-1');
 
-  expect(result.statusCode).toBe(302);
+  expect(result.statusCode).toBe(307);
   expect(result.headers.location).toBe('https://example.com');
   expect(result.body).toBe('');
 });

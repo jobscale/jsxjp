@@ -10,28 +10,32 @@ const notificationAddress = [
 export class Api {
   async slack(req, res) {
     await validation.slack(req, res);
-    return service.slack(req.body);
+    const result = await service.slack(req.body);
+    res.json(result);
   }
 
   async email(req, res) {
     await validation.email(req, res);
     const { subject, text } = req.body;
-    return service.email({ to: notificationAddress, subject, text });
+    const result = await service.email({ to: notificationAddress, subject, text });
+    res.json(result);
   }
 
   async webPush(req, res) {
     await validation.webPush(req, res);
-    return service.webPush(req.body);
+    const result = await service.webPush(req.body);
+    res.json(result);
   }
 
   async sendmail(req, res) {
     await validation.sendmail(req, res);
     const { secret, digit, content } = req.body;
-    return service.sendmail({
+    const result = await service.sendmail({
       secret,
       digit,
       content: { ...content, to: notificationAddress },
     });
+    res.json(result);
   }
 
   async subscription(req, res) {
@@ -39,24 +43,29 @@ export class Api {
     const { body } = req;
     const host = req.headers.get('host');
     const { login } = await auth.decode(req.cookies?.token).catch(() => ({}));
-    return service.subscription({ ...body, host }, login);
+    const result = await service.subscription({ ...body, host }, login);
+    res.json(result);
   }
 
-  getNumber() {
-    return service.getNumber();
+  async getNumber(req, res) {
+    const result = await service.getNumber();
+    res.json(result);
   }
 
-  public() {
-    return service.public();
+  async public(req, res) {
+    const result = await service.public();
+    res.end(result);
   }
 
-  hostname() {
-    return service.hostname();
+  async hostname(req, res) {
+    const result = await service.hostname();
+    res.json(result);
   }
 
-  speed(req, res) {
+  async speed(req, res) {
+    const result = await service.speed({ timestamp: req.body });
     res.headers.set('Content-Type', 'application/octet-stream');
-    return service.speed({ timestamp: req.body });
+    res.end(result);
   }
 }
 
