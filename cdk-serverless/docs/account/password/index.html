@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/input.css">
+    <link rel="stylesheet" href="/css/menu.css">
+    <title>Change Password - jsx.jp</title>
+  </head>
+
+  <body>
+    <div id="app" class="nav-main">
+      <div class="container">
+        <div class="main-box">
+          <section>
+            <h2>Change Password</h2>
+            <form @submit.prevent="onSubmit">
+              <div class="field-box">
+                <input v-model="password" type="password" name="" required="">
+                <label>Password</label>
+              </div>
+              <div class="field-box">
+                <input v-model="confirm" type="password" name="" required="">
+                <label>Confirm</label>
+              </div>
+              <div class="center error">{{ statusText }}</div>
+              <button type="submit" class="a">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                Confirm
+              </button>
+            </form>
+          </section>
+
+          <section>
+            <div class="align-center">
+              <a @click.prevent="onColorScheme">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun-moon-icon lucide-sun-moon"><path d="M12 2v2"/><path d="M14.837 16.385a6 6 0 1 1-7.223-7.222c.624-.147.97.66.715 1.248a4 4 0 0 0 5.26 5.259c.589-.255 1.396.09 1.248.715"/><path d="M16 12a4 4 0 0 0-4-4"/><path d="m19 5-1.256 1.256"/><path d="M20 12h2"/></svg>
+              </a>
+            </div>
+          </section>
+        </div>
+      </div>
+      <div v-if="loading" class="loading"></div>
+    </div>
+  </body>
+  <script defer type="module" src="index.js"></script>
+  <script defer type="module" src="/js/menu.js"></script>
+</html>

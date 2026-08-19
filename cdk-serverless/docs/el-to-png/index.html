@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="SVG to PNG. powerd by jsx.jp">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SVG to PNG</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+  <div id="app">
+    <div class="container" :class="fontKey" :style="fontSize">
+      <section>
+        <select v-model="fontKey">
+          <option v-for="item of fonts" :value="item.class">{{ item.name }}</option>
+        </select>
+        &nbsp;
+        <select v-model="fontSize">
+          <option v-for="item of sizeList" :value="item.style">{{ item.name }}</option>
+        </select>
+        <div>
+          <a href="" @click.prevent="action">Click Download All Start</a>
+        </div>
+        <span class="wrap" v-for="name of list">
+          <span class="img" :data-name="name">
+            <span class="inner" v-html="name.replace(/([0:]+)/g, '<small>$1</small>')"></span>
+          </span>
+        </span>
+      </section>
+    </div>
+  </div>
+  <script defer type="module" src="index.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 142 142" aria-label="loading nine circles">
+  <circle cx="71" cy="14" r="10" fill="rgb(55,55,55)">
+    <animate attributeName="fill" dur="2.2s" begin="0s" repeatCount="indefinite" keyTimes="0;0.0909;0.1818;0.2727;1" values="rgb(233,233,233);rgb(188,188,188);rgb(122,122,122);rgb(55,55,55);rgb(55,55,55)"/>
+  </circle>
+  <circle cx="107.6" cy="27.3" r="10" fill="rgb(55,55,55)">
+    <animate attributeName="fill" dur="2.2s" begin="-0.244s" repeatCount="indefinite" keyTimes="0;0.0909;0.1818;0.2727;1" values="rgb(233,233,233);rgb(188,188,188);rgb(122,122,122);rgb(55,55,55);rgb(55,55,55)"/>
+  </circle>
+  <circle cx="127.1" cy="61.1" r="10" fill="rgb(55,55,55)">
+    <animate attributeName="fill" dur="2.2s" begin="-0.489s" repeatCount="indefinite" keyTimes="0;0.0909;0.1818;0.2727;1" values="rgb(233,233,233);rgb(188,188,188);rgb(122,122,122);rgb(55,55,55);rgb(55,55,55)"/>
+  </circle>
+  <circle cx="120.4" cy="99.5" r="10" fill="rgb(55,55,55)">
+    <animate attributeName="fill" dur="2.2s" begin="-0.733s" repeatCount="indefinite" keyTimes="0;0.0909;0.1818;0.2727;1" values="rgb(233,233,233);rgb(188,188,188);rgb(122,122,122);rgb(55,55,55);rgb(55,55,55)"/>
+  </circle>
+  <circle cx="90.5" cy="124.6" r="10" fill="rgb(55,55,55)">
+    <animate attributeName="fill" dur="2.2s" begin="-0.978s" repeatCount="indefinite" keyTimes="0;0.0909;0.1818;0.2727;1" values="rgb(233,233,233);rgb(188,188,188);rgb(122,122,122);rgb(55,55,55);rgb(55,55,55)"/>
+  </circle>
+  <circle cx="51.5" cy="124.6" r="10" fill="rgb(55,55,55)">
+    <animate attributeName="fill" dur="2.2s" begin="-1.222s" repeatCount="indefinite" keyTimes="0;0.0909;0.1818;0.2727;1" values="rgb(233,233,233);rgb(188,188,188);rgb(122,122,122);rgb(55,55,55);rgb(55,55,55)"/>
+  </circle>
+  <circle cx="21.6" cy="99.5" r="10" fill="rgb(55,55,55)">
+    <animate attributeName="fill" dur="2.2s" begin="-1.467s" repeatCount="indefinite" keyTimes="0;0.0909;0.1818;0.2727;1" values="rgb(233,233,233);rgb(188,188,188);rgb(122,122,122);rgb(55,55,55);rgb(55,55,55)"/>
+  </circle>
+  <circle cx="14.9" cy="61.1" r="10" fill="rgb(55,55,55)">
+    <animate attributeName="fill" dur="2.2s" begin="-1.711s" repeatCount="indefinite" keyTimes="0;0.0909;0.1818;0.2727;1" values="rgb(233,233,233);rgb(188,188,188);rgb(122,122,122);rgb(55,55,55);rgb(55,55,55)"/>
+  </circle>
+  <circle cx="34.4" cy="27.3" r="10" fill="rgb(55,55,55)">
+    <animate attributeName="fill" dur="2.2s" begin="-1.956s" repeatCount="indefinite" keyTimes="0;0.0909;0.1818;0.2727;1" values="rgb(233,233,233);rgb(188,188,188);rgb(122,122,122);rgb(55,55,55);rgb(55,55,55)"/>
+  </circle>
+</svg>
