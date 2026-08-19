@@ -54,7 +54,10 @@ const picts = {
 
 const shorten = {
   verify: jest.fn(),
-  redirect: jest.fn(() => ({ redirect: 'https://example.com' })),
+  redirect: jest.fn((req, res) => {
+    res.setHeader('Location', 'https://example.com');
+    res.status(302).end('');
+  }),
   register: jest.fn(() => ({ id: 'short-1' })),
   find: jest.fn(() => ({ rows: [] })),
   remove: jest.fn(() => ({ rows: [] })),
@@ -95,8 +98,8 @@ const event = (method, path, body, options = {}) => ({
   body: body === undefined ? undefined : JSON.stringify(body),
   cookies: ['token=token-value'],
   requestContext: {
-    http: { httpMethod: method, httpPath: `/v1${path}`, sourceIp: '127.0.0.1' },
-    routeKey: `${method} /v1/{proxy+}`,
+    http: { method, path: `${path}`, sourceIp: '127.0.0.1' },
+    routeKey: `${method} /{proxy+}`,
   },
 });
 
@@ -176,7 +179,7 @@ test('returns redirect response', async () => {
   const result = await call('GET', '/s/short-1');
 
   expect(result.statusCode).toBe(302);
-  expect(result.headers.Location).toBe('https://example.com');
+  expect(result.headers.location).toBe('https://example.com');
   expect(result.body).toBe('');
 });
 

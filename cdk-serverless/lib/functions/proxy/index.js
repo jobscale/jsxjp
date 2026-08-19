@@ -75,7 +75,7 @@ const getResponseHeaders = res => {
 
 const router = async (req, res) => {
   const { http: { method: httpMethod, path: httpPath } } = req.requestContext;
-  const route = `${httpMethod} ${httpPath.replace(/^\/v[0-9]+/, '')}`;
+  const route = `${httpMethod} ${httpPath}`;
   const { routeKey } = req.requestContext;
   logger.info({ route, routeKey });
 
@@ -157,14 +157,14 @@ const router = async (req, res) => {
   }
   if (route === 'GET /picts') {
     await picts.login(req);
-    return { statusCode: 404, body: '404 NotFound' };
+    throw createHttpError(404, '404 NotFound');
   }
   if (route === 'GET /s') {
     await shorten.verify(req);
     return 'i am shorten';
   }
   if (route.startsWith('GET /s/')) {
-    return shorten.redirect(route.slice('GET /s/'.length));
+    return shorten.redirect(req, res, route.slice('GET /s/'.length));
   }
   if (route === 'POST /s/register') {
     return shorten.register(req);
@@ -265,11 +265,6 @@ export const handler = async event => {
           ? result === undefined ? res.body : result
           : JSON.stringify(result === undefined ? res.body : result, null, 2),
   };
-  if (result?.redirect) {
-    response.statusCode = 302;
-    response.headers.Location = result.redirect;
-    response.body = '';
-  }
   if (isBinary) response.isBase64Encoded = true;
   return response;
 };

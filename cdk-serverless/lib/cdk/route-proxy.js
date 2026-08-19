@@ -27,7 +27,6 @@ export const route = (stack, httpApi, envName, integrationArn, sourceArn) => {
         afterBundling(inputDir, outputDir) {
           return [
             `rm -f ${outputDir}/package-lock.json`,
-            // `(cd "${outputDir}/node_modules" && find . -maxdepth 1 -not -name "." -not -name "canvas" -exec rm -rf {} +)`,
           ];
         },
       },
@@ -46,7 +45,7 @@ export const route = (stack, httpApi, envName, integrationArn, sourceArn) => {
 
   new apigwv2.CfnRoute(stack, 'ProxyRoute', {
     apiId: httpApi.ref,
-    routeKey: 'ANY /v1/{proxy+}',
+    routeKey: 'ANY /{proxy+}',
     target: cdk.Fn.join('', ['integrations/', integration.ref]),
   });
 

@@ -27,9 +27,10 @@ export class Shorten {
     return { rows };
   }
 
-  async redirect(id) {
+  async redirect(req, res, id) {
     const { html } = await service.redirect({ id });
-    return { redirect: html };
+    res.setHeader('Location', html);
+    res.status(302).end('');
   }
 }
 
