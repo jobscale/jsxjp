@@ -26,7 +26,7 @@ const mockAuthController = {
 };
 
 jest.unstable_mockModule('../app/db.js', () => ({ db: mockDb }));
-jest.unstable_mockModule('@jobscale/logger', () => ({ logger: mockLogger }));
+jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
 jest.unstable_mockModule('../app/auth/service.js', () => ({ service: mockAuthService }));
 jest.unstable_mockModule('../app/auth/controller.js', () => ({ controller: mockAuthController }));
 

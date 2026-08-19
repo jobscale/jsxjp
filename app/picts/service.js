@@ -3,7 +3,7 @@ import {
   S3Client, PutObjectCommand, GetObjectCommand,
   ListObjectsV2Command, DeleteObjectCommand, CreateBucketCommand,
 } from '@aws-sdk/client-s3';
-import { logger } from '@jobscale/logger';
+import { logger } from '@jobscale/create-logger';
 import { service as configService } from '../config/service.js';
 
 const { ENV } = process.env;

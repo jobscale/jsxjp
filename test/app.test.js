@@ -14,7 +14,7 @@ const mockConfigService = {
   }),
 };
 
-jest.unstable_mockModule('@jobscale/logger', () => ({
+jest.unstable_mockModule('@jobscale/create-logger', () => ({
   logger: {
     info: jest.fn(),
     error: jest.fn(),

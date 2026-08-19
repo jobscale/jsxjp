@@ -40,11 +40,13 @@ export class Auth {
     res.json(result);
   }
 
-  sign(req, res, head = false) {
+  sign(req, res) {
     const setHeader = (user = {}) => {
       res.setHeader('X-User', user.login ?? 'Guest');
       res.setHeader('X-Address', req.headers.get('x-forwarded-for')?.split(' ')[0] || req.requestContext.http.sourceIp);
     };
+    const { http: { method: httpMethod } } = req.requestContext;
+    const head = httpMethod === 'HEAD';
     const token = req.cookies?.token;
     return service.decode(token)
     .then(result => {

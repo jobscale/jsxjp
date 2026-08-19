@@ -15,7 +15,7 @@
     "ls": "ENV=${ENV:-dev} && cdk ls --context env=$ENV"
   },
   "dependencies": {
-    "@jobscale/logger": "^0.11.1",
+    "@jobscale/create-logger": "^1.0.0",
     "@jobscale/slack": "^0.3.2",
     "@napi-rs/canvas": "^1.0.7",
     "aws-cdk-lib": "^2.263.0",

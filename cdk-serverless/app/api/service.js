@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import webPush from 'web-push';
 import nodemailer from 'nodemailer';
 import createHttpError from 'http-errors';
-import { logger } from '@jobscale/logger';
+import { logger } from '@jobscale/create-logger';
 import { Slack } from '@jobscale/slack';
 import { service as configService } from '../config/service.js';
 import { db } from '../db.js';

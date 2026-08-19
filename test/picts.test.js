@@ -41,7 +41,7 @@ jest.unstable_mockModule('@aws-sdk/client-s3', () => ({
 
 jest.unstable_mockModule('sharp', () => ({ default: mockSharp }));
 jest.unstable_mockModule('../app/auth/service.js', () => ({ service: mockAuthService }));
-jest.unstable_mockModule('@jobscale/logger', () => ({ logger: mockLogger }));
+jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
 jest.unstable_mockModule('../app/shorten/route.js', () => ({
   route: {
     router: {

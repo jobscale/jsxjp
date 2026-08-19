@@ -8,7 +8,7 @@ const mockLogger = {
   error: jest.fn(),
   debug: jest.fn(),
 };
-jest.unstable_mockModule('@jobscale/logger', () => ({ logger: mockLogger }));
+jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
 
 describe('IP Module', () => {
   let request;

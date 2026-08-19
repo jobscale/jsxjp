@@ -1,6 +1,6 @@
 import http from 'http';
 import './app/config/index.js';
-import { logger } from '@jobscale/logger';
+import { logger } from '@jobscale/create-logger';
 import { app, upgradeHandler, errorHandler } from './app/index.js';
 
 const PORT = Number.parseInt(process.env.PORT || 3000, 10);

@@ -28,7 +28,9 @@ export class Shorten {
     res.json({ rows });
   }
 
-  async redirect(req, res, id) {
+  async redirect(req, res) {
+    const { http: { path: httpPath } } = req.requestContext;
+    const id = httpPath.slice('/s/'.length);
     const { html } = await service.redirect({ id });
     res.setHeader('Location', html);
     res.status(307).end('');

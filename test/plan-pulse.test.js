@@ -18,7 +18,7 @@ const mockLogger = {
 };
 
 jest.unstable_mockModule('../app/s3.js', () => ({ db: mockDb }));
-jest.unstable_mockModule('@jobscale/logger', () => ({ logger: mockLogger }));
+jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
 
 // Mock other routes
 const mockRouter = {

@@ -1,10 +1,6 @@
-const { ENV } = process.env;
+import { logger } from '@jobscale/create-logger';
 
-const logger = new Proxy(console, {
-  get(target, prop) {
-    return target[prop];
-  },
-});
+const { ENV } = process.env;
 
 const headers = {
   'Content-Type': 'application/json; charset=utf-8',

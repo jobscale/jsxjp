@@ -39,7 +39,10 @@ export class Picts {
     res.json({ ok: true });
   }
 
-  async image(req, res, type, fname) {
+  async image(req, res) {
+    const { http: { path: httpPath } } = req.requestContext;
+    const [, type, ...parts] = httpPath.slice('/picts/'.length).split('/');
+    const fname = parts.join('/');
     const login = await this.login(req);
     const { ContentType, Body } = await service.image({ login, type, fname });
     const chunks = [];

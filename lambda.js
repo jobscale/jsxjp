@@ -1,6 +1,6 @@
 import { Readable, Writable } from 'stream';
 import { Socket } from 'net';
-import { logger } from '@jobscale/logger';
+import { logger } from '@jobscale/create-logger';
 import { app } from './app/index.js';
 
 export const handler = async event => {

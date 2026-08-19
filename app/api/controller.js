@@ -1,4 +1,4 @@
-import { logger } from '@jobscale/logger';
+import { logger } from '@jobscale/create-logger';
 import { service as authService } from '../auth/service.js';
 import { service } from './service.js';
 

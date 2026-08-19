@@ -20,7 +20,7 @@ const mockApiService = {
 };
 
 jest.unstable_mockModule('../app/db.js', () => ({ db: mockDb }));
-jest.unstable_mockModule('@jobscale/logger', () => ({ logger: mockLogger }));
+jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
 jest.unstable_mockModule('../app/api/service.js', () => ({ service: mockApiService }));
 
 // Mock other routes that might be loaded by app/index.js

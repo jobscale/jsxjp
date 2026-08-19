@@ -1,4 +1,5 @@
 import createHttpError from 'http-errors';
+import { logger } from '@jobscale/create-logger';
 import { account } from './account/index.js';
 import { api } from './api/index.js';
 import { auth } from './auth/index.js';
@@ -10,14 +11,7 @@ import { user } from './user/index.js';
 
 const { ENV } = process.env;
 
-const logger = new Proxy(console, {
-  get(target, prop) {
-    return target[prop];
-  },
-});
-
-const headers = {
-  'Content-Type': 'application/json; charset=utf-8',
+const defaultHeaders = {
   'X-Env': ENV,
   Server: 'jsx.jp',
 };
@@ -64,151 +58,161 @@ const parseMultipart = (body, contentType) => {
 
 const router = async (req, res) => {
   const { http: { method: httpMethod, path: httpPath } } = req.requestContext;
-  const route = `${httpMethod} ${httpPath}`;
-  const { routeKey } = req.requestContext;
-  logger.info({ route, routeKey });
+  const rawRoute = `${httpMethod} ${httpPath}`;
 
-  if (route === 'HEAD /auth/sign') {
-    await auth.sign(req, res, true);
+  if (['OPTIONS'].includes(httpMethod)) {
+    res.end();
     return;
   }
-  if (route === 'POST /auth/sign') {
+  if (['PUT', 'PATCH', 'DELETE'].includes(httpMethod)) {
+    throw createHttpError(405);
+  }
+
+  if (rawRoute === 'HEAD /auth/sign') {
     await auth.sign(req, res);
     return;
   }
-  if (route === 'POST /auth/login') {
+  if (rawRoute === 'POST /auth/sign') {
+    await auth.sign(req, res);
+    return;
+  }
+  if (rawRoute === 'POST /auth/login') {
     await auth.login(req, res);
     return;
   }
-  if (route === 'POST /auth/totp') {
+  if (rawRoute === 'POST /auth/totp') {
     await auth.totp(req, res);
     return;
   }
-  if (route === 'POST /account/password') {
+  if (rawRoute === 'POST /account/password') {
     await account.password(req, res);
     return;
   }
-  if (route === 'POST /api/slack') {
+  if (rawRoute === 'POST /api/slack') {
     await api.slack(req, res);
     return;
   }
-  if (route === 'POST /api/email') {
+  if (rawRoute === 'POST /api/email') {
     await api.email(req, res);
     return;
   }
-  if (route === 'POST /api/webPush') {
+  if (rawRoute === 'POST /api/webPush') {
     await api.webPush(req, res);
     return;
   }
-  if (route === 'POST /api/sendmail') {
+  if (rawRoute === 'POST /api/sendmail') {
     await api.sendmail(req, res);
     return;
   }
-  if (route === 'POST /api/subscription') {
+  if (rawRoute === 'POST /api/subscription') {
     await api.subscription(req, res);
     return;
   }
-  if (route === 'POST /api/getNumber') {
+  if (rawRoute === 'POST /api/getNumber') {
     await api.getNumber(req, res);
     return;
   }
-  if (route === 'GET /api/public') {
+  if (rawRoute === 'GET /api/public') {
     await api.public(req, res);
     return;
   }
-  if (route === 'POST /api/hostname') {
+  if (rawRoute === 'POST /api/hostname') {
     await api.hostname(req, res);
     return;
   }
-  if (route === 'POST /api/speed') {
+  if (rawRoute === 'POST /api/speed') {
     await api.speed(req, res);
     return;
   }
-  if (route === 'POST /picts/upload') {
+  if (rawRoute === 'POST /picts/upload') {
     await picts.upload(req, res);
     return;
   }
-  if (route === 'POST /picts/find') {
+  if (rawRoute === 'POST /picts/find') {
     await picts.find(req, res);
     return;
   }
-  if (route === 'POST /picts/remove') {
+  if (rawRoute === 'POST /picts/remove') {
     await picts.remove(req, res);
     return;
   }
-  if (route === 'POST /picts/getData') {
+  if (rawRoute === 'POST /picts/getData') {
     await picts.getData(req, res);
     return;
   }
-  if (route === 'POST /picts/putData') {
+  if (rawRoute === 'POST /picts/putData') {
     await picts.putData(req, res);
     return;
   }
-  if (route === 'POST /plan-pulse/hub') {
+  if (rawRoute === 'POST /plan-pulse/hub') {
     await planPulse.hub(req, res);
     return;
   }
-  if (route === 'POST /plan-pulse/putHub') {
+  if (rawRoute === 'POST /plan-pulse/putHub') {
     await planPulse.putHub(req, res);
     return;
   }
-  if (route === 'POST /plan-pulse/putPerson') {
+  if (rawRoute === 'POST /plan-pulse/putPerson') {
     await planPulse.putPerson(req, res);
     return;
   }
-  if (route === 'POST /plan-pulse/removePerson') {
+  if (rawRoute === 'POST /plan-pulse/removePerson') {
     await planPulse.removePerson(req, res);
     return;
   }
-  if (route === 'POST /template') {
+  if (rawRoute === 'POST /template') {
     await template.load(req, res);
     return;
   }
-  if (route.startsWith('GET /picts/')) {
-    const [, type, ...parts] = route.slice('GET /picts/'.length).split('/');
-    await picts.image(req, res, type, parts.join('/'));
+  if (rawRoute.startsWith('GET /picts/')) {
+    await picts.image(req, res);
     return;
   }
-  if (route === 'GET /picts') {
+  if (rawRoute === 'GET /picts') {
     await picts.login(req);
     throw createHttpError(404, '404 NotFound');
   }
-  if (route === 'GET /s') {
+  if (rawRoute === 'GET /s') {
     await shorten.verify(req);
-    res.headers.set('Content-Type', 'text/plain; charset=utf-8');
+    res.writeHead(200, 'Content-Type', 'text/plain; charset=utf-8');
     res.end('i am shorten');
     return;
   }
-  if (route.startsWith('GET /s/')) {
-    await shorten.redirect(req, res, route.slice('GET /s/'.length));
+  if (rawRoute.startsWith('GET /s/')) {
+    await shorten.redirect(req, res);
     return;
   }
-  if (route === 'POST /s/register') {
+  if (rawRoute === 'POST /s/register') {
     await shorten.register(req, res);
     return;
   }
-  if (route === 'POST /s/find') {
+  if (rawRoute === 'POST /s/find') {
     await shorten.find(req, res);
     return;
   }
-  if (route === 'POST /s/remove') {
+  if (rawRoute === 'POST /s/remove') {
     await shorten.remove(req, res);
     return;
   }
-  if (route === 'POST /user/register') {
+  if (rawRoute === 'POST /user/register') {
     await user.register(req, res);
     return;
   }
-  if (route === 'POST /user/reset') {
+  if (rawRoute === 'POST /user/reset') {
     await user.reset(req, res);
     return;
   }
-  if (route === 'POST /user/find') {
+  if (rawRoute === 'POST /user/find') {
     await user.find(req, res);
     return;
   }
-  if (route === 'POST /user/remove') {
+  if (rawRoute === 'POST /user/remove') {
     await user.remove(req, res);
+    return;
+  }
+
+  if (['HEAD'].includes(httpMethod)) {
+    res.end();
     return;
   }
 
@@ -216,10 +220,10 @@ const router = async (req, res) => {
 };
 
 const createServer = event => {
-  const requestHeaders = new Headers(event.headers || {});
-  const contentType = requestHeaders.get('content-type') || '';
+  const headers = new Headers(event.headers);
+  const contentType = headers.get('Content-Type') ?? '';
   const req = {
-    headers: requestHeaders,
+    headers,
     requestContext: event.requestContext,
   };
   if (contentType.startsWith('application/json') && event.body) {
@@ -233,7 +237,7 @@ const createServer = event => {
     return [cookie.slice(0, separator), decodeURIComponent(cookie.slice(separator + 1))];
   }));
   const res = {
-    headers: new Headers(),
+    headers: new Headers(defaultHeaders),
     statusCode: 200,
     writableEnded: false,
     cookies: [],
@@ -242,19 +246,24 @@ const createServer = event => {
       res.statusCode = code;
       return res;
     },
-    json(value) {
-      res.headers.set('Content-Type', 'application/json; charset=utf-8');
-      res.body = JSON.stringify(value, null, 2);
-      res.writableEnded = true;
-      return res;
-    },
-    end(value = '') {
-      res.body = value;
-      res.writableEnded = true;
-      return res;
-    },
     setHeader(name, value) {
       res.headers.set(name, value);
+    },
+    writeHead(code, h = {}) {
+      res.statusCode = code;
+      for (const [key, value] of Object.entries(h)) {
+        res.headers.set(key, value);
+      }
+    },
+    json(value) {
+      const indent = ENV === 'dev' ? 2 : undefined;
+      res.headers.set('Content-Type', 'application/json; charset=utf-8');
+      res.body = JSON.stringify(value, null, indent);
+      res.writableEnded = true;
+    },
+    end(value) {
+      res.body = value;
+      res.writableEnded = true;
     },
   };
   res.setCookie = (name, value, options) => {
@@ -266,10 +275,7 @@ const createServer = event => {
   return { req, res };
 };
 
-export const handler = async event => {
-  logger.info('EVENT:', JSON.stringify(event, null, 2));
-
-  const { req, res } = createServer(event);
+const ingress = async (req, res) => {
   await router(req, res)
   .catch(e => {
     logger.info({ message: e });
@@ -277,18 +283,26 @@ export const handler = async event => {
     res.status(e.status).json({ message: e.message });
   });
   const isBinary = Buffer.isBuffer(res.body);
-  const response = {
+  return {
     statusCode: res.statusCode,
     headers: {
-      ...headers,
       ...Object.fromEntries(res.headers.entries()),
     },
     cookies: res.cookies,
-    body: isBinary ? res.body.toString('base64') : res.body ?? '',
+    body: isBinary ? res.body.toString('base64') : res.body,
+    isBase64Encoded: isBinary,
   };
-  if (isBinary) response.isBase64Encoded = true;
+};
+
+export const handler = async event => {
+  logger.info('EVENT', JSON.stringify(event, null, 2));
+  const { req, res } = createServer(event);
+  const response = await ingress(req, res);
+  logger.info('RESPONSE', JSON.stringify(response, null, 2));
   return response;
 };
 
-// example
-// curl -i -X POST https://dev-serverless.jsx.jp/v1/auth/login --data '{"login":"guest","password":"secret"}' -H 'Content-Type: application/json'
+// preflight
+// curl -i -X OPTIONS https://dev-serverless.jsx.jp/ip -H "Origin: https://example.com" -H "Access-Control-Request-Method: POST"
+// request
+// curl -i -X POST https://dev-serverless.jsx.jp/auth/login --data '{"login":"guest","password":"secret"}' -H 'Content-Type: application/json'
