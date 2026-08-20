@@ -10,7 +10,7 @@ const logger = new Proxy(console, {
 });
 
 const cdkApp = new cdk.App();
-const envName = cdkApp.node.tryGetContext('env');
+const envName = cdkApp.node.tryGetContext('env') ?? '';
 
 const envConfigs = {
   dev: {
@@ -27,14 +27,14 @@ const envConfigs = {
     },
   },
   stg: {
-    account: '123035998684',
+    account: '916921211348',
     region: 'ap-northeast-1',
     gateway: {
-      certificateId: '123f7e65-704e-4395-a3d5-641276b383d0',
+      certificateId: '1c06e554-19c4-4cc8-abf0-4dc84803e2f5',
       domainName: `${envName}-serverless.jsx.jp`,
     },
     front: {
-      certificateId: '123f7e65-704e-4395-a3d5-641276b383d0',
+      certificateId: 'f55e911f-453e-4e27-8569-276156c987fd',
       domainName: `${envName}-front.jsx.jp`,
       bucketName: `${envName}-front-static`,
     },
@@ -44,11 +44,9 @@ const envConfigs = {
 const config = envConfigs[envName];
 if (!config) {
   const envList = Object.keys(envConfigs).join(', ');
-  const e = new Error(
-    `Unknown env '${envName}'. Valid env are: ${envList}`,
-  );
-  logger.error(e.message);
-  throw e;
+  const message = `Unknown env '${envName}'. Valid env are: ${envList}`;
+  logger.error({ message, envName, envList });
+  throw new Error(message);
 }
 
 new AppStack(cdkApp, `${envName}-app`, {

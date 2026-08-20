@@ -4,7 +4,6 @@ import { route as ipRoute } from './route-ip.js';
 import { route as proxyRoute } from './route-proxy.js';
 
 export const serverlessGateway = (stack, gateway) => {
-  const integrationArn = 'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaArn}/invocations';
   const httpApi = new apigwv2.CfnApi(stack, 'HttpApi', {
     name: `${stack.stackName}-api`,
     protocolType: 'HTTP',
@@ -16,14 +15,15 @@ export const serverlessGateway = (stack, gateway) => {
     },
   });
 
+  const integrationArn = 'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaArn}/invocations';
   const sourceArn = cdk.Fn.sub(
     'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiId}/*/*/*', {
       ApiId: httpApi.ref,
     },
   );
 
-  ipRoute(stack, httpApi, integrationArn, sourceArn);
-  proxyRoute(stack, httpApi, integrationArn, sourceArn);
+  ipRoute(stack, { httpApi, integrationArn, sourceArn });
+  proxyRoute(stack, { httpApi, integrationArn, sourceArn });
 
   const httpApiStage = new apigwv2.CfnStage(stack, 'HttpApiStage', {
     apiId: httpApi.ref,

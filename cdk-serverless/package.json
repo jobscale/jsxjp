@@ -7,6 +7,7 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand --coverage --collectCoverage --verbose",
     "lint": "eslint",
     "predeploy": "npm run lint",
+    "bootstrap": "ENV=${ENV:-dev} && cdk bootstrap --context env=$ENV",
     "validate": "ENV=${ENV:-dev} && cdk validate --build --unstable=validate --context env=$ENV",
     "synth": "ENV=${ENV:-dev} && cdk synth --context env=$ENV",
     "diff": "ENV=${ENV:-dev} && cdk diff --context env=$ENV",
