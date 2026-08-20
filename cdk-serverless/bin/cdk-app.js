@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import * as cdk from 'aws-cdk-lib/core';
-import { CdkStack } from '../lib/cdk-stack.js';
+import { AppStack } from '../lib/app-stack.js';
 
 const logger = new Proxy(console, {
   get(target, prop) {
@@ -9,8 +9,8 @@ const logger = new Proxy(console, {
   },
 });
 
-const app = new cdk.App();
-const envName = app.node.tryGetContext('env');
+const cdkApp = new cdk.App();
+const envName = cdkApp.node.tryGetContext('env');
 
 const envConfigs = {
   dev: {
@@ -55,7 +55,7 @@ logger.info({
   stackName: `${envName}-app`,
   envName,
 });
-new CdkStack(app, `${envName}-app`, {
+new AppStack(cdkApp, `${envName}-app`, {
   ...config,
   envName,
   env: {

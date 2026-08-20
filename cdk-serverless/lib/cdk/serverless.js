@@ -22,8 +22,8 @@ export const serverlessGateway = (stack, gateway) => {
     },
   );
 
-  ipRoute(stack, httpApi, envName, integrationArn, sourceArn);
-  proxyRoute(stack, httpApi, envName, integrationArn, sourceArn);
+  ipRoute(stack, httpApi, integrationArn, sourceArn);
+  proxyRoute(stack, httpApi, integrationArn, sourceArn);
 
   const httpApiStage = new apigwv2.CfnStage(stack, 'HttpApiStage', {
     apiId: httpApi.ref,

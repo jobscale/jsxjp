@@ -5,14 +5,14 @@ import * as lambdaNodejs from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as apigwv2 from 'aws-cdk-lib/aws-apigatewayv2';
 import path from 'path';
 
-export const route = (stack, httpApi, envName, integrationArn, sourceArn) => {
+export const route = (stack, httpApi, integrationArn, sourceArn) => {
   const container = new lambdaNodejs.NodejsFunction(stack, 'IpFunction', {
     functionName: `${stack.stackName}-ip`,
     runtime: lambda.Runtime.NODEJS_LATEST,
     entry: path.join(process.cwd(), 'lib', 'functions', 'ip', 'index.js'),
     handler: 'handler',
     environment: {
-      ENV: envName,
+      ENV: stack.appContext.envName,
     },
     bundling: {
       externalModules: ['@aws-sdk/*'],

@@ -5,7 +5,7 @@ import * as lambdaNodejs from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as apigwv2 from 'aws-cdk-lib/aws-apigatewayv2';
 import path from 'path';
 
-export const route = (stack, httpApi, envName, integrationArn, sourceArn) => {
+export const route = (stack, httpApi, integrationArn, sourceArn) => {
   const container = new lambdaNodejs.NodejsFunction(stack, 'ProxyFunction', {
     functionName: `${stack.stackName}-proxy`,
     runtime: lambda.Runtime.NODEJS_LATEST,
@@ -14,7 +14,7 @@ export const route = (stack, httpApi, envName, integrationArn, sourceArn) => {
     timeout: cdk.Duration.seconds(15),
     memorySize: 512,
     environment: {
-      ENV: envName,
+      ENV: stack.appContext.envName,
       NODE_OPTIONS: '--enable-source-maps',
     },
     bundling: {
