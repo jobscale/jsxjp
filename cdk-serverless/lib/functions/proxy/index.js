@@ -282,7 +282,7 @@ const ingress = async (req, res) => {
     if (!e.status) e.status = 500;
     res.status(e.status).json({ message: e.message });
   });
-  const isBinary = Buffer.isBuffer(res.body);
+  const isBinary = Buffer.isBuffer(res.body) ? true : undefined;
   return {
     statusCode: res.statusCode,
     headers: {
