@@ -51,10 +51,6 @@ if (!config) {
   throw e;
 }
 
-logger.info({
-  stackName: `${envName}-app`,
-  envName,
-});
 new AppStack(cdkApp, `${envName}-app`, {
   ...config,
   envName,

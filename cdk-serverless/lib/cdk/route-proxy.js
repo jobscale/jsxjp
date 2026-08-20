@@ -14,7 +14,7 @@ export const route = (stack, httpApi, integrationArn, sourceArn) => {
     timeout: cdk.Duration.seconds(15),
     memorySize: 512,
     environment: {
-      ENV: stack.appContext.envName,
+      ENV: stack.context.envName,
       NODE_OPTIONS: '--enable-source-maps',
     },
     bundling: {

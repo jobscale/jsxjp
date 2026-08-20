@@ -12,7 +12,7 @@ export const route = (stack, httpApi, integrationArn, sourceArn) => {
     entry: path.join(process.cwd(), 'lib', 'functions', 'ip', 'index.js'),
     handler: 'handler',
     environment: {
-      ENV: stack.appContext.envName,
+      ENV: stack.context.envName,
     },
     bundling: {
       externalModules: ['@aws-sdk/*'],
