@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import * as cdk from 'aws-cdk-lib/core';
-import { CdkServerlessStack } from '../lib/cdk-serverless-stack.js';
+import { CdkStack } from '../lib/cdk-stack.js';
 
 const logger = new Proxy(console, {
   get(target, prop) {
@@ -15,22 +15,28 @@ const envName = app.node.tryGetContext('env');
 const envConfigs = {
   dev: {
     account: '393035998684',
-    certificateId: '9d6f7e65-704e-4395-a3d5-641276b383d0',
-    domainName: `${envName}-serverless.jsx.jp`,
+    region: 'us-east-1',
+    gateway: {
+      certificateId: '9d6f7e65-704e-4395-a3d5-641276b383d0',
+      domainName: `${envName}-serverless.jsx.jp`,
+    },
     front: {
       certificateId: '9d6f7e65-704e-4395-a3d5-641276b383d0',
       domainName: `${envName}-front.jsx.jp`,
-      bucketName: `${envName}-static-content-393035998684`,
+      bucketName: `${envName}-front-static`,
     },
   },
   stg: {
     account: '123035998684',
-    certificateId: '123f7e65-704e-4395-a3d5-641276b383d0',
-    domainName: `${envName}-serverless.jsx.jp`,
+    region: 'ap-northeast-1',
+    gateway: {
+      certificateId: '123f7e65-704e-4395-a3d5-641276b383d0',
+      domainName: `${envName}-serverless.jsx.jp`,
+    },
     front: {
       certificateId: '123f7e65-704e-4395-a3d5-641276b383d0',
       domainName: `${envName}-front.jsx.jp`,
-      bucketName: `${envName}-static-content-123035998684`,
+      bucketName: `${envName}-front-static`,
     },
   },
 };
@@ -46,13 +52,14 @@ if (!config) {
 }
 
 logger.info({
-  stackName: `${envName}-cdk-serverless`,
+  stackName: `${envName}-app`,
   envName,
 });
-new CdkServerlessStack(app, `${envName}-cdk-serverless`, {
+new CdkStack(app, `${envName}-app`, {
   ...config,
   envName,
   env: {
     account: config.account,
+    region: config.region,
   },
 });

@@ -7,7 +7,7 @@ import * as path from 'node:path';
 
 export const frontCache = (stack, front) => {
   const frontBucket = new s3.Bucket(stack, 'FrontBucket', {
-    bucketName: front.bucketName,
+    bucketName: `${front.bucketName}-${cdk.Aws.ACCOUNT_ID}-${cdk.Aws.REGION}`,
     blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
     encryption: s3.BucketEncryption.S3_MANAGED,
     enforceSSL: true,

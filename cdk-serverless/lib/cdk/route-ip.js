@@ -7,6 +7,7 @@ import path from 'path';
 
 export const route = (stack, httpApi, envName, integrationArn, sourceArn) => {
   const container = new lambdaNodejs.NodejsFunction(stack, 'IpFunction', {
+    functionName: `${stack.stackName}-ip`,
     runtime: lambda.Runtime.NODEJS_LATEST,
     entry: path.join(process.cwd(), 'lib', 'functions', 'ip', 'index.js'),
     handler: 'handler',
