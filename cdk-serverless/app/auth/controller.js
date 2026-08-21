@@ -26,7 +26,7 @@ export class Controller {
       const { cookies: { redirectTo } } = req;
       res.clearCookie('redirectTo');
       const ignore = [
-        '/auth', '/account/password', '/favicon.ico', '', undefined,
+        '/v1/auth/', '/v1/account/password/', '/favicon.ico', '', undefined,
       ];
       res.json({ href: ignore.indexOf(redirectTo) === -1 ? redirectTo : '/' });
     })
@@ -39,7 +39,7 @@ export class Controller {
 
   logout(req, res) {
     res.clearCookie('token');
-    res.redirect('/auth');
+    res.redirect('/v1/auth/');
   }
 
   sign(req, res) {
@@ -100,7 +100,7 @@ export class Controller {
     .catch(e => {
       logger.info({ ...e });
       if (req.method === 'GET') {
-        res.redirect('/auth');
+        res.redirect('/v1/auth/');
         return;
       }
       res.status(403).json({ message: 'access denied' });

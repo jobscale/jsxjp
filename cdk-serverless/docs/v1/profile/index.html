@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="charset" content="utf-8">
+  <meta name="description" content="my profile card site with laravel5. powerd by jsx.jp">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome</title>
+  <link rel="icon" type="image/svg" href="/v1/assets/img/okutani.svg">
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&family=Monomaniac+One&family=Tangerine:wght@400;700');
+
+:root {
+  color-scheme: light dark;
+  font-family: 'Mochiy Pop P One', 'Noto Sans Math', sans-serif;
+}
+
+* {
+  font-size: 4vmin;
+  border: none;
+  background: transparent;
+}
+
+body {
+  margin: 0;
+}
+
+#app {
+  height: 100%;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button {
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+button:hover {
+  opacity: 1;
+}
+
+.circle-area {
+  margin: 20em 0 1em 0;
+}
+
+.circle-button {
+  width: 2em;
+  height: 2em;
+  padding: 0.1em;
+  background-color: #ef8;
+  border: none;
+  border-radius: 1.5em;
+  box-shadow: 0 0.1em 0.1em rgba(186, 229, 137, 0.4);
+  transition: all 0.3s ease 0s;
+  outline: none;
+}
+
+.circle-button:hover {
+  background-color: #2EE59D;
+  box-shadow: 0 0.2em 1em rgba(46, 229, 157, 0.4);
+}
+
+.circle-button img {
+  width: 100%;
+}
+
+.container {
+  text-align: center;
+}
+
+.title {
+  font-weight: normal;
+  font-size: 1.8rem;
+}
+
+.title small {
+  font-size: 1.2rem;
+}
+
+.title strong {
+  font-size: 2rem;
+  font-weight: Ultra-Bold;
+}
+
+.comment {
+  font-family: 'Open Sans Condensed';
+  font-size: 0.7rem;
+}
+
+.mail {
+  margin: 1em 0 0 0;
+  font-family: 'Tangerine';
+  font-size: 3rem;
+  font-weight: normal;
+}
+
+.mail small {
+  font-size: 2rem;
+}
+
+.phone {
+  font-family: 'Tangerine';
+  font-size: 1.8rem;
+  margin-top: 0.3em;
+}
+
+.phone small {
+  font-size: 1.6rem;
+}
+
+.spacer {
+  min-height: 2rem;
+}
+
+.link {
+  display:flex;
+  justify-content: space-evenly;
+}
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="container">
+      <section>
+        <div class="title mail">𝓞<small>𝓴𝓾𝓽𝓪𝓷𝓲</small> 𝓢<small>𝓱𝓲𝓰𝓮𝓴𝓲</small></div>
+        <div class="comment">𝓘 𝓳𝓾𝓼𝓽 𝔀𝓪𝓷𝓽 𝓽𝓸 𝓱𝓪𝓿𝓮 𝓯𝓾𝓷</div>
+        <div class="spacer"></div>
+        <div class="mail">jobscale<small> @ </small>nyasan.com</div>
+        <div class="phone"><small>0</small>8<small>0 - 44</small>8<small>0 - 00</small>8<small>0</small></div>
+        <div class="spacer"></div>
+      </section>
+      <section>
+        <button class="command" @click="onColorScheme">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun-moon-icon lucide-sun-moon"><path d="M12 2v2"/><path d="M14.837 16.385a6 6 0 1 1-7.223-7.222c.624-.147.97.66.715 1.248a4 4 0 0 0 5.26 5.259c.589-.255 1.396.09 1.248.715"/><path d="M16 12a4 4 0 0 0-4-4"/><path d="m19 5-1.256 1.256"/><path d="M20 12h2"/></svg>
+        </button>
+      </section>
+    </div>
+  </div>
+  <script defer type="module" src="index.js"></script>
+  <section class="circle-area">
+    <div class="link">
+      <a href="tel:"><button class="circle-button"><img src="../assets/img/okutan.svg"></button></a>
+      <a href="tel:"><button class="circle-button"><img src="../assets/img/okutani.svg"></button></a>
+    </div>
+    <footer class="powered-footer"><a href="https://jsx.jp" target="_blank">powered by jsx.jp</a></footer>
+  </section>
+</body>
+</html>

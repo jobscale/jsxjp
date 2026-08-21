@@ -3,7 +3,8 @@ import * as apigwv2 from 'aws-cdk-lib/aws-apigatewayv2';
 import { route as ipRoute } from './route-ip.js';
 import { route as proxyRoute } from './route-proxy.js';
 
-export const serverlessGateway = (stack, gateway) => {
+export const serverlessGateway = stack => {
+  const { gateway } = stack.context;
   const httpApi = new apigwv2.CfnApi(stack, 'HttpApi', {
     name: `${stack.stackName}-api`,
     protocolType: 'HTTP',
@@ -51,16 +52,26 @@ export const serverlessGateway = (stack, gateway) => {
   });
   httpApiApiMapping.node.addDependency(httpApiStage);
 
-  new cdk.CfnOutput(stack, 'HttpApiEndpoint', {
+  new cdk.CfnOutput(stack, 'Serverless HttpApiEndpoint', {
     value: httpApi.attrApiEndpoint,
     description: 'HTTP API endpoint',
   });
-  new cdk.CfnOutput(stack, 'CustomDomain CNAME', {
+  new cdk.CfnOutput(stack, 'Serverless CustomDomain CNAME', {
     value: httpApiDomainName.attrRegionalDomainName,
     description: 'Custom domain CNAME',
   });
-  new cdk.CfnOutput(stack, 'CustomDomainEndpoint', {
+  new cdk.CfnOutput(stack, 'Serverless CustomDomain Endpoint', {
     value: cdk.Fn.join('', ['https://', httpApiDomainName.domainName]),
     description: 'Custom domain endpoint',
   });
+  new cdk.CfnOutput(stack, 'Serverless Domainname', {
+    value: cdk.Fn.join(' ', [
+      '-e TYPE=CNAME',
+      `-e DOMAIN="${httpApiDomainName.domainName.replace('.jsx.jp', '')}"`,
+      `-e R_DATA="${httpApiDomainName.attrRegionalDomainName}."`,
+    ]),
+    description: 'Front custom domain CNAME',
+  });
+
+  return { httpApiDomainName };
 };

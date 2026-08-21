@@ -17,14 +17,17 @@ export class AppStack extends cdk.Stack {
       excludeResourceTypes: ['AWS::ApiGatewayV2::Api'],
     });
 
-    this.context = { envName };
+    this.context = {
+      envName,
+      ...stackProps,
+    };
     logger.info({
       stackName: this.stackName,
       env: this.env,
       context: this.context,
     });
 
-    serverlessGateway(this, stackProps.gateway);
-    frontCache(this, stackProps.front);
+    serverlessGateway(this);
+    frontCache(this);
   }
 }

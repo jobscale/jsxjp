@@ -27,7 +27,7 @@ export class Auth {
     }
     const { redirectTo } = req.cookies;
     res.clearCookie('redirectTo');
-    const ignore = ['/auth', '/account/password', '/favicon.ico', '', undefined];
+    const ignore = ['/v1/auth/', '/v1/account/password/', '/favicon.ico', '', undefined];
     res.json({ href: ignore.indexOf(redirectTo) === -1 ? redirectTo : '/' });
   }
 
@@ -38,6 +38,12 @@ export class Auth {
     }
     const result = await service.totp(req.body);
     res.json(result);
+  }
+
+  logout(req, res) {
+    res.clearCookie('token');
+    res.writeHead(302, { Location: '/v1/auth/' });
+    res.end();
   }
 
   sign(req, res) {

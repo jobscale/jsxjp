@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/v1/css/menu.css">
+  <title>Contact - jsx.jp</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f6f6;
+      --card: #ffffff;
+      --text: #111111;
+      --muted: #666666;
+      --border: #dddddd;
+      --primary: #2563eb;
+      --primary-text: #ffffff;
+      --input-bg: #ffffff;
+      --input-border: #cccccc;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f1419;
+        --card: #111827;
+        --text: #e5e7eb;
+        --muted: #9ca3af;
+        --border: #1f2937;
+        --primary: #3b82f6;
+        --primary-text: #0b1220;
+        --input-bg: #0b1220;
+        --input-border: #2b3645;
+        --shadow: none;
+      }
+    }
+
+    html,
+    body {
+      height: 100%;
+      background: var(--bg);
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+      color: var(--text);
+    }
+
+    /* Center the form vertically and horizontally */
+    .container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .img-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .img-wrap img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+    }
+
+    form {
+      display: grid;
+      gap: 1em;
+    }
+
+    label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+      display: inline-block;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    select,
+    input[type="text"],
+    input[type="number"],
+    [contenteditable="true"] {
+      width: 95%;
+      padding: 10px 12px;
+      font-size: 1rem;
+      color: var(--text);
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    input[inputmode="numeric"] {
+      max-width: 5em;
+    }
+    select {
+      max-width: 10em;
+      margin-bottom: 1em;
+    }
+
+    select:focus,
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    [contenteditable="true"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 20%, transparent);
+    }
+
+    [contenteditable="true"] {
+      min-height: 5em;
+      max-height: 15em;
+      overflow-y: auto;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
+
+    button[type="submit"] {
+      appearance: none;
+      border: none;
+      border-radius: 0.5em;
+      background: var(--input-bg);
+      color: var(--text);
+      padding: 1em 3em;
+      cursor: pointer;
+      transition: filter 0.15s ease, opacity 0.15s ease;
+    }
+
+    button[type="submit"]:focus,
+    button[type="submit"]:hover {
+      background: var(--primary);
+      outline: 2px solid var(--primary);
+    }
+
+    button[type="submit"]:active {
+      opacity: 0.9;
+    }
+
+  .lang-content {
+    display: none;
+  }
+  :root:has(#language option[value="ja"]:checked) .ja,
+  :root:has(#language option[value="en"]:checked) .en {
+    display: initial;
+  }
+
+  .blink-bg {
+    padding: 1em;
+    text-align: center;
+    background-color: #222;
+    border-radius: 0.5em;
+    animation: fade-bg 1.5s infinite;
+  }
+
+  @keyframes fade-bg {
+    0%   { opacity: 1; }
+    50%  { opacity: 0.3; }
+    100% { opacity: 1; }
+  }
+
+  .loading {
+    position: fixed;
+    opacity: 0.7;
+    background: #223;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .spinner {
+    width: 8em;
+    height: 8em;
+    border: 1em solid #ccc;
+    border-top: 1em solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  summary {
+    color: var(--muted);
+  }
+  summary, details {
+    margin-bottom: 1rem;
+  }
+  </style>
+</head>
+
+<body>
+  <div id="app" class="nav-main">
+    <div class="container">
+      <div class="card">
+        <div class="img-wrap">
+          <img id="captcha" :src="image" />
+        </div>
+
+        <div class="field">
+          <label class="right" for="language">
+            <span class="lang-content en">Language</span>
+            <span class="lang-content ja">表示言語</span>
+          </label>
+          <select id="language" name="language">
+            <option value="en" selected>English</option>
+            <option value="ja">日本語</option>
+          </select>
+        </div>
+
+        <section>
+          <details>
+            <summary>
+              <div class="lang-content en">Terms of Use</div>
+              <div class="lang-content ja">利用規約</div>
+            </summary>
+            <div class="lang-content en">
+              <div>
+                <div>Prohibited Actions</div>
+                <ul>
+                  <li>Any behavior that violates public order or moral standards is strictly prohibited.</li>
+                  <li>Offensive, abusive, or antisocial use of this service is not allowed.</li>
+                </ul>
+              </div>
+              <div>
+                <div>Disclaimer</div>
+                <ul>
+                  <li>We are not responsible for any issues, damages, or disputes that may arise from its use.</li>
+                  <li>We do not accept inquiries or provide individual responses under any circumstances.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="lang-content ja">
+              <div>
+                <div>禁止事項</div>
+                <ul>
+                  <li>公序良俗に反する行為は禁止します。</li>
+                  <li>攻撃的・暴力的・反社会的な利用は禁止します。</li>
+                </ul>
+              </div>
+              <div>
+                <div>免責事項</div>
+                <ul>
+                  <li>利用によって生じたいかなる問題・損害・トラブルについても、当方は一切責任を負いません。</li>
+                  <li>いかなるお問い合わせにも対応しておりません。</li>
+                </ul>
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <form @submit.prevent="onSubmit">
+          <div class="field">
+            <label class="lang-content en" for="digit">Image Numeric</label>
+            <label class="lang-content ja" for="digit">画像の数字</label>
+            <input v-model="digit" name="digit" type="text" inputmode="numeric" pattern="\d{4}" maxlength="4" required autocomplete="new-password" />
+          </div>
+
+          <div class="field">
+            <label class="lang-content en" for="subject">Your Name</label>
+            <label class="lang-content ja" for="subject">お名前</label>
+            <input v-model="subject" name="subject" type="text" required />
+          </div>
+
+          <div class="field">
+            <label class="lang-content en" for="text">Content</label>
+            <label class="lang-content ja" for="text">内容</label>
+            <div name="text" contenteditable="true"
+              :textContent="text"
+              @input="text = $event.currentTarget.innerText">
+            </div>
+          </div>
+
+          <div v-show="status" class="blink-bg">{{ status }}</div>
+          <div class="actions">
+            <button type="submit" class="lang-content en">Submit</button>
+            <button type="submit" class="lang-content ja">送信</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+    <div v-show="loading" class="loading">
+      <div class="spinner"></div>
+    </div>
+  </div>
+  <script defer type="module" src="index.js"></script>
+  <script defer type="module" src="/v1/js/menu.js"></script>
+</body>
+
+</html>

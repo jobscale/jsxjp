@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/v1/css/style.css">
+    <link rel="stylesheet" href="/v1/css/menu.css">
+    <title>User List - jsx.jp</title>
+  </head>
+
+  <body>
+    <div id="app" class="nav-main">
+      <div v-if="signed" class="container">
+        <div>
+          <h2>List of User</h2>
+        </div>
+        <section>
+          <div class="list-wrapper">
+            <div class="ctl-area">
+              <label>
+                <div class="pos-abs tag admin"></div>
+                <input type="checkbox" id="admin-box" checked />
+              </label>
+              <label>
+                <div class="pos-abs tag staff"></div>
+                <input type="checkbox" id="staff-box" checked />
+              </label>
+              <label>
+                <div class="pos-abs tag guest"></div>
+                <input type="checkbox" id="guest-box" checked />
+              </label>
+              <button @click.prevent="onFind" class="btn-middle" title="Refresh">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw-icon lucide-rotate-ccw"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              </button>
+            </div>
+            <div class="flex-div">
+              <div v-for="item of items" class="note">
+                <div :title="item.caption">{{ item.id }}</div>
+                <div class="row2">
+                  <span class="inb">{{ showTS(item.registerAt) || '-' }}</span>
+                  <span class="inb">{{ showTS(item.lastAccess) || '-' }}</span>
+                </div>
+                <div class="row2">
+                  <span class="inb">{{ showTS(item.deletedAt) || 'Allow' }}</span>
+                  <span class="inb">{{ item.count }}</span>
+                </div>
+                <div class="one-line">
+                  {{ item.html || item.login }}
+                </div>
+                <div class="btn-area">
+                  <div class="tag" :class="item.tag"></div>
+                  <a v-if="item.html && !item.deletedAt" :href="`/s/${item.id}`" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" /></svg>
+                  </a>
+                  <button @click.prevent="onReset" class="button" :data-id="item.id">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock-open-icon lucide-lock-open"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+                  </button>
+                  <button @click.prevent="onRemove" class="button btn-remove" :data-id="item.id">
+                    <template v-if="!item.deletedAt">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    </template>
+                    <template v-else>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flame-kindling-icon lucide-flame-kindling"><path d="M12 2c1 3 2.5 3.5 3.5 4.5A5 5 0 0 1 17 10a5 5 0 1 1-10 0c0-.3 0-.6.1-.9a2 2 0 1 0 3.3-2C8 4.5 11 2 12 2Z"/><path d="m5 22 14-4"/><path d="m5 18 14 4"/></svg>
+                    </template>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section>
+          <button @click="onColorScheme" class="button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun-moon-icon lucide-sun-moon"><path d="M12 2v2"/><path d="M14.837 16.385a6 6 0 1 1-7.223-7.222c.624-.147.97.66.715 1.248a4 4 0 0 0 5.26 5.259c.589-.255 1.396.09 1.248.715"/><path d="M16 12a4 4 0 0 0-4-4"/><path d="m19 5-1.256 1.256"/><path d="M20 12h2"/></svg>
+          </button>
+        </section>
+        <footer class="powered-footer"><a href="https://jsx.jp" target="_blank">powered by jsx.jp</a></footer>
+      </div>
+      <div v-show="confirmation.show" class="confirmation">
+        <div class="confirmation-container">
+          <div class="confirmation-body">
+            <div class="confirmation-title">{{ confirmation.title }}</div>
+            <div class="confirmation-message" v-html="confirmation.message"></div>
+          </div>
+          <hr>
+          <div class="confirmation-button">
+            <button @click="confirmation.ok" class="btn-ok">OK</button>
+            <button @click="confirmation.cancel" class="btn-cancel">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div v-show="loading" class="loading">
+        <div class="loader">
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+      </div>
+    </div>
+    <script defer type="module" src="index.js"></script>
+    <script defer type="module" src="/v1/js/menu.js"></script>
+  </body>
+</html>

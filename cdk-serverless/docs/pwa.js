@@ -97,7 +97,7 @@ class PWAClient {
   }
 
   async preloadContext() {
-    const arrayBuffer = await fetch('/assets/mp3/notify.mp3')
+    const arrayBuffer = await fetch('/v1/assets/mp3/notify.mp3')
     .then(res => res.arrayBuffer())
     .catch(() => new ArrayBuffer());
     this.audioContext = new AudioContext();

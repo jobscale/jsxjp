@@ -84,6 +84,10 @@ const router = async (req, res) => {
     await auth.totp(req, res);
     return;
   }
+  if (rawRoute === 'GET /auth/logout') {
+    auth.logout(req, res);
+    return;
+  }
   if (rawRoute === 'POST /account/password') {
     await account.password(req, res);
     return;
