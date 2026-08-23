@@ -25,10 +25,10 @@ const mockAuthController = {
   verify: jest.fn(),
 };
 
-jest.unstable_mockModule('../app/db.js', () => ({ db: mockDb }));
+jest.unstable_mockModule('../cdk-app/app/db.js', () => ({ db: mockDb }));
 jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
-jest.unstable_mockModule('../app/auth/service.js', () => ({ service: mockAuthService }));
-jest.unstable_mockModule('../app/auth/controller.js', () => ({ controller: mockAuthController }));
+jest.unstable_mockModule('../cdk-app/app/auth/service.js', () => ({ service: mockAuthService }));
+jest.unstable_mockModule('../cdk-app/app/auth/controller.js', () => ({ controller: mockAuthController }));
 
 // Mock other routes to avoid loading them and their dependencies
 const mockRouter = {
@@ -38,15 +38,15 @@ const mockRouter = {
     add: jest.fn(),
   },
 };
-jest.unstable_mockModule('../app/ip/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/api/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/account/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/user/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/template/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/plan-pulse/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/picts/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/ip/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/api/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/account/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/user/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/template/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/plan-pulse/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/picts/route.js', () => ({ route: mockRouter }));
 
-const { app } = await import('../app/index.js');
+const { app } = await import('../cdk-app/app/index.js');
 
 describe('Shorten Module Tests', () => {
   beforeEach(() => {

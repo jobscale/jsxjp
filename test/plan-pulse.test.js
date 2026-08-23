@@ -17,7 +17,7 @@ const mockLogger = {
   debug: jest.fn(),
 };
 
-jest.unstable_mockModule('../app/s3.js', () => ({ db: mockDb }));
+jest.unstable_mockModule('../cdk-app/app/s3.js', () => ({ db: mockDb }));
 jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
 
 // Mock other routes
@@ -26,16 +26,16 @@ const mockRouter = {
     routes: [],
   },
 };
-jest.unstable_mockModule('../app/shorten/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/ip/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/api/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/account/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/user/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/template/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/picts/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/auth/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/shorten/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/ip/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/api/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/account/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/user/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/template/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/picts/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/auth/route.js', () => ({ route: mockRouter }));
 
-const { app } = await import('../app/index.js');
+const { app } = await import('../cdk-app/app/index.js');
 
 describe('Plan Pulse Routing', () => {
   beforeEach(() => {

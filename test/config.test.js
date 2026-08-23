@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import createHttpError from 'http-errors';
-import { Service } from '../app/config/service.js';
-import { db } from '../app/db.js';
-import { encode } from '../app/js-proxy.js';
+import { Service } from '../cdk-app/app/config/service.js';
+import { db } from '../cdk-app/app/db.js';
+import { encode } from '../cdk-app/app/js-proxy.js';
 
 // Mock the methods
 db.setValue = jest.fn();

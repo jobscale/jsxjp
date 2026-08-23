@@ -17,7 +17,7 @@ describe('Template Module', () => {
   beforeAll(async () => {
     process.env.ENV = 'test';
     request = (await import('supertest')).default;
-    const module = await import('../app/index.js');
+    const module = await import('../cdk-app/app/index.js');
     app = module.app;
   });
 

@@ -45,11 +45,11 @@ const mockNodemailer = {
   }),
 };
 
-jest.unstable_mockModule('../app/db.js', () => ({ db: mockDb }));
+jest.unstable_mockModule('../cdk-app/app/db.js', () => ({ db: mockDb }));
 jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
-jest.unstable_mockModule('../app/store.js', () => ({ store: mockStore }));
-jest.unstable_mockModule('../app/config/service.js', () => ({ service: mockConfigService }));
-jest.unstable_mockModule('../app/auth/service.js', () => ({ service: mockAuthService }));
+jest.unstable_mockModule('../cdk-app/app/store.js', () => ({ store: mockStore }));
+jest.unstable_mockModule('../cdk-app/app/config/service.js', () => ({ service: mockConfigService }));
+jest.unstable_mockModule('../cdk-app/app/auth/service.js', () => ({ service: mockAuthService }));
 jest.unstable_mockModule('@jobscale/slack', () => ({ Slack: mockSlack }));
 jest.unstable_mockModule('web-push', () => ({ default: mockWebPush }));
 jest.unstable_mockModule('nodemailer', () => ({ default: mockNodemailer }));
@@ -60,16 +60,16 @@ const mockRouter = {
     routes: [],
   },
 };
-jest.unstable_mockModule('../app/shorten/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/ip/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/auth/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/account/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/user/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/template/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/plan-pulse/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/picts/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/shorten/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/ip/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/auth/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/account/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/user/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/template/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/plan-pulse/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/picts/route.js', () => ({ route: mockRouter }));
 
-const { app } = await import('../app/index.js');
+const { app } = await import('../cdk-app/app/index.js');
 
 describe('API Routing via app/index.js', () => {
   beforeEach(() => {

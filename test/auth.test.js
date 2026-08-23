@@ -19,9 +19,9 @@ const mockApiService = {
   slack: jest.fn(),
 };
 
-jest.unstable_mockModule('../app/db.js', () => ({ db: mockDb }));
+jest.unstable_mockModule('../cdk-app/app/db.js', () => ({ db: mockDb }));
 jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
-jest.unstable_mockModule('../app/api/service.js', () => ({ service: mockApiService }));
+jest.unstable_mockModule('../cdk-app/app/api/service.js', () => ({ service: mockApiService }));
 
 // Mock other routes that might be loaded by app/index.js
 const mockRouter = {
@@ -29,17 +29,17 @@ const mockRouter = {
     routes: [],
   },
 };
-jest.unstable_mockModule('../app/shorten/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/ip/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/api/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/account/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/user/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/template/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/plan-pulse/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../app/picts/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/shorten/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/ip/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/api/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/account/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/user/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/template/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/plan-pulse/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../cdk-app/app/picts/route.js', () => ({ route: mockRouter }));
 
-const { app } = await import('../app/index.js');
-const { auth } = await import('../app/auth/index.js');
+const { app } = await import('../cdk-app/app/index.js');
+const { auth } = await import('../cdk-app/app/auth/index.js');
 
 const JWT_SECRET = 'node-express-ejs';
 const TOTP_SECRET = 'JSXJPX6EY4BMPXIRSSR74';
@@ -160,7 +160,7 @@ describe('Auth Routing via app/index.js', () => {
       .set('Cookie', `token=${token}`);
 
       expect(res.statusCode).toBe(307);
-      expect(res.headers.location).toBe('/auth');
+      expect(res.headers.location).toBe('/v1/auth/');
       // Check if Set-Cookie contains token=; or similar to clear it
       // actually controller does res.clearCookie('token')
     });
