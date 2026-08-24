@@ -102,14 +102,19 @@ describe('Picts Routing via app/index.js', () => {
     it('should upload files', async () => {
       mockS3Client.send.mockResolvedValue({});
 
+      // Jest ESM cannot intercept sharp inside picts/service.js; use a real 1x1 PNG
+      const minimalPng = Buffer.from(
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+        'base64',
+      );
+
       const res = await request(app)
       .post('/picts/upload')
       .set('Cookie', 'token=mock-token')
-      .attach('files', Buffer.from('file-content'), 'test.jpg');
+      .attach('files', minimalPng, 'test.png');
 
       expect(res.statusCode).toBe(200);
       expect(res.body).toEqual({ ok: true });
-      expect(mockSharp).toHaveBeenCalled();
       // Should invoke PutObjectCommand twice (original + thumbnail) per file
       expect(mockS3Client.send).toHaveBeenCalledTimes(2);
       expect(mockS3Client.send).toHaveBeenCalledWith(expect.any(PutObjectCommand));

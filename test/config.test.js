@@ -1,5 +1,4 @@
 import { jest } from '@jest/globals';
-import createHttpError from 'http-errors';
 import { Service } from '../cdk-app/app/config/service.js';
 import { db } from '../cdk-app/app/db.js';
 import { encode } from '../cdk-app/app/js-proxy.js';
@@ -36,13 +35,13 @@ describe('Service', () => {
     it('should throw 400 if name is missing', async () => {
       const rest = { data: 'testData' };
 
-      await expect(service.register(rest)).rejects.toThrow(createHttpError(400));
+      await expect(service.register(rest)).rejects.toMatchObject({ status: 400 });
     });
 
     it('should throw 400 if data is missing', async () => {
       const rest = { name: 'testConfig' };
 
-      await expect(service.register(rest)).rejects.toThrow(createHttpError(400));
+      await expect(service.register(rest)).rejects.toMatchObject({ status: 400 });
     });
   });
 
@@ -61,7 +60,7 @@ describe('Service', () => {
     it('should throw 400 if name is missing', async () => {
       const params = {};
 
-      await expect(service.findOne(params)).rejects.toThrow(createHttpError(400));
+      await expect(service.findOne(params)).rejects.toMatchObject({ status: 400 });
     });
   });
 
@@ -78,7 +77,7 @@ describe('Service', () => {
     it('should throw 400 if key is missing', async () => {
       const params = {};
 
-      await expect(service.remove(params)).rejects.toThrow(createHttpError(400));
+      await expect(service.remove(params)).rejects.toMatchObject({ status: 400 });
     });
   });
 
