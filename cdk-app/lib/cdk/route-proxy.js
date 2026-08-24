@@ -1,5 +1,4 @@
 import * as cdk from 'aws-cdk-lib/core';
-import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as lambdaNodejs from 'aws-cdk-lib/aws-lambda-nodejs';
@@ -7,13 +6,6 @@ import * as apigwv2 from 'aws-cdk-lib/aws-apigatewayv2';
 import path from 'path';
 
 export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
-  const { vpc } = stack.context;
-
-  const securityGroup = new ec2.SecurityGroup(stack, 'ProxyFunctionSecurityGroup', {
-    vpc,
-    allowAllOutbound: true,
-  });
-
   const container = new lambdaNodejs.NodejsFunction(stack, 'ProxyFunction', {
     functionName: `${stack.stackName}-proxy`,
     runtime: lambda.Runtime.NODEJS_LATEST,
@@ -21,12 +13,6 @@ export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
     handler: 'handler',
     timeout: cdk.Duration.seconds(28),
     memorySize: 256,
-    vpc,
-    vpcSubnets: {
-      subnetType: ec2.SubnetType.PUBLIC,
-    },
-    securityGroups: [securityGroup],
-    allowPublicSubnet: true,
     environment: {
       ENV: stack.context.envName,
       NODE_OPTIONS: '--enable-source-maps',

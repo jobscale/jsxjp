@@ -1,5 +1,4 @@
 import * as cdk from 'aws-cdk-lib/core';
-import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import { serverlessGateway } from './cdk/serverless.js';
 import { frontCache } from './cdk/front.js';
 
@@ -26,15 +25,6 @@ export class AppStack extends cdk.Stack {
       stackName: this.stackName,
       env: this.env,
       context: this.context,
-    });
-
-    this.context.vpc = new ec2.Vpc(this, 'AppVpc', {
-      maxAzs: 2,
-      natGateways: 0,
-      subnetConfiguration: [{
-        name: 'public',
-        subnetType: ec2.SubnetType.PUBLIC,
-      }],
     });
 
     serverlessGateway(this);

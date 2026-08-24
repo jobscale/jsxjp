@@ -45,7 +45,7 @@ let self = {
     if (self.url.length < 20) return;
     self.loading = true;
     logger.info('url', self.url);
-    const params = ['register', {
+    const params = ['/s/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ html: self.url }),

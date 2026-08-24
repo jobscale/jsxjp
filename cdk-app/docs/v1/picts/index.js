@@ -163,7 +163,7 @@ let self = {
   },
 
   async find() {
-    const params = ['find', {
+    const params = ['/picts/find', {
       method: 'POST',
       redirect: 'error',
     }];
@@ -194,7 +194,7 @@ let self = {
   },
 
   async getData(list) {
-    const params = ['getData', {
+    const params = ['/picts/getData', {
       method: 'POST',
       redirect: 'error',
       headers: { 'Content-Type': 'application/json' },
@@ -209,7 +209,7 @@ let self = {
   },
 
   async putData(dataset) {
-    const params = ['putData', {
+    const params = ['/picts/putData', {
       method: 'POST',
       redirect: 'error',
       headers: { 'Content-Type': 'application/json' },
@@ -308,7 +308,7 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
   async upload(file) {
     const formData = new FormData();
     formData.append('files', file);
-    const params = ['upload', {
+    const params = ['/picts/upload', {
       method: 'POST',
       redirect: 'error',
       body: formData,
@@ -352,7 +352,7 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
     if (!self.preview) return;
     self.loading = true;
     const { preview } = self;
-    const params = ['remove', {
+    const params = ['/picts/remove', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: preview.name }),

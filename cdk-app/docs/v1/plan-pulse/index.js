@@ -28,7 +28,7 @@ let self = {
     if (!self.person.personId) return;
 
     self.loading = true;
-    const params = ['removePerson', {
+    const params = ['/plan-pulse/removePerson', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -57,7 +57,7 @@ let self = {
     for (let i = 0; i < self.hub.plan.length; i++) {
       if (!self.person.plan[i]) self.person.plan[i] = '0';
     }
-    const params = ['putPerson', {
+    const params = ['/plan-pulse/putPerson', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -91,7 +91,7 @@ let self = {
     self.hubId = hubId;
     self.mode = 'hub';
     self.loading = true;
-    const params = ['hub', {
+    const params = ['/plan-pulse/hub', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ hubId: self.hubId }),
@@ -172,7 +172,7 @@ let self = {
     self.loading = true;
     logger.info('plan', plan);
     self.hub.plan = plan;
-    const params = ['putHub', {
+    const params = ['/plan-pulse/putHub', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
