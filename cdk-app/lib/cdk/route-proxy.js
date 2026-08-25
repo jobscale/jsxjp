@@ -20,7 +20,10 @@ export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
     bundling: {
       externalModules: ['@aws-sdk/*'],
       nodeModules: ['@napi-rs/canvas', 'sharp'],
-      loader: { '.json': 'json' },
+      loader: {
+        '.json': 'json',
+        '.ttf': 'file',
+      },
       sourceMap: true,
       commandHooks: {
         beforeBundling(inputDir, outputDir, init = []) { return init; },

@@ -1,3 +1,4 @@
+import path from 'path';
 import crypto from 'crypto';
 import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
 import { cipher } from '../cipher.js';
@@ -23,14 +24,15 @@ export const genDigit = async () => {
     ctx.fill();
   }
 
-  GlobalFonts.registerFromPath('docs/fonts/Tangerine.ttf', 'Tangerine');
+  const ttf = path.join(import.meta.dirname, '../..', 'docs/fonts/Tangerine.ttf');
+  GlobalFonts.registerFromPath(ttf, 'Tangerine');
 
   ctx.beginPath();
-  ctx.font = '54px Tangerine';
+  ctx.font = '30px Tangerine';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#111';
-  const [x, y] = [width / 2, height / 2 - 4];
+  const [x, y] = [width / 2, height / 2 + 4];
   ctx.fillText(digit, x - 2, y - 2);
   ctx.fillText(digit, x + 2, y + 2);
   ctx.shadowColor = '#111';
