@@ -17,6 +17,7 @@ export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
       ENV: stack.context.envName,
     },
     bundling: {
+      format: lambdaNodejs.OutputFormat.ESM,
       externalModules: ['@aws-sdk/*'],
     },
   });

@@ -1,0 +1,11 @@
+{
+  "name": "ip",
+  "version": "0.1.0",
+  "description": "",
+  "keywords": [],
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

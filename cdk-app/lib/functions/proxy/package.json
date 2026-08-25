@@ -1,0 +1,25 @@
+{
+  "name": "proxy",
+  "version": "0.1.0",
+  "description": "",
+  "keywords": [],
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@jobscale/create-logger": "^1.0.0",
+    "@jobscale/slack": "^0.3.2",
+    "@napi-rs/canvas": "^1.0.8",
+    "aws-cdk-lib": "^2.266.0",
+    "constructs": "^10.8.1",
+    "dayjs": "^1.11.23",
+    "http-errors": "^2.0.1",
+    "joi": "^18.2.5",
+    "nodemailer": "^9.0.5",
+    "sharp": "^0.35.3",
+    "speakeasy": "^2.0.0",
+    "web-push": "^3.6.7"
+  }
+}

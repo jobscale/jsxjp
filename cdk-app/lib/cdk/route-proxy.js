@@ -18,6 +18,7 @@ export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
       NODE_OPTIONS: '--enable-source-maps',
     },
     bundling: {
+      format: lambdaNodejs.OutputFormat.ESM,
       externalModules: ['@aws-sdk/*'],
       nodeModules: ['@napi-rs/canvas', 'sharp'],
       loader: {
@@ -30,7 +31,8 @@ export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
         beforeInstall(inputDir, outputDir, init = []) { return init; },
         afterBundling(inputDir, outputDir) {
           return [
-            `rm -f ${outputDir}/package-lock.json`,
+            `cp -r ${inputDir}/* ${outputDir}/`,
+            `(cd ${outputDir} && rm -fr package-lock.json node_modules && npm i --omit=dev --omit=optional --omit=peer)`,
           ];
         },
       },
