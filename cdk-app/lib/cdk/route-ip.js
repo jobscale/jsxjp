@@ -1,24 +1,27 @@
 import * as cdk from 'aws-cdk-lib/core';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import * as lambdaNodejs from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as apigwv2 from 'aws-cdk-lib/aws-apigatewayv2';
 import path from 'path';
 
 export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
-  const container = new lambdaNodejs.NodejsFunction(stack, 'IpFunction', {
+  const container = new lambda.Function(stack, 'IpFunction', {
     functionName: `${stack.stackName}-ip`,
     runtime: lambda.Runtime.NODEJS_LATEST,
-    entry: path.join(process.cwd(), 'lib', 'functions', 'ip', 'index.js'),
-    handler: 'handler',
+    code: lambda.Code.fromAsset(path.join(process.cwd(), 'lib', 'functions', 'ip'), {
+      bundling: {
+        image: lambda.Runtime.NODEJS_LATEST.bundlingImage,
+        command: [
+          'bash', '-c',
+          'export HOME=/tmp && cp -r . /asset-output && (cd /asset-output && rm -fr node_modules package-lock.json && npm i --omit=dev)',
+        ],
+      },
+    }),
+    handler: 'index.handler',
     timeout: cdk.Duration.seconds(3),
     memorySize: 128,
     environment: {
       ENV: stack.context.envName,
-    },
-    bundling: {
-      format: lambdaNodejs.OutputFormat.ESM,
-      externalModules: ['@aws-sdk/*'],
     },
   });
 

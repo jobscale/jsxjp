@@ -73,7 +73,7 @@ export class Ingress {
     const protocol = req.socket.encrypted ? 'https' : 'http';
     const host = headers.get('host');
     const url = new URL(`${protocol}://${host}${req.url}`);
-    const baseDir = path.join(process.cwd(), 'cdk-app', 'docs');
+    const baseDir = path.join(process.cwd(), 'cdk-app/lib/functions/proxy/docs');
     const file = {
       path: path.join(baseDir, url.pathname),
     };

@@ -1,7 +1,7 @@
 import createHttpError from 'http-errors';
-import { validation } from '../../../../app/user/validation.js';
-import { service } from '../../../../app/user/service.js';
-import { service as auth } from '../../../../app/auth/service.js';
+import { validation } from '../app/user/validation.js';
+import { service } from '../app/user/service.js';
+import { service as auth } from '../app/auth/service.js';
 
 export class User {
   async register(req, res) {

@@ -1,7 +1,7 @@
 import http from 'http';
-import './cdk-app/app/config/index.js';
+import './cdk-app/lib/functions/proxy/app/config/index.js';
 import { logger } from '@jobscale/create-logger';
-import { app, upgradeHandler, errorHandler } from './cdk-app/app/index.js';
+import { app, upgradeHandler, errorHandler } from './cdk-app/lib/functions/proxy/app/index.js';
 
 const PORT = Number.parseInt(process.env.PORT || 3000, 10);
 

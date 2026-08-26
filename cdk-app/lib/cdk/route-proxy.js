@@ -1,41 +1,28 @@
 import * as cdk from 'aws-cdk-lib/core';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import * as lambdaNodejs from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as apigwv2 from 'aws-cdk-lib/aws-apigatewayv2';
 import path from 'path';
 
 export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
-  const container = new lambdaNodejs.NodejsFunction(stack, 'ProxyFunction', {
+  const container = new lambda.Function(stack, 'ProxyFunction', {
     functionName: `${stack.stackName}-proxy`,
     runtime: lambda.Runtime.NODEJS_LATEST,
-    entry: path.join(process.cwd(), 'lib', 'functions', 'proxy', 'index.js'),
-    handler: 'handler',
+    code: lambda.Code.fromAsset(path.join(process.cwd(), 'lib', 'functions', 'proxy'), {
+      bundling: {
+        image: lambda.Runtime.NODEJS_LATEST.bundlingImage,
+        command: [
+          'bash', '-c',
+          'export HOME=/tmp && export npm_config_cache=/tmp/.npm && cp -r . /asset-output && (cd /asset-output && rm -fr node_modules package-lock.json && npm i --omit=dev)',
+        ],
+      },
+    }),
+    handler: 'index.handler',
     timeout: cdk.Duration.seconds(28),
     memorySize: 256,
     environment: {
       ENV: stack.context.envName,
       NODE_OPTIONS: '--enable-source-maps',
-    },
-    bundling: {
-      format: lambdaNodejs.OutputFormat.ESM,
-      externalModules: ['@aws-sdk/*'],
-      nodeModules: ['@napi-rs/canvas', 'sharp'],
-      loader: {
-        '.json': 'json',
-        '.ttf': 'file',
-      },
-      sourceMap: true,
-      commandHooks: {
-        beforeBundling(inputDir, outputDir, init = []) { return init; },
-        beforeInstall(inputDir, outputDir, init = []) { return init; },
-        afterBundling(inputDir, outputDir) {
-          return [
-            `cp -r ${inputDir}/* ${outputDir}/`,
-            `(cd ${outputDir} && rm -fr package-lock.json node_modules && npm i --omit=dev --omit=optional --omit=peer)`,
-          ];
-        },
-      },
     },
   });
 

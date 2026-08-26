@@ -1,6 +1,6 @@
 import createHttpError from 'http-errors';
-import { service as auth } from '../../../../app/auth/service.js';
-import { service } from '../../../../app/shorten/service.js';
+import { service as auth } from '../app/auth/service.js';
+import { service } from '../app/shorten/service.js';
 
 export class Shorten {
   async verify(req) {

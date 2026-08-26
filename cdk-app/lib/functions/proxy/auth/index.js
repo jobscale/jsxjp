@@ -1,8 +1,8 @@
 import createHttpError from 'http-errors';
 import dayjs from 'dayjs';
-import { validation } from '../../../../app/auth/validation.js';
-import { service } from '../../../../app/auth/service.js';
-import { service as apiService } from '../../../../app/api/service.js';
+import { validation } from '../app/auth/validation.js';
+import { service } from '../app/auth/service.js';
+import { service as apiService } from '../app/api/service.js';
 
 export class Auth {
   async login(req, res) {

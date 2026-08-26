@@ -85,7 +85,7 @@ export const frontCache = stack => {
   });
 
   new s3deploy.BucketDeployment(stack, 'FrontDocsDeploy', {
-    sources: [s3deploy.Source.asset(path.join(process.cwd(), 'docs'))],
+    sources: [s3deploy.Source.asset(path.join(process.cwd(), 'lib/functions/proxy/docs'))],
     destinationBucket,
     distribution,
     distributionPaths: ['/*'],

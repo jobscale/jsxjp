@@ -17,17 +17,8 @@
   },
   "dependencies": {
     "@jobscale/create-logger": "^1.0.0",
-    "@jobscale/slack": "^0.3.2",
-    "@napi-rs/canvas": "^1.0.7",
     "aws-cdk-lib": "^2.263.0",
-    "constructs": "^10.8.1",
-    "dayjs": "^1.11.23",
-    "http-errors": "^2.0.1",
-    "joi": "^18.2.3",
-    "nodemailer": "^9.0.5",
-    "sharp": "^0.35.3",
-    "speakeasy": "^2.0.0",
-    "web-push": "^3.6.7"
+    "constructs": "^10.8.1"
   },
   "devDependencies": {
     "@jobscale/eslint-plugin-standard": "^0.1.1",

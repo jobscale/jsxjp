@@ -1,6 +1,6 @@
-import { validation } from '../../../../app/api/validation.js';
-import { service } from '../../../../app/api/service.js';
-import { service as auth } from '../../../../app/auth/service.js';
+import { validation } from '../app/api/validation.js';
+import { service } from '../app/api/service.js';
+import { service as auth } from '../app/auth/service.js';
 
 const notificationAddress = [
   'jobscalespam@gmail.com',

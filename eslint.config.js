@@ -16,7 +16,7 @@ export default [{
 }, {
   ...standard.configs.browser,
   name: 'browser rule',
-  files: ['docs/**/*.js', 'public/**/*.js', 'src/**/*.js', 'tauri-app/src/**/*.js'],
+  files: ['**/docs/**/*.js', 'public/**/*.js', 'src/**/*.js', 'tauri-app/src/**/*.js'],
   rules: {
     ...standard.rules,
     'no-loop-func': 'off',
