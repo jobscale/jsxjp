@@ -1,4 +1,5 @@
 import fs from 'fs/promises';
+import path from 'path';
 
 const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   const timestamp = new Intl.DateTimeFormat('sv-SE', {
@@ -17,7 +18,8 @@ const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
 export class Service {
   async load(id) {
     const template = id.split('-').join('/');
-    return fs.readFile(`views/${template}.html`, 'utf-8')
+    const file = path.join(process.cwd(), 'cdk-app/lib/functions/proxy/views', `${template}.html`);
+    return fs.readFile(file, 'utf-8')
     .then(async html => html.replace('{{timestamp}}', await this.now()))
     .catch(() => '');
   }

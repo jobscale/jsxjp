@@ -4,7 +4,7 @@ import mime from 'mime';
 import puppeteer from 'puppeteer';
 
 const nativeLogger = console;
-const docsDir = path.join(process.cwd(), 'docs');
+const docsDir = path.join(process.cwd(), 'cdk-app/lib/functions/proxy/docs');
 const settleMs = 2800;
 const transparentPng = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wn7kL8AAAAASUVORK5CYII=',
