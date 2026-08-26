@@ -1,4 +1,4 @@
-import { describe, expect, jest, beforeEach } from '@jest/globals';
+import { describe, expect, jest, beforeEach, afterEach } from '@jest/globals';
 
 process.env.ENV = 'test';
 process.env.AWS_ACCESS_KEY_ID = 'test-key';
@@ -21,7 +21,7 @@ jest.unstable_mockModule('@jobscale/create-logger', () => ({
     debug: jest.fn(),
   },
 }));
-jest.unstable_mockModule('../cdk-app/app/config/service.js', () => ({ service: mockConfigService }));
+jest.unstable_mockModule('../lib/functions/proxy/app/config/service.js', () => ({ service: mockConfigService }));
 
 // Mock AWS SDK clients
 jest.unstable_mockModule('@aws-sdk/client-ssm', () => {
@@ -47,11 +47,11 @@ jest.unstable_mockModule('@aws-sdk/client-s3', () => {
   };
 });
 
-const { service } = await import('../cdk-app/app/service.js');
-const { controller } = await import('../cdk-app/app/controller.js');
-const { Connect, connect } = await import('../cdk-app/app/connect.js');
-const { DB } = await import('../cdk-app/app/db.js');
-const { store } = await import('../cdk-app/app/store.js');
+const { service } = await import('../lib/functions/proxy/app/service.js');
+const { controller } = await import('../lib/functions/proxy/app/controller.js');
+const { Connect, connect } = await import('../lib/functions/proxy/app/connect.js');
+const { DB } = await import('../lib/functions/proxy/app/db.js');
+const { store } = await import('../lib/functions/proxy/app/store.js');
 
 describe('Service', () => {
   describe('now', () => {
@@ -227,6 +227,21 @@ describe('Connect', () => {
       const result1 = await connect.credentials();
       const result2 = await connect.credentials();
       expect(result1).toEqual(result2);
+    });
+  });
+
+  describe('fetchEnv (network mocked)', () => {
+    let originalFetch;
+
+    beforeEach(() => {
+      originalFetch = global.fetch;
+      global.fetch = jest.fn().mockRejectedValue(new Error('network unreachable'));
+      delete connect.cache;
+    });
+
+    afterEach(() => {
+      global.fetch = originalFetch;
+      delete connect.cache;
     });
 
     it('should handle fetchEnv method', async () => {
@@ -428,7 +443,7 @@ describe('Store', () => {
     });
 
     it('should have connection function export', async () => {
-      const { connection: connFunc } = await import('../cdk-app/app/store.js');
+      const { connection: connFunc } = await import('../lib/functions/proxy/app/store.js');
       expect(typeof connFunc).toBe('function');
     });
   });
@@ -494,35 +509,35 @@ describe('Store', () => {
 
 describe('App Module Exports', () => {
   it('should export connect instance', async () => {
-    const { connect: connectExport } = await import('../cdk-app/app/connect.js');
+    const { connect: connectExport } = await import('../lib/functions/proxy/app/connect.js');
     expect(connectExport).toBeDefined();
     expect(typeof connectExport.credentials).toBe('function');
   });
 
   it('should export Connect class', async () => {
-    const { Connect: ConnectClass } = await import('../cdk-app/app/connect.js');
+    const { Connect: ConnectClass } = await import('../lib/functions/proxy/app/connect.js');
     expect(ConnectClass).toBeDefined();
   });
 
   it('should export service instance', async () => {
-    const { service: serviceExport } = await import('../cdk-app/app/service.js');
+    const { service: serviceExport } = await import('../lib/functions/proxy/app/service.js');
     expect(serviceExport).toBeDefined();
     expect(typeof serviceExport.now).toBe('function');
   });
 
   it('should export controller instance', async () => {
-    const { controller: controllerExport } = await import('../cdk-app/app/controller.js');
+    const { controller: controllerExport } = await import('../lib/functions/proxy/app/controller.js');
     expect(controllerExport).toBeDefined();
     expect(typeof controllerExport.page).toBe('function');
   });
 
   it('should export DB class', async () => {
-    const { DB: DBClass } = await import('../cdk-app/app/db.js');
+    const { DB: DBClass } = await import('../lib/functions/proxy/app/db.js');
     expect(DBClass).toBeDefined();
   });
 
   it('should export store instance', async () => {
-    const { store: storeExport } = await import('../cdk-app/app/store.js');
+    const { store: storeExport } = await import('../lib/functions/proxy/app/store.js');
     expect(storeExport).toBeDefined();
     expect(typeof storeExport.config).toBe('function');
   });

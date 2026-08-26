@@ -40,9 +40,9 @@ jest.unstable_mockModule('@aws-sdk/client-s3', () => ({
 }));
 
 jest.unstable_mockModule('sharp', () => ({ default: mockSharp }));
-jest.unstable_mockModule('../cdk-app/app/auth/service.js', () => ({ service: mockAuthService }));
+jest.unstable_mockModule('../lib/functions/proxy/app/auth/service.js', () => ({ service: mockAuthService }));
 jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
-jest.unstable_mockModule('../cdk-app/app/shorten/route.js', () => ({
+jest.unstable_mockModule('../lib/functions/proxy/app/shorten/route.js', () => ({
   route: {
     router: {
       routes: [],
@@ -51,14 +51,14 @@ jest.unstable_mockModule('../cdk-app/app/shorten/route.js', () => ({
 }));
 
 // Mock config service to bypass DB access
-jest.unstable_mockModule('../cdk-app/app/config/service.js', () => ({
+jest.unstable_mockModule('../lib/functions/proxy/app/config/service.js', () => ({
   service: {
     getEnv: jest.fn().mockResolvedValue({}),
   },
 }));
 
 // Import app after mocking
-const { app } = await import('../cdk-app/app/index.js');
+const { app } = await import('../lib/functions/proxy/app/index.js');
 const { PutObjectCommand, GetObjectCommand, ListObjectsV2Command, DeleteObjectCommand } = await import('@aws-sdk/client-s3');
 
 describe('Picts Routing via app/index.js', () => {

@@ -26,20 +26,12 @@
     "test"
   ],
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1095.0",
-    "@aws-sdk/client-ssm": "^3.1095.0",
+    "@aws-sdk/client-s3": "^3.1118.0",
+    "@aws-sdk/client-ssm": "^3.1118.0",
     "@jobscale/create-logger": "^1.0.0",
-    "@jobscale/slack": "^0.3.2",
-    "@napi-rs/canvas": "^1.0.7",
     "dayjs": "^1.11.21",
     "http-errors": "^2.0.1",
-    "joi": "^18.2.3",
-    "jws": "^4.0.1",
-    "mime": "^4.1.0",
-    "nodemailer": "^9.0.3",
-    "sharp": "^0.35.3",
-    "speakeasy": "^2.0.0",
-    "web-push": "^3.6.7"
+    "mime": "^4.1.0"
   },
   "devDependencies": {
     "@jobscale/eslint-plugin-standard": "^0.1.2",

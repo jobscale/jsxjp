@@ -17,7 +17,7 @@ const mockLogger = {
   debug: jest.fn(),
 };
 
-jest.unstable_mockModule('../cdk-app/app/s3.js', () => ({ db: mockDb }));
+jest.unstable_mockModule('../lib/functions/proxy/app/s3.js', () => ({ db: mockDb }));
 jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
 
 // Mock other routes
@@ -26,16 +26,16 @@ const mockRouter = {
     routes: [],
   },
 };
-jest.unstable_mockModule('../cdk-app/app/shorten/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../cdk-app/app/ip/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../cdk-app/app/api/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../cdk-app/app/account/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../cdk-app/app/user/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../cdk-app/app/template/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../cdk-app/app/picts/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../cdk-app/app/auth/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../lib/functions/proxy/app/shorten/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../lib/functions/proxy/app/ip/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../lib/functions/proxy/app/api/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../lib/functions/proxy/app/account/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../lib/functions/proxy/app/user/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../lib/functions/proxy/app/template/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../lib/functions/proxy/app/picts/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../lib/functions/proxy/app/auth/route.js', () => ({ route: mockRouter }));
 
-const { app } = await import('../cdk-app/app/index.js');
+const { app } = await import('../lib/functions/proxy/app/index.js');
 
 describe('Plan Pulse Routing', () => {
   beforeEach(() => {

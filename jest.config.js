@@ -1,5 +1,5 @@
 export default {
   testEnvironment: 'node',
-  roots: ['<rootDir>/test'],
+  roots: ['<rootDir>/cdk-app/__tests__'],
   testMatch: ['**/*.test.js'],
 };

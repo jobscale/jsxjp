@@ -17,7 +17,7 @@ describe('IP Module', () => {
   beforeAll(async () => {
     process.env.ENV = 'test';
     request = (await import('supertest')).default;
-    const module = await import('../cdk-app/app/index.js');
+    const module = await import('../lib/functions/proxy/app/index.js');
     app = module.app;
   });
 

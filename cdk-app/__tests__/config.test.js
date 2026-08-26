@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
-import { Service } from '../cdk-app/app/config/service.js';
-import { db } from '../cdk-app/app/db.js';
-import { encode } from '../cdk-app/app/js-proxy.js';
+import { Service } from '../lib/functions/proxy/app/config/service.js';
+import { db } from '../lib/functions/proxy/app/db.js';
+import { encode } from '../lib/functions/proxy/app/js-proxy.js';
 
 // Mock the methods
 db.setValue = jest.fn();
