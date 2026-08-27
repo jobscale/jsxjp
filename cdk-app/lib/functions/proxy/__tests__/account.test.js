@@ -15,7 +15,7 @@ const mockLogger = {
   debug: jest.fn(),
 };
 
-jest.unstable_mockModule('../lib/functions/proxy/app/db.js', () => ({ db: mockDb }));
+jest.unstable_mockModule('../app/db.js', () => ({ db: mockDb }));
 jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
 // Mock other routes
 const mockRouter = {
@@ -23,19 +23,19 @@ const mockRouter = {
     routes: [],
   },
 };
-jest.unstable_mockModule('../lib/functions/proxy/app/shorten/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../lib/functions/proxy/app/ip/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../lib/functions/proxy/app/api/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../lib/functions/proxy/app/auth/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../lib/functions/proxy/app/user/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../lib/functions/proxy/app/template/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../lib/functions/proxy/app/plan-pulse/route.js', () => ({ route: mockRouter }));
-jest.unstable_mockModule('../lib/functions/proxy/app/picts/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../app/shorten/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../app/ip/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../app/api/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../app/auth/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../app/user/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../app/template/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../app/plan-pulse/route.js', () => ({ route: mockRouter }));
+jest.unstable_mockModule('../app/picts/route.js', () => ({ route: mockRouter }));
 
 const mockAuth = {
   decode: jest.fn(),
 };
-jest.unstable_mockModule('../lib/functions/proxy/app/auth/index.js', () => ({ auth: mockAuth }));
+jest.unstable_mockModule('../app/auth/index.js', () => ({ auth: mockAuth }));
 jest.unstable_mockModule('@aws-sdk/client-s3', () => ({
   S3Client: jest.fn(),
   PutObjectCommand: jest.fn(),
@@ -46,7 +46,7 @@ jest.unstable_mockModule('@aws-sdk/client-s3', () => ({
 }));
 jest.unstable_mockModule('sharp', () => ({ default: jest.fn() }));
 
-const { app } = await import('../lib/functions/proxy/app/index.js');
+const { app } = await import('../app/index.js');
 
 describe('Account Routing via app/index.js', () => {
   beforeEach(() => {

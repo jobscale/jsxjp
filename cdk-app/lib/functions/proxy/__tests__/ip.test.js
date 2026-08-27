@@ -10,27 +10,28 @@ const mockLogger = {
 };
 jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
 
-describe('Template Module', () => {
+describe('IP Module', () => {
   let request;
   let app;
 
   beforeAll(async () => {
     process.env.ENV = 'test';
     request = (await import('supertest')).default;
-    const module = await import('../lib/functions/proxy/app/index.js');
+    const module = await import('../app/index.js');
     app = module.app;
   });
 
-  beforeEach(() => {
-    jest.clearAllMocks();
+  it('GET /ip returns headers X-Forwarded-For', async () => {
+    const res = await request(app)
+    .get('/ip')
+    .set('X-Forwarded-For', '10.0.0.2');
+    expect(res.status).toBe(200);
+    expect(res.text).toBe('10.0.0.2');
   });
 
-  it('POST /template renders view', async () => {
-    const res = await request(app)
-    .post('/template')
-    .send({ id: 'test-view' });
-
+  it('GET /ip returns socket IP if no headers', async () => {
+    const res = await request(app).get('/ip');
     expect(res.status).toBe(200);
-    expect(res.text).toMatch(/^<html>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\+09:00<\/html>\n$/);
+    expect(res.text).toMatch(/127\.0\.0\.1|::1/);
   });
 });

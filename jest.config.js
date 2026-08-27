@@ -1,5 +1,5 @@
 export default {
   testEnvironment: 'node',
-  roots: ['<rootDir>/cdk-app/__tests__'],
+  roots: ['<rootDir>/cdk-app/lib/functions/proxy/__tests__'],
   testMatch: ['**/*.test.js'],
 };
