@@ -3,26 +3,32 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigwv2 from 'aws-cdk-lib/aws-apigatewayv2';
 import path from 'path';
+import fs from 'fs';
+
+const logger = new Proxy(console, {
+  get(target, prop) {
+    return target[prop];
+  },
+});
 
 export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
+  const command = fs.readFileSync(path.join(import.meta.dirname, 'bundling-before.sh'), 'utf-8')
+  .split('\n').filter(Boolean).join(' && ');
+  logger.info('Bundling', { command });
   const container = new lambda.Function(stack, 'ProxyFunction', {
     functionName: `${stack.stackName}-proxy`,
     runtime: lambda.Runtime.NODEJS_LATEST,
     code: lambda.Code.fromAsset(path.join(process.cwd(), 'lib', 'functions', 'proxy'), {
       bundling: {
         image: lambda.Runtime.NODEJS_LATEST.bundlingImage,
-        command: [
-          'bash', '-c',
-          'export HOME=/tmp && export npm_config_cache=/tmp/.npm && cp -r . /asset-output && (cd /asset-output && rm -fr node_modules package-lock.json && npm i --omit=dev)',
-        ],
+        command: ['bash', '-c', command],
       },
     }),
     handler: 'index.handler',
-    timeout: cdk.Duration.seconds(28),
-    memorySize: 256,
+    timeout: cdk.Duration.seconds(12),
+    memorySize: 200,
     environment: {
       ENV: stack.context.envName,
-      NODE_OPTIONS: '--enable-source-maps',
     },
   });
 
