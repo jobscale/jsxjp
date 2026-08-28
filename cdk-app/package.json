@@ -7,13 +7,14 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand --coverage --collectCoverage --verbose",
     "lint": "eslint",
     "predeploy": "npm run lint",
-    "bootstrap": "ENV=${ENV:-dev} && cdk bootstrap --context env=$ENV",
-    "validate": "ENV=${ENV:-dev} && cdk validate --build --unstable=validate --context env=$ENV",
-    "synth": "ENV=${ENV:-dev} && cdk synth --context env=$ENV",
-    "diff": "ENV=${ENV:-dev} && cdk diff --context env=$ENV",
-    "deploy": "ENV=${ENV:-dev} && cdk deploy --context env=$ENV",
-    "deploy:force": "ENV=${ENV:-dev} && cdk deploy --context env=$ENV --require-approval never",
-    "ls": "ENV=${ENV:-dev} && cdk ls --context env=$ENV"
+    "bootstrap": "ENV=${ENV:-dev} && cdk --context env=$ENV bootstrap",
+    "validate": "ENV=${ENV:-dev} && cdk --context env=$ENV validate --build --unstable=validate",
+    "synth": "ENV=${ENV:-dev} && cdk --context env=$ENV synth",
+    "diff": "ENV=${ENV:-dev} && cdk --context env=$ENV diff",
+    "deploy": "ENV=${ENV:-dev} && cdk --context env=$ENV deploy",
+    "deploy:force": "ENV=${ENV:-dev} && cdk --context env=$ENV deploy --require-approval never",
+    "ls": "ENV=${ENV:-dev} && cdk --context env=$ENV ls",
+    "cdk": "ENV=${ENV:-dev} && cdk --context env=$ENV"
   },
   "dependencies": {
     "@jobscale/create-logger": "^1.0.0",
