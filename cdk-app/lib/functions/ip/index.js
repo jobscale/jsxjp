@@ -12,7 +12,7 @@ export const handler = async event => {
   logger.info('EVENT:', JSON.stringify(event, null, 2));
 
   const { sourceIp } = event.requestContext.http;
-  const ip = event.headers['x-forwarded-for']?.split(' ')[0] || sourceIp;
+  const ip = event.headers['x-forwarded-for']?.split(/[, ]/)[0] || sourceIp;
 
   return {
     statusCode: 200,

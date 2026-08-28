@@ -49,7 +49,7 @@ export class Auth {
   sign(req, res) {
     const setHeader = (user = {}) => {
       res.setHeader('X-User', user.login ?? 'Guest');
-      res.setHeader('X-Address', req.headers.get('x-forwarded-for')?.split(' ')[0] || req.requestContext.http.sourceIp);
+      res.setHeader('X-Address', req.headers.get('x-forwarded-for')?.split(/[, ]/)[0] || req.requestContext.http.sourceIp);
     };
     const { http: { method: httpMethod } } = req.requestContext;
     const head = httpMethod === 'HEAD';

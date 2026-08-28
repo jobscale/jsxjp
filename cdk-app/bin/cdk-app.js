@@ -15,16 +15,16 @@ const envName = cdkApp.node.tryGetContext('env') ?? '';
 const envConfigs = {
   dev: {
     env: {
-      account: '393035998684',
+      account: '916921211348',
       region: 'us-east-1',
     },
     context: {
       gateway: {
-        certificateId: '9d6f7e65-704e-4395-a3d5-641276b383d0',
+        certificateId: 'f55e911f-453e-4e27-8569-276156c987fd',
         domainName: `${envName}-serverless.jsx.jp`,
       },
       front: {
-        certificateId: '9d6f7e65-704e-4395-a3d5-641276b383d0',
+        certificateId: 'f55e911f-453e-4e27-8569-276156c987fd',
         domainName: `${envName}-front.jsx.jp`,
         bucketName: `${envName}-front-static`,
       },
