@@ -1,13 +1,6 @@
-#!/usr/bin/env node
-
 import * as cdk from 'aws-cdk-lib/core';
+import { logger } from '@jobscale/create-logger';
 import { AppStack } from '../lib/app-stack.js';
-
-const logger = new Proxy(console, {
-  get(target, prop) {
-    return target[prop];
-  },
-});
 
 const cdkApp = new cdk.App();
 const envName = cdkApp.node.tryGetContext('env') ?? '';

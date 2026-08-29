@@ -1,12 +1,7 @@
 import * as cdk from 'aws-cdk-lib/core';
+import { logger } from '@jobscale/create-logger';
 import { serverlessGateway } from './cdk/serverless.js';
 import { frontCache } from './cdk/front.js';
-
-const logger = new Proxy(console, {
-  get(target, prop) {
-    return target[prop];
-  },
-});
 
 export class AppStack extends cdk.Stack {
   constructor(scope, id, props = {}) {

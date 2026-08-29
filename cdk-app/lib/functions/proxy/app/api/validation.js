@@ -1,10 +1,5 @@
 import Joi from 'joi';
-
-const logger = new Proxy(console, {
-  get(target, prop) {
-    return target[prop];
-  },
-});
+import { logger } from '@jobscale/create-logger';
 
 export class Validation {
   async slack(req, res) {
