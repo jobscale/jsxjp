@@ -10,7 +10,7 @@ import fs from 'fs';
 export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
   const command = fs.readFileSync(path.join(import.meta.dirname, 'bundling-before.sh'), 'utf-8')
   .split('\n').filter(Boolean).join(' && ');
-  logger.info('Bundling', { command });
+  logger.verbose('Bundling', { command });
   const container = new lambda.Function(stack, 'ProxyFunction', {
     functionName: `${stack.stackName}-proxy`,
     runtime: lambda.Runtime.NODEJS_LATEST,

@@ -1,10 +1,24 @@
 function handler(event) {
-  var req = event.request;
-  var uri = req.uri;
-  if (uri.endsWith('/')) {
-    req.uri = uri + 'index.html';
-  } else if (uri.lastIndexOf('.') <= uri.lastIndexOf('/')) {
-    req.uri = uri + '/index.html';
+  var request = event.request;
+
+  if (request.method === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      statusDescription: 'OK',
+      headers: {
+        'access-control-allow-origin': { value: '*' },
+        'access-control-allow-methods': { value: 'GET, HEAD' },
+        'access-control-allow-headers': { value: '*' },
+        'access-control-max-age': { value: '86400' },
+      },
+    };
   }
-  return req;
+
+  if (request.uri.endsWith('/')) {
+    request.uri = request.uri + 'index.html';
+  } else if (!request.uri.includes('.')) {
+    request.uri = request.uri + '/index.html';
+  }
+
+  return request;
 }

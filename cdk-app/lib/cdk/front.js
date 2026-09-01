@@ -18,8 +18,7 @@ export const frontCache = stack => {
     autoDeleteObjects: true,
   });
 
-  const frontCertificate = acm.Certificate.fromCertificateArn(
-    stack, 'FrontCertificate',
+  const certificate = acm.Certificate.fromCertificateArn(stack, 'FrontCertificate',
     cdk.Fn.sub(
       'arn:${AWS::Partition}:acm:us-east-1:${AWS::AccountId}:certificate/${CertificateId}',
       { CertificateId: front.certificateId },
@@ -55,7 +54,7 @@ export const frontCache = stack => {
     enabled: true,
     defaultRootObject: 'index.html',
     domainNames: [front.domainName],
-    certificate: frontCertificate,
+    certificate,
     minimumProtocolVersion: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,
     sslSupportMethod: cloudfront.SSLMethod.SNI,
     defaultBehavior: {
@@ -105,9 +104,9 @@ export const frontCache = stack => {
   });
   new cdk.CfnOutput(stack, 'Front Domainname', {
     value: cdk.Fn.join(' ', [
-      '-e TYPE=CNAME',
-      `-e DOMAIN="${front.domainName.replace('.jsx.jp', '')}"`,
-      `-e R_DATA="${distribution.distributionDomainName}."`,
+      ' TYPE=CNAME',
+      `DOMAIN="${front.domainName.replace('.jsx.jp', '')}"`,
+      `R_DATA="${distribution.distributionDomainName}."`,
     ]),
     description: 'Front custom domain CNAME',
   });

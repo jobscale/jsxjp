@@ -66,9 +66,9 @@ export const serverlessGateway = stack => {
   });
   new cdk.CfnOutput(stack, 'Serverless Domainname', {
     value: cdk.Fn.join(' ', [
-      '-e TYPE=CNAME',
-      `-e DOMAIN="${httpApiDomainName.domainName.replace('.jsx.jp', '')}"`,
-      `-e R_DATA="${httpApiDomainName.attrRegionalDomainName}."`,
+      'TYPE=CNAME',
+      `DOMAIN="${httpApiDomainName.domainName.replace('.jsx.jp', '')}"`,
+      `R_DATA="${httpApiDomainName.attrRegionalDomainName}."`,
     ]),
     description: 'Front custom domain CNAME',
   });
