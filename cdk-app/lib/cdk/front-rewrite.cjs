@@ -1,7 +1,9 @@
 function handler(event) {
-  var request = event.request;
+  const request = event.request;
+  const method = request.method;
+  const uri = request.uri;
 
-  if (request.method === 'OPTIONS') {
+  if (method === 'OPTIONS') {
     return {
       statusCode: 200,
       statusDescription: 'OK',
@@ -14,10 +16,10 @@ function handler(event) {
     };
   }
 
-  if (request.uri.endsWith('/')) {
-    request.uri = request.uri + 'index.html';
-  } else if (!request.uri.includes('.')) {
-    request.uri = request.uri + '/index.html';
+  if (uri.endsWith('/')) {
+    request.uri = uri + 'index.html';
+  } else if (!uri.includes('.')) {
+    request.uri = uri + '/index.html';
   }
 
   return request;
