@@ -16,12 +16,11 @@ router.use('/api', apiRoute.router);
 router.use('/picts', picts.router);
 router.use('/plan-pulse', planPulse.router);
 router.use('/s', shortenRoute.router);
-router.use('', authRoute.router);
+router.use('/auth', authRoute.router);
 router.use('/account', accountRoute.router);
 router.use('/user', userRoute.router);
 router.use('/template', templateRoute.router);
 router.add('GET', '', controller.page);
 
 export const route = { router };
-
 export default { route };

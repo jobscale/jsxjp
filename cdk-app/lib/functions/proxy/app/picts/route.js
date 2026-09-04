@@ -36,5 +36,4 @@ router.add('GET', '', [
 ]);
 
 export const route = { router };
-
 export default { route };

@@ -24,5 +24,4 @@ router.add('POST', '/remove', [
 ]);
 
 export const route = { router };
-
 export default { route };

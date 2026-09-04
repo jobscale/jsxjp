@@ -21,5 +21,4 @@ router.add('POST', '/removePerson', [
 ]);
 
 export const route = { router };
-
 export default { route };

@@ -397,8 +397,8 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       return;
     }
     self.loading = true;
-    self.loadImage(imagePath)
-    .catch(() => self.loadImage(`t/${name}`))
+    self.loadImage(`/picts/${imagePath}`)
+    .catch(() => self.loadImage(`/picts/t/${name}`))
     .then(imgUrl => {
       self.preview.imgUrl = imgUrl;
       self.cacheImage[imagePath] = imgUrl;

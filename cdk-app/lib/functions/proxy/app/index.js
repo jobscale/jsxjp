@@ -25,16 +25,24 @@ const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
 };
 
 export class Ingress {
-  useHeader(req, res) {
+  // headers / url など毎リクエスト固定のオブジェクトを 1 度だけ生成してキャッシュする
+  ensureContext(req) {
+    if (req.ctx) return req.ctx;
     const headers = new Headers(req.headers);
-    const getProtocol = () => {
-      const x = headers.get('X-Forwarded-Proto')?.split(',')[0].trim();
-      if (x) return x;
-      return req.socket.encrypted ? 'https' : 'http';
-    };
-    const protocol = getProtocol();
+    const method = req.method.toUpperCase();
+    const xfProto = headers.get('X-Forwarded-Proto')?.split(',')[0].trim();
+    const protocol = xfProto ?? (req.socket.encrypted ? 'https' : 'http');
     const host = headers.get('Host');
-    const origin = headers.get('Origin') || `${protocol}://${host}`;
+    const url = new URL(`${protocol}://${host}${req.url}`);
+    req.ctx = {
+      headers, method, protocol, host, url, pathname: url.pathname,
+    };
+    return req.ctx;
+  }
+
+  useHeader(req, res) {
+    const { headers, protocol, host } = this.ensureContext(req);
+    const origin = headers.get('Origin') ?? `${protocol}://${host}`;
     res.setHeader('ETag', 'false');
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, HEAD');
@@ -46,9 +54,14 @@ export class Ingress {
     }
     const inlinePolicy = `nonce-${crypto.randomBytes(7).toString('hex')}`;
     const scheme = protocol === 'http' ? 'http: ws:' : 'https: wss:';
+    const allowCdn = [
+      'https://cdn.jsdelivr.net',
+      'https://esm.sh',
+      'https://cdnjs.cloudflare.com',
+    ].join(' ');
     const csp = [
       "default-src 'self'",
-      `script-src 'self' 'unsafe-eval' '${inlinePolicy}' https://cdn.jsdelivr.net https://esm.sh`,
+      `script-src 'self' 'unsafe-eval' '${inlinePolicy}' ${allowCdn}`,
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' data: https://fonts.gstatic.com",
       "img-src 'self' data:",
@@ -69,10 +82,7 @@ export class Ingress {
 
   usePublic(req, res) {
     if (!['GET', 'HEAD'].includes(req.method)) return false;
-    const headers = new Headers(req.headers);
-    const protocol = req.socket.encrypted ? 'https' : 'http';
-    const host = headers.get('host');
-    const url = new URL(`${protocol}://${host}${req.url}`);
+    const { url } = this.ensureContext(req);
     const baseDir = path.join(process.cwd(), 'cdk-app/lib/functions/proxy/docs');
     const file = {
       path: path.join(baseDir, url.pathname),
@@ -90,7 +100,7 @@ export class Ingress {
       file.stat = fs.existsSync(file.path) && fs.statSync(file.path);
       if (!file.stat) return false;
     }
-    const contentType = mime.getType(file.path) || 'application/octet-stream';
+    const contentType = mime.getType(file.path) ?? 'application/octet-stream';
     const contentLength = file.stat.size;
     const stream = fs.createReadStream(file.path);
     res.writeHead(200, {
@@ -106,13 +116,11 @@ export class Ingress {
   }
 
   useLogging(req, res) {
+    const { headers, protocol, host } = this.ensureContext(req);
     const start = Date.now();
     const progress = () => {
-      const headers = new Headers(req.headers);
       const globalIp = headers.get('X-Forwarded-For')?.split(/[, ]/)[0] || req.socket.remoteAddress;
       const { method, url } = req;
-      const protocol = req.socket.encrypted ? 'https' : 'http';
-      const host = headers.get('Host');
       logger.info({
         ts: formatTimestamp(),
         req: JSON.stringify({
@@ -125,20 +133,20 @@ export class Ingress {
     res.on('finish', () => {
       const duration = Date.now() - start;
       const { statusCode, statusMessage } = res;
-      const headers = JSON.stringify(res.getHeaders());
+      const resHeaders = JSON.stringify(res.getHeaders());
       logger.info({
         ts: formatTimestamp(),
-        statusCode, statusMessage, headers, duration,
+        statusCode,
+        statusMessage,
+        headers: resHeaders,
+        duration,
       });
     });
   }
 
   async useRoute(req, res) {
-    const headers = new Headers(req.headers);
-    const method = req.method.toUpperCase();
-    const protocol = req.socket.encrypted ? 'https' : 'http';
-    const host = headers.get('host');
-    const { pathname, searchParams } = new URL(`${protocol}://${host}${req.url}`);
+    const { method, url } = this.ensureContext(req);
+    const { pathname, searchParams } = url;
     const pathRoute = `${method} ${pathname}`;
     logger.debug({ pathRoute, searchParams });
 
