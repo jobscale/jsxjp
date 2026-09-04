@@ -1,6 +1,6 @@
-
 import { describe, expect, jest, beforeEach } from '@jest/globals';
 import request from 'supertest';
+import { Router } from '../app/router.js';
 
 process.env.ENV = 'test';
 
@@ -18,11 +18,7 @@ const mockLogger = {
 jest.unstable_mockModule('../app/db.js', () => ({ db: mockDb }));
 jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
 // Mock other routes
-const mockRouter = {
-  router: {
-    routes: [],
-  },
-};
+const mockRouter = { router: new Router() };
 jest.unstable_mockModule('../app/shorten/route.js', () => ({ route: mockRouter }));
 jest.unstable_mockModule('../app/ip/route.js', () => ({ route: mockRouter }));
 jest.unstable_mockModule('../app/api/route.js', () => ({ route: mockRouter }));
@@ -34,6 +30,7 @@ jest.unstable_mockModule('../app/picts/route.js', () => ({ route: mockRouter }))
 
 const mockAuth = {
   decode: jest.fn(),
+  verify: jest.fn().mockReturnValue(true),
 };
 jest.unstable_mockModule('../app/auth/index.js', () => ({ auth: mockAuth }));
 jest.unstable_mockModule('@aws-sdk/client-s3', () => ({
@@ -78,7 +75,7 @@ describe('Account Routing via app/index.js', () => {
       const res = await request(app)
       .post('/account/password')
       .send({ password: 'newpassword' });
-      expect(res.statusCode).toBe(400);
+      expect(res.statusCode).toBe(403);
     });
 
     it('should fail if password is too short', async () => {
