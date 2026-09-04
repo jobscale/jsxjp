@@ -1,6 +1,6 @@
 import createHttpError from 'http-errors';
 import { service as authService } from '../auth/service.js';
-import { service } from './service.js';
+import { service, expandStream } from './service.js';
 
 export class Controller {
   find(req, res) {
@@ -30,9 +30,12 @@ export class Controller {
     })
     .then(({ ContentType, buffer }) => {
       res.setHeader('Content-Type', ContentType);
+      if (res.isLambda) {
+        return expandStream(buffer).then(body => res.end(body));
+      }
       buffer.pipe(res);
+      return new Promise(resolve => { res.on('finish', resolve); });
     })
-    .then(() => new Promise(resolve => { res.on('finish', resolve); }))
     .catch(e => {
       if (!e.status) e.status = 404;
       res.status(e.status).end(e.message);

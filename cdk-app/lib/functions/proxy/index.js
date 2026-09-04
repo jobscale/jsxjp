@@ -90,6 +90,7 @@ const createServer = event => {
     statusCode: 200,
     statusMessage: '',
     writableEnded: false,
+    isLambda: true,
     cookies: [],
     body: undefined,
     getHeaders() {

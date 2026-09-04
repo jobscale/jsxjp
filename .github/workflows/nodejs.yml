@@ -35,3 +35,4 @@ jobs:
         npm i
         (cd cdk-app/lib/functions/proxy && npm i)
         npm test
+        (cd cdk-app && npm i && npm test lib/functions/test/proxy.test.js)

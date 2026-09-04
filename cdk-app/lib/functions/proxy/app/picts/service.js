@@ -31,7 +31,7 @@ const config = {
   },
 }[ENV];
 
-const expandStream = async stream => {
+export const expandStream = async stream => {
   const chunks = [];
   for await (const chunk of stream) { chunks.push(chunk); }
   return Buffer.concat(chunks);
