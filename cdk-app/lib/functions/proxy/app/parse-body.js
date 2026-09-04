@@ -12,7 +12,7 @@ export const parseBody = async req => {
     return;
   }
 
-  const contentType = req.headers['content-type'] || '';
+  const contentType = req.headers.get('Content-Type') || '';
   if (contentType.startsWith('application/json')) {
     req.body = JSON.parse(buffer.toString());
     return;

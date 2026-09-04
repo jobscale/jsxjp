@@ -10,6 +10,8 @@ import { route } from './route.js';
 import { parseBody } from './parse-body.js';
 import { sshConnection } from './ssh-connect.js';
 
+const { ENV } = process.env;
+
 const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   const timestamp = new Intl.DateTimeFormat('sv-SE', {
     timeZone: 'Asia/Tokyo',
@@ -32,7 +34,7 @@ export class Ingress {
   // headers / url など毎リクエスト固定のオブジェクトを 1 度だけ生成してキャッシュする
   ensureContext(req) {
     if (req.ctx) return req.ctx;
-    const headers = new Headers(req.headers);
+    const { headers } = req;
     const method = req.method.toUpperCase();
     const xfProto = headers.get('X-Forwarded-Proto')?.split(',')[0].trim();
     const protocol = xfProto ?? (req.socket.encrypted ? 'https' : 'http');
@@ -154,16 +156,13 @@ export class Ingress {
     const pathRoute = `${method} ${pathname}`;
     logger.debug({ pathRoute, searchParams });
 
-    res.contentType = contentType => {
-      res.setHeader('Content-Type', contentType);
-    };
     res.status = code => {
       res.statusCode = code;
       return res;
     };
-    res.json = any => {
+    res.json = value => {
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
-      res.end(JSON.stringify(any));
+      res.end(JSON.stringify(value, null, ENV === 'dev' ? 2 : undefined));
     };
     res.redirect = uri => {
       res.writeHead(307, { Location: uri });
@@ -218,6 +217,7 @@ export class Ingress {
   start() {
     return async (req, res) => {
       try {
+        if (!(req.headers instanceof Headers)) req.headers = new Headers(req.headers);
         this.useHeader(req, res);
         if (this.opts.public && this.usePublic(req, res)) return;
         if (this.opts.logging) this.useLogging(req, res);

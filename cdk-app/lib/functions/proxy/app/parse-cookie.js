@@ -1,11 +1,11 @@
 // cookieParser
 const cookieParser = req => {
   if (req.cookies) return;
-  const cookieHeader = req.headers.cookie || '';
+  const cookieHeader = req.headers.get('Cookie') || '';
   const cookies = {};
-  cookieHeader.split(';').forEach(cookie => {
-    if (!cookie) return;
-    const [name, ...rest] = cookie.trim().split('=');
+  cookieHeader.split(';').map(cookie => cookie.trim()).filter(Boolean)
+  .forEach(cookie => {
+    const [name, ...rest] = cookie.split('=');
     cookies[name] = decodeURIComponent(rest.join('='));
   });
   req.cookies = cookies;

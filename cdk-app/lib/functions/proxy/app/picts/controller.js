@@ -29,7 +29,7 @@ export class Controller {
       return service.image({ login, type, fname });
     })
     .then(({ ContentType, buffer }) => {
-      res.contentType(ContentType);
+      res.setHeader('Content-Type', ContentType);
       buffer.pipe(res);
     })
     .then(() => new Promise(resolve => { res.on('finish', resolve); }))

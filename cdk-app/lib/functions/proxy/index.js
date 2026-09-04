@@ -52,28 +52,24 @@ const parseMultipart = (body, contentType) => {
 };
 
 const createServer = event => {
-  const { http } = event.requestContext;
-  const rawHeaders = {};
-  for (const [k, v] of Object.entries(event.headers ?? {})) {
-    rawHeaders[k.toLowerCase()] = v;
-  }
-  const contentType = rawHeaders['content-type'] ?? '';
-  const proto = (rawHeaders['x-forwarded-proto'] ?? 'https').split(',')[0].trim();
+  const { http: request } = event.requestContext;
 
-  const req = {
-    headers: rawHeaders,
-    method: http.method,
-    url: http.path + (event.rawQueryString ? `?${event.rawQueryString}` : ''),
+  const req = { headers: new Headers(event.headers) };
+  const contentType = req.headers.get('Content-Type') ?? '';
+  const proto = (req.headers.get('X-Forwarded-Proto') ?? 'https').split(',')[0].trim();
+  Object.assign(req, {
+    method: request.method,
+    url: request.path + (event.rawQueryString ? `?${event.rawQueryString}` : ''),
     socket: {
       encrypted: proto === 'https',
-      remoteAddress: http.sourceIp,
+      remoteAddress: request.sourceIp,
     },
     requestContext: event.requestContext,
     cookies: Object.fromEntries((event.cookies ?? []).map(c => {
       const i = c.indexOf('=');
       return [c.slice(0, i), decodeURIComponent(c.slice(i + 1))];
     })),
-  };
+  });
   if (event.body === undefined) {
     req.body = '';
   } else if (contentType.startsWith('application/json')) {
@@ -88,42 +84,29 @@ const createServer = event => {
     req.body = event.body;
   }
 
-  const responseHeaders = new Headers(defaultHeaders);
   const emitter = new EventEmitter();
   const res = Object.assign(emitter, {
-    headers: responseHeaders,
+    headers: new Headers(defaultHeaders),
     statusCode: 200,
     statusMessage: '',
     writableEnded: false,
     cookies: [],
     body: undefined,
     getHeaders() {
-      return Object.fromEntries(responseHeaders.entries());
+      return Object.fromEntries(res.headers.entries());
     },
-    getHeader(name) { return responseHeaders.get(name); },
-    hasHeader(name) { return responseHeaders.has(name); },
-    setHeader(name, value) { responseHeaders.set(name, value); },
-    removeHeader(name) { responseHeaders.delete(name); },
+    getHeader(name) { return res.headers.get(name); },
+    hasHeader(name) { return res.headers.has(name); },
+    setHeader(name, value) { res.headers.set(name, value); },
+    removeHeader(name) { res.headers.delete(name); },
     writeHead(code, h = {}) {
       res.statusCode = code;
-      for (const [k, v] of Object.entries(h)) responseHeaders.set(k, v);
-    },
-    status(code) { res.statusCode = code; return res; },
-    json(value) {
-      const indent = ENV === 'dev' ? 2 : undefined;
-      responseHeaders.set('Content-Type', 'application/json; charset=utf-8');
-      res.body = JSON.stringify(value, null, indent);
-      res.writableEnded = true;
-      emitter.emit('finish');
+      for (const [k, v] of Object.entries(h)) res.headers.set(k, v);
     },
     end(value) {
       if (value !== undefined) res.body = value;
       res.writableEnded = true;
-      emitter.emit('finish');
-    },
-    redirect(uri) {
-      res.writeHead(307, { Location: uri });
-      res.end('');
+      res.emit('finish');
     },
     setCookie(name, value, options) {
       res.cookies.push(serializeCookie(name, value, options));

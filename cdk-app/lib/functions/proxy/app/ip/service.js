@@ -2,8 +2,7 @@ import { logger } from '@jobscale/create-logger';
 
 class Service {
   ip(req, wrap = false) {
-    const headers = new Headers(req.headers);
-    const globalIp = headers.get('X-Forwarded-For')?.split(/[, ]/)[0] || req.socket.remoteAddress;
+    const globalIp = req.headers.get('X-Forwarded-For')?.split(/[, ]/)[0] || req.socket.remoteAddress;
     return wrap ? this.wrapK8s(globalIp) : globalIp;
   }
 
