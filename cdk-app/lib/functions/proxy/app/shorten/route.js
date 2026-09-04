@@ -7,6 +7,7 @@ router.add('GET', '/:id', controller.redirect);
 router.add('GET', '', [
   authController.verify,
   (req, res) => {
+    res.writeHead(307, { Location: '/v1/s' });
     res.end('i am shorten');
   },
 ]);

@@ -9,16 +9,17 @@ import { route as shortenRoute } from './shorten/route.js';
 import { route as planPulse } from './plan-pulse/route.js';
 import { route as picts } from './picts/route.js';
 import { controller } from './controller.js';
+import { controller as authController } from './auth/controller.js';
 
 const router = new Router();
 router.use('/ip', ipRoute.router);
 router.use('/api', apiRoute.router);
-router.use('/picts', picts.router);
+router.use('/picts', [authController.verify, picts.router]);
 router.use('/plan-pulse', planPulse.router);
 router.use('/s', shortenRoute.router);
 router.use('/auth', authRoute.router);
-router.use('/account', accountRoute.router);
-router.use('/user', userRoute.router);
+router.use('/account', [authController.verify, accountRoute.router]);
+router.use('/user', [authController.verify, userRoute.router]);
 router.use('/template', templateRoute.router);
 router.add('GET', '', controller.page);
 

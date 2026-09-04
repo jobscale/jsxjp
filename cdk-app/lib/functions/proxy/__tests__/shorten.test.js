@@ -73,8 +73,8 @@ describe('Shorten Module Tests', () => {
       mockDb.getValue.mockResolvedValue({ deletedAt: 1234567890 });
 
       const res = await request(app).get('/s/deleted-id');
-      expect(res.statusCode).toBe(501);
-      expect(res.body.message).toBe('Not Implemented');
+      expect(res.statusCode).toBe(423);
+      expect(res.body.message).toBe('Locked');
     });
 
     it('should handle DB error', async () => {

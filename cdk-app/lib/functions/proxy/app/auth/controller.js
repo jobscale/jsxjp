@@ -42,6 +42,16 @@ export class Controller {
     res.redirect('/v1/auth/');
   }
 
+  totp(req, res) {
+    const { secret } = req.body;
+    return authService.totp({ secret })
+    .then(result => res.json(result))
+    .catch(e => {
+      if (!e.statusCode) e = createHttpError(403);
+      res.status(e.statusCode || 500).json({ message: e.message });
+    });
+  }
+
   sign(req, res) {
     const { cookies: { token } } = req;
     const setHeader = (user = {}) => {
@@ -76,16 +86,6 @@ export class Controller {
         });
       }
       res.status(403).json({ message: e.message });
-    });
-  }
-
-  totp(req, res) {
-    const { secret } = req.body;
-    return authService.totp({ secret })
-    .then(result => res.json(result))
-    .catch(e => {
-      if (!e.statusCode) e = createHttpError(403);
-      res.status(e.statusCode || 500).json({ message: e.message });
     });
   }
 

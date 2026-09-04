@@ -6,6 +6,8 @@ export class Router {
     this.staticMap = new Map();
     // { path, regex, paramNames, methodMap: Map<method, handler> }
     this.dynamicList = [];
+    // { prefix, methodMap: Map<method, handler> }
+    this.prefixList = [];
   }
 
   // ルート登録
@@ -39,7 +41,7 @@ export class Router {
   }
 
   // サブルーターを前方一致でマージ
-  use(prefix, subRouter) {
+  merge(prefix, subRouter) {
     const norm = prefix.replace(/\/+$/, '');
     const join = suffix => `${norm}${suffix}` || '/';
     for (const [suffix, methodMap] of subRouter.staticMap) {
@@ -52,6 +54,32 @@ export class Router {
         this.add(method, join(entry.path), handler);
       }
     }
+  }
+
+  use(prefix, handler) {
+    for (const subRouter of [handler].flat()) {
+      if (subRouter instanceof Router) {
+        this.merge(prefix, subRouter);
+      } else {
+        this.middleware(prefix, subRouter);
+      }
+    }
+  }
+
+  middleware(prefix, handler) {
+    const normalizedPrefix = prefix.replace(/\/+$/, '') || '/';
+    const entry = this.prefixList.find(item => item.prefix === normalizedPrefix);
+    if (entry) {
+      ['GET', 'POST', 'HEAD'].forEach(method => {
+        entry.methodMap.get(method).push(handler);
+      });
+      return;
+    }
+    const methodMap = new Map();
+    ['GET', 'POST', 'HEAD'].forEach(method => {
+      methodMap.set(method, [handler]);
+    });
+    this.prefixList.push({ prefix: normalizedPrefix, methodMap });
   }
 
   // メソッド + pathname に対して { handler, params } / { methodNotAllowed, allow } / null を返す
@@ -84,6 +112,17 @@ export class Router {
     const method = ctx.method ?? req.method.toUpperCase();
     const pathname = ctx.pathname
       ?? new URL(req.url, `http://${req.headers.host ?? 'localhost'}`).pathname;
+    for (const { prefix, methodMap } of this.prefixList) {
+      const matches = pathname === prefix
+        || pathname.startsWith(`${prefix.replace(/\/+$/, '')}/`);
+      const middleware = methodMap.get(method);
+      if (!matches || !middleware) continue;
+      for (const prefixHandler of middleware.flat()) {
+        if (res.writableEnded) return;
+        await prefixHandler(req, res);
+      }
+      if (res.writableEnded) return;
+    }
     const result = this.match(method, pathname);
     if (!result) return;
     if (result.methodNotAllowed) {

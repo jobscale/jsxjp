@@ -107,7 +107,7 @@ export class Service {
     return db.getValue(tableName, key)
     .then(data => {
       if (!data) throw createHttpError(400);
-      if (data.deletedAt) throw createHttpError(501);
+      if (data.deletedAt) throw createHttpError(423);
       return data;
     })
     .then(data => {
