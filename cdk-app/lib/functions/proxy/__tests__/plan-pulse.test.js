@@ -1,6 +1,6 @@
-
 import { describe, expect, jest, beforeEach } from '@jest/globals';
 import request from 'supertest';
+import { Router } from '../app/router.js';
 
 process.env.ENV = 'test';
 
@@ -21,11 +21,7 @@ jest.unstable_mockModule('../app/s3.js', () => ({ db: mockDb }));
 jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
 
 // Mock other routes
-const mockRouter = {
-  router: {
-    routes: [],
-  },
-};
+const mockRouter = { router: new Router() };
 jest.unstable_mockModule('../app/shorten/route.js', () => ({ route: mockRouter }));
 jest.unstable_mockModule('../app/ip/route.js', () => ({ route: mockRouter }));
 jest.unstable_mockModule('../app/api/route.js', () => ({ route: mockRouter }));

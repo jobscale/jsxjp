@@ -9,5 +9,4 @@ router.add('POST', '', [
 ]);
 
 export const route = { router };
-
 export default { route };

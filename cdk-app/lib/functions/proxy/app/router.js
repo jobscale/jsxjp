@@ -1,62 +1,100 @@
 // HTML ルーター
+// 静的パスは Map で O(1) ルックアップ、動的パスのみ線形走査する
 export class Router {
   constructor() {
-    this.routes = [];
+    // path -> Map<method, handler>
+    this.staticMap = new Map();
+    // { path, regex, paramNames, methodMap: Map<method, handler> }
+    this.dynamicList = [];
   }
 
   // ルート登録
   add(method, path, handler) {
+    const upper = method.toUpperCase();
+    if (!path.includes(':')) {
+      let methods = this.staticMap.get(path);
+      if (!methods) {
+        methods = new Map();
+        this.staticMap.set(path, methods);
+      }
+      methods.set(upper, handler);
+      return;
+    }
     const paramNames = [];
     const regexPath = path.replace(/:([^/]+)/g, (_, name) => {
       paramNames.push(name);
       return '([^/]+)';
     });
-    const regex = new RegExp(`^${regexPath}$`);
-    this.routes.push({
-      method: method.toUpperCase(),
-      regexPath,
-      regex,
-      paramNames,
-      handler,
-    });
+    let entry = this.dynamicList.find(item => item.path === path);
+    if (!entry) {
+      entry = {
+        path,
+        regex: new RegExp(`^${regexPath}$`),
+        paramNames,
+        methodMap: new Map(),
+      };
+      this.dynamicList.push(entry);
+    }
+    entry.methodMap.set(upper, handler);
   }
 
   // サブルーターを前方一致でマージ
   use(prefix, subRouter) {
-    subRouter.routes.forEach(route => {
-      const regexPath = prefix + route.regexPath;
-      const regex = new RegExp(`^${regexPath}$`);
-      this.routes.push({
-        method: route.method,
-        regexPath,
-        regex,
-        paramNames: route.paramNames,
-        handler: route.handler,
+    const norm = prefix.replace(/\/+$/, '');
+    const join = suffix => `${norm}${suffix}` || '/';
+    for (const [suffix, methodMap] of subRouter.staticMap) {
+      for (const [method, handler] of methodMap) {
+        this.add(method, join(suffix), handler);
+      }
+    }
+    for (const entry of subRouter.dynamicList) {
+      for (const [method, handler] of entry.methodMap) {
+        this.add(method, join(entry.path), handler);
+      }
+    }
+  }
+
+  // メソッド + pathname に対して { handler, params } / { methodNotAllowed, allow } / null を返す
+  match(method, pathname) {
+    const staticMethods = this.staticMap.get(pathname);
+    if (staticMethods) {
+      const handler = staticMethods.get(method);
+      if (handler) return { handler, params: {} };
+      return { methodNotAllowed: true, allow: [...staticMethods.keys()] };
+    }
+    for (const entry of this.dynamicList) {
+      const m = entry.regex.exec(pathname);
+      if (!m) continue;
+      const handler = entry.methodMap.get(method);
+      if (!handler) {
+        return { methodNotAllowed: true, allow: [...entry.methodMap.keys()] };
+      }
+      const params = {};
+      entry.paramNames.forEach((name, i) => {
+        params[name] = decodeURIComponent(m[i + 1]);
       });
-    });
+      return { handler, params };
+    }
+    return null;
   }
 
   // リクエスト処理
   async handle(req, res) {
-    const headers = new Headers(req.headers);
-    const method = req.method.toUpperCase();
-    const protocol = req.socket.encrypted ? 'https' : 'http';
-    const host = headers.get('host');
-    const { pathname } = new URL(`${protocol}://${host}${req.url}`);
-    const route = this.routes.find(item => {
-      if (method !== item.method) return false;
-      if (!req.params) req.params = {};
-      const match = pathname.match(item.regex);
-      if (!match) return false;
-      const params = {};
-      item.paramNames.forEach((name, i) => {
-        params[name] = decodeURIComponent(match[i + 1]);
-      });
-      Object.assign(req.params, params); // リクエストにパラメータを追加
-      return true;
-    });
-    if (!route) return;
-    for (const handler of [route.handler].flat()) {
+    const ctx = req.ctx ?? {};
+    const method = ctx.method ?? req.method.toUpperCase();
+    const pathname = ctx.pathname
+      ?? new URL(req.url, `http://${req.headers.host ?? 'localhost'}`).pathname;
+    const result = this.match(method, pathname);
+    if (!result) return;
+    if (result.methodNotAllowed) {
+      res.setHeader('Allow', result.allow.join(', '));
+      res.writeHead(405, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: 'Method Not Allowed' }));
+      return;
+    }
+    if (!req.params) req.params = {};
+    Object.assign(req.params, result.params);
+    for (const handler of [result.handler].flat()) {
       if (res.writableEnded) return;
       await handler(req, res);
     }

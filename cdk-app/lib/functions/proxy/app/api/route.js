@@ -32,6 +32,4 @@ router.add('POST', '/hostname', controller.hostname);
 router.add('POST', '/speed', controller.speed);
 
 export const route = { router };
-export default {
-  route: { router },
-};
+export default { route };

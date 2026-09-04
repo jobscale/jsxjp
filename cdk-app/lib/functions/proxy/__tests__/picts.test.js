@@ -1,6 +1,6 @@
-
 import { describe, expect, jest, beforeEach } from '@jest/globals';
 import request from 'supertest';
+import { Router } from '../app/router.js';
 
 process.env.ENV = 'test';
 
@@ -43,11 +43,7 @@ jest.unstable_mockModule('sharp', () => ({ default: mockSharp }));
 jest.unstable_mockModule('../app/auth/service.js', () => ({ service: mockAuthService }));
 jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
 jest.unstable_mockModule('../app/shorten/route.js', () => ({
-  route: {
-    router: {
-      routes: [],
-    },
-  },
+  route: { router: new Router() },
 }));
 
 // Mock config service to bypass DB access

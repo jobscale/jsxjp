@@ -1,6 +1,6 @@
-
 import { describe, expect, jest, beforeEach } from '@jest/globals';
 import request from 'supertest';
+import { Router } from '../app/router.js';
 
 process.env.ENV = 'test';
 
@@ -31,13 +31,7 @@ jest.unstable_mockModule('../app/auth/service.js', () => ({ service: mockAuthSer
 jest.unstable_mockModule('../app/auth/controller.js', () => ({ controller: mockAuthController }));
 
 // Mock other routes to avoid loading them and their dependencies
-const mockRouter = {
-  router: {
-    routes: [],
-    use: jest.fn(),
-    add: jest.fn(),
-  },
-};
+const mockRouter = { router: new Router() };
 jest.unstable_mockModule('../app/ip/route.js', () => ({ route: mockRouter }));
 jest.unstable_mockModule('../app/api/route.js', () => ({ route: mockRouter }));
 jest.unstable_mockModule('../app/account/route.js', () => ({ route: mockRouter }));

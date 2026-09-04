@@ -1,6 +1,6 @@
-
 import { describe, expect, jest, beforeEach } from '@jest/globals';
 import request from 'supertest';
+import { Router } from '../app/router.js';
 
 process.env.ENV = 'test';
 
@@ -19,11 +19,7 @@ const mockLogger = {
 
 jest.unstable_mockModule('../app/db.js', () => ({ db: mockDb }));
 jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
-const mockRouter = {
-  router: {
-    routes: [],
-  },
-};
+const mockRouter = { router: new Router() };
 jest.unstable_mockModule('../app/shorten/route.js', () => ({ route: mockRouter }));
 jest.unstable_mockModule('../app/ip/route.js', () => ({ route: mockRouter }));
 jest.unstable_mockModule('../app/api/route.js', () => ({ route: mockRouter }));
@@ -35,6 +31,7 @@ jest.unstable_mockModule('../app/picts/route.js', () => ({ route: mockRouter }))
 
 const mockAuthService = {
   decode: jest.fn().mockResolvedValue({ login: 'alice' }),
+  verify: jest.fn().mockResolvedValue(undefined),
 };
 jest.unstable_mockModule('../app/auth/service.js', () => ({ service: mockAuthService }));
 // Mock other dependencies to avoid side effects
@@ -63,7 +60,9 @@ describe('User Routing via app/index.js', () => {
       ];
       mockDb.list.mockResolvedValue(users);
 
-      const res = await request(app).post('/user/find');
+      const res = await request(app)
+      .post('/user/find')
+      .set('Cookie', 'token=valid_token');
 
       expect(res.statusCode).toBe(200);
       const data = res.body;
@@ -80,6 +79,7 @@ describe('User Routing via app/index.js', () => {
 
       const res = await request(app)
       .post('/user/register')
+      .set('Cookie', 'token=valid_token')
       .send({ login: 'testuser', password: 'password', role: 'guest' });
 
       expect(res.statusCode).toBe(200);
@@ -96,6 +96,7 @@ describe('User Routing via app/index.js', () => {
 
       const res = await request(app)
       .post('/user/register')
+      .set('Cookie', 'token=valid_token')
       .send({ login: 'testuser', password: 'password' });
 
       expect(res.statusCode).toBe(400);
@@ -104,6 +105,7 @@ describe('User Routing via app/index.js', () => {
     it('should fail if missing login or password', async () => {
       const res = await request(app)
       .post('/user/register')
+      .set('Cookie', 'token=valid_token')
       .send({ login: 'testuser' });
       expect(res.statusCode).toBe(400);
     });
@@ -117,6 +119,7 @@ describe('User Routing via app/index.js', () => {
 
       const res = await request(app)
       .post('/user/reset')
+      .set('Cookie', 'token=valid_token')
       .send({ login: 'testuser', password: 'newpassword', role: 'staff' });
 
       expect(res.statusCode).toBe(200);
@@ -133,6 +136,7 @@ describe('User Routing via app/index.js', () => {
 
       const res = await request(app)
       .post('/user/reset')
+      .set('Cookie', 'token=valid_token')
       .send({ login: 'testuser', password: 'password' });
 
       expect(res.statusCode).toBe(400);
@@ -147,6 +151,7 @@ describe('User Routing via app/index.js', () => {
 
       const res = await request(app)
       .post('/user/remove')
+      .set('Cookie', 'token=valid_token')
       .send({ id: 'user1' });
 
       expect(res.statusCode).toBe(200);
@@ -163,6 +168,7 @@ describe('User Routing via app/index.js', () => {
 
       const res = await request(app)
       .post('/user/remove')
+      .set('Cookie', 'token=valid_token')
       .send({ id: 'user1' });
 
       expect(res.statusCode).toBe(200);

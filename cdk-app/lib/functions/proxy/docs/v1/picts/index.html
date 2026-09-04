@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.3.7/mqtt.min.js"></script>
     <link rel="stylesheet" href="/v1/css/style.css">
     <link rel="stylesheet" href="/v1/css/menu.css">
     <title>Pictures - jsx.jp</title>
@@ -23,7 +24,7 @@
             </div>
             <div v-for="item of refFiles" class="item-box">
               <div class="item-inline">
-                <div class="thumbnail">
+                <div class="thumbnail file">
                   <img :src="item.img.src">
                 </div>
                 <div class="img-head">{{ item.name }}</div>
@@ -58,7 +59,7 @@
             <div v-for="item of list" class="item-box" :class="itemShown(item)">
               <div class="item-inline" @click.prevent="show(item)">
                 <div class="thumbnail">
-                  <img :src="`t/${item.name}`" @load="onImageLoad()">
+                  <img :src="`/picts/t/${item.name}`" @load="onImageLoad()">
                 </div>
                 <div class="img-head">{{ item.name }}</div>
               </div>

@@ -5,5 +5,4 @@ const router = new Router();
 router.add('GET', '', controller.ip);
 
 export const route = { router };
-
 export default { route };

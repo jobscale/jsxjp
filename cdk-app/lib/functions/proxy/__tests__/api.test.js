@@ -1,7 +1,6 @@
 import { describe, expect, jest, beforeEach } from '@jest/globals';
 import request from 'supertest';
-
-process.env.ENV = 'test';
+import { Router } from '../app/router.js';
 
 const mockDb = {
   getValue: jest.fn(),
@@ -55,11 +54,7 @@ jest.unstable_mockModule('web-push', () => ({ default: mockWebPush }));
 jest.unstable_mockModule('nodemailer', () => ({ default: mockNodemailer }));
 
 // Mock other routes
-const mockRouter = {
-  router: {
-    routes: [],
-  },
-};
+const mockRouter = { router: new Router() };
 jest.unstable_mockModule('../app/shorten/route.js', () => ({ route: mockRouter }));
 jest.unstable_mockModule('../app/ip/route.js', () => ({ route: mockRouter }));
 jest.unstable_mockModule('../app/auth/route.js', () => ({ route: mockRouter }));
