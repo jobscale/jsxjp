@@ -42,6 +42,11 @@ const envConfigs = {
   },
 };
 
+// preflight
+// curl -i -X OPTIONS https://dev-serverless.jsx.jp/ip -H "Origin: https://example.com" -H "Access-Control-Request-Method: POST"
+// request
+// curl -i -X POST https://dev-serverless.jsx.jp/auth/login --data '{"login":"guest","password":"secret"}' -H 'Content-Type: application/json'
+
 const config = envConfigs[envName];
 if (!config) {
   const envList = Object.keys(envConfigs).join(', ');

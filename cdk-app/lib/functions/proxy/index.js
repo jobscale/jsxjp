@@ -1,13 +1,6 @@
-import createHttpError from 'http-errors';
+import { EventEmitter } from 'events';
 import { logger } from '@jobscale/create-logger';
-import { account } from './account/index.js';
-import { api } from './api/index.js';
-import { auth } from './auth/index.js';
-import { planPulse } from './plan-pulse/index.js';
-import { picts } from './picts/index.js';
-import { shorten } from './shorten/index.js';
-import { template } from './template/index.js';
-import { user } from './user/index.js';
+import { Ingress } from './app/index.js';
 
 const { ENV } = process.env;
 
@@ -19,6 +12,8 @@ const defaultHeaders = {
 const serializeCookie = (name, value, options = {}) => {
   const parts = [`${name}=${encodeURIComponent(value)}`];
   if (options.expires) parts.push(`Expires=${new Date(options.expires).toUTCString()}`);
+  if (options.maxAge) parts.push(`Max-Age=${options.maxAge}`);
+  if (options.domain) parts.push(`Domain=${options.domain}`);
   parts.push(`Path=${options.path || '/'}`);
   if (options.httpOnly !== false) parts.push('HttpOnly');
   if (options.secure !== false) parts.push('Secure');
@@ -56,257 +51,116 @@ const parseMultipart = (body, contentType) => {
   return files;
 };
 
-const router = async (req, res) => {
-  const { http: { method: httpMethod, path: httpPath } } = req.requestContext;
-  const rawRoute = `${httpMethod} ${httpPath}`;
-
-  if (['OPTIONS'].includes(httpMethod)) {
-    res.end();
-    return;
-  }
-  if (['PUT', 'PATCH', 'DELETE'].includes(httpMethod)) {
-    throw createHttpError(405);
-  }
-
-  if (rawRoute === 'HEAD /auth/sign') {
-    await auth.sign(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /auth/sign') {
-    await auth.sign(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /auth/login') {
-    await auth.login(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /auth/totp') {
-    await auth.totp(req, res);
-    return;
-  }
-  if (rawRoute === 'GET /auth/logout') {
-    auth.logout(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /account/password') {
-    await account.password(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /api/slack') {
-    await api.slack(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /api/email') {
-    await api.email(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /api/webPush') {
-    await api.webPush(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /api/sendmail') {
-    await api.sendmail(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /api/subscription') {
-    await api.subscription(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /api/getNumber') {
-    await api.getNumber(req, res);
-    return;
-  }
-  if (rawRoute === 'GET /api/public') {
-    await api.public(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /api/hostname') {
-    await api.hostname(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /api/speed') {
-    await api.speed(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /picts/upload') {
-    await picts.upload(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /picts/find') {
-    await picts.find(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /picts/remove') {
-    await picts.remove(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /picts/getData') {
-    await picts.getData(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /picts/putData') {
-    await picts.putData(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /plan-pulse/hub') {
-    await planPulse.hub(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /plan-pulse/putHub') {
-    await planPulse.putHub(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /plan-pulse/putPerson') {
-    await planPulse.putPerson(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /plan-pulse/removePerson') {
-    await planPulse.removePerson(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /template') {
-    await template.load(req, res);
-    return;
-  }
-  if (rawRoute.startsWith('GET /picts/')) {
-    await picts.image(req, res);
-    return;
-  }
-  if (rawRoute === 'GET /picts') {
-    await picts.login(req);
-    throw createHttpError(404, '404 NotFound');
-  }
-  if (rawRoute === 'GET /s') {
-    await shorten.verify(req);
-    res.writeHead(200, 'Content-Type', 'text/plain; charset=utf-8');
-    res.end('i am shorten');
-    return;
-  }
-  if (rawRoute.startsWith('GET /s/')) {
-    await shorten.redirect(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /s/register') {
-    await shorten.register(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /s/find') {
-    await shorten.find(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /s/remove') {
-    await shorten.remove(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /user/register') {
-    await user.register(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /user/reset') {
-    await user.reset(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /user/find') {
-    await user.find(req, res);
-    return;
-  }
-  if (rawRoute === 'POST /user/remove') {
-    await user.remove(req, res);
-    return;
-  }
-
-  if (['HEAD'].includes(httpMethod)) {
-    res.end();
-    return;
-  }
-
-  throw createHttpError(405);
-};
-
 const createServer = event => {
-  const headers = new Headers(event.headers);
-  const contentType = headers.get('Content-Type') ?? '';
+  const { http } = event.requestContext;
+  const rawHeaders = {};
+  for (const [k, v] of Object.entries(event.headers ?? {})) {
+    rawHeaders[k.toLowerCase()] = v;
+  }
+  const contentType = rawHeaders['content-type'] ?? '';
+  const proto = (rawHeaders['x-forwarded-proto'] ?? 'https').split(',')[0].trim();
+
   const req = {
-    headers,
+    headers: rawHeaders,
+    method: http.method,
+    url: http.path + (event.rawQueryString ? `?${event.rawQueryString}` : ''),
+    socket: {
+      encrypted: proto === 'https',
+      remoteAddress: http.sourceIp,
+    },
     requestContext: event.requestContext,
+    cookies: Object.fromEntries((event.cookies ?? []).map(c => {
+      const i = c.indexOf('=');
+      return [c.slice(0, i), decodeURIComponent(c.slice(i + 1))];
+    })),
   };
-  if (contentType.startsWith('application/json') && event.body) {
+  if (event.body === undefined) {
+    req.body = '';
+  } else if (contentType.startsWith('application/json')) {
     req.body = JSON.parse(event.body);
+  } else if (contentType.startsWith('application/x-www-form-urlencoded')) {
+    req.body = Object.fromEntries(new URLSearchParams(event.body).entries());
   } else if (contentType.startsWith('multipart/form-data')) {
     const bodyBuffer = Buffer.from(event.body, event.isBase64Encoded ? 'base64' : undefined);
     req.files = parseMultipart(bodyBuffer, contentType);
+    req.body = '';
+  } else {
+    req.body = event.body;
   }
-  req.cookies = Object.fromEntries((event.cookies || []).map(cookie => {
-    const separator = cookie.indexOf('=');
-    return [cookie.slice(0, separator), decodeURIComponent(cookie.slice(separator + 1))];
-  }));
-  const res = {
-    headers: new Headers(defaultHeaders),
+
+  const responseHeaders = new Headers(defaultHeaders);
+  const emitter = new EventEmitter();
+  const res = Object.assign(emitter, {
+    headers: responseHeaders,
     statusCode: 200,
+    statusMessage: '',
     writableEnded: false,
     cookies: [],
     body: undefined,
-    status(code) {
-      res.statusCode = code;
-      return res;
+    getHeaders() {
+      return Object.fromEntries(responseHeaders.entries());
     },
-    setHeader(name, value) {
-      res.headers.set(name, value);
-    },
+    getHeader(name) { return responseHeaders.get(name); },
+    hasHeader(name) { return responseHeaders.has(name); },
+    setHeader(name, value) { responseHeaders.set(name, value); },
+    removeHeader(name) { responseHeaders.delete(name); },
     writeHead(code, h = {}) {
       res.statusCode = code;
-      for (const [key, value] of Object.entries(h)) {
-        res.headers.set(key, value);
-      }
+      for (const [k, v] of Object.entries(h)) responseHeaders.set(k, v);
     },
+    status(code) { res.statusCode = code; return res; },
     json(value) {
       const indent = ENV === 'dev' ? 2 : undefined;
-      res.headers.set('Content-Type', 'application/json; charset=utf-8');
+      responseHeaders.set('Content-Type', 'application/json; charset=utf-8');
       res.body = JSON.stringify(value, null, indent);
       res.writableEnded = true;
+      emitter.emit('finish');
     },
     end(value) {
-      res.body = value;
+      if (value !== undefined) res.body = value;
       res.writableEnded = true;
+      emitter.emit('finish');
     },
-  };
-  res.setCookie = (name, value, options) => {
-    res.cookies.push(serializeCookie(name, value, options));
-  };
-  res.clearCookie = (name, options = {}) => {
-    res.cookies.push(serializeCookie(name, '', { ...options, expires: new Date(0) }));
-  };
+    redirect(uri) {
+      res.writeHead(307, { Location: uri });
+      res.end('');
+    },
+    setCookie(name, value, options) {
+      res.cookies.push(serializeCookie(name, value, options));
+    },
+    clearCookie(name, options = {}) {
+      res.cookies.push(serializeCookie(name, '', { ...options, expires: new Date(0) }));
+    },
+  });
   return { req, res };
 };
 
-const ingress = async (req, res) => {
-  await router(req, res)
-  .catch(e => {
-    logger.info({ message: e });
-    if (!e.status) e.status = 500;
-    res.status(e.status).json({ message: e.message });
-  });
-  const isBinary = Buffer.isBuffer(res.body) ? true : undefined;
+const toApiGatewayResponse = res => {
+  const isBinary = Buffer.isBuffer(res.body) || undefined;
   return {
     statusCode: res.statusCode,
-    headers: {
-      ...Object.fromEntries(res.headers.entries()),
-    },
+    headers: res.getHeaders(),
     cookies: res.cookies,
-    body: isBinary ? res.body.toString('base64') : res.body,
+    body: isBinary ? res.body.toString('base64') : res.body ?? '',
     isBase64Encoded: isBinary,
   };
 };
 
+const ingressApp = new Ingress({ public: false }).start();
+
 export const handler = async event => {
   logger.info('EVENT', JSON.stringify(event, null, 2));
   const { req, res } = createServer(event);
-  const response = await ingress(req, res);
+  const method = req.method.toUpperCase();
+  if (method === 'OPTIONS') {
+    res.end('');
+  } else if (['PUT', 'PATCH', 'DELETE'].includes(method)) {
+    res.writeHead(405, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify({ message: 'Method Not Allowed' }));
+  } else {
+    await ingressApp(req, res);
+  }
+  const response = toApiGatewayResponse(res);
   logger.info('RESPONSE', JSON.stringify(response, null, 2));
   return response;
 };
-
-// preflight
-// curl -i -X OPTIONS https://dev-serverless.jsx.jp/ip -H "Origin: https://example.com" -H "Access-Control-Request-Method: POST"
-// request
-// curl -i -X POST https://dev-serverless.jsx.jp/auth/login --data '{"login":"guest","password":"secret"}' -H 'Content-Type: application/json'

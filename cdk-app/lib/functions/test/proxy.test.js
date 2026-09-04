@@ -1,10 +1,20 @@
-import { jest } from '@jest/globals';
+import { jest, beforeEach, test, expect } from '@jest/globals';
+import { Router } from '../proxy/app/router.js';
+
+process.env.ENV = 'test';
+
+const mockLogger = {
+  info: jest.fn(),
+  error: jest.fn(),
+  debug: jest.fn(),
+};
+jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
 
 const auth = {
-  sign: jest.fn((req, res, head) => {
+  sign: jest.fn((req, res) => {
     res.headers.set('X-User', 'alice');
     res.headers.set('X-Address', '127.0.0.1');
-    if (head) return res.end();
+    if (req.method === 'HEAD') return res.end();
     return res.json({ login: 'alice' });
   }),
   login: jest.fn((req, res) => {
@@ -12,6 +22,10 @@ const auth = {
     res.json({ token: 'token-value' });
   }),
   totp: jest.fn((req, res) => res.json({ code: '123456', list: ['123456'] })),
+  logout: jest.fn((req, res) => {
+    res.clearCookie('token');
+    res.redirect('/v1/auth/');
+  }),
 };
 
 const account = {
@@ -78,14 +92,48 @@ const user = {
   remove: jest.fn((req, res) => res.json({ deletedAt: '2026-08-18' })),
 };
 
-jest.unstable_mockModule('../proxy/auth/index.js', () => ({ auth }));
-jest.unstable_mockModule('../proxy/account/index.js', () => ({ account }));
-jest.unstable_mockModule('../proxy/api/index.js', () => ({ api }));
-jest.unstable_mockModule('../proxy/plan-pulse/index.js', () => ({ planPulse }));
-jest.unstable_mockModule('../proxy/picts/index.js', () => ({ picts }));
-jest.unstable_mockModule('../proxy/shorten/index.js', () => ({ shorten }));
-jest.unstable_mockModule('../proxy/template/index.js', () => ({ template }));
-jest.unstable_mockModule('../proxy/user/index.js', () => ({ user }));
+const mockRouter = new Router();
+mockRouter.add('HEAD', '/auth/sign', auth.sign);
+mockRouter.add('POST', '/auth/sign', auth.sign);
+mockRouter.add('POST', '/auth/login', auth.login);
+mockRouter.add('POST', '/auth/totp', auth.totp);
+mockRouter.add('GET', '/auth/logout', auth.logout);
+mockRouter.add('POST', '/account/password', account.password);
+mockRouter.add('POST', '/api/slack', api.slack);
+mockRouter.add('POST', '/api/email', api.email);
+mockRouter.add('POST', '/api/webPush', api.webPush);
+mockRouter.add('POST', '/api/sendmail', api.sendmail);
+mockRouter.add('POST', '/api/subscription', api.subscription);
+mockRouter.add('POST', '/api/getNumber', api.getNumber);
+mockRouter.add('GET', '/api/public', api.public);
+mockRouter.add('POST', '/api/hostname', api.hostname);
+mockRouter.add('POST', '/api/speed', api.speed);
+mockRouter.add('POST', '/plan-pulse/hub', planPulse.hub);
+mockRouter.add('POST', '/plan-pulse/putHub', planPulse.putHub);
+mockRouter.add('POST', '/plan-pulse/putPerson', planPulse.putPerson);
+mockRouter.add('POST', '/plan-pulse/removePerson', planPulse.removePerson);
+mockRouter.add('POST', '/picts/upload', picts.upload);
+mockRouter.add('POST', '/picts/find', picts.find);
+mockRouter.add('POST', '/picts/remove', picts.remove);
+mockRouter.add('POST', '/picts/getData', picts.getData);
+mockRouter.add('POST', '/picts/putData', picts.putData);
+mockRouter.add('GET', '/picts/:type/:fname', picts.image);
+mockRouter.add('GET', '/picts', picts.login);
+mockRouter.add('GET', '/s', shorten.verify);
+mockRouter.add('GET', '/s/:id', shorten.redirect);
+mockRouter.add('POST', '/s/register', shorten.register);
+mockRouter.add('POST', '/s/find', shorten.find);
+mockRouter.add('POST', '/s/remove', shorten.remove);
+mockRouter.add('POST', '/template', template.load);
+mockRouter.add('POST', '/user/register', user.register);
+mockRouter.add('POST', '/user/reset', user.reset);
+mockRouter.add('POST', '/user/find', user.find);
+mockRouter.add('POST', '/user/remove', user.remove);
+
+jest.unstable_mockModule('../proxy/app/route.js', () => ({
+  route: { router: mockRouter },
+  default: { route: { router: mockRouter } },
+}));
 
 const { handler } = await import('../proxy/index.js');
 

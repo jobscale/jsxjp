@@ -28,13 +28,9 @@ export const request = (app, method, url, body = null, headers = {}) => new Prom
     getHeaders() {
       return this.headers;
     },
-    writeHead(statusCode, h) {
-      this.statusCode = statusCode;
-      if (h) {
-        for (const [key, value] of Object.entries(h)) {
-          this.headers[key.toLowerCase()] = value;
-        }
-      }
+    writeHead(code, h = {}) {
+      this.statusCode = code;
+      for (const [key, value] of Object.entries(h)) this.headers[key.toLowerCase()] = value;
     },
     end(chunk) {
       if (chunk) this.body.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));

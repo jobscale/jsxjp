@@ -1,4 +1,5 @@
 export const parseBody = async req => {
+  if (req.body !== undefined || req.files !== undefined) return;
   const buffer = await new Promise((resolve, reject) => {
     const chunks = [];
     req.on('data', chunk => chunks.push(chunk));

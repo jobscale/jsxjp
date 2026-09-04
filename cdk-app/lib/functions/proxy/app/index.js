@@ -25,6 +25,10 @@ const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
 };
 
 export class Ingress {
+  constructor(opts = {}) {
+    this.opts = { public: true, logging: true, ...opts };
+  }
+
   // headers / url など毎リクエスト固定のオブジェクトを 1 度だけ生成してキャッシュする
   ensureContext(req) {
     if (req.ctx) return req.ctx;
@@ -158,7 +162,7 @@ export class Ingress {
       return res;
     };
     res.json = any => {
-      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
       res.end(JSON.stringify(any));
     };
     res.redirect = uri => {
@@ -215,8 +219,8 @@ export class Ingress {
     return async (req, res) => {
       try {
         this.useHeader(req, res);
-        if (this.usePublic(req, res)) return;
-        this.useLogging(req, res);
+        if (this.opts.public && this.usePublic(req, res)) return;
+        if (this.opts.logging) this.useLogging(req, res);
         await this.useRoute(req, res);
       } catch (e) {
         this.errorHandler(e, req, res);
