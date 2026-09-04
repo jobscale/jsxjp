@@ -8,9 +8,9 @@ function handler(event) {
   }
   const inlinePolicy = `nonce-${nonce}`;
   const allowCdn = [
-    'https://jsdelivr.net',
+    'https://cdn.jsdelivr.net',
     'https://esm.sh',
-    'https://cloudflare.com',
+    'https://cdnjs.cloudflare.com',
   ].join(' ');
   const csp = [
     "default-src 'self'",
@@ -25,6 +25,12 @@ function handler(event) {
     "frame-ancestors 'self'",
   ];
   response.headers['content-security-policy'] = { value: csp.join('; ') };
+  response.headers['permissions-policy'] = { value: 'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()' };
+  response.headers['referrer-policy'] = { value: 'strict-origin-when-cross-origin' };
+  response.headers['strict-transport-security'] = { value: 'max-age=31536000; includeSubdomains; preload' };
+  response.headers['x-content-type-options'] = { value: 'nosniff' };
+  response.headers['x-frame-options'] = { value: 'SAMEORIGIN' };
+  response.headers['x-xss-protection'] = { value: '1; mode=block' };
 
   return response; 
 }

@@ -58,7 +58,15 @@ export const frontCache = stack => {
     cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
     ...extras,
   });
-
+  const extras = {
+    functionAssociations: [{
+      eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+      function: rewriteFunction,
+    }, {
+      eventType: cloudfront.FunctionEventType.VIEWER_RESPONSE,
+      function: responseFunction,
+    }],
+  };
   const distribution = new cloudfront.Distribution(stack, 'FrontDistribution', {
     enabled: true,
     defaultRootObject: 'index.html',
@@ -76,22 +84,14 @@ export const frontCache = stack => {
       originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
     },
     additionalBehaviors: {
-      '/v1/*': s3Behavior({
-        functionAssociations: [{
-          eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
-          function: rewriteFunction,
-        }, {
-          eventType: cloudfront.FunctionEventType.VIEWER_RESPONSE,
-          function: responseFunction,
-        }],
-      }),
-      '/index.html': s3Behavior(),
-      '/favicon.ico': s3Behavior(),
-      '/manifest.json': s3Behavior(),
-      '/pwa.js': s3Behavior(),
-      '/service-worker.js': s3Behavior(),
-      '/robots.txt': s3Behavior(),
-      '/sitemap.txt': s3Behavior(),
+      '/v1/*': s3Behavior(extras),
+      '/index.html': s3Behavior(extras),
+      '/favicon.ico': s3Behavior(extras),
+      '/manifest.json': s3Behavior(extras),
+      '/pwa.js': s3Behavior(extras),
+      '/service-worker.js': s3Behavior(extras),
+      '/robots.txt': s3Behavior(extras),
+      '/sitemap.txt': s3Behavior(extras),
     },
   });
 

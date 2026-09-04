@@ -21,7 +21,7 @@ router.use('/auth', authRoute.router);
 router.use('/account', [authController.verify, accountRoute.router]);
 router.use('/user', [authController.verify, userRoute.router]);
 router.use('/template', templateRoute.router);
-router.add('GET', '', controller.page);
+router.add('GET', '/', controller.page);
 
 export const route = { router };
 export default { route };

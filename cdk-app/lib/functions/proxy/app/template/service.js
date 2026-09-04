@@ -18,7 +18,6 @@ const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
 export class Service {
   async load(id) {
     const template = id.split('-').join('/');
-    debugger;
     const file = path.join(import.meta.dirname, '../..', 'views', `${template}.html`);
     return fs.readFile(file, 'utf-8')
     .then(async html => html.replace('{{timestamp}}', await this.now()))
