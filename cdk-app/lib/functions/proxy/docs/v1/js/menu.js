@@ -1,4 +1,4 @@
-import { logger } from 'https://esm.sh/@jobscale/logger';
+import { logger } from 'https://esm.sh/@jobscale/create-logger';
 
 class Menu {
   initMenu() {

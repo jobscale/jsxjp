@@ -1,5 +1,5 @@
 /* global mqtt */
-import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
+import { createApp, reactive, nextTick } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { createLogger } from 'https://esm.sh/@jobscale/logger';
 
 const random = (length = 7) => {
@@ -364,7 +364,7 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       const index = self.list.findIndex(item => item.name === preview.name);
       self.list.splice(index, 1);
       self.preview = undefined;
-      self.$nextTick(() => {
+      nextTick(() => {
         window.scrollTo(0, self.scrollY);
       });
       return res.json();
@@ -416,7 +416,7 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
     if (!item) {
       await self.onSave();
       self.preview = undefined;
-      self.$nextTick(() => {
+      nextTick(() => {
         window.scrollTo(0, self.scrollY);
       });
       return;

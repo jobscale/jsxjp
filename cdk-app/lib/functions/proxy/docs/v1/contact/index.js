@@ -1,5 +1,5 @@
 import { createApp, reactive, nextTick } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
-import { logger } from 'https://esm.sh/@jobscale/logger';
+import { logger } from 'https://esm.sh/@jobscale/create-logger';
 
 let self = {
   image: undefined,
