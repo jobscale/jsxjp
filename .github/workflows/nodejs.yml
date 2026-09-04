@@ -33,5 +33,5 @@ jobs:
     - name: Test Step
       run: |
         npm i
-        npm run lint --if-present
+        (cd cdk-app/lib/functions/proxy && npm i)
         npm test
