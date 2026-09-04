@@ -34,6 +34,15 @@ export const frontCache = stack => {
     ),
   });
 
+  const responseFunction = new cloudfront.Function(stack, 'FrontResponseFunction', {
+    functionName: `${stack.stackName}-response`,
+    runtime: cloudfront.FunctionRuntime.JS_2_0,
+    comment: 'Handle response modifications for security headers',
+    code: cloudfront.FunctionCode.fromInline(
+      fs.readFileSync(path.join(process.cwd(), 'lib', 'cdk', 'front-response.cjs'), 'utf8'),
+    ),
+  });
+
   const s3Origin = origins.S3BucketOrigin.withOriginAccessControl(destinationBucket);
   const httpApiOrigin = new origins.HttpOrigin(gateway.domainName, {
     protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
@@ -71,6 +80,9 @@ export const frontCache = stack => {
         functionAssociations: [{
           eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
           function: rewriteFunction,
+        }, {
+          eventType: cloudfront.FunctionEventType.VIEWER_RESPONSE,
+          function: responseFunction,
         }],
       }),
       '/index.html': s3Behavior(),

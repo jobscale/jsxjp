@@ -10,7 +10,7 @@ function handler(event) {
       headers: {
         'access-control-allow-origin': { value: '*' },
         'access-control-allow-methods': { value: 'GET, HEAD' },
-        'access-control-allow-headers': { value: '*' },
+        'access-control-allow-headers': { value: 'Content-Type' },
         'access-control-max-age': { value: '86400' },
       },
     };
