@@ -30,7 +30,7 @@ export const frontCache = stack => {
     runtime: cloudfront.FunctionRuntime.JS_2_0,
     comment: 'Append index.html for directory-style URIs',
     code: cloudfront.FunctionCode.fromInline(
-      fs.readFileSync(path.join(process.cwd(), 'lib', 'cdk', 'front-rewrite.cjs'), 'utf8'),
+      fs.readFileSync(path.join(process.cwd(), 'lib/cdk/front-rewrite.cjs'), 'utf8'),
     ),
   });
 
@@ -39,7 +39,7 @@ export const frontCache = stack => {
     runtime: cloudfront.FunctionRuntime.JS_2_0,
     comment: 'Handle response modifications for security headers',
     code: cloudfront.FunctionCode.fromInline(
-      fs.readFileSync(path.join(process.cwd(), 'lib', 'cdk', 'front-response.cjs'), 'utf8'),
+      fs.readFileSync(path.join(process.cwd(), 'lib/cdk/front-response.cjs'), 'utf8'),
     ),
   });
 
@@ -58,48 +58,41 @@ export const frontCache = stack => {
     cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
     ...extras,
   });
+  const { VIEWER_REQUEST, VIEWER_RESPONSE } = cloudfront.FunctionEventType;
   const extras = {
-    functionAssociations: [{
-      eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
-      function: rewriteFunction,
-    }, {
-      eventType: cloudfront.FunctionEventType.VIEWER_RESPONSE,
-      function: responseFunction,
-    }],
+    functionAssociations: [
+      { eventType: VIEWER_REQUEST, function: rewriteFunction },
+      { eventType: VIEWER_RESPONSE, function: responseFunction },
+    ],
+  };
+  const s3Paths = [
+    '/v1/*', '/v2/*', '/index.html', '/favicon.ico', '/manifest.json',
+    '/pwa.js', '/service-worker.js', '/robots.txt', '/sitemap.txt',
+  ];
+  const additionalBehaviors = {
+    ...Object.fromEntries(s3Paths.map(prefix => [prefix, s3Behavior(extras)])),
+  };
+  const defaultBehavior = {
+    origin: httpApiOrigin,
+    viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+    compress: true,
+    allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+    cachedMethods: cloudfront.CachedMethods.CACHE_GET_HEAD,
+    cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+    originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
   };
   const distribution = new cloudfront.Distribution(stack, 'FrontDistribution', {
     enabled: true,
     defaultRootObject: 'index.html',
     domainNames: [front.domainName],
-    certificate,
     minimumProtocolVersion: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,
     sslSupportMethod: cloudfront.SSLMethod.SNI,
-    defaultBehavior: {
-      origin: httpApiOrigin,
-      viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-      compress: true,
-      allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
-      cachedMethods: cloudfront.CachedMethods.CACHE_GET_HEAD,
-      cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-      originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
-    },
-    additionalBehaviors: {
-      '/v1/*': s3Behavior(extras),
-      '/index.html': s3Behavior(extras),
-      '/favicon.ico': s3Behavior(extras),
-      '/manifest.json': s3Behavior(extras),
-      '/pwa.js': s3Behavior(extras),
-      '/service-worker.js': s3Behavior(extras),
-      '/robots.txt': s3Behavior(extras),
-      '/sitemap.txt': s3Behavior(extras),
-    },
+    certificate, defaultBehavior, additionalBehaviors,
   });
 
   new s3deploy.BucketDeployment(stack, 'FrontDocsDeploy', {
     sources: [s3deploy.Source.asset(path.join(process.cwd(), 'lib/functions/proxy/docs'))],
-    destinationBucket,
-    distribution,
-    distributionPaths: ['/*'],
+    destinationBucket, distribution, distributionPaths: ['/*'],
   });
 
   new cdk.CfnOutput(stack, 'Front BucketName', {

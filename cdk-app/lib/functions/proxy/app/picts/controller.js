@@ -2,6 +2,8 @@ import createHttpError from 'http-errors';
 import { service as authService } from '../auth/service.js';
 import { service, expandStream } from './service.js';
 
+const { AWS_EXECUTION_ENV: isLambda } = process.env;
+
 export class Controller {
   find(req, res) {
     const { cookies: { token } } = req;
@@ -30,7 +32,7 @@ export class Controller {
     })
     .then(({ ContentType, buffer }) => {
       res.setHeader('Content-Type', ContentType);
-      if (res.isLambda) {
+      if (isLambda) {
         return expandStream(buffer).then(body => res.end(body));
       }
       buffer.pipe(res);

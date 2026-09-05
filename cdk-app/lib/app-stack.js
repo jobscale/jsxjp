@@ -15,6 +15,7 @@ export class AppStack extends cdk.Stack {
     this.context = {
       envName,
       ...stackProps,
+      start: Date.now(),
     };
     logger.info({
       stackName: this.stackName,

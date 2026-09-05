@@ -27,28 +27,22 @@ export const serverlessGateway = stack => {
   proxyRoute(stack, { httpApi, integrationArn, sourceArn });
 
   const httpApiStage = new apigwv2.CfnStage(stack, 'HttpApiStage', {
-    apiId: httpApi.ref,
-    stageName: '$default',
-    autoDeploy: true,
+    apiId: httpApi.ref, stageName: '$default', autoDeploy: true,
   });
 
   const certificateArn = cdk.Fn.sub(
     'arn:${AWS::Partition}:acm:${AWS::Region}:${AWS::AccountId}:certificate/${CertificateId}',
     { CertificateId: gateway.certificateId },
   );
-  const httpApiDomainName = new apigwv2.CfnDomainName(stack, 'HttpApiDomainName', {
+  const httpApiDomain = new apigwv2.CfnDomainName(stack, 'HttpApiDomainName', {
     domainName: gateway.domainName,
     domainNameConfigurations: [{
-      endpointType: 'REGIONAL',
-      securityPolicy: 'TLS_1_2',
-      certificateArn,
+      endpointType: 'REGIONAL', securityPolicy: 'TLS_1_2', certificateArn,
     }],
   });
 
   const httpApiApiMapping = new apigwv2.CfnApiMapping(stack, 'HttpApiApiMapping', {
-    apiId: httpApi.ref,
-    domainName: httpApiDomainName.ref,
-    stage: httpApiStage.stageName,
+    apiId: httpApi.ref, domainName: httpApiDomain.ref, stage: httpApiStage.stageName,
   });
   httpApiApiMapping.node.addDependency(httpApiStage);
 
@@ -57,21 +51,19 @@ export const serverlessGateway = stack => {
     description: 'HTTP API endpoint',
   });
   new cdk.CfnOutput(stack, 'Serverless CustomDomain CNAME', {
-    value: httpApiDomainName.attrRegionalDomainName,
+    value: httpApiDomain.attrRegionalDomainName,
     description: 'Custom domain CNAME',
   });
   new cdk.CfnOutput(stack, 'Serverless CustomDomain Endpoint', {
-    value: cdk.Fn.join('', ['https://', httpApiDomainName.domainName]),
+    value: cdk.Fn.join('', ['https://', httpApiDomain.domainName]),
     description: 'Custom domain endpoint',
   });
   new cdk.CfnOutput(stack, 'Serverless Domainname', {
     value: cdk.Fn.join(' ', [
       'TYPE=CNAME',
-      `DOMAIN="${httpApiDomainName.domainName.replace('.jsx.jp', '')}"`,
-      `R_DATA="${httpApiDomainName.attrRegionalDomainName}."`,
+      `DOMAIN="${httpApiDomain.domainName.replace('.jsx.jp', '')}"`,
+      `R_DATA="${httpApiDomain.attrRegionalDomainName}."`,
     ]),
     description: 'Front custom domain CNAME',
   });
-
-  return { httpApiDomainName };
 };
