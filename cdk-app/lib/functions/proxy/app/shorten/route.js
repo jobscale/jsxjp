@@ -4,24 +4,15 @@ import { controller } from './controller.js';
 
 const router = new Router();
 router.add('GET', '/:id', controller.redirect);
+router.add('POST', '/register', [authController.verify, controller.register]);
+router.add('POST', '/find', [authController.verify, controller.find]);
+router.add('POST', '/remove', [authController.verify, controller.remove]);
 router.add('GET', '', [
   authController.verify,
   (req, res) => {
     res.writeHead(307, { Location: '/v1/s' });
     res.end('i am shorten');
   },
-]);
-router.add('POST', '/register', [
-  authController.verify,
-  controller.register,
-]);
-router.add('POST', '/find', [
-  authController.verify,
-  controller.find,
-]);
-router.add('POST', '/remove', [
-  authController.verify,
-  controller.remove,
 ]);
 
 export const route = { router };

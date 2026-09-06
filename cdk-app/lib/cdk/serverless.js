@@ -9,11 +9,6 @@ export const serverlessGateway = stack => {
     name: `${stack.stackName}-api`,
     protocolType: 'HTTP',
     disableExecuteApiEndpoint: true,
-    corsConfiguration: {
-      allowOrigins: ['*'],
-      allowMethods: ['GET', 'POST', 'HEAD'],
-      allowHeaders: ['Content-Type'],
-    },
   });
 
   const integrationArn = 'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaArn}/invocations';

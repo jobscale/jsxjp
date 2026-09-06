@@ -12,6 +12,9 @@ import { sshConnection } from './ssh-connect.js';
 
 const { ENV } = process.env;
 
+const allowMethods = ['GET', 'POST', 'HEAD'];
+const allowHeaders = ['Content-Type'];
+
 const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   const timestamp = new Intl.DateTimeFormat('sv-SE', {
     timeZone: 'Asia/Tokyo',
@@ -31,29 +34,13 @@ export class Ingress {
     this.opts = { public: true, logging: true, ...opts };
   }
 
-  // headers / url など毎リクエスト固定のオブジェクトを 1 度だけ生成してキャッシュする
-  ensureContext(req) {
-    if (req.ctx) return req.ctx;
-    const { headers } = req;
-    const method = req.method.toUpperCase();
-    const xfProto = headers.get('X-Forwarded-Proto')?.split(',')[0].trim();
-    const protocol = xfProto ?? (req.socket.encrypted ? 'https' : 'http');
-    const host = headers.get('Host');
-    const url = new URL(`${protocol}://${host}${req.url}`);
-    req.ctx = {
-      headers, method, protocol, host, url, pathname: url.pathname,
-    };
-    return req.ctx;
-  }
-
   useHeader(req, res) {
-    const { headers, protocol, host } = this.ensureContext(req);
-    const origin = headers.get('Origin') ?? `${protocol}://${host}`;
+    const { protocol } = req.ensure.url;
     res.setHeader('ETag', 'false');
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, HEAD');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    res.setHeader('Server', 'acl-ingress-k8s');
+    if (!res.hasHeader('Server')) res.setHeader('Server', 'acl-ingress-eco-system');
+    res.setHeader('X-Env', ENV);
+    res.setHeader('X-Host', req.headers.get('Host'));
+    res.setHeader('X-Origin', req.headers.get('Origin'));
     res.setHeader('X-Backend-Host', os.hostname());
     if (req.method === 'GET') {
       res.setHeader('Link', '</icon/cat-hand.svg>; rel="icon"; type="image/svg+xml"');
@@ -88,17 +75,17 @@ export class Ingress {
 
   usePublic(req, res) {
     if (!['GET', 'HEAD'].includes(req.method)) return false;
-    const { url } = this.ensureContext(req);
+    const { pathname, search } = req.ensure.url;
     const baseDir = path.join(process.cwd(), 'cdk-app/lib/functions/proxy/docs');
     const file = {
-      path: path.join(baseDir, url.pathname),
+      path: path.join(baseDir, pathname),
     };
     if (!file.path.startsWith(baseDir)) return false;
     file.stat = fs.existsSync(file.path) && fs.statSync(file.path);
     if (!file.stat) return false;
     if (file.stat.isDirectory()) {
       if (!file.path.endsWith('/')) {
-        res.writeHead(307, { Location: `${url.pathname}/${url.search}` });
+        res.writeHead(307, { Location: `${pathname}/${search}` });
         res.end();
         return true;
       }
@@ -122,53 +109,29 @@ export class Ingress {
   }
 
   useLogging(req, res) {
-    const { headers, protocol, host } = this.ensureContext(req);
+    const { protocol } = req.ensure.url;
+    const globalIp = req.headers.get('X-Forwarded-For')?.split(/[, ]/)[0] || req.socket.remoteAddress;
     const start = Date.now();
     const progress = () => {
-      const globalIp = headers.get('X-Forwarded-For')?.split(/[, ]/)[0] || req.socket.remoteAddress;
       const { method, url } = req;
-      logger.info({
+      logger.info(JSON.stringify({
         ts: formatTimestamp(),
-        req: JSON.stringify({
-          globalIp, protocol, host, method, url,
-        }),
-        headers: JSON.stringify(Object.fromEntries(headers.entries())),
-      });
+        globalIp, protocol, method, url,
+        headers: Object.fromEntries(req.headers.entries()),
+      }));
     };
     progress();
     res.on('finish', () => {
-      const duration = Date.now() - start;
-      const { statusCode, statusMessage } = res;
-      const resHeaders = JSON.stringify(res.getHeaders());
-      logger.info({
+      logger.info(JSON.stringify({
         ts: formatTimestamp(),
-        statusCode,
-        statusMessage,
-        headers: resHeaders,
-        duration,
-      });
+        statusCode: res.statusCode,
+        headers: res.getHeaders(),
+        duration: Date.now() - start,
+      }));
     });
   }
 
   async useRoute(req, res) {
-    const { method, url } = this.ensureContext(req);
-    const { pathname, searchParams } = url;
-    const pathRoute = `${method} ${pathname}`;
-    logger.debug({ pathRoute, searchParams });
-
-    res.status = code => {
-      res.statusCode = code;
-      return res;
-    };
-    res.json = value => {
-      res.setHeader('Content-Type', 'application/json; charset=utf-8');
-      res.end(JSON.stringify(value, null, ENV === 'dev' ? 2 : undefined));
-    };
-    res.redirect = uri => {
-      res.writeHead(307, { Location: uri });
-      res.end();
-    };
-
     parseCookies(req, res);
     await parseBody(req);
     await route.router.handle(req, res);
@@ -180,18 +143,31 @@ export class Ingress {
   notfoundHandler(req, res) {
     if (req.method === 'GET') {
       const e = createHttpError(404);
-      res.writeHead(e.status, { 'Content-Type': 'text/plain' });
+      res.writeHead(e.status, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end(e.message);
       return;
     }
     const e = createHttpError(501);
-    res.writeHead(e.status, { 'Content-Type': 'application/json' });
+    res.writeHead(e.status, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify({ message: e.message }));
+  }
+
+  errorHandler(e, req, res) {
+    logger.error(e);
+    if (req.method === 'GET') {
+      e = createHttpError(503);
+      res.writeHead(e.status, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end(e.message);
+      return;
+    }
+    if (!e.status) e = createHttpError(500);
+    res.writeHead(e.status, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(JSON.stringify({ message: e.message }));
   }
 
   upgradeHandler(req, socket, head) {
-    const headers = new Headers(req.headers);
-    const upgrade = headers.get('upgrade');
+    if (!(req.headers instanceof Headers)) req.headers = new Headers(req.headers);
+    const upgrade = req.headers.get('upgrade');
     logger.info({ url: req.url, upgrade });
     if (upgrade === 'websocket' && req.url.startsWith('/ssh/')) {
       sshConnection(req, socket, head);
@@ -200,32 +176,54 @@ export class Ingress {
     socket.destroy();
   }
 
-  errorHandler(e, req, res) {
-    logger.error(e);
-    if (!res) return;
-    if (req.method === 'GET') {
-      e = createHttpError(503);
-      res.writeHead(e.status, { 'Content-Type': 'text/plain' });
-      res.end(e.message);
-      return;
-    }
-    if (!e.status) e = createHttpError(500);
-    res.writeHead(e.status, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ message: e.message }));
-  }
-
   start() {
-    return async (req, res) => {
-      try {
-        if (!(req.headers instanceof Headers)) req.headers = new Headers(req.headers);
-        this.useHeader(req, res);
-        if (this.opts.public && this.usePublic(req, res)) return;
-        if (this.opts.logging) this.useLogging(req, res);
-        await this.useRoute(req, res);
-      } catch (e) {
-        this.errorHandler(e, req, res);
+    return async (req, res) => Promise.resolve().then(() => {
+      if (!(req.headers instanceof Headers)) req.headers = new Headers(req.headers);
+      const [protocol] = req.headers.get('X-Forwarded-Proto')?.split(/, /) ?? [req.socket.encrypted ? 'https' : 'http'];
+      Object.assign(req, {
+        ensure: {
+          url: new URL(`${protocol}://${req.headers.get('Host')}${req.url}`),
+        },
+      });
+
+      if (req.method === 'OPTIONS') {
+        const origin = req.headers.get('Origin') ?? `${protocol}://${req.headers.get('Host')}`;
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Methods', allowMethods.join(', '));
+        res.setHeader('Access-Control-Allow-Headers', allowHeaders.join(', '));
+        res.end('');
+        return;
       }
-    };
+      if (!allowMethods.includes(req.method)) {
+        const e = createHttpError(405);
+        res.setHeader('Allow', allowMethods.join(', '));
+        res.writeHead(e.status, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ message: e.message }));
+        return;
+      }
+
+      Object.assign(res, {
+        status(code) {
+          res.statusCode = code;
+          return res;
+        },
+        json(value) {
+          res.setHeader('Content-Type', 'application/json; charset=utf-8');
+          res.end(JSON.stringify(value));
+        },
+        redirect(uri) {
+          res.writeHead(307, { Location: uri });
+          res.end();
+        },
+      });
+
+      this.useHeader(req, res);
+      if (this.opts.public && this.usePublic(req, res)) return;
+      if (this.opts.logging) this.useLogging(req, res);
+      this.useRoute(req, res);
+    }).catch(e => {
+      this.errorHandler(e, req, res);
+    });
   }
 }
 

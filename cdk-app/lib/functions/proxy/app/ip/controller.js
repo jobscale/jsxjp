@@ -2,8 +2,8 @@ import { logger } from '@jobscale/create-logger';
 import { service } from './service.js';
 
 export class Controller {
-  async ip(req, res) {
-    await Promise.resolve(service.ip(req))
+  ip(req, res) {
+    service.ip(req)
     .then(globalIp => {
       res.setHeader('Content-Type', 'text/plain');
       res.end(globalIp);

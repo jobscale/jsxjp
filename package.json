@@ -1,7 +1,7 @@
 {
   "name": "jsxjp",
   "private": true,
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "nodejs http and vue custom template SSR MVC",
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1118.0",
     "@aws-sdk/client-ssm": "^3.1118.0",
-    "@jobscale/create-logger": "^1.0.0",
+    "@jobscale/create-logger": "^1.0.3",
     "dayjs": "^1.11.21",
     "http-errors": "^2.0.1",
     "mime": "^4.1.0"

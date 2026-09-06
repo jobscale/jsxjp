@@ -2,10 +2,7 @@ import { EventEmitter } from 'events';
 import { logger } from '@jobscale/create-logger';
 import { Ingress } from './app/index.js';
 
-const { ENV } = process.env;
-
 const defaultHeaders = {
-  'X-Env': ENV,
   Server: 'jsx.jp',
 };
 
@@ -53,18 +50,16 @@ const parseMultipart = (body, contentType) => {
 
 const createServer = event => {
   const { http: request } = event.requestContext;
-
   const req = { headers: new Headers(event.headers) };
   const contentType = req.headers.get('Content-Type') ?? '';
-  const proto = (req.headers.get('X-Forwarded-Proto') ?? 'https').split(',')[0].trim();
+  const [protocol] = req.headers.get('X-Forwarded-Proto')?.split(/, /) ?? [''];
   Object.assign(req, {
     method: request.method,
-    url: request.path + (event.rawQueryString ? `?${event.rawQueryString}` : ''),
+    url: `${request.path}${event.rawQueryString ? `?${event.rawQueryString}` : ''}`,
     socket: {
-      encrypted: proto === 'https',
+      encrypted: protocol === 'https',
       remoteAddress: request.sourceIp,
     },
-    requestContext: event.requestContext,
     cookies: Object.fromEntries((event.cookies ?? []).map(c => {
       const i = c.indexOf('=');
       return [c.slice(0, i), decodeURIComponent(c.slice(i + 1))];
@@ -88,10 +83,7 @@ const createServer = event => {
   const res = Object.assign(emitter, {
     headers: new Headers(defaultHeaders),
     statusCode: 200,
-    statusMessage: '',
     writableEnded: false,
-    cookies: [],
-    body: undefined,
     getHeaders() {
       return Object.fromEntries(res.headers.entries());
     },
@@ -109,9 +101,11 @@ const createServer = event => {
       res.emit('finish');
     },
     setCookie(name, value, options) {
+      if (!res.cookies) res.cookies = [];
       res.cookies.push(serializeCookie(name, value, options));
     },
     clearCookie(name, options = {}) {
+      if (!res.cookies) res.cookies = [];
       res.cookies.push(serializeCookie(name, '', { ...options, expires: new Date(0) }));
     },
   });
@@ -134,15 +128,7 @@ const ingressApp = new Ingress({ public: false }).start();
 export const handler = async event => {
   logger.info('EVENT', JSON.stringify(event, null, 2));
   const { req, res } = createServer(event);
-  const method = req.method.toUpperCase();
-  if (method === 'OPTIONS') {
-    res.end('');
-  } else if (['PUT', 'PATCH', 'DELETE'].includes(method)) {
-    res.writeHead(405, { 'Content-Type': 'application/json; charset=utf-8' });
-    res.end(JSON.stringify({ message: 'Method Not Allowed' }));
-  } else {
-    await ingressApp(req, res);
-  }
+  await ingressApp(req, res);
   const response = toApiGatewayResponse(res);
   logger.info('RESPONSE', JSON.stringify(response, null, 2));
   return response;

@@ -2,7 +2,7 @@ import Joi from 'joi';
 import { logger } from '@jobscale/create-logger';
 
 export class Validation {
-  async slack(req, res) {
+  slack(req, res) {
     const { body } = req;
     const { error } = Joi.object({
       text: Joi.string().required().min(1).max(2 ** 16 - 1),
@@ -17,7 +17,7 @@ export class Validation {
     }
   }
 
-  async email(req, res) {
+  email(req, res) {
     const { body } = req;
     const { error } = Joi.object({
       subject: Joi.string().required().min(1).max(2 ** 8 - 1),
@@ -28,7 +28,7 @@ export class Validation {
     }
   }
 
-  async webPush(req, res) {
+  webPush(req, res) {
     const { body } = req;
     const { error } = Joi.object({
       title: Joi.string().required().min(1).max(2 ** 8 - 1),
@@ -39,7 +39,7 @@ export class Validation {
     }
   }
 
-  async sendmail(req, res) {
+  sendmail(req, res) {
     const { body } = req;
     const { error } = Joi.object({
       secret: Joi.string().required().min(1).max(2 ** 16 - 1).required(),
@@ -54,7 +54,7 @@ export class Validation {
     }
   }
 
-  async subscription(req, res) {
+  subscription(req, res) {
     const { body } = req;
     const { error } = Joi.object({
       endpoint: Joi.string().required().min(64).max(256),

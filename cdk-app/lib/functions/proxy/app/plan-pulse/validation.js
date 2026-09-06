@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 export class Validation {
-  async hub(req, res) {
+  hub(req, res) {
     const { error } = Joi.object({
       hubId: Joi.string().required().alphanum().max(30),
     }).validate(req.body);
@@ -10,7 +10,7 @@ export class Validation {
     }
   }
 
-  async putHub(req, res) {
+  putHub(req, res) {
     const { error } = Joi.object({
       hubId: Joi.string().alphanum().max(30),
       hub: Joi.object().required(),
@@ -20,7 +20,7 @@ export class Validation {
     }
   }
 
-  async putPerson(req, res) {
+  putPerson(req, res) {
     const { error } = Joi.object({
       hubId: Joi.string().required().alphanum().max(30),
       personId: Joi.string().alphanum().max(30),
@@ -31,7 +31,7 @@ export class Validation {
     }
   }
 
-  async removePerson(req, res) {
+  removePerson(req, res) {
     const { error } = Joi.object({
       hubId: Joi.string().required().alphanum().max(30),
       personId: Joi.string().required().alphanum().max(30),

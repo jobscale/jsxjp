@@ -9,6 +9,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@jobscale/create-logger": "^1.0.0"
+    "@jobscale/create-logger": "^1.0.3"
   }
 }

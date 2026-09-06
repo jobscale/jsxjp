@@ -1,6 +1,6 @@
 /* global mqtt */
 import { createApp, reactive, nextTick } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
-import { createLogger } from 'https://esm.sh/@jobscale/logger';
+import { createLogger } from 'https://esm.sh/@jobscale/create-logger';
 
 const random = (length = 7) => {
   const bytes = crypto.randomBytes(16).toString('hex');
@@ -44,8 +44,8 @@ const publish = payload => {
 };
 
 const logger = createLogger('debug', {
-  callback: ({ recipe }) => {
-    publish({ message: recipe.map(v => JSON.stringify(v)).join(' ') });
+  callback: (...args) => {
+    publish({ message: args.map(arg => JSON.stringify(arg)).join(' ') });
   },
 });
 

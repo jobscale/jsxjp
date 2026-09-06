@@ -406,7 +406,7 @@ const installInterception = async (page, origin) => {
       return;
     }
 
-    if (parsed.hostname === 'esm.sh' && parsed.pathname === '/@jobscale/logger') {
+    if (parsed.hostname === 'esm.sh' && parsed.pathname === '/@jobscale/create-logger') {
       await request.respond({
         status: 200,
         contentType: 'text/javascript',

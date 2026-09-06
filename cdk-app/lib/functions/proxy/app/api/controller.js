@@ -98,9 +98,9 @@ export class Controller {
     });
   }
 
-  async speed(req, res) {
+  speed(req, res) {
     const { body: timestamp } = req;
-    await service.speed({ timestamp })
+    service.speed({ timestamp })
     .then(result => {
       res.writeHead(200, {
         'Content-Type': 'application/octet-stream',

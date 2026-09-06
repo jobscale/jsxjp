@@ -15,8 +15,8 @@ function handler(event) {
   const csp = [
     "default-src 'self'",
     `script-src 'self' 'unsafe-eval' '${inlinePolicy}' ${allowCdn}`,
-    "style-src 'self' 'unsafe-inline' https://googleapis.com",
-    "font-src 'self' data: https://gstatic.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' data: https://fonts.gstatic.com",
     "img-src 'self' data:",
     "media-src 'self' data:",
     "connect-src 'self' https: wss:",

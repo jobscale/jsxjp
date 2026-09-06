@@ -2,7 +2,7 @@ import Joi from 'joi';
 import { login, base32 } from '../policy.js';
 
 export class Validation {
-  async login(req, res) {
+  login(req, res) {
     const { error } = Joi.object({
       login: Joi.string().required().pattern(login).max(2 ** 5 - 1),
       password: Joi.string().required().max(2 ** 5 - 1),
@@ -13,7 +13,7 @@ export class Validation {
     }
   }
 
-  async totp(req, res) {
+  totp(req, res) {
     const { error } = Joi.object({
       secret: Joi.string().required().pattern(base32).min(5).max(2 ** 12 - 1),
     }).validate(req.body);

@@ -1,5 +1,5 @@
-// HTML ルーター
-// 静的パスは Map で O(1) ルックアップ、動的パスのみ線形走査する
+const allowMethods = ['GET', 'POST', 'HEAD'];
+
 export class Router {
   constructor() {
     // path -> Map<method, handler>
@@ -70,13 +70,13 @@ export class Router {
     const normalizedPrefix = prefix.replace(/\/+$/, '') || '/';
     const entry = this.prefixList.find(item => item.prefix === normalizedPrefix);
     if (entry) {
-      ['GET', 'POST', 'HEAD'].forEach(method => {
+      allowMethods.forEach(method => {
         entry.methodMap.get(method).push(handler);
       });
       return;
     }
     const methodMap = new Map();
-    ['GET', 'POST', 'HEAD'].forEach(method => {
+    allowMethods.forEach(method => {
       methodMap.set(method, [handler]);
     });
     this.prefixList.push({ prefix: normalizedPrefix, methodMap });
@@ -86,36 +86,28 @@ export class Router {
   match(method, pathname) {
     const staticMethods = this.staticMap.get(pathname);
     if (staticMethods) {
-      const handler = staticMethods.get(method);
-      if (handler) return { handler, params: {} };
-      return { methodNotAllowed: true, allow: [...staticMethods.keys()] };
+      const handler = staticMethods.get(method) ?? [];
+      return { handler, params: {} };
     }
     for (const entry of this.dynamicList) {
       const m = entry.regex.exec(pathname);
       if (!m) continue;
-      const handler = entry.methodMap.get(method);
-      if (!handler) {
-        return { methodNotAllowed: true, allow: [...entry.methodMap.keys()] };
-      }
+      const handler = entry.methodMap.get(method) ?? [];
       const params = {};
       entry.paramNames.forEach((name, i) => {
         params[name] = decodeURIComponent(m[i + 1]);
       });
       return { handler, params };
     }
-    return null;
+    return undefined;
   }
 
   // リクエスト処理
   async handle(req, res) {
-    const ctx = req.ctx ?? {};
-    const method = ctx.method ?? req.method.toUpperCase();
-    const pathname = ctx.pathname
-      ?? new URL(req.url, `http://${req.headers.host ?? 'localhost'}`).pathname;
+    const { pathname } = req.ensure.url;
     for (const { prefix, methodMap } of this.prefixList) {
-      const matches = pathname === prefix
-        || pathname.startsWith(`${prefix.replace(/\/+$/, '')}/`);
-      const middleware = methodMap.get(method);
+      const matches = pathname.startsWith(`${prefix.replace(/\/+$/, '')}/`);
+      const middleware = methodMap.get(req.method);
       if (!matches || !middleware) continue;
       for (const prefixHandler of middleware.flat()) {
         if (res.writableEnded) return;
@@ -123,19 +115,14 @@ export class Router {
       }
       if (res.writableEnded) return;
     }
-    const result = this.match(method, pathname);
+    const result = this.match(req.method, pathname);
     if (!result) return;
-    if (result.methodNotAllowed) {
-      res.setHeader('Allow', result.allow.join(', '));
-      res.writeHead(405, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ message: 'Method Not Allowed' }));
-      return;
-    }
     if (!req.params) req.params = {};
     Object.assign(req.params, result.params);
     for (const handler of [result.handler].flat()) {
       if (res.writableEnded) return;
-      await handler(req, res);
+      const pending = handler(req, res);
+      if (pending instanceof Promise) await pending;
     }
   }
 }

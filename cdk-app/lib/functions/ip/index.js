@@ -5,7 +5,7 @@ const { ENV } = process.env;
 const headers = {
   'Content-Type': 'application/json; charset=utf-8',
   'X-Env': ENV,
-  server: 'jsx.jp',
+  Server: 'jsx.jp',
 };
 
 export const handler = async event => {

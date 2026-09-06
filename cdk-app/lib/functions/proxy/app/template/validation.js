@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 export class Validation {
-  async load(req, res) {
+  load(req, res) {
     const { error } = Joi.object({
       id: Joi.string().required().pattern(/^\w+(?:-\w+)*$/).min(5).max(2 ** 12 - 1),
     }).validate(req.body);

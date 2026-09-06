@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@jobscale/create-logger": "^1.0.0",
+    "@jobscale/create-logger": "^1.0.3",
     "@jobscale/slack": "^0.3.2",
     "@napi-rs/canvas": "^1.0.7",
     "dayjs": "^1.11.21",
