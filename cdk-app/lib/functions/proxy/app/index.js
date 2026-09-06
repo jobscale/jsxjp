@@ -178,7 +178,7 @@ export class Ingress {
   }
 
   start() {
-    return async (req, res) => Promise.resolve().then(() => {
+    return async (req, res) => Promise.resolve().then(async () => {
       if (!(req.headers instanceof Headers)) req.headers = new Headers(req.headers);
       const [protocol] = req.headers.get('X-Forwarded-Proto')?.split(/, /) ?? [req.socket.encrypted ? 'https' : 'http'];
       Object.assign(req, {
@@ -221,7 +221,7 @@ export class Ingress {
       this.useHeader(req, res);
       if (this.opts.public && this.usePublic(req, res)) return;
       if (this.opts.logging) this.useLogging(req, res);
-      this.useRoute(req, res);
+      await this.useRoute(req, res);
     }).catch(e => {
       this.errorHandler(e, req, res);
     });
