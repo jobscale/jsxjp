@@ -1,16 +1,15 @@
 import { logger } from '@jobscale/create-logger';
 
 class Service {
-  async ip(req, wrap = false) {
+  async ip(req) {
     const globalIp = req.headers.get('X-Forwarded-For')?.split(/[, ]/)[0] || req.socket.remoteAddress;
-    return wrap ? this.wrapK8s(globalIp) : globalIp;
+    if (!globalIp.startsWith('172.16.6.')) return globalIp;
+    return this.wrapK8s(globalIp);
   }
 
   wrapK8s(globalIp) {
-    // If the IP is not in the 172.16.6.x range, return it directly
-    if (!globalIp.startsWith('172.16.6.')) return globalIp;
     // fetch the public IP and cache it for 5 minutes
-    if (!this.globalIp || Date.now() > this.refreshIp) {
+    if (Date.now() > this.refreshIp) {
       // async background fetch to avoid blocking the response
       this.refreshIp = Date.now() + 1000 * 5;
       fetch('https://api.ipify.org')

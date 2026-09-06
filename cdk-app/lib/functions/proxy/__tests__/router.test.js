@@ -1,5 +1,5 @@
 import { jest, beforeEach, test, expect } from '@jest/globals';
-import { Router } from '../proxy/app/router.js';
+import { Router } from '../app/router.js';
 
 process.env.ENV = 'test';
 
@@ -130,12 +130,12 @@ mockRouter.add('POST', '/user/reset', user.reset);
 mockRouter.add('POST', '/user/find', user.find);
 mockRouter.add('POST', '/user/remove', user.remove);
 
-jest.unstable_mockModule('../proxy/app/route.js', () => ({
+jest.unstable_mockModule('../app/route.js', () => ({
   route: { router: mockRouter },
   default: { route: { router: mockRouter } },
 }));
 
-const { handler } = await import('../proxy/index.js');
+const { handler } = await import('../index.js');
 
 const event = (method, path, body, options = {}) => ({
   headers: {

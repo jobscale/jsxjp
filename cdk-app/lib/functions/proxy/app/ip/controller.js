@@ -3,7 +3,7 @@ import { service } from './service.js';
 
 export class Controller {
   ip(req, res) {
-    service.ip(req)
+    return service.ip(req)
     .then(globalIp => {
       res.setHeader('Content-Type', 'text/plain');
       res.end(globalIp);

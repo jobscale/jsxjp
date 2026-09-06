@@ -1,7 +1,7 @@
 {
   "name": "jsxjp",
   "private": true,
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "nodejs http and vue custom template SSR MVC",
   "repository": {
     "type": "git",
@@ -15,12 +15,11 @@
     "start": "node index.js",
     "tauri": "(cd tauri-app && npm run tauri dev)",
     "build": "bash -c 'time (cd tauri-app && npm run tauri build)'",
-    "check:jest": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand --coverage --collectCoverage --verbose",
-    "check:docs": "node scripts/check-docs-pages.js",
     "lint": "eslint",
     "pretest": "date -Iseconds",
     "posttest": "npm run lint",
-    "test": "npm run check:jest"
+    "test:docs": "node scripts/check-docs-pages.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand --coverage --collectCoverage --verbose"
   },
   "pre-commit": [
     "test"
