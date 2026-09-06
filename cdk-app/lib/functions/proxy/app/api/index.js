@@ -1,9 +1,9 @@
 import path from 'path';
 import crypto from 'crypto';
-import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
 import { cipher } from '../cipher.js';
 
 export const genDigit = async () => {
+  const { createCanvas, GlobalFonts } = await import('@napi-rs/canvas');
   const num = Number.parseInt(crypto.randomBytes(2).toString('hex'), 16);
   const digit = `${Math.floor(num % 10000)}`.padStart(4, '0');
 
