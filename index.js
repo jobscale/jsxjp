@@ -1,5 +1,4 @@
 import http from 'http';
-import './cdk-app/lib/functions/proxy/app/config/index.js';
 import { logger } from '@jobscale/create-logger';
 import { app, upgradeHandler, errorHandler } from './cdk-app/lib/functions/proxy/app/index.js';
 
