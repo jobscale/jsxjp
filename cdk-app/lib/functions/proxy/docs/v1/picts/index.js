@@ -103,14 +103,8 @@ let self = {
     self.modify = deepClone(self.imageTags);
   },
 
-  async onSave(tags) {
-    if (tags) {
-      Object.keys(tags).forEach(key => {
-        self.tags[key] = self.tags[key] || false;
-      });
-    } else if (strictEqual(self.modify, self.imageTags)) return;
-    self.updateImageTags(self.modify);
-    tags = {};
+  async onSave() {
+    const tags = {};
     Object.keys(self.tags).forEach(key => { tags[key] = false; });
     await self.putData({
       tags,
@@ -123,7 +117,7 @@ let self = {
     self.list.forEach(item => {
       self.imageTags[item.name] = { tags: {} };
       Object.keys(self.tags).forEach(key => {
-        self.imageTags[item.name].tags[key] = imageTags[item.name].tags[key] || false;
+        self.imageTags[item.name].tags[key] = imageTags[item.name]?.tags?.[key] || false;
       });
     });
   },
@@ -151,15 +145,18 @@ let self = {
   },
 
   async onCloseTag() {
-    const editTags = self.editTags.filter(Number);
+    const editTags = self.editTags
+    .map(tag => tag.trim()).filter(Boolean);
+    self.editTags = [];
     const tags = {};
     editTags.forEach(key => {
       tags[key] = !!self.tags[key];
     });
     if (!strictEqual(tags, self.tags)) {
-      await self.onSave(tags);
+      self.tags = tags;
+      self.updateImageTags(self.modify);
+      await self.onSave();
     }
-    self.editTags = [];
   },
 
   async find() {
@@ -191,6 +188,12 @@ let self = {
     if (!self.preList.length) return;
     const nextItems = self.preList.splice(0, 1);
     self.list.push(...nextItems);
+    self.updateImageTags(self.imageTags);
+    nextItems.forEach(item => {
+      if (!self.modify[item.name]) {
+        self.modify[item.name] = deepClone(self.imageTags[item.name]);
+      }
+    });
   },
 
   async getData(list) {
@@ -336,13 +339,16 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       const index = self.refFiles.findIndex(v => item.file.name === v.name);
       const [data] = self.refFiles.splice(index, 1);
       const { name } = data.file;
-      self.modify[name] = { tags: self.tags };
+      self.modify[name] = { tags: deepClone(self.tags) };
       self.status = self.refFiles.length.toLocaleString();
       await new Promise(resolve => { setTimeout(resolve, 200); });
       list.unshift({ name });
     }
     self.list.unshift(...list);
-    await self.onSave();
+    if (!strictEqual(self.modify, self.imageTags)) {
+      self.updateImageTags(self.modify);
+      await self.onSave();
+    }
     fileRef.value = '';
     self.refFiles = [];
     self.loading = false;
@@ -414,7 +420,10 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
 
   async show(item) {
     if (!item) {
-      await self.onSave();
+      if (!strictEqual(self.modify, self.imageTags)) {
+        self.updateImageTags(self.modify);
+        await self.onSave();
+      }
       self.preview = undefined;
       nextTick(() => {
         window.scrollTo(0, self.scrollY);
