@@ -64,7 +64,6 @@ let self = {
   tags: {},
   imageTags: {},
   modify: {},
-  showMessage: '',
   preview: undefined,
   editTags: [],
   cacheImage: {},
@@ -223,11 +222,11 @@ let self = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(dataset),
     }];
-    return loading(fetch(...params)
+    return loading(fetch(...params))
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();
-    }))
+    })
     .catch(e => {
       logger.error(e.message);
       self.message.push(e.message);
@@ -249,7 +248,7 @@ let self = {
         });
       }
     };
-    await loading(preUpload())
+    await loading(preUpload)
     .catch(e => {
       logger.error(e.message);
       self.message.push(e.message);
@@ -429,28 +428,33 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
     });
   },
 
+  async hidden() {
+    self.modify = Object.fromEntries(Object.entries(self.modify).map(([n, opts]) => [
+      n,
+      { tags: Object.fromEntries(Object.entries(opts.tags).filter(([, enabled]) => enabled)) },
+    ]));
+    const imageTags = Object.fromEntries(Object.entries(self.imageTags).map(([n, opts]) => [
+      n,
+      { tags: Object.fromEntries(Object.entries(opts.tags).filter(([, enabled]) => enabled)) },
+    ]));
+    if (!strictEqual(self.modify, imageTags)) {
+      self.updateImageTags(self.modify);
+      await self.onSave();
+    }
+    self.preview = undefined;
+    nextTick(() => {
+      window.scrollTo(0, self.scrollY);
+    });
+  },
+
   async show(item) {
     if (!item) {
-      self.modify = Object.fromEntries(Object.entries(self.modify).map(([n, opts]) => [
-        n,
-        { tags: Object.fromEntries(Object.entries(opts.tags).filter(([, enabled]) => enabled)) },
-      ]));
-      const imageTags = Object.fromEntries(Object.entries(self.imageTags).map(([n, opts]) => [
-        n,
-        { tags: Object.fromEntries(Object.entries(opts.tags).filter(([, enabled]) => enabled)) },
-      ]));
-      if (!strictEqual(self.modify, imageTags)) {
-        self.updateImageTags(self.modify);
-        await self.onSave();
-      }
-      self.preview = undefined;
-      nextTick(() => {
-        window.scrollTo(0, self.scrollY);
-      });
+      self.hidden();
       return;
     }
+
+    self.modify = deepClone(self.imageTags);
     self.scrollY = window.scrollY;
-    self.showMessage = 'Now Loading...';
     self.preview = item;
     self.showImage(item);
   },

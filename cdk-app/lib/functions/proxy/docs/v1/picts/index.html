@@ -76,7 +76,7 @@
       </div>
       <div v-if="preview" class="img-preview">
         <div v-if="!preview.imgUrl" class="mini-loading">
-          {{ preview.imgError || showMessage }}
+          {{ preview.imgError || 'Now Loading...' }}
         </div>
         <img v-if="preview.imgUrl" :src="preview.imgUrl" class="preview-image">
         <div class="img-control">
