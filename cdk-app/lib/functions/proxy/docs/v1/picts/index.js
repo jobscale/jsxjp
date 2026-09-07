@@ -3,7 +3,7 @@ import { createApp, reactive, nextTick } from 'https://cdn.jsdelivr.net/npm/vue@
 import { createLogger } from 'https://esm.sh/@jobscale/create-logger';
 
 const random = (length = 7) => {
-  const bytes = crypto.randomBytes(16).toString('hex');
+  const bytes = crypto.getRandomValues(new Uint8Array(length)).reduce((acc, byte) => `${acc}${byte.toString(16).padStart(2, '0')}`, '');
   const num = BigInt(`0x${bytes}`);
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const r = BigInt(chars.length);
@@ -114,7 +114,7 @@ let self = {
 
   updateImageTags(input) {
     const imageTags = deepClone(input);
-    self.list.forEach(item => {
+    [...self.list, ...self.preList].forEach(item => {
       self.imageTags[item.name] = { tags: {} };
       Object.keys(self.tags).forEach(key => {
         self.imageTags[item.name].tags[key] = imageTags[item.name]?.tags?.[key] || false;

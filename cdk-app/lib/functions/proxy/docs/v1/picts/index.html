@@ -80,12 +80,12 @@
         <img v-if="preview.imgUrl" :src="preview.imgUrl" class="preview-image">
         <div class="img-control">
           <div class="chevron-control">
-            <span @click.prevent="onShowPrev">
+            <button type="button" @click.prevent="onShowPrev" title="Previous image" aria-label="Previous image">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 9-3 3m0 0 3 3m-3-3h7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-            </span>
-            <span @click.prevent="onShowNext">
+            </button>
+            <button type="button" @click.prevent="onShowNext" title="Next image" aria-label="Next image">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-            </span>
+            </button>
           </div>
           <div class="tag-control">
             <label v-for="(value, key) in tags">
