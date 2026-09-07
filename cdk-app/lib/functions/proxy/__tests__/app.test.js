@@ -68,8 +68,7 @@ describe('Service', () => {
 
     it('should return different timestamps when called at different times', async () => {
       const ts1 = await service.now();
-      /* eslint-disable-next-line no-promise-executor-return */
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise(resolve => { setTimeout(resolve, 10); });
       const ts2 = await service.now();
       // They should be very close but might be different
       expect(typeof ts1).toBe('string');

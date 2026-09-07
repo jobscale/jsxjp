@@ -100,7 +100,7 @@ export class Controller {
 
   speed(req, res) {
     const { body: timestamp } = req;
-    service.speed({ timestamp })
+    return service.speed({ timestamp })
     .then(result => {
       res.writeHead(200, {
         'Content-Type': 'application/octet-stream',
