@@ -20,9 +20,14 @@ const mockApiService = {
   slack: jest.fn(),
 };
 
+const mockIpService = {
+  ip: jest.fn(),
+};
+
 jest.unstable_mockModule('../app/db.js', () => ({ db: mockDb }));
 jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
 jest.unstable_mockModule('../app/api/service.js', () => ({ service: mockApiService }));
+jest.unstable_mockModule('../app/ip/service.js', () => ({ service: mockIpService }));
 
 // Mock other routes that might be loaded by app/index.js
 const mockRouter = { router: new Router() };
@@ -146,6 +151,21 @@ describe('Auth Routing via app/index.js', () => {
       .post('/auth/sign')
       .set('Cookie', 'token=invalid');
       expect(res.statusCode).toBe(403);
+    });
+  });
+
+  describe('HEAD /auth/sign', () => {
+    it('should set the resolved X-Address header', async () => {
+      const address = '203.0.113.10';
+      mockIpService.ip.mockResolvedValue(address);
+
+      const res = await request(app)
+      .head('/auth/sign')
+      .set('Cookie', 'token=invalid');
+
+      expect(res.statusCode).toBe(200);
+      expect(res.headers['x-address']).toBe(address);
+      expect(res.headers['x-user']).toBe('Guest');
     });
   });
 
