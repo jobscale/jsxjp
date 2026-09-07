@@ -15,6 +15,7 @@
         <section>
           <h2>Pictures Online</h2>
           <div>{{ status }}</div>
+          <div v-for="message of messages">{{ message }}</div>
           <form @submit.prevent="onSubmit">
             <div>
               <label class="btn-submit">
@@ -74,8 +75,8 @@
         <footer class="powered-footer"><a href="https://jsx.jp" target="_blank">powered by jsx.jp</a></footer>
       </div>
       <div v-if="preview" class="img-preview">
-        <div v-if="!preview.imgUrl">
-          {{ showMessage }}
+        <div v-if="!preview.imgUrl" class="mini-loading">
+          {{ preview.imgError || showMessage }}
         </div>
         <img v-if="preview.imgUrl" :src="preview.imgUrl" class="preview-image">
         <div class="img-control">

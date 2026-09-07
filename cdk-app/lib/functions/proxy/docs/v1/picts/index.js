@@ -1,6 +1,7 @@
 /* global mqtt */
 import { createApp, reactive, nextTick } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { createLogger } from 'https://esm.sh/@jobscale/create-logger';
+import { loading } from 'https://esm.sh/@jobscale/loading';
 
 const random = (length = 7) => {
   const bytes = crypto.getRandomValues(new Uint8Array(length)).reduce((acc, byte) => `${acc}${byte.toString(16).padStart(2, '0')}`, '');
@@ -67,6 +68,7 @@ let self = {
   preview: undefined,
   editTags: [],
   cacheImage: {},
+  message: [],
 
   sign() {
     return fetch('/auth/sign', {
@@ -208,7 +210,10 @@ let self = {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();
     })
-    .catch(e => logger.error(e.message));
+    .catch(e => {
+      logger.error(e.message);
+      self.message.push(e.message);
+    });
   },
 
   async putData(dataset) {
@@ -218,14 +223,15 @@ let self = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(dataset),
     }];
-    self.loading = true;
-    return fetch(...params)
+    return loading(fetch(...params)
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
-      self.loading = false;
       return res.json();
-    })
-    .catch(e => logger.error(e.message));
+    }))
+    .catch(e => {
+      logger.error(e.message);
+      self.message.push(e.message);
+    });
   },
 
   async onReadFile(event) {
@@ -233,14 +239,21 @@ let self = {
     if (!files) return;
     self.refFiles = [];
     self.status = `${files.length} `;
-    for (const file of files) {
-      await self.readFile(file)
-      .then(item => self.refFiles.push(item))
-      .catch(e => {
-        self.status += `${e.message} `;
-        logger.error(e);
-      });
-    }
+    const preUpload = async () => {
+      for (const file of files) {
+        await self.readFile(file)
+        .then(item => self.refFiles.push(item))
+        .catch(e => {
+          logger.error(e);
+          self.message.push(e.message);
+        });
+      }
+    };
+    await loading(preUpload())
+    .catch(e => {
+      logger.error(e.message);
+      self.message.push(e.message);
+    });
   },
 
   async readFile(file) {
@@ -334,7 +347,7 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       await self.upload(item.file)
       .catch(e => {
         logger.error(e.message);
-        self.status = e.message;
+        self.message.push(e.message);
       });
       const index = self.refFiles.findIndex(v => item.file.name === v.name);
       const [data] = self.refFiles.splice(index, 1);
@@ -395,32 +408,38 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
     }));
   },
 
-  async showImage() {
-    const { name } = self.preview;
+  async showImage(target) {
+    if (!target) return;
+    const { name } = target;
     const imagePath = `i/${name}`;
     if (self.cacheImage[imagePath]) {
-      self.preview.imgUrl = self.cacheImage[imagePath];
+      target.imgUrl = self.cacheImage[imagePath];
       return;
     }
-    self.loading = true;
+    loading(new Promise(resolve => { setTimeout(resolve, 500); }));
     self.loadImage(`/picts/${imagePath}`)
     .catch(() => self.loadImage(`/picts/t/${name}`))
     .then(imgUrl => {
-      self.preview.imgUrl = imgUrl;
+      target.imgUrl = imgUrl;
       self.cacheImage[imagePath] = imgUrl;
     })
     .catch(e => {
       logger.error(e.message);
-      self.showMessage = e.message;
-    })
-    .then(() => {
-      self.loading = false;
+      target.imgError = e.message;
     });
   },
 
   async show(item) {
     if (!item) {
-      if (!strictEqual(self.modify, self.imageTags)) {
+      self.modify = Object.fromEntries(Object.entries(self.modify).map(([n, opts]) => [
+        n,
+        { tags: Object.fromEntries(Object.entries(opts.tags).filter(([, enabled]) => enabled)) },
+      ]));
+      const imageTags = Object.fromEntries(Object.entries(self.imageTags).map(([n, opts]) => [
+        n,
+        { tags: Object.fromEntries(Object.entries(opts.tags).filter(([, enabled]) => enabled)) },
+      ]));
+      if (!strictEqual(self.modify, imageTags)) {
         self.updateImageTags(self.modify);
         await self.onSave();
       }
@@ -433,21 +452,21 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
     self.scrollY = window.scrollY;
     self.showMessage = 'Now Loading...';
     self.preview = item;
-    self.showImage();
+    self.showImage(item);
   },
 
   onShowNext() {
     const { name } = self.preview;
     const index = self.list.findIndex(item => item.name === name);
     self.preview = self.list[index + 1 >= self.list.length ? 0 : index + 1];
-    self.showImage();
+    self.showImage(self.preview);
   },
 
   onShowPrev() {
     const { name } = self.preview;
     const index = self.list.findIndex(item => item.name === name);
     self.preview = self.list[index < 1 ? self.list.length - 1 : index - 1];
-    self.showImage();
+    self.showImage(self.preview);
   },
 
   onColorScheme() {
