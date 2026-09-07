@@ -60,7 +60,7 @@
             <div v-for="item of list" class="item-box" :class="itemShown(item)">
               <div class="item-inline" @click.prevent="show(item)">
                 <div class="thumbnail">
-                  <img :src="`/picts/t/${item.name}`" @load="onImageLoad()">
+                  <img :src="item.thumbnail" @load="onImageLoad()" :data-fname="item.name" :alt="item.name">
                 </div>
                 <div class="img-head">{{ item.name }}</div>
               </div>
