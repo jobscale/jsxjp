@@ -54,28 +54,25 @@ export class Controller {
 
   sign(req, res) {
     const { cookies: { token } } = req;
-    const setHeader = (user = {}) => {
+    const setHeader = async (user = {}) => {
       res.setHeader('X-User', user.login ?? 'Guest');
-      res.setHeader('X-Address', ipService.ip(req, true));
+      res.setHeader('X-Address', await ipService.ip(req, true));
     };
     return authService.decode(token)
-    .then(payload => {
+    .then(async payload => {
       res.setCookie('token', token, {
         expires: dayjs().add(1, 'hour'),
       });
-      return payload;
-    })
-    .then(payload => {
       if (req.method === 'HEAD') {
-        setHeader(payload);
+        await setHeader(payload);
         res.end();
         return;
       }
       res.json(payload);
     })
-    .catch(e => {
+    .catch(async e => {
       if (req.method === 'HEAD') {
-        setHeader();
+        await setHeader();
         res.end();
         return;
       }
