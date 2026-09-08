@@ -1329,6 +1329,12 @@ div .note:has(.tag) a {
   overflow: visible;
   max-width: 8em;
 }
+.tag-control-outer {
+  margin: 1.5em;
+}
+.tag-control-edit {
+  margin: 0 2em;
+}
 .thumbnail {
   width: 8em;
   height: 8em;
