@@ -92,7 +92,7 @@ let self = {
   onReset(event) {
     const { currentTarget: el } = event;
     const { id } = el.dataset;
-    location.href = `/user/reset/?l=${id}`;
+    location.href = `/v1/user/reset/?l=${id}`;
   },
 
   onRemove(event) {
