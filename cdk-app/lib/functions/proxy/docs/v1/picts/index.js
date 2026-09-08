@@ -353,7 +353,7 @@ let self = {
       })
       .catch(() => `/picts/t/${item.name}`);
     }
-    self.list.push(...nextItems);
+    self.list.unshift(...nextItems);
     self.updateImageTags(self.imageTags);
     nextItems.forEach(item => {
       if (!self.modify[item.name]) {
