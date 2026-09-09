@@ -13,7 +13,7 @@ import { sshConnection } from './ssh-connect.js';
 
 const { ENV } = process.env;
 
-const allowMethods = ['GET', 'POST', 'HEAD'];
+const allowMethods = ['GET', 'HEAD', 'POST'];
 const allowHeaders = ['Content-Type'];
 
 const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
@@ -179,6 +179,14 @@ export class Ingress {
 
   start() {
     return async (req, res) => Promise.resolve().then(async () => {
+      if (![...allowMethods, 'OPTIONS'].includes(req.method)) {
+        const e = createHttpError(405);
+        res.setHeader('Allow', allowMethods.join(', '));
+        res.writeHead(e.status, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ message: e.message }));
+        return;
+      }
+
       if (!(req.headers instanceof Headers)) req.headers = new Headers(req.headers);
       const [protocol] = req.headers.get('X-Forwarded-Proto')?.split(/, /) ?? [req.socket.encrypted ? 'https' : 'http'];
       Object.assign(req, {
@@ -187,19 +195,12 @@ export class Ingress {
         },
       });
 
+      const origin = req.headers.get('Origin') ?? `${protocol}://${req.headers.get('Host')}`;
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Methods', allowMethods.join(', '));
+      res.setHeader('Access-Control-Allow-Headers', allowHeaders.join(', '));
       if (req.method === 'OPTIONS') {
-        const origin = req.headers.get('Origin') ?? `${protocol}://${req.headers.get('Host')}`;
-        res.setHeader('Access-Control-Allow-Origin', origin);
-        res.setHeader('Access-Control-Allow-Methods', allowMethods.join(', '));
-        res.setHeader('Access-Control-Allow-Headers', allowHeaders.join(', '));
         res.end('');
-        return;
-      }
-      if (!allowMethods.includes(req.method)) {
-        const e = createHttpError(405);
-        res.setHeader('Allow', allowMethods.join(', '));
-        res.writeHead(e.status, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify({ message: e.message }));
         return;
       }
 

@@ -100,7 +100,7 @@ class ServiceWorker {
       return self.fetch(request)
       .then(res => {
         const allowCache = url.pathname.startsWith('/s/');
-        const allowMethod = ['GET', 'HEAD', 'OPTIONS'];
+        const allowMethod = ['GET', 'HEAD'];
         if (!allowMethod.includes(request.method) && !allowCache) return res;
         if (!res.ok) return res;
         cache.put(path, res.clone());

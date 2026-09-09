@@ -1,4 +1,4 @@
-const allowMethods = ['GET', 'POST', 'HEAD'];
+const allowMethods = ['GET', 'HEAD', 'POST'];
 
 export class Router {
   constructor() {
