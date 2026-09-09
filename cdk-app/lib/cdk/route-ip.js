@@ -46,7 +46,7 @@ export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
 
   new apigwv2.CfnRoute(stack, 'IpRoute', {
     apiId: httpApi.ref,
-    routeKey: 'GET /ip',
+    routeKey: 'ANY /ip',
     target: cdk.Fn.join('', ['integrations/', integration.ref]),
   });
 
