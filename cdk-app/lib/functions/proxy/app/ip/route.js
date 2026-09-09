@@ -3,6 +3,7 @@ import { controller } from './controller.js';
 
 const router = new Router();
 router.add('GET', '', controller.ip);
+router.add('POST', '', controller.ip);
 
 export const route = { router };
 export default { route };
