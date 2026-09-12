@@ -68,7 +68,7 @@ const createWebSocketServer = target => {
 
 const webSocketServer = new Map();
 
-export const sshConnection = (req, socket, head) => {
+const sshConnection = (req, socket, head) => {
   const [, , token, salt, host, port] = req.url.split('/');
   const target = `${host}:${port}`;
   const dimension = BigInt(Number.parseInt(salt, 36));
@@ -96,4 +96,15 @@ export const sshConnection = (req, socket, head) => {
   wsServer.handleUpgrade(req, socket, head, ws => {
     wsServer.emit('connection', ws, req);
   });
+};
+
+export const upgradeHandler = (req, socket, head) => {
+  if (!(req.headers instanceof Headers)) req.headers = new Headers(req.headers);
+  const upgrade = req.headers.get('upgrade');
+  logger.info({ url: req.url, upgrade });
+  if (upgrade === 'websocket' && req.url.startsWith('/ssh/')) {
+    sshConnection(req, socket, head);
+    return;
+  }
+  socket.destroy();
 };

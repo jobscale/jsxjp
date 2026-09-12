@@ -9,7 +9,6 @@ import createHttpError from 'http-errors';
 import { parseCookies } from './parse-cookie.js';
 import { route } from './route.js';
 import { parseBody } from './parse-body.js';
-import { sshConnection } from './ssh-connect.js';
 
 const { ENV } = process.env;
 
@@ -171,17 +170,6 @@ export class Ingress {
     res.end(JSON.stringify({ message: e.message }));
   }
 
-  upgradeHandler(req, socket, head) {
-    if (!(req.headers instanceof Headers)) req.headers = new Headers(req.headers);
-    const upgrade = req.headers.get('upgrade');
-    logger.info({ url: req.url, upgrade });
-    if (upgrade === 'websocket' && req.url.startsWith('/ssh/')) {
-      sshConnection(req, socket, head);
-      return;
-    }
-    socket.destroy();
-  }
-
   async requestHandler(req, res) {
     if (![...allowMethods, 'OPTIONS'].includes(req.method)) {
       const e = createHttpError(405);
@@ -239,6 +227,6 @@ export class Ingress {
 
 const ingress = new Ingress();
 export const app = ingress.start();
-const { upgradeHandler, errorHandler } = ingress;
-export { upgradeHandler, errorHandler };
+const { errorHandler } = ingress;
+export { errorHandler };
 export default app;

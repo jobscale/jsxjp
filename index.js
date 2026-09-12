@@ -1,6 +1,7 @@
 import http from 'http';
 import { logger } from '@jobscale/create-logger';
-import { app, upgradeHandler, errorHandler } from './cdk-app/lib/functions/proxy/app/index.js';
+import { app, errorHandler } from './cdk-app/lib/functions/proxy/app/index.js';
+import { upgradeHandler } from './cdk-app/lib/functions/proxy/app/ssh-connect.js';
 
 const PORT = Number.parseInt(process.env.PORT || 3000, 10);
 
