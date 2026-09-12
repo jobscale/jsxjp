@@ -58,6 +58,7 @@ export class Ingress {
       `script-src 'self' 'unsafe-eval' '${inlinePolicy}' ${allowCdn}`,
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' data: https://fonts.gstatic.com",
+      "frame-src 'self' https://www.google.com",
       "img-src 'self' data:",
       "media-src 'self' data:",
       `connect-src 'self' ${scheme}`,
@@ -74,7 +75,7 @@ export class Ingress {
     res.setHeader('X-XSS-Protection', '1; mode=block');
   }
 
-  usePublic(req, res) {
+  async usePublic(req, res) {
     if (!['GET', 'HEAD'].includes(req.method)) return false;
     const { pathname, search } = req.ensure.url;
     const baseDir = path.join(process.cwd(), 'cdk-app/lib/functions/proxy/docs');
@@ -105,7 +106,11 @@ export class Ingress {
       res.end();
       return true;
     }
-    stream.pipe(res);
+    await new Promise((resolve, reject) => {
+      stream.once('error', reject);
+      res.once('finish', resolve);
+      stream.pipe(res);
+    });
     return true;
   }
 
@@ -220,7 +225,7 @@ export class Ingress {
       });
 
       this.useHeader(req, res);
-      if (this.opts.public && this.usePublic(req, res)) return;
+      if (this.opts.public && await this.usePublic(req, res)) return;
       if (this.opts.logging) this.useLogging(req, res);
       await this.useRoute(req, res);
     }).catch(e => {

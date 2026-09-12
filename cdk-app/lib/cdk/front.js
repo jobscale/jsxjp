@@ -113,6 +113,6 @@ export const frontCache = stack => {
       `DOMAIN="${front.domainName.replace('.jsx.jp', '')}"`,
       `R_DATA="${distribution.distributionDomainName}."`,
     ]),
-    description: 'Front custom domain CNAME',
+    description: 'Custom domain Environment',
   });
 };

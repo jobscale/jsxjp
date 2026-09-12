@@ -79,6 +79,7 @@ const createServer = event => {
     req.body = event.body;
   }
 
+  const chunks = [];
   const emitter = new EventEmitter();
   const res = Object.assign(emitter, {
     headers: new Headers(defaultHeaders),
@@ -91,12 +92,20 @@ const createServer = event => {
     hasHeader(name) { return res.headers.has(name); },
     setHeader(name, value) { res.headers.set(name, value); },
     removeHeader(name) { res.headers.delete(name); },
+    write(chunk) {
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+      return true;
+    },
     writeHead(code, h = {}) {
       res.statusCode = code;
       for (const [k, v] of Object.entries(h)) res.headers.set(k, v);
     },
     end(value) {
-      if (value !== undefined) res.body = value;
+      if (value !== undefined) {
+        if (chunks.length || Buffer.isBuffer(value)) res.write(value);
+        else res.body = value;
+      }
+      if (chunks.length) res.body = Buffer.concat(chunks);
       res.writableEnded = true;
       res.emit('finish');
     },

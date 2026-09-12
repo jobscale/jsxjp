@@ -1,8 +1,6 @@
 import createHttpError from 'http-errors';
 import { service as authService } from '../auth/service.js';
-import { service, expandStream } from './service.js';
-
-const { AWS_EXECUTION_ENV: isLambda } = process.env;
+import { service } from './service.js';
 
 export class Controller {
   find(req, res) {
@@ -30,13 +28,13 @@ export class Controller {
       if (!login) throw createHttpError(403);
       return service.image({ login, type, fname });
     })
-    .then(({ ContentType, buffer }) => {
+    .then(({ ContentType, buffer: stream }) => {
       res.setHeader('Content-Type', ContentType);
-      if (isLambda) {
-        return expandStream(buffer).then(body => res.end(body));
-      }
-      buffer.pipe(res);
-      return new Promise(resolve => { res.on('finish', resolve); });
+      return new Promise((resolve, reject) => {
+        stream.once('error', reject);
+        res.once('finish', resolve);
+        stream.pipe(res);
+      });
     })
     .catch(e => {
       if (!e.status) e.status = 404;

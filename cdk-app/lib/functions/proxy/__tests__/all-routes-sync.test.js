@@ -5,7 +5,6 @@ import { describe, expect, jest, it } from '@jest/globals';
 // 外部 I/O (AWS SDK / メール / Push / Slack / fetch) のみを境界としてモックし、
 // アプリ内のコントローラ/サービスは本物のコードを実行する。
 process.env.ENV = 'test';
-process.env.AWS_EXECUTION_ENV = 'AWS_Lambda_nodejs20.x';
 process.env.DETA_PROJECT_KEY = 'test-deta-key';
 process.env.AWS_ACCESS_KEY_ID = 'test-key';
 process.env.AWS_SECRET_ACCESS_KEY = 'test-secret';
