@@ -182,53 +182,56 @@ export class Ingress {
     socket.destroy();
   }
 
+  async requestHandler(req, res) {
+    if (![...allowMethods, 'OPTIONS'].includes(req.method)) {
+      const e = createHttpError(405);
+      res.setHeader('Allow', allowMethods.join(', '));
+      res.writeHead(e.status, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ message: e.message }));
+      return;
+    }
+
+    if (!(req.headers instanceof Headers)) req.headers = new Headers(req.headers);
+    const [protocol] = req.headers.get('X-Forwarded-Proto')?.split(/, /) ?? [req.socket.encrypted ? 'https' : 'http'];
+    Object.assign(req, {
+      ensure: {
+        url: new URL(`${protocol}://${req.headers.get('Host')}${req.url}`),
+      },
+    });
+
+    const origin = req.headers.get('Origin') ?? `${protocol}://${req.headers.get('Host')}`;
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Methods', allowMethods.join(', '));
+    res.setHeader('Access-Control-Allow-Headers', allowHeaders.join(', '));
+    if (req.method === 'OPTIONS') {
+      res.end('');
+      return;
+    }
+
+    Object.assign(res, {
+      status(code) {
+        res.statusCode = code;
+        return res;
+      },
+      json(value) {
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        res.end(JSON.stringify(value));
+      },
+      redirect(uri) {
+        res.writeHead(307, { Location: uri });
+        res.end();
+      },
+    });
+
+    this.useHeader(req, res);
+    if (this.opts.public && await this.usePublic(req, res)) return;
+    if (this.opts.logging) this.useLogging(req, res);
+    await this.useRoute(req, res);
+  }
+
   start() {
-    return async (req, res) => Promise.resolve().then(async () => {
-      if (![...allowMethods, 'OPTIONS'].includes(req.method)) {
-        const e = createHttpError(405);
-        res.setHeader('Allow', allowMethods.join(', '));
-        res.writeHead(e.status, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify({ message: e.message }));
-        return;
-      }
-
-      if (!(req.headers instanceof Headers)) req.headers = new Headers(req.headers);
-      const [protocol] = req.headers.get('X-Forwarded-Proto')?.split(/, /) ?? [req.socket.encrypted ? 'https' : 'http'];
-      Object.assign(req, {
-        ensure: {
-          url: new URL(`${protocol}://${req.headers.get('Host')}${req.url}`),
-        },
-      });
-
-      const origin = req.headers.get('Origin') ?? `${protocol}://${req.headers.get('Host')}`;
-      res.setHeader('Access-Control-Allow-Origin', origin);
-      res.setHeader('Access-Control-Allow-Methods', allowMethods.join(', '));
-      res.setHeader('Access-Control-Allow-Headers', allowHeaders.join(', '));
-      if (req.method === 'OPTIONS') {
-        res.end('');
-        return;
-      }
-
-      Object.assign(res, {
-        status(code) {
-          res.statusCode = code;
-          return res;
-        },
-        json(value) {
-          res.setHeader('Content-Type', 'application/json; charset=utf-8');
-          res.end(JSON.stringify(value));
-        },
-        redirect(uri) {
-          res.writeHead(307, { Location: uri });
-          res.end();
-        },
-      });
-
-      this.useHeader(req, res);
-      if (this.opts.public && await this.usePublic(req, res)) return;
-      if (this.opts.logging) this.useLogging(req, res);
-      await this.useRoute(req, res);
-    }).catch(e => {
+    return (req, res) => this.requestHandler(req, res)
+    .catch(e => {
       this.errorHandler(e, req, res);
     });
   }
