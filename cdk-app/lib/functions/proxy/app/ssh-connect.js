@@ -99,8 +99,7 @@ const sshConnection = (req, socket, head) => {
 };
 
 export const upgradeHandler = (req, socket, head) => {
-  if (!(req.headers instanceof Headers)) req.headers = new Headers(req.headers);
-  const upgrade = req.headers.get('upgrade');
+  const { upgrade } = req.headers;
   logger.info({ url: req.url, upgrade });
   if (upgrade === 'websocket' && req.url.startsWith('/ssh/')) {
     sshConnection(req, socket, head);
