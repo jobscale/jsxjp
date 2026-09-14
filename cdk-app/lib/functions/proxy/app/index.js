@@ -45,7 +45,8 @@ export class Ingress {
     if (req.method === 'GET') {
       res.setHeader('Link', '</icon/cat-hand.svg>; rel="icon"; type="image/svg+xml"');
     }
-    const inlinePolicy = `nonce-${crypto.randomBytes(7).toString('hex')}`;
+    const nonce = crypto.randomBytes(7).toString('hex');
+    const inlinePolicy = `nonce-${nonce}`;
     const scheme = protocol === 'http' ? 'http: ws:' : 'https: wss:';
     const allowCdn = [
       'https://cdn.jsdelivr.net',

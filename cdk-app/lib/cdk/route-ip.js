@@ -34,6 +34,12 @@ export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
     },
   });
 
+  container.addPermission('HttpApiInvokePermission', {
+    principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
+    action: 'lambda:InvokeFunction',
+    sourceArn,
+  });
+
   const integration = new apigwv2.CfnIntegration(stack, 'IpIntegration', {
     apiId: httpApi.ref,
     integrationType: 'AWS_PROXY',
@@ -48,11 +54,5 @@ export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
     apiId: httpApi.ref,
     routeKey: 'ANY /ip',
     target: cdk.Fn.join('', ['integrations/', integration.ref]),
-  });
-
-  container.addPermission('HttpApiInvokePermission', {
-    principal: new iam.ServicePrincipal('apigateway.amazonaws.com'),
-    action: 'lambda:InvokeFunction',
-    sourceArn,
   });
 };

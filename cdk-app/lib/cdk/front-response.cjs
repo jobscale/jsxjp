@@ -7,6 +7,7 @@ function handler(event) {
     nonce += chars[Math.floor(Math.random() * chars.length)];
   }
   const inlinePolicy = `nonce-${nonce}`;
+  const scheme = 'https: wss:';
   const allowCdn = [
     'https://cdn.jsdelivr.net',
     'https://esm.sh',
@@ -17,9 +18,10 @@ function handler(event) {
     `script-src 'self' 'unsafe-eval' '${inlinePolicy}' ${allowCdn}`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' data: https://fonts.gstatic.com",
+    "frame-src 'self' https://www.google.com",
     "img-src 'self' data:",
     "media-src 'self' data:",
-    "connect-src 'self' https: wss:",
+    `connect-src 'self' ${scheme}`,
     "object-src 'none'",
     "base-uri 'none'",
     "frame-ancestors 'self'",

@@ -8,9 +8,7 @@ export class AppStack extends cdk.Stack {
     const { envName = 'dev', ...stackProps } = props;
     super(scope, id, stackProps);
 
-    cdk.Tags.of(this).add('Env', envName, {
-      excludeResourceTypes: ['AWS::ApiGatewayV2::Api'],
-    });
+    cdk.Tags.of(this).add('Env', envName);
 
     this.context = {
       envName,
