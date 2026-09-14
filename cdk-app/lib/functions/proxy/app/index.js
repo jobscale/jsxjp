@@ -43,7 +43,7 @@ export class Ingress {
     res.setHeader('X-Origin', req.headers.get('Origin'));
     res.setHeader('X-Backend-Host', os.hostname());
     if (req.method === 'GET') {
-      res.setHeader('Link', '</icon/cat-hand.svg>; rel="icon"; type="image/svg+xml"');
+      res.setHeader('Link', '</v1/icon/cat-hand.svg>; rel="icon"; type="image/svg+xml"');
     }
     const nonce = crypto.randomBytes(7).toString('hex');
     const inlinePolicy = `nonce-${nonce}`;
