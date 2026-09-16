@@ -47,13 +47,13 @@
       <section>
         <div class="worm">
           <span class="inline-scroll">
-            <span class="busy busy-ts" :title="busyLatests">{{ busyList[0]?.time }}</span>
+            <span v-for="item of [...busyList].reverse()" class="busy" :title="`${item.date} ${item.time}`">{{ item.num }}</span>
           </span>
           <span class="inline-scroll">
             <span class="busy">{{ busyText }}</span>
           </span>
           <span class="inline-scroll">
-            <span v-for="item of busyList" class="busy" :title="`${item.date} ${item.time}`">{{ item.num }}</span>
+            <span class="busy busy-ts" :title="busyLatests">{{ busyList[0]?.time }}</span>
           </span>
         </div>
         <div>
@@ -96,6 +96,7 @@
             <a target="_blank" href="https://timer.cdn.jsx.jp">RamenTimer</a>
             <a target="_blank" href="https://tetris.cdn.jsx.jp">Tetris</a>
             <a target="_blank" href="https://card.cdn.jsx.jp">PayCard</a>
+            <a target="_blank" href="https://stg-front.jsx.jp/v1/speed">NetSpeed</a>
             <a target="_blank" href="https://snow.cdn.jsx.jp">SnowBall</a>
             <a target="_blank" href="https://fake.cdn.jsx.jp">FakeNotification</a>
             <a target="_blank" href="https://site.cdn.jsx.jp/profile">Profile</a>

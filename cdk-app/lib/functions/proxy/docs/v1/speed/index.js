@@ -107,8 +107,8 @@ const app = reactive({
       target.latest = result;
       target.history.unshift(result);
       if (target.history.length > maxHistory) target.history.pop();
-    } catch (error) {
-      target.error = error.message;
+    } catch (e) {
+      target.error = e.message;
     } finally {
       target.checking = false;
       app.drawChart(target);
@@ -116,6 +116,7 @@ const app = reactive({
   },
 
   formatSpeed(item) {
+    if (!item.size) return '-';
     return `${item.mbps.toFixed(2)} Mbps (${item.duration} ms)`;
   },
 
@@ -130,7 +131,7 @@ const app = reactive({
     const { width } = canvas;
     const { height } = canvas;
     context.clearRect(0, 0, width, height);
-    const values = target.history.map(item => item.mbps).reverse();
+    const values = target.history.map(item => item.duration).reverse();
     const max = Math.max(...values, 1);
     context.strokeStyle = '#3a484d';
     context.beginPath();
