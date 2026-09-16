@@ -249,7 +249,8 @@ small {
 }
 
 .latest-result strong {
-  font: 700 25px Georgia, 'Times New Roman', serif;
+  font: 700 26px 'Mochiy Pop P One', Georgia, 'Times New Roman', serif;
+  letter-spacing: 0.25em;
   overflow-wrap: anywhere;
 }
 
