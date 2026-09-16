@@ -66,6 +66,7 @@
 
       <div class="result-grid">
         <div class="chart-wrap">
+          <div class="badge">{{ maximum(target) }}</div>
           <canvas :id="`chart-${target.id}`" width="2560" height="720" aria-label="速度履歴グラフ"></canvas>
         </div>
       </div>

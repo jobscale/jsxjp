@@ -127,6 +127,12 @@ const app = reactive({
     return formatTimestamp(timestamp, true);
   },
 
+  maximum(target) {
+    const values = target.history.map(item => item.duration);
+    const max = Math.max(...values, 1);
+    return max > 10 ? max : '';
+  },
+
   drawChart(target) {
     const canvas = document.getElementById(`chart-${target.id}`);
     if (!canvas) return;
@@ -143,15 +149,21 @@ const app = reactive({
     context.stroke();
     if (!values.length) return;
     context.lineWidth = 3;
-    context.beginPath();
-    values.forEach((value, index) => {
-      context.strokeStyle = value < 500 ? '#aa6' : value < 1000 ? '#f74' : '#f20';
+    const points = values.map((value, index) => {
       const x = values.length === 1 ? width / 2 : index * width / (values.length - 1);
       const y = height - 8 - value / max * (height - 20);
-      if (index === 0) context.moveTo(x, y);
-      else context.lineTo(x, y);
+      return { x, y, value };
     });
-    context.stroke();
+    for (let i = 0; i < points.length - 1; i++) {
+      const start = points[i];
+      const end = points[i + 1];
+      const feature = Math.max(start.value, end.value);
+      context.strokeStyle = feature < 500 ? '#aa6' : feature < 1000 ? '#f74' : '#f20';
+      context.beginPath();
+      context.moveTo(start.x, start.y);
+      context.lineTo(end.x, end.y);
+      context.stroke();
+    }
   },
 });
 

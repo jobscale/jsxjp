@@ -265,10 +265,16 @@ small {
 }
 
 .chart-wrap {
+  position: relative;
   min-width: 0;
   min-height: 150px;
   padding: 10px;
   background: #131a1d;
+}
+.badge {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 canvas {
