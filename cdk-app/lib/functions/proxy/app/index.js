@@ -77,7 +77,7 @@ export class Ingress {
 
   async usePublic(req, res) {
     if (!['GET', 'HEAD'].includes(req.method)) return false;
-    const { pathname } = req.ensure.url;
+    const { pathname, search } = req.ensure.url;
     const baseDir = path.join(process.cwd(), 'cdk-app/lib/functions/proxy/docs');
     const file = {
       path: path.join(baseDir, pathname),
@@ -86,7 +86,11 @@ export class Ingress {
     file.stat = fs.existsSync(file.path) && fs.statSync(file.path);
     if (!file.stat) return false;
     if (file.stat.isDirectory()) {
-      if (!file.path.endsWith('/')) file.path += '/';
+      if (!file.path.endsWith('/')) {
+        res.writeHead(307, { Location: `${pathname}/${search}` });
+        res.end();
+        return true;
+      }
       file.path += 'index.html';
       file.stat = fs.existsSync(file.path) && fs.statSync(file.path);
       if (!file.stat) return false;
