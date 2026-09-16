@@ -28,47 +28,48 @@
       <div class="panel-header">
         <div>
           <span class="target-number">{{ String(index + 1).padStart(2, '0') }}</span>
-          <h2>Target {{ index + 1 }}</h2>
+          <div class="latest-result">
+            <strong v-if="target.error" class="error">{{ target.error }}</strong>
+            <strong v-else>{{ target.latest ? formatSpeed(target.latest) : '' }}</strong>
+          </div>
         </div>
         <div class="panel-actions">
           <span class="status" :class="{ active: target.running }">{{ target.running ? 'RUNNING' : 'STOPPED' }}</span>
           <button class="text-button danger" type="button" @click="removeTarget(index)"
-            :disabled="targets.length <= 1">削除</button>
+            :disabled="target.running || targets.length <= 1">削除</button>
         </div>
       </div>
 
       <div class="settings">
         <label>
           <span>Method</span>
-          <select v-model="target.method">
+          <select v-model="target.method" :disabled="target.running">
             <option v-for="method in methods" :key="method" :value="method">{{ method }}</option>
           </select>
         </label>
         <label class="uri-field">
           <span>URI</span>
-          <input v-model.trim="target.uri" type="text" inputmode="url" placeholder="/api/speed">
+          <input type="search" list="uri-suggestions" v-model.trim="target.uri" type="text" inputmode="url" :placeholder="uriSuggestions[0]"
+            :disabled="target.running">
+            <datalist id="uri-suggestions">
+              <option v-for="suggestion in uriSuggestions" :key="suggestion" :value="suggestion">
+            </datalist>
         </label>
         <label class="interval-field">
           <span>Interval <small>(seconds)</small></span>
-          <input v-model.number="target.interval" type="number" min="1" step="1">
+          <input v-model.number="target.interval" type="number" min="1" step="1" :disabled="target.running">
         </label>
-        <button class="run-button" type="button" @click="toggleTarget(target)">
+        <button class="run-button" type="button" @click="toggleTarget(target)"
+          :disabled="!target.uri">
           {{ target.running ? '停止' : '開始' }}
         </button>
         <button class="check-button" type="button" @click="checkTarget(target)"
-          :disabled="target.checking || !target.uri">
-          {{ target.checking ? '計測中...' : '今すぐ計測' }}
+          :disabled="!target.uri">
+          {{ '今すぐ計測' }}
         </button>
       </div>
 
       <div class="result-grid">
-        <div class="latest-result">
-          <span class="result-label">Latest</span>
-          <strong>{{ target.latest ? formatSpeed(target.latest) : '—' }}</strong>
-          <span v-if="target.error" class="error">{{ target.error }}</span>
-          <span v-else-if="target.latest">{{ formatDate(target.latest.timestamp) }} / {{ target.latest.status }}</span>
-          <span v-else>まだ計測されていません</span>
-        </div>
         <div class="chart-wrap">
           <canvas :id="`chart-${target.id}`" width="640" height="180" aria-label="速度履歴グラフ"></canvas>
         </div>
@@ -81,8 +82,8 @@
       <div v-if="target.history.length" class="history-list">
         <div v-for="item in target.history" :key="item.id" class="history-row">
           <time>{{ formatDate(item.timestamp) }}</time>
-          <span>{{ formatSpeed(item) }}</span>
           <span>{{ item.status }}</span>
+          <span>{{ formatSpeed(item) }}</span>
           <span>{{ item.duration }} ms</span>
         </div>
       </div>

@@ -179,6 +179,12 @@ select:focus {
   outline-offset: 1px;
 }
 
+input:disabled,
+select:disabled {
+  color: var(--muted);
+  background: var(--panel);
+}
+
 small {
   color: var(--muted);
   font-size: 10px;
@@ -193,17 +199,15 @@ small {
 
 .result-grid {
   display: grid;
-  grid-template-columns: 260px 1fr;
   gap: 20px;
   padding: 20px;
 }
 
 .latest-result {
-  display: grid;
+  display: inline-grid;
   align-content: center;
   gap: 7px;
-  min-height: 150px;
-  padding: 18px;
+  padding: 0 18px;
   border-left: 3px solid var(--accent);
   background: #131a1d;
 }
@@ -219,7 +223,7 @@ small {
 }
 
 .error {
-  color: var(--danger);
+  color: var(--danger) !important;
   overflow-wrap: anywhere;
 }
 
@@ -250,7 +254,7 @@ canvas {
 
 .history-row {
   display: grid;
-  grid-template-columns: 1fr 1.3fr .7fr auto;
+  grid-template-columns: .7fr .3fr 1.3fr auto;
   gap: 15px;
   padding: 9px 20px;
   border-bottom: 1px solid rgba(58, 72, 77, .55);
@@ -258,7 +262,7 @@ canvas {
   font-size: 12px;
 }
 
-.history-row span:nth-child(2) {
+.history-row span:nth-child(3) {
   color: var(--text);
 }
 

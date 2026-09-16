@@ -1,15 +1,35 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 
 const maxTargets = 20;
-const maxHistory = 60;
-const methods = ['GET', 'POST', 'HEAD', 'PUT', 'DELETE', 'OPTIONS'];
-let nextId = 1;
+const maxHistory = 2000;
+const methods = ['HEAD', 'GET', 'POST', 'OPTIONS'];
+const uriSuggestions = [
+  '/',
+  '/favicon.ico',
+  '/v1/img/loading.svg',
+  '/auth/sign',
+  '/api/speed',
+];
 
-const createTarget = () => reactive({
-  id: nextId++,
-  method: 'POST',
-  uri: '/api/speed',
-  interval: 10,
+const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
+  const timestamp = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).format(new Date(ts));
+  if (withoutTimezone) return timestamp;
+  return `${timestamp}+09:00`;
+};
+
+const createTarget = id => reactive({
+  id,
+  method: methods[0],
+  uri: uriSuggestions[0],
+  interval: 3,
   running: false,
   checking: false,
   timer: null,
@@ -19,32 +39,34 @@ const createTarget = () => reactive({
 });
 
 const app = reactive({
+  nextId: 1,
   maxTargets,
   maxHistory,
   methods,
-  targets: [createTarget()],
+  uriSuggestions,
+  targets: [],
 
   addTarget() {
-    if (this.targets.length < maxTargets) this.targets.push(createTarget());
+    if (app.targets.length < maxTargets) app.targets.push(createTarget(app.nextId++));
   },
 
   removeTarget(index) {
-    const target = this.targets[index];
-    this.stopTarget(target);
-    this.targets.splice(index, 1);
+    const target = app.targets[index];
+    app.stopTarget(target);
+    app.targets.splice(index, 1);
   },
 
   toggleTarget(target) {
-    if (target.running) this.stopTarget(target);
-    else this.startTarget(target);
+    if (target.running) app.stopTarget(target);
+    else app.startTarget(target);
   },
 
   startTarget(target) {
-    const interval = Math.max(1, Number.Number(target.interval, 10) || 1);
+    const interval = Math.max(1, Number.parseInt(target.interval, 10) || 1);
     target.interval = interval;
     target.running = true;
-    this.checkTarget(target);
-    target.timer = setInterval(() => this.checkTarget(target), interval * 1000);
+    app.checkTarget(target);
+    target.timer = setInterval(() => app.checkTarget(target), interval * 1000);
   },
 
   stopTarget(target) {
@@ -89,7 +111,7 @@ const app = reactive({
       target.error = error.message;
     } finally {
       target.checking = false;
-      this.drawChart(target);
+      app.drawChart(target);
     }
   },
 
@@ -98,9 +120,7 @@ const app = reactive({
   },
 
   formatDate(timestamp) {
-    return new Intl.DateTimeFormat('ja-JP', {
-      dateStyle: 'short', timeStyle: 'medium',
-    }).format(new Date(timestamp));
+    return formatTimestamp(timestamp, true);
   },
 
   drawChart(target) {
@@ -133,6 +153,8 @@ const app = reactive({
 
 createApp({
   setup() { return app; },
-  mounted() { this.targets.forEach(target => this.drawChart(target)); },
-  updated() { this.targets.forEach(target => this.drawChart(target)); },
+  mounted() {
+    app.addTarget();
+    app.targets.forEach(target => app.drawChart(target));
+  },
 }).mount('#app');
