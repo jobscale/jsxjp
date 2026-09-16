@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>Speed check</title>
+  <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+  <main id="app">
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">NETWORK TOOL</p>
+        <h1>Speed check</h1>
+        <p class="intro">URIごとにリクエスト方法とチェック間隔を設定できます。</p>
+      </div>
+      <button class="add-button" type="button" @click="addTarget" :disabled="targets.length >= maxTargets">
+        <span aria-hidden="true">+</span> URIを追加
+      </button>
+    </header>
+
+    <p v-if="!targets.length" class="empty-state">チェック対象がありません。URIを追加してください。</p>
+
+    <section v-for="(target, index) in targets" :key="target.id" class="target-panel">
+      <div class="panel-header">
+        <div>
+          <span class="target-number">{{ String(index + 1).padStart(2, '0') }}</span>
+          <h2>Target {{ index + 1 }}</h2>
+        </div>
+        <div class="panel-actions">
+          <span class="status" :class="{ active: target.running }">{{ target.running ? 'RUNNING' : 'STOPPED' }}</span>
+          <button class="text-button danger" type="button" @click="removeTarget(index)"
+            :disabled="targets.length <= 1">削除</button>
+        </div>
+      </div>
+
+      <div class="settings">
+        <label>
+          <span>Method</span>
+          <select v-model="target.method">
+            <option v-for="method in methods" :key="method" :value="method">{{ method }}</option>
+          </select>
+        </label>
+        <label class="uri-field">
+          <span>URI</span>
+          <input v-model.trim="target.uri" type="text" inputmode="url" placeholder="/api/speed">
+        </label>
+        <label class="interval-field">
+          <span>Interval <small>(seconds)</small></span>
+          <input v-model.number="target.interval" type="number" min="1" step="1">
+        </label>
+        <button class="run-button" type="button" @click="toggleTarget(target)">
+          {{ target.running ? '停止' : '開始' }}
+        </button>
+        <button class="check-button" type="button" @click="checkTarget(target)"
+          :disabled="target.checking || !target.uri">
+          {{ target.checking ? '計測中...' : '今すぐ計測' }}
+        </button>
+      </div>
+
+      <div class="result-grid">
+        <div class="latest-result">
+          <span class="result-label">Latest</span>
+          <strong>{{ target.latest ? formatSpeed(target.latest) : '—' }}</strong>
+          <span v-if="target.error" class="error">{{ target.error }}</span>
+          <span v-else-if="target.latest">{{ formatDate(target.latest.timestamp) }} / {{ target.latest.status }}</span>
+          <span v-else>まだ計測されていません</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas :id="`chart-${target.id}`" width="640" height="180" aria-label="速度履歴グラフ"></canvas>
+        </div>
+      </div>
+
+      <div class="history-header">
+        <h3>History</h3>
+        <span>{{ target.history.length }} / {{ maxHistory }}</span>
+      </div>
+      <div v-if="target.history.length" class="history-list">
+        <div v-for="item in target.history" :key="item.id" class="history-row">
+          <time>{{ formatDate(item.timestamp) }}</time>
+          <span>{{ formatSpeed(item) }}</span>
+          <span>{{ item.status }}</span>
+          <span>{{ item.duration }} ms</span>
+        </div>
+      </div>
+      <p v-else class="history-empty">履歴はここに表示されます。</p>
+    </section>
+  </main>
+  <script defer type="module" src="./index.js"></script>
+</body>
+
+</html>
