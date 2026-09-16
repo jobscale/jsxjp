@@ -30,7 +30,7 @@
           <span class="target-number">{{ String(index + 1).padStart(2, '0') }}</span>
           <div class="latest-result">
             <strong v-if="target.error" class="error">{{ target.error }}</strong>
-            <strong v-else>{{ target.latest ? formatSpeed(target.latest) : '' }}</strong>
+            <strong v-else>{{ target.history.length ? averageSpeed(target) : '' }}</strong>
           </div>
         </div>
         <div class="panel-actions">

@@ -9,6 +9,7 @@ const uriSuggestions = [
   '/v1/img/loading.svg',
   '/auth/sign',
   '/api/speed',
+  'https://stg-front.jsx.jp/auth/sign',
 ];
 
 const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
@@ -32,8 +33,6 @@ const createTarget = id => reactive({
   interval: 3,
   running: false,
   checking: false,
-  timer: null,
-  latest: null,
   error: '',
   history: [],
 });
@@ -66,12 +65,9 @@ const app = reactive({
     target.interval = interval;
     target.running = true;
     app.checkTarget(target);
-    target.timer = setInterval(() => app.checkTarget(target), interval * 1000);
   },
 
   stopTarget(target) {
-    if (target.timer) clearInterval(target.timer);
-    target.timer = null;
     target.running = false;
   },
 
@@ -104,7 +100,6 @@ const app = reactive({
         size: body.size,
         mbps: body.size * 8 / duration / 1000,
       };
-      target.latest = result;
       target.history.unshift(result);
       if (target.history.length > maxHistory) target.history.pop();
     } catch (e) {
@@ -113,6 +108,16 @@ const app = reactive({
       target.checking = false;
       app.drawChart(target);
     }
+    if (target.running) {
+      setTimeout(() => app.checkTarget(target), target.interval * 1000);
+    }
+  },
+
+  averageSpeed(target) {
+    const latest = target.history.slice(0, 10);
+    const sumDuration = latest.reduce((item, prev) => prev + item.duration, 0);
+    const sumMbps = latest.reduce((item, prev) => prev + item.mbps, 0);
+    return `${(sumMbps / latest.length).toFixed(2)} Mbps (${Math.ceil(sumDuration / latest.length)} ms)`;
   },
 
   formatSpeed(item) {
