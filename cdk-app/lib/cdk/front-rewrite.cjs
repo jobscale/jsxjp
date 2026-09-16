@@ -17,9 +17,15 @@ function handler(event) {
   }
 
   if (uri.endsWith('/')) {
-    request.uri = uri + 'index.html';
+    request.uri += 'index.html';
   } else if (!uri.includes('.')) {
-    request.uri = uri + '/index.html';
+    return {
+      statusCode: 307,
+      statusDescription: 'Temporary Redirect',
+      headers: {
+        'location': { value: `${uri}/` },
+      },
+    };
   }
 
   return request;
