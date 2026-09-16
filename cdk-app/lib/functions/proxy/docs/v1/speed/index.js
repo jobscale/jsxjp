@@ -71,7 +71,7 @@ const app = reactive({
     target.running = false;
   },
 
-  async checkTarget(target) {
+  async checkTarget(target, once = false) {
     if (target.checking || !target.uri) return;
     target.checking = true;
     target.error = '';
@@ -108,15 +108,15 @@ const app = reactive({
       target.checking = false;
       app.drawChart(target);
     }
-    if (target.running) {
+    if (target.running && !once) {
       setTimeout(() => app.checkTarget(target), target.interval * 1000);
     }
   },
 
   averageSpeed(target) {
     const latest = target.history.slice(0, 10);
-    const sumDuration = latest.reduce((item, prev) => prev + item.duration, 0);
-    const sumMbps = latest.reduce((item, prev) => prev + item.mbps, 0);
+    const sumDuration = latest.reduce((prev, item) => prev + item.duration, 0);
+    const sumMbps = latest.reduce((prev, item) => prev + item.mbps, 0);
     return `${(sumMbps / latest.length).toFixed(2)} Mbps (${Math.ceil(sumDuration / latest.length)} ms)`;
   },
 

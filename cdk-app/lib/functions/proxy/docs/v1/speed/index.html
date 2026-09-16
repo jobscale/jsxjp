@@ -63,7 +63,7 @@
           :disabled="!target.uri">
           {{ target.running ? '停止' : '開始' }}
         </button>
-        <button class="check-button" type="button" @click="checkTarget(target)"
+        <button class="check-button" type="button" @click="checkTarget(target, true)"
           :disabled="!target.uri">
           {{ '今すぐ計測' }}
         </button>
