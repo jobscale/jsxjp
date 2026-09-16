@@ -5,8 +5,8 @@ function handler(event) {
 
   if (method === 'OPTIONS') {
     return {
-      statusCode: 200,
-      statusDescription: 'OK',
+      statusCode: 204,
+      statusDescription: 'No Content',
       headers: {
         'access-control-allow-origin': { value: '*' },
         'access-control-allow-methods': { value: 'GET, HEAD' },
