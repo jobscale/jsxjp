@@ -164,7 +164,7 @@ let self = {
     const data = self.busyList.map(item => Math.min(20, item.num));
     const max = Math.max(...data, 1);
     const barWidth = width / data.length;
-    data.forEach((num, index) => {
+    data.reverse().forEach((num, index) => {
       const barHeight = num / max * height;
       const color = Math.min(Math.floor(num / 3), colorList.length - 1);
       ctx.fillStyle = colorList[color];
