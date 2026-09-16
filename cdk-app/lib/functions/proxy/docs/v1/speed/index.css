@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&family=Monomaniac+One&family=Tangerine:wght@400;700');
+
 :root {
   color-scheme: dark;
   --bg: #101416;
@@ -13,6 +15,7 @@
 
 * {
   box-sizing: border-box;
+  font-family: 'Mochiy Pop P One';
 }
 
 body {
@@ -26,6 +29,7 @@ button,
 input,
 select {
   font: inherit;
+  height: 3.3em;
 }
 
 button {
@@ -41,6 +45,12 @@ button:disabled {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
   padding: 52px 0 80px;
+}
+
+main {
+  min-height: 100vh;
+  display: grid;
+  align-content: center;
 }
 
 .page-header {
@@ -76,7 +86,7 @@ p {
 }
 
 h1 {
-  font: 700 clamp(34px, 6vw, 62px)/1.05 Georgia, 'Times New Roman', serif;
+  font: 700 clamp(34px, 6vw, 62px)/1.05 'Mochiy Pop P One', Georgia, 'Times New Roman', serif;
   letter-spacing: 0;
 }
 
@@ -103,7 +113,7 @@ h3 {
   padding: 10px 16px;
   color: #151819;
   background: var(--accent);
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .add-button span {
