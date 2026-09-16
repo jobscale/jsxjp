@@ -17,14 +17,9 @@
         <h1>Speed check</h1>
         <p class="intro">URIごとにリクエスト方法とチェック間隔を設定できます。</p>
       </div>
-      <button class="add-button" type="button" @click="addTarget" :disabled="targets.length >= maxTargets">
-        <span aria-hidden="true">+</span> URIを追加
-      </button>
     </header>
 
-    <p v-if="!targets.length" class="empty-state">チェック対象がありません。URIを追加してください。</p>
-
-    <section v-for="(target, index) in targets" :key="target.id" class="target-panel">
+    <section v-for="(target, index) in targets" :key="target.id" class="target-panel fade-animation">
       <div class="panel-header">
         <div>
           <span class="target-number">{{ String(index + 1).padStart(2, '0') }}</span>
@@ -76,21 +71,30 @@
       </div>
 
       <div class="history-header">
-        <h3>History</h3>
+        <h3 @click.prevent="target.detail = !target.detail" class="click">{{ target.detail ? 'Hide' : 'History' }}</h3>
         <span>{{ target.history.length }} / {{ maxHistory }}</span>
       </div>
-      <div v-if="target.history.length" class="history-list">
-        <div v-for="item in target.history" :key="item.id" class="history-row">
-          <time>{{ formatDate(item.timestamp) }}</time>
-          <span>{{ item.status }}</span>
-          <span>{{ formatSpeed(item) }}</span>
-          <span>{{ item.duration }} ms</span>
+      <div v-if="target.detail">
+        <div v-if="target.history.length" class="history-list">
+          <div v-for="item in target.history" :key="item.id" class="history-row">
+            <time>{{ formatDate(item.timestamp) }}</time>
+            <span>{{ item.status }}</span>
+            <span>{{ formatSpeed(item) }}</span>
+            <span>{{ item.duration }} ms</span>
+          </div>
         </div>
+        <p v-else class="history-empty">履歴はここに表示されます。</p>
       </div>
-      <p v-else class="history-empty">履歴はここに表示されます。</p>
     </section>
+
+    <footer class="page-footer">
+      <span>&nbsp</span>
+      <button class="add-button" type="button" @click="addTarget" :disabled="targets.length >= maxTargets">
+        <span aria-hidden="true">+</span> URIを追加
+      </button>
+    </footer>
   </main>
-  <script defer type="module" src="./index.js"></script>
+  <script defer type="module" src="index.js"></script>
 </body>
 
 </html>

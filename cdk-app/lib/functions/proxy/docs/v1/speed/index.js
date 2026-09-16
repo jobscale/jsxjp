@@ -1,17 +1,5 @@
 import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 
-const maxTargets = 20;
-const maxHistory = 2000;
-const methods = ['HEAD', 'GET', 'POST', 'OPTIONS'];
-const uriSuggestions = [
-  '/',
-  '/favicon.ico',
-  '/v1/img/loading.svg',
-  '/auth/sign',
-  '/api/speed',
-  'https://stg-front.jsx.jp/auth/sign',
-];
-
 const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   const timestamp = new Intl.DateTimeFormat('sv-SE', {
     timeZone: 'Asia/Tokyo',
@@ -26,27 +14,39 @@ const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   return `${timestamp}+09:00`;
 };
 
-const createTarget = id => reactive({
-  id,
-  method: methods[0],
-  uri: uriSuggestions[0],
-  interval: 3,
-  running: false,
-  checking: false,
-  error: '',
-  history: [],
-});
-
 const app = reactive({
   nextId: 1,
-  maxTargets,
-  maxHistory,
-  methods,
-  uriSuggestions,
+  maxTargets: 20,
+  maxHistory: 2000,
+  methods: ['HEAD', 'GET', 'POST', 'OPTIONS'],
+  uriSuggestions: [
+    '/',
+    '/favicon.ico',
+    '/v1/img/loading.svg',
+    '/auth/sign',
+    '/api/speed',
+    'https://esm.sh/@jobscale/create-logger',
+    'https://esm.sh/@jobscale/loading',
+    'https://stg-front.jsx.jp/auth/sign',
+    'https://stg-serverless.jsx.jp/auth/sign',
+  ],
   targets: [],
 
+  createTarget(id) {
+    return {
+      id,
+      method: app.methods[0],
+      uri: app.uriSuggestions[0],
+      interval: 3,
+      running: false,
+      error: '',
+      history: [],
+      detail: false,
+    };
+  },
+
   addTarget() {
-    if (app.targets.length < maxTargets) app.targets.push(createTarget(app.nextId++));
+    if (app.targets.length < app.maxTargets) app.targets.push(app.createTarget(app.nextId++));
   },
 
   removeTarget(index) {
@@ -72,8 +72,7 @@ const app = reactive({
   },
 
   async checkTarget(target, once = false) {
-    if (target.checking || !target.uri) return;
-    target.checking = true;
+    if (!target.uri) return;
     target.error = '';
     const startedAt = performance.now();
     const timestamp = Date.now();
@@ -101,11 +100,10 @@ const app = reactive({
         mbps: body.size * 8 / duration / 1000,
       };
       target.history.unshift(result);
-      if (target.history.length > maxHistory) target.history.pop();
+      if (target.history.length > app.maxHistory) target.history.pop();
     } catch (e) {
       target.error = e.message;
     } finally {
-      target.checking = false;
       app.drawChart(target);
     }
     if (target.running && !once) {
@@ -144,10 +142,10 @@ const app = reactive({
     context.lineTo(width, height - 1);
     context.stroke();
     if (!values.length) return;
-    context.strokeStyle = '#f2b84b';
     context.lineWidth = 3;
     context.beginPath();
     values.forEach((value, index) => {
+      context.strokeStyle = value < 500 ? '#aa6' : value < 1000 ? '#f74' : '#f20';
       const x = values.length === 1 ? width / 2 : index * width / (values.length - 1);
       const y = height - 8 - value / max * (height - 20);
       if (index === 0) context.moveTo(x, y);
