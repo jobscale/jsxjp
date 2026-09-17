@@ -208,6 +208,9 @@ select {
   color: var(--text);
   background: var(--bg);
 }
+input[type="number"] {
+  text-align: center;
+}
 
 input:focus,
 select:focus {

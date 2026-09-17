@@ -134,6 +134,7 @@ const app = reactive({
   },
 
   drawChart(target) {
+    const limited = 6000;
     const canvas = document.getElementById(`chart-${target.id}`);
     if (!canvas) return;
     const context = canvas.getContext('2d');
@@ -141,7 +142,7 @@ const app = reactive({
     const { height } = canvas;
     context.clearRect(0, 0, width, height);
     const values = target.history.map(item => item.duration).reverse();
-    const max = Math.max(...values, 1);
+    const max = Math.min(Math.max(...values, 1), limited);
     context.strokeStyle = '#3a484d';
     context.beginPath();
     context.moveTo(0, height - 1);
@@ -150,7 +151,7 @@ const app = reactive({
     if (!values.length) return;
     context.lineWidth = 3;
     const points = values.map((value, index) => {
-      const num = value > 6000 ? 6000 : value;
+      const num = value > limited ? limited : value;
       const x = values.length === 1 ? width / 2 : index * width / (values.length - 1);
       const y = height - 8 - num / max * (height - 20);
       return { x, y, value };
