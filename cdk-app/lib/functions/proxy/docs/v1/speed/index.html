@@ -52,10 +52,10 @@
         </label>
         <label class="interval-field">
           <span>Interval <small>(seconds)</small></span>
-          <input v-model.number="target.interval" type="number" min="1" step="1" :disabled="target.running">
+          <input v-model.number="target.interval" type="number" min="1" step="1">
         </label>
         <button class="run-button" type="button" @click="toggleTarget(target)"
-          :disabled="!target.uri">
+          :disabled="!target.uri" :class="target.running ? 'check-button' : ''">
           {{ target.running ? '停止' : '開始' }}
         </button>
         <button class="check-button" type="button" @click="checkTarget(target, true)"
