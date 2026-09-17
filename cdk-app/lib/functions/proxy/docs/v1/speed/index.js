@@ -134,7 +134,13 @@ const app = reactive({
   },
 
   drawChart(target) {
-    const limited = 6000;
+    const limited = 2000;
+    const strokeColor = v => [
+      { value: 250, color: '#8a6' },
+      { value: 500, color: '#aa6' },
+      { value: 1000, color: '#f74' },
+      { value: 0, color: '#f20' },
+    ].find(base => !base.value || v < base.value).color;
     const canvas = document.getElementById(`chart-${target.id}`);
     if (!canvas) return;
     const context = canvas.getContext('2d');
@@ -160,7 +166,7 @@ const app = reactive({
       const start = points[i];
       const end = points[i + 1];
       const feature = Math.max(start.value, end.value);
-      context.strokeStyle = feature < 500 ? '#aa6' : feature < 1000 ? '#f74' : '#f20';
+      context.strokeStyle = strokeColor(feature);
       context.beginPath();
       context.moveTo(start.x, start.y);
       context.lineTo(end.x, end.y);
