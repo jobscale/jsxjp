@@ -134,12 +134,13 @@ const app = reactive({
   },
 
   drawChart(target) {
-    const limited = 2000;
+    const limited = 1500;
     const strokeColor = v => [
-      { value: 250, color: '#8a6' },
-      { value: 500, color: '#aa6' },
-      { value: 1000, color: '#f74' },
-      { value: 0, color: '#f20' },
+      { value: 300, color: '#8a6' },
+      { value: 600, color: '#aa6' },
+      { value: 900, color: '#f74' },
+      { value: 1200, color: '#f20' },
+      { value: 0, color: '#a00' },
     ].find(base => !base.value || v < base.value).color;
     const canvas = document.getElementById(`chart-${target.id}`);
     if (!canvas) return;
