@@ -150,8 +150,9 @@ const app = reactive({
     if (!values.length) return;
     context.lineWidth = 3;
     const points = values.map((value, index) => {
+      const num = value > 6000 ? 6000 : value;
       const x = values.length === 1 ? width / 2 : index * width / (values.length - 1);
-      const y = height - 8 - value / max * (height - 20);
+      const y = height - 8 - num / max * (height - 20);
       return { x, y, value };
     });
     for (let i = 0; i < points.length - 1; i++) {
