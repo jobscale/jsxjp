@@ -39,7 +39,7 @@ const app = reactive({
       method: app.methods[0],
       uri: app.uriSuggestions[0],
       interval: 3,
-      running: false,
+      running: 0, // 0: stopped, 1: running, 2: to be stopped
       error: '',
       history: [],
       detail: false,
@@ -57,69 +57,67 @@ const app = reactive({
   },
 
   toggleTarget(target) {
-    if (target.running) app.stopTarget(target);
+    if (target.running === 1) app.stopTarget(target);
     else app.startTarget(target);
   },
 
   startTarget(target) {
     target.interval = Math.max(1, Number.parseInt(target.interval, 10) || 1);
-    target.running = true;
+    target.running = 1;
     app.checkTarget(target);
-    app.onSave();
   },
 
   stopTarget(target) {
-    target.running = false;
-    app.onSave();
+    target.running = 2;
   },
 
   startOnce(target) {
     app.checkTarget(target, true);
-    app.onSave();
   },
 
-  onSave() {
-    const saved = { running: false };
+  async onSave() {
+    const saved = { running: 0 };
     const targets = app.targets.map(item => ({ ...item, ...saved }));
-    indexStore.setItem('targets', targets);
+    await indexStore.setItem('targets', targets);
   },
 
   async checkTarget(target, once = false) {
     if (!target.uri) return;
+    if (target.running === 2) { target.running = 0; return; }
     target.error = '';
     const startedAt = performance.now();
     const timestamp = Date.now();
-    try {
-      const request = {
-        method: target.method,
-        cache: 'no-store',
-      };
-      if (target.method === 'POST') {
-        request.headers = { 'Content-Type': 'application/json' };
-        request.body = JSON.stringify({ timestamp });
-      }
-      const response = await fetch(target.uri, {
-        ...request,
-      });
-      if (!response.ok) throw new Error(`HTTP unsuccessful: ${response.status}`);
-      const body = await response.blob();
+    const request = {
+      method: target.method,
+      cache: 'no-store',
+    };
+    if (target.method === 'POST') {
+      request.headers = { 'Content-Type': 'application/json' };
+      request.body = JSON.stringify({ timestamp });
+    }
+    await fetch(target.uri, { ...request })
+    .then(async res => {
+      if (!res.ok) throw new Error(`HTTP unsuccessful: ${res.status}`);
+      return res;
+    }).then(async res => {
+      const body = await res.blob();
       const duration = Math.max(Math.round(performance.now() - startedAt), 1);
       const result = {
         id: `${timestamp}-${target.id}`,
         timestamp,
         duration,
-        status: response.status,
+        status: res.status,
         size: body.size,
         mbps: body.size * 8 / duration / 1000,
       };
       target.history.unshift(result);
       if (target.history.length > app.maxHistory) target.history.pop();
-    } catch (e) {
+    }).catch(e => {
       target.error = e.message;
-    } finally {
-      app.drawChart(target);
-    }
-    if (target.running && !once) {
+    });
+    app.drawChart(target);
+    if (target.running === 2) { target.running = 0; return; }
+    if (target.running === 1 && !once) {
       setTimeout(() => app.checkTarget(target), target.interval * 1000);
     }
   },
@@ -198,5 +196,6 @@ createApp({
     nextTick(() => {
       app.targets.forEach(target => app.drawChart(target));
     });
+    window.addEventListener('pagehide', () => app.onSave());
   },
 }).mount('#app');
