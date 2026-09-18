@@ -1,4 +1,5 @@
-import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
+import { createApp, reactive, nextTick } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
+import { indexStore } from 'https://esm.sh/@jobscale/web-storage';
 
 const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   const timestamp = new Intl.DateTimeFormat('sv-SE', {
@@ -61,14 +62,26 @@ const app = reactive({
   },
 
   startTarget(target) {
-    const interval = Math.max(1, Number.parseInt(target.interval, 10) || 1);
-    target.interval = interval;
+    target.interval = Math.max(1, Number.parseInt(target.interval, 10) || 1);
     target.running = true;
     app.checkTarget(target);
+    app.onSave();
   },
 
   stopTarget(target) {
     target.running = false;
+    app.onSave();
+  },
+
+  startOnce(target) {
+    app.checkTarget(target, true);
+    app.onSave();
+  },
+
+  onSave() {
+    const saved = { running: false };
+    const targets = app.targets.map(item => ({ ...item, ...saved }));
+    indexStore.setItem('targets', targets);
   },
 
   async checkTarget(target, once = false) {
@@ -178,8 +191,12 @@ const app = reactive({
 
 createApp({
   setup() { return app; },
-  mounted() {
-    app.addTarget();
-    app.targets.forEach(target => app.drawChart(target));
+  async mounted() {
+    app.targets = await indexStore.getItem('targets') ?? [];
+    app.nextId = Math.max(0, ...app.targets.map(item => item.id)) + 1;
+    if (!app.targets.length) app.addTarget();
+    nextTick(() => {
+      app.targets.forEach(target => app.drawChart(target));
+    });
   },
 }).mount('#app');
