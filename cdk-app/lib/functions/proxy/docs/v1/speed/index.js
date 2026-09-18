@@ -82,6 +82,14 @@ const app = reactive({
     await indexStore.setItem('targets', targets);
   },
 
+  async onBeforeunload() {
+    await app.onSave();
+  },
+
+  async onPopstate() {
+    await app.onSave();
+  },
+
   async checkTarget(target, once = false) {
     if (!target.uri) return;
     if (target.running === 2) { target.running = 0; return; }
@@ -213,6 +221,7 @@ createApp({
     nextTick(() => {
       app.targets.forEach(target => app.drawChart(target));
     });
-    window.addEventListener('pagehide', () => app.onSave());
+    window.addEventListener('beforeunload', event => app.onBeforeunload(event));
+    window.addEventListener('popstate', () => app.onPopstate());
   },
 }).mount('#app');
