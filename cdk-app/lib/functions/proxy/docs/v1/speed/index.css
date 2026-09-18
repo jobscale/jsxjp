@@ -279,6 +279,28 @@ small {
   right: 0;
   top: 0;
 }
+.chart-tooltip {
+  position: absolute;
+  top: 8px;
+  z-index: 1;
+  display: grid;
+  gap: 2px;
+  max-width: calc(100% - 16px);
+  padding: 6px 8px;
+  color: var(--text);
+  background: rgba(16, 20, 22, .92);
+  border: 1px solid var(--accent);
+  font-size: 11px;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+.chart-tooltip time,
+.chart-tooltip span {
+  white-space: nowrap;
+}
+.chart-tooltip span {
+  color: var(--muted);
+}
 
 canvas {
   display: block;

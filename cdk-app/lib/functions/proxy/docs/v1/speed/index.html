@@ -67,7 +67,13 @@
       <div class="result-grid">
         <div class="chart-wrap">
           <div class="badge">{{ maximum(target) }}</div>
-          <canvas :id="`chart-${target.id}`" width="2560" height="720" aria-label="速度履歴グラフ"></canvas>
+          <div v-if="chartHover[target.id]" class="chart-tooltip"
+            :style="{ left: `${chartHover[target.id].left}px` }">
+            <time>{{ formatDate(chartHover[target.id].item.timestamp) }}</time>
+            <span>{{ chartHover[target.id].item.duration }} ms</span>
+          </div>
+          <canvas :id="`chart-${target.id}`" width="2560" height="720" aria-label="速度履歴グラフ"
+            @mousemove="showChartTooltip($event, target)" @mouseleave="hideChartTooltip(target)"></canvas>
         </div>
       </div>
 

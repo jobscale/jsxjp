@@ -32,6 +32,7 @@ const app = reactive({
     'https://stg-serverless.jsx.jp/auth/sign',
   ],
   targets: [],
+  chartHover: {},
 
   createTarget(id) {
     return {
@@ -142,6 +143,22 @@ const app = reactive({
     const values = target.history.map(item => item.duration);
     const max = Math.max(...values, 1);
     return max > 10 ? max : '';
+  },
+
+  showChartTooltip(event, target) {
+    if (!target.history.length) return;
+    const canvas = event.currentTarget;
+    const rect = canvas.getBoundingClientRect();
+    const index = Math.round((event.clientX - rect.left) / rect.width * (target.history.length - 1));
+    const item = target.history[target.history.length - 1 - Math.max(0, Math.min(index, target.history.length - 1))];
+    app.chartHover[target.id] = {
+      item,
+      left: event.clientX - rect.left,
+    };
+  },
+
+  hideChartTooltip(target) {
+    delete app.chartHover[target.id];
   },
 
   drawChart(target) {
