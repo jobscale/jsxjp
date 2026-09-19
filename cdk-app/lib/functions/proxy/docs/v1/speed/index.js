@@ -43,6 +43,7 @@ let self = {
   ],
   targets: [],
   chartHover: {},
+  hiddenTitle: false,
 
   createTarget(id) {
     return {

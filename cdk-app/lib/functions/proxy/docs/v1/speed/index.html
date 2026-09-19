@@ -15,12 +15,12 @@
       <div>
         <p class="eyebrow">NETWORK TOOL</p>
         <h1>Speed check</h1>
-        <p class="intro">URIごとにリクエスト方法とチェック間隔を設定できます。</p>
+        <p @click.prevent="hiddenTitle = !hiddenTitle" class="intro">Graph only view toggle</p>
       </div>
     </header>
 
     <section v-for="(target, index) in targets" :key="target.id" class="target-panel fade-animation">
-      <div class="panel-header">
+      <div v-if="!hiddenTitle" class="panel-header">
         <div>
           <span class="target-number">{{ String(index + 1).padStart(2, '0') }}</span>
           <div class="latest-result">
@@ -35,7 +35,7 @@
         </div>
       </div>
 
-      <div class="settings">
+      <div v-if="!hiddenTitle" class="panel-settings">
         <label>
           <span>Method</span>
           <select v-model="target.method" :disabled="target.running">
@@ -56,11 +56,11 @@
         </label>
         <button class="run-button" type="button" @click="toggleTarget(target)"
           :disabled="!target.uri || target.running === 2" :class="target.running ? 'check-button' : ''">
-          {{ target.running ? '停止' : '開始' }}
+          {{ target.running ? 'STOP' : 'START' }}
         </button>
         <button class="check-button" type="button" @click="startOnce(target)"
           :disabled="!target.uri">
-          {{ '今すぐ計測' }}
+          {{ 'ONCE NOW' }}
         </button>
       </div>
 
@@ -72,32 +72,34 @@
             <time>{{ formatDate(chartHover[target.id].item.timestamp) }}</time>
             <span>{{ chartHover[target.id].item.duration }} ms</span>
           </div>
-          <canvas :id="`chart-${target.id}`" width="2560" height="720" aria-label="速度履歴グラフ"
+          <canvas :id="`chart-${target.id}`" width="2560" height="720" aria-label="History Graph"
             @mousemove="showChartTooltip($event, target)" @mouseleave="hideChartTooltip(target)"></canvas>
         </div>
       </div>
 
-      <div class="history-header">
-        <h3 @click.prevent="target.detail = !target.detail" class="click">{{ target.detail ? 'Hide' : 'History' }}</h3>
-        <span>{{ target.history.length }} / {{ maxHistory }}</span>
-      </div>
-      <div v-if="target.detail">
-        <div v-if="target.history.length" class="history-list">
-          <div v-for="item in target.history" :key="item.id" class="history-row">
-            <time>{{ formatDate(item.timestamp) }}</time>
-            <span>{{ item.status }}</span>
-            <span>{{ formatSpeed(item) }}</span>
-            <span>{{ item.duration }} ms</span>
-          </div>
+      <div v-if="!hiddenTitle">
+        <div class="history-header">
+          <h3 @click.prevent="target.detail = !target.detail" class="click">{{ target.detail ? 'Hide' : 'History' }}</h3>
+          <span>{{ target.history.length }} / {{ maxHistory }}</span>
         </div>
-        <p v-else class="history-empty">履歴はここに表示されます。</p>
+        <div v-if="target.detail">
+          <div v-if="target.history.length" class="history-list">
+            <div v-for="item in target.history" :key="item.id" class="history-row">
+              <time>{{ formatDate(item.timestamp) }}</time>
+              <span>{{ item.status }}</span>
+              <span>{{ formatSpeed(item) }}</span>
+              <span>{{ item.duration }} ms</span>
+            </div>
+          </div>
+          <p v-else class="history-empty">No History</p>
+        </div>
       </div>
     </section>
 
     <footer class="page-footer">
       <span>&nbsp</span>
       <button class="add-button" type="button" @click="addTarget" :disabled="targets.length >= maxTargets">
-        <span aria-hidden="true">+</span> URIを追加
+        <span aria-hidden="true">+</span> ADD URI
       </button>
     </footer>
   </main>

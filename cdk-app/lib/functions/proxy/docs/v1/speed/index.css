@@ -166,7 +166,7 @@ h3 {
   color: var(--danger);
 }
 
-.settings {
+.panel-settings {
   display: grid;
   grid-template-columns: 130px minmax(240px, 1fr) 150px auto auto;
   gap: 12px;
@@ -359,7 +359,7 @@ canvas {
     align-self: stretch;
   }
 
-  .settings {
+  .panel-settings {
     grid-template-columns: 1fr 1fr;
   }
 
