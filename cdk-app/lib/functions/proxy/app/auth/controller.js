@@ -48,7 +48,7 @@ export class Controller {
     .then(result => res.json(result))
     .catch(e => {
       if (!e.statusCode) e = createHttpError(403);
-      res.status(e.statusCode || 500).json({ message: e.message });
+      res.status(e.statusCode || 500).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 
@@ -82,7 +82,7 @@ export class Controller {
           expires: dayjs().add(5, 'minute'),
         });
       }
-      res.status(403).json({ message: e.message });
+      res.status(403).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 

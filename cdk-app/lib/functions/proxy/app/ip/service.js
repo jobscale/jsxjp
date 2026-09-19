@@ -20,7 +20,7 @@ class Service {
       })
       .catch(e => {
         this.refreshIp = Date.now() + 1000 * 60;
-        logger.error({ message: e.toString() });
+        logger.error({ message: e.cause?.message ?? e.cause ?? e.message });
       });
     }
     return this.globalIp ?? globalIp;

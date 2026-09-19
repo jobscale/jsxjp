@@ -15,7 +15,7 @@ export class Controller {
     .then(item => res.json(item))
     .catch(e => {
       if (!e.statusCode) e.statusCode = 500;
-      res.status(e.statusCode).json({ message: e.message });
+      res.status(e.statusCode).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 
@@ -33,7 +33,7 @@ export class Controller {
     })
     .catch(e => {
       if (!e.statusCode) e.statusCode = 500;
-      res.status(e.statusCode).json({ message: e.message });
+      res.status(e.statusCode).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 
@@ -50,7 +50,7 @@ export class Controller {
     })
     .catch(e => {
       if (!e.statusCode) e.statusCode = 500;
-      res.status(e.statusCode).json({ message: e.message });
+      res.status(e.statusCode).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 
@@ -62,7 +62,7 @@ export class Controller {
     })
     .catch(e => {
       if (!e.statusCode) e.statusCode = 500;
-      res.status(e.statusCode).json({ message: e.message });
+      res.status(e.statusCode).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 }

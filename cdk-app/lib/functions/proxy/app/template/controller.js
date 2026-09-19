@@ -11,7 +11,7 @@ export class Controller {
     .catch(e => {
       logger.error(e.message);
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 }

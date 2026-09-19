@@ -9,9 +9,9 @@ export class Controller {
       res.end(globalIp);
     })
     .catch(e => {
-      logger.error({ message: e.toString() });
+      logger.error({ message: e.cause?.message ?? e.cause ?? e.message });
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 }

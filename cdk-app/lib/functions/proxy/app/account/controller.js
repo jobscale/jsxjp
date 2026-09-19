@@ -9,7 +9,7 @@ export class Controller {
     })
     .catch(e => {
       if (!e.status) e.status = 503;
-      res.status(e.status).json({ message: e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 }

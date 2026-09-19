@@ -53,7 +53,7 @@ export class Controller {
     .then(() => res.json({ ok: true }))
     .catch(e => {
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 
@@ -68,7 +68,7 @@ export class Controller {
     .then(() => res.json({ ok: true }))
     .catch(e => {
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 
@@ -83,7 +83,7 @@ export class Controller {
     .then(dataset => res.json(dataset))
     .catch(e => {
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 
@@ -98,7 +98,7 @@ export class Controller {
     .then(() => res.json({ ok: true }))
     .catch(e => {
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 }

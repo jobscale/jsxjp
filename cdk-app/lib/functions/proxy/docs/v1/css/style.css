@@ -179,9 +179,9 @@ section {
 
 .ib {
   display: inline-block;
-  .small {
-    cursor: default;
-  }
+}
+.ib.small {
+  cursor: default;
 }
 
 small, small > * {

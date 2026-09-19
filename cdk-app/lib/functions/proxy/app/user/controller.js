@@ -11,9 +11,9 @@ export class Controller {
       res.json({ login });
     })
     .catch(e => {
-      logger.info({ message: e.toString() });
+      logger.info({ message: e.cause?.message ?? e.cause ?? e.message });
       if (!e.status) e.status = 503;
-      res.status(e.status).json({ message: e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 
@@ -24,9 +24,9 @@ export class Controller {
       res.json({ login: item.login });
     })
     .catch(e => {
-      logger.info({ message: e.toString() });
+      logger.info({ message: e.cause?.message ?? e.cause ?? e.message });
       if (!e.status) e.status = 503;
-      res.status(e.status).json({ message: e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 
@@ -43,7 +43,7 @@ export class Controller {
     })
     .catch(e => {
       if (!e.statusCode) e.statusCode = 500;
-      res.status(e.statusCode).json({ message: e.message });
+      res.status(e.statusCode).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 
@@ -54,9 +54,9 @@ export class Controller {
       res.json({ deletedAt: item.deletedAt });
     })
     .catch(e => {
-      logger.info({ message: e.toString() });
+      logger.info({ message: e.cause?.message ?? e.cause ?? e.message });
       if (!e.status) e.status = 503;
-      res.status(e.status).json({ message: e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
   }
 }
