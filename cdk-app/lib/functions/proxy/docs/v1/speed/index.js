@@ -15,6 +15,14 @@ const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   return `${timestamp}+09:00`;
 };
 
+const conf = {
+  esmList: [
+    'https://esm.sh/@jobscale/web-storage',
+    'https://esm.sh/@jobscale/create-logger',
+    'https://esm.sh/@jobscale/loading',
+  ],
+};
+
 let self = {
   nextId: 1,
   maxTargets: 20,
@@ -26,8 +34,10 @@ let self = {
     '/v1/img/loading.svg',
     '/auth/sign',
     '/api/speed',
-    'https://esm.sh/@jobscale/create-logger',
-    'https://esm.sh/@jobscale/loading',
+    'https://esm.sh/@jobscale/...',
+    'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js',
+    'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap',
+    'https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.3.7/mqtt.min.js',
     'https://stg-front.jsx.jp/auth/sign',
     'https://stg-serverless.jsx.jp/auth/sign',
   ],
@@ -104,7 +114,10 @@ let self = {
       request.headers = { 'Content-Type': 'application/json' };
       request.body = JSON.stringify({ timestamp });
     }
-    await fetch(target.uri, { ...request })
+    const url = target.url.match('esm.sh')
+      ? conf.esmList[Math.floor(Math.random() * conf.esmList.length)]
+      : target.url;
+    await fetch(url, { ...request })
     .then(async res => {
       if (!res.ok) throw new Error(`HTTP unsuccessful: ${res.status}`);
       return res;
