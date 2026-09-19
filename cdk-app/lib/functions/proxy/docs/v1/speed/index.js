@@ -34,7 +34,7 @@ let self = {
     '/v1/img/loading.svg',
     '/auth/sign',
     '/api/speed',
-    'https://esm.sh/@jobscale/...',
+    'https://esm.sh/etc...',
     'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js',
     'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap',
     'https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.3.7/mqtt.min.js',
@@ -161,7 +161,7 @@ let self = {
     return formatTimestamp(timestamp, true);
   },
 
-  maximum(target) {
+  badge(target) {
     const values = target.history.map(item => item.duration);
     const max = Math.max(...values, 1);
     return max > 10 ? max : '';

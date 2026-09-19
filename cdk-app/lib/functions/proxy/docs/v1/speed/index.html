@@ -66,7 +66,7 @@
 
       <div class="result-grid">
         <div class="chart-wrap">
-          <div class="badge">{{ maximum(target) }}</div>
+          <div class="badge">{{ badge(target) }}</div>
           <div v-if="chartHover[target.id]" class="chart-tooltip"
             :style="{ left: `${chartHover[target.id].left}px` }">
             <time>{{ formatDate(chartHover[target.id].item.timestamp) }}</time>
@@ -75,6 +75,8 @@
           <canvas :id="`chart-${target.id}`" width="2560" height="720" aria-label="History Graph"
             @mousemove="showChartTooltip($event, target)" @mouseleave="hideChartTooltip(target)"></canvas>
         </div>
+        <div v-if="hiddenTitle" class="badge-left">{{ target.uri }}</div>
+        <div v-if="hiddenTitle" class="badge-footer">{{ averageSpeed(target) }}</div>
       </div>
 
       <div v-if="!hiddenTitle">

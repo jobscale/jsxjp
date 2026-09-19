@@ -104,6 +104,7 @@ h3 {
 .intro {
   margin-top: 12px;
   color: var(--muted);
+  cursor: default;
 }
 
 .add-button,
@@ -237,6 +238,7 @@ small {
 }
 
 .result-grid {
+  position: relative;
   display: grid;
   gap: 20px;
   padding: 20px;
@@ -278,6 +280,16 @@ small {
   position: absolute;
   right: 0;
   top: 0;
+}
+.badge-left {
+  position: absolute;
+  left: 8px;
+  bottom: 4px;
+}
+.badge-footer {
+  position: absolute;
+  right: 8px;
+  bottom: 4px;
 }
 .chart-tooltip {
   position: absolute;
