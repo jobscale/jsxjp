@@ -15,7 +15,7 @@ const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   return `${timestamp}+09:00`;
 };
 
-const app = reactive({
+let self = {
   nextId: 1,
   maxTargets: 20,
   maxHistory: 2000,
@@ -37,8 +37,8 @@ const app = reactive({
   createTarget(id) {
     return {
       id,
-      method: app.methods[0],
-      uri: app.uriSuggestions[0],
+      method: self.methods[0],
+      uri: self.uriSuggestions[0],
       interval: 3,
       running: 0, // 0: stopped, 1: running, 2: to be stopped
       error: '',
@@ -48,24 +48,24 @@ const app = reactive({
   },
 
   addTarget() {
-    if (app.targets.length < app.maxTargets) app.targets.push(app.createTarget(app.nextId++));
+    if (self.targets.length < self.maxTargets) self.targets.push(self.createTarget(self.nextId++));
   },
 
   removeTarget(index) {
-    const target = app.targets[index];
-    app.stopTarget(target);
-    app.targets.splice(index, 1);
+    const target = self.targets[index];
+    self.stopTarget(target);
+    self.targets.splice(index, 1);
   },
 
   toggleTarget(target) {
-    if (target.running === 1) app.stopTarget(target);
-    else app.startTarget(target);
+    if (target.running === 1) self.stopTarget(target);
+    else self.startTarget(target);
   },
 
   startTarget(target) {
     target.interval = Math.max(1, Number.parseInt(target.interval, 10) || 1);
     target.running = 1;
-    app.checkTarget(target);
+    self.checkTarget(target);
   },
 
   stopTarget(target) {
@@ -73,21 +73,21 @@ const app = reactive({
   },
 
   startOnce(target) {
-    app.checkTarget(target, true);
+    self.checkTarget(target, true);
   },
 
   async onSave() {
     const saved = { running: 0 };
-    const targets = app.targets.map(item => ({ ...item, ...saved }));
+    const targets = self.targets.map(item => ({ ...item, ...saved }));
     await indexStore.setItem('targets', targets);
   },
 
   async onBeforeunload() {
-    await app.onSave();
+    await self.onSave();
   },
 
   async onPopstate() {
-    await app.onSave();
+    await self.onSave();
   },
 
   async checkTarget(target, once = false) {
@@ -120,14 +120,14 @@ const app = reactive({
         mbps: body.size * 8 / duration / 1000,
       };
       target.history.unshift(result);
-      if (target.history.length > app.maxHistory) target.history.pop();
+      if (target.history.length > self.maxHistory) target.history.pop();
     }).catch(e => {
       target.error = e.message;
     });
-    app.drawChart(target);
+    self.drawChart(target);
     if (target.running === 2) { target.running = 0; return; }
     if (target.running === 1 && !once) {
-      setTimeout(() => app.checkTarget(target), target.interval * 1000);
+      setTimeout(() => self.checkTarget(target), target.interval * 1000);
     }
   },
 
@@ -159,14 +159,14 @@ const app = reactive({
     const rect = canvas.getBoundingClientRect();
     const index = Math.round((event.clientX - rect.left) / rect.width * (target.history.length - 1));
     const item = target.history[target.history.length - 1 - Math.max(0, Math.min(index, target.history.length - 1))];
-    app.chartHover[target.id] = {
+    self.chartHover[target.id] = {
       item,
       left: event.clientX - rect.left,
     };
   },
 
   hideChartTooltip(target) {
-    delete app.chartHover[target.id];
+    delete self.chartHover[target.id];
   },
 
   drawChart(target) {
@@ -210,18 +210,19 @@ const app = reactive({
       context.stroke();
     }
   },
-});
+};
+self = reactive(self);
 
 createApp({
-  setup() { return app; },
+  setup() { return self; },
   async mounted() {
-    app.targets = await indexStore.getItem('targets') ?? [];
-    app.nextId = Math.max(0, ...app.targets.map(item => item.id)) + 1;
-    if (!app.targets.length) app.addTarget();
+    self.targets = await indexStore.getItem('targets') ?? [];
+    self.nextId = Math.max(0, ...self.targets.map(item => item.id)) + 1;
+    if (!self.targets.length) self.addTarget();
     nextTick(() => {
-      app.targets.forEach(target => app.drawChart(target));
+      self.targets.forEach(target => self.drawChart(target));
     });
-    window.addEventListener('beforeunload', event => app.onBeforeunload(event));
-    window.addEventListener('popstate', () => app.onPopstate());
+    window.addEventListener('beforeunload', event => self.onBeforeunload(event));
+    window.addEventListener('popstate', () => self.onPopstate());
   },
 }).mount('#app');
