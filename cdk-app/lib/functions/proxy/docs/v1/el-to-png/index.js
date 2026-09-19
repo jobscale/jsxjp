@@ -1,4 +1,4 @@
-import { createApp, reactive } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
+import { createApp, reactive } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
 import html2canvas from 'https://esm.sh/html2canvas@1.4.1';
 
 const logger = console;

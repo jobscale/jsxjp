@@ -1,4 +1,4 @@
-import { createApp, reactive, nextTick } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
+import { createApp, reactive, nextTick } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
 import { createLogger } from 'https://esm.sh/@jobscale/create-logger';
 import { loading } from 'https://esm.sh/@jobscale/loading';
 import { indexStore } from 'https://esm.sh/@jobscale/web-storage';

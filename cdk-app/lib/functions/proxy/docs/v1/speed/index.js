@@ -1,4 +1,4 @@
-import { createApp, reactive, nextTick } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
+import { createApp, reactive, nextTick } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
 import { indexStore } from 'https://esm.sh/@jobscale/web-storage';
 
 const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
@@ -35,9 +35,9 @@ let self = {
     '/auth/sign',
     '/api/speed',
     'https://esm.sh/etc...',
-    'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js',
     'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap',
-    'https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.3.7/mqtt.min.js',
+    'https://cdn.jsdelivr.net/npm/vue/dist/vue.esm-browser.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.16.0/mqtt.min.js',
     'https://stg-front.jsx.jp/auth/sign',
     'https://stg-serverless.jsx.jp/auth/sign',
   ],
