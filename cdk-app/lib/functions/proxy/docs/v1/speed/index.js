@@ -163,6 +163,15 @@ let self = {
       item,
       left: event.clientX - rect.left,
     };
+    nextTick(() => {
+      const tooltip = canvas.previousElementSibling;
+      if (!tooltip) return;
+      const halfWidth = tooltip.offsetWidth / 2;
+      const hover = self.chartHover[target.id];
+      if (!hover) return;
+      const boundedLeft = Math.max(halfWidth + 8, Math.min(hover.left, rect.width - halfWidth - 8));
+      if (hover.left !== boundedLeft) hover.left = boundedLeft;
+    });
   },
 
   hideChartTooltip(target) {
