@@ -1,14 +1,14 @@
 import { createLogger } from 'https://esm.sh/@jobscale/create-logger';
 // import { indexStore } from 'https://esm.sh/@jobscale/web-storage';
 
-const VERSION = '0.1.3';
+const VERSION = '0.1.4';
 const logger = createLogger('info');
 
 const parseData = async data => {
   try {
     return data.json();
   } catch (e) {
-    logger.debug(e.message);
+    logger.debug(e.cause?.message ?? e.message);
     return { title: ',,Ծ‸Ծ,,', body: await data.text() };
   }
 };
@@ -39,7 +39,7 @@ class ServiceWorker {
       const data = await parseData(event.data);
       const { title, body, icon, image, expired } = data;
       if (expired && new Date(expired) < new Date()) {
-        logger.info('receive expired message', expired);
+        logger.info('[PWA Builder] receive expired message', expired);
         return;
       }
       const controlled = await self.clients.matchAll({ type: 'window' });
@@ -81,7 +81,7 @@ class ServiceWorker {
             await cache.put(path, res);
           })
           .catch(e => {
-            logger.error(`[PWA Builder] Failed to cache '${path}': ${e}`);
+            logger.error(`[PWA Builder] Failed to cache '${path}'`, e.cause?.message ?? e.message);
           });
         }),
       );
@@ -114,7 +114,7 @@ class ServiceWorker {
         return res.clone();
       })
       .catch(e => {
-        logger.error(`[PWA Builder] Network request Failed. '${path}'`, e.message);
+        logger.error(`[PWA Builder] Network request Failed. '${path}'`, e.cause?.message ?? e.message, VERSION);
       })
       .then(res => res ?? cache.match(path).then(r => r && r.clone()))
       .then(res => res ?? cache.match('GET /').then(r => r && r.clone()));
@@ -123,16 +123,16 @@ class ServiceWorker {
   }
 
   addEventListener(type, listener) {
-    logger.debug('Add EventListener', type);
+    logger.debug('[PWA Builder] Add EventListener', type);
     self.addEventListener(type, (...argv) => {
-      logger.debug('Triggered EventListener', type);
+      logger.debug('[PWA Builder] Triggered EventListener', type);
       return listener(...argv);
     });
   }
 }
 
 const entry = async () => {
-  logger.info('backend service worker', new ServiceWorker().version);
+  logger.info('[PWA Builder] backend service worker', new ServiceWorker().version);
 };
 
 entry();
