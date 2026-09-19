@@ -114,9 +114,9 @@ let self = {
       request.headers = { 'Content-Type': 'application/json' };
       request.body = JSON.stringify({ timestamp });
     }
-    const url = target.url.match('esm.sh')
+    const url = target.uri.match('esm.sh')
       ? conf.esmList[Math.floor(Math.random() * conf.esmList.length)]
-      : target.url;
+      : target.uri;
     await fetch(url, { ...request })
     .then(async res => {
       if (!res.ok) throw new Error(`HTTP unsuccessful: ${res.status}`);
