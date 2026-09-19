@@ -1,7 +1,8 @@
-import { logger } from 'https://esm.sh/@jobscale/create-logger';
+import { createLogger } from 'https://esm.sh/@jobscale/create-logger';
 // import { indexStore } from 'https://esm.sh/@jobscale/web-storage';
 
-const VERSION = '0.1.2';
+const VERSION = '0.1.3';
+const logger = createLogger('info');
 
 const parseData = async data => {
   try {
