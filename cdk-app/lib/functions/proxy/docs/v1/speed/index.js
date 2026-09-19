@@ -59,7 +59,14 @@ let self = {
   },
 
   addTarget() {
-    if (self.targets.length < self.maxTargets) self.targets.push(self.createTarget(self.nextId++));
+    if (self.targets.length >= self.maxTargets) return;
+    self.targets.push(self.createTarget(self.nextId++));
+    nextTick(() => {
+      document.querySelector('footer:last-of-type').scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+      });
+    });
   },
 
   removeTarget(index) {
@@ -68,9 +75,21 @@ let self = {
     self.targets.splice(index, 1);
   },
 
-  toggleTarget(target) {
-    if (target.running === 1) self.stopTarget(target);
-    else self.startTarget(target);
+  toggleShowMode() {
+    self.hiddenTitle = !self.hiddenTitle;
+    nextTick(() => {
+      if (self.hiddenTitle) {
+        document.querySelector('section').scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      } else {
+        document.querySelector('section:last-of-type').scrollIntoView({
+          behavior: 'smooth',
+          block: 'end',
+        });
+      }
+    });
   },
 
   startTarget(target) {
@@ -85,6 +104,11 @@ let self = {
 
   startOnce(target) {
     self.checkTarget(target, true);
+  },
+
+  toggleTarget(target) {
+    if (target.running === 1) self.stopTarget(target);
+    else self.startTarget(target);
   },
 
   async onSave() {
