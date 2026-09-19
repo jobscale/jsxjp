@@ -1,7 +1,7 @@
-const logger = console;
-logger.debug = () => undefined;
+import { logger } from 'https://esm.sh/@jobscale/create-logger';
+// import { indexStore } from 'https://esm.sh/@jobscale/web-storage';
 
-const VERSION = '0.1.1';
+const VERSION = '0.1.2';
 
 const parseData = async data => {
   try {
@@ -37,14 +37,19 @@ class ServiceWorker {
     const notifyAction = async () => {
       const data = await parseData(event.data);
       const { title, body, icon, image, expired } = data;
-      if (expired && new Date(expired) < new Date()) return;
+      if (expired && new Date(expired) < new Date()) {
+        logger.info('receive expired message', expired);
+        return;
+      }
       const controlled = await self.clients.matchAll({ type: 'window' });
       const [client] = controlled.length ? controlled
         : await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
       const [num] = crypto.getRandomValues(new Uint16Array(1));
       await new Promise(resolve => { setTimeout(resolve, Math.floor(num % 2000)); });
       client?.postMessage({ type: 'push-received', title, body, version: VERSION });
-      await self.registration.showNotification(title, { body, icon, image: image ?? icon, data: { url: '/' } });
+      await self.registration.showNotification(title, {
+        body, icon, image: image ?? icon, data: { url: '/' }, tag: VERSION,
+      });
     };
     event.waitUntil(notifyAction());
   }

@@ -135,7 +135,7 @@ class PWAClient {
   }
 
   async register() {
-    await navigator.serviceWorker.register('/service-worker.js')
+    await navigator.serviceWorker.register('/service-worker.js', { type: 'module' })
     .then(reg => {
       logger.info('Service Worker registered:', reg);
     });
