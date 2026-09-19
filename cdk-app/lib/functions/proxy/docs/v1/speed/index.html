@@ -3,7 +3,11 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://esm.sh" crossorigin>
   <meta name="color-scheme" content="dark light">
   <title>Speed check</title>
   <link rel="stylesheet" href="./index.css">
@@ -31,7 +35,7 @@
         <div class="panel-actions">
           <span class="status" :class="{ active: target.running }">{{ target.running ? 'RUNNING' : 'STOPPED' }}</span>
           <button class="text-button danger" type="button" @click="removeTarget(index)"
-            :disabled="target.running || targets.length <= 1">削除</button>
+            :disabled="target.running || targets.length <= 1">DELETE</button>
         </div>
       </div>
 

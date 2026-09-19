@@ -1,8 +1,8 @@
-/* global mqtt */
 import { createApp, reactive, nextTick } from 'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.esm-browser.min.js';
 import { createLogger } from 'https://esm.sh/@jobscale/create-logger';
 import { loading } from 'https://esm.sh/@jobscale/loading';
 import { indexStore } from 'https://esm.sh/@jobscale/web-storage';
+import mqtt from 'https://esm.sh/mqtt';
 
 const random = (length = 7) => {
   const bytes = crypto.getRandomValues(new Uint8Array(length)).reduce((acc, byte) => `${acc}${byte.toString(16).padStart(2, '0')}`, '');
