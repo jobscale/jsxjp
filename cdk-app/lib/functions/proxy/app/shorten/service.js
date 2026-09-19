@@ -74,7 +74,7 @@ export class Service {
 
   async parseCaption(url, key) {
     let fallback = key;
-    const html = await fetch(url, { headers }).then(res => res.text()).catch(e => { fallback = e.cause?.message ?? e.message; });
+    const html = await fetch(url, { headers }).then(res => res.text()).catch(e => { fallback = e.cause?.message ?? e.cause ?? e.message; });
     const match = html?.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
     const title = match ? match[1].trim() : fallback;
     return title;

@@ -1,14 +1,14 @@
 import { createLogger } from 'https://esm.sh/@jobscale/create-logger';
 // import { indexStore } from 'https://esm.sh/@jobscale/web-storage';
 
-const VERSION = '0.1.4';
+const VERSION = '0.1.5';
 const logger = createLogger('info');
 
 const parseData = async data => {
   try {
     return data.json();
   } catch (e) {
-    logger.debug(e.cause?.message ?? e.message);
+    logger.info(',,Ծ‸Ծ,,', e.cause?.message ?? e.cause ?? e.message, VERSION);
     return { title: ',,Ծ‸Ծ,,', body: await data.text() };
   }
 };
@@ -81,7 +81,7 @@ class ServiceWorker {
             await cache.put(path, res);
           })
           .catch(e => {
-            logger.error(`[PWA Builder] Failed to cache '${path}'`, e.cause?.message ?? e.message);
+            logger.error(`[PWA Builder] Cache '${path}'`, e.cause?.message ?? e.cause ?? e.message, VERSION);
           });
         }),
       );
@@ -114,7 +114,7 @@ class ServiceWorker {
         return res.clone();
       })
       .catch(e => {
-        logger.error(`[PWA Builder] Network request Failed. '${path}'`, e.cause?.message ?? e.message, VERSION);
+        logger.error(`[PWA Builder] Network request '${path}'`, e.cause?.message ?? e.cause ?? e.message, VERSION);
       })
       .then(res => res ?? cache.match(path).then(r => r && r.clone()))
       .then(res => res ?? cache.match('GET /').then(r => r && r.clone()));
