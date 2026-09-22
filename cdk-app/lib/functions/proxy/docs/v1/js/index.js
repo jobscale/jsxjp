@@ -1,4 +1,4 @@
-import { createApp, reactive, computed } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
+import { createApp, reactive, computed, nextTick } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
 
 const logger = console;
 
@@ -20,7 +20,6 @@ let self = {
   statusText: 'muted',
   actionText: '[⛄ 🍻]',
   welcomeText: 'welcome',
-  spanText: '☃',
   xUser: '☃',
   xAddress: '☃',
   refresh: '☃',
@@ -68,13 +67,6 @@ let self = {
     .catch(e => logger.warn(e.message) ?? 'oops');
   },
 
-  updateSpan() {
-    if (!self.stack.length) return;
-    if (self.stack.length > 60) self.stack.length = 60;
-    const span = Math.floor(self.stack.reduce((a, b) => a + b, 0.0)) / self.stack.length;
-    self.spanText = span.toFixed(1);
-  },
-
   sign() {
     return fetch('/auth/sign', {
       method: 'HEAD',
@@ -109,7 +101,7 @@ let self = {
       }
       self.dateText = formatTimestamp(serverTime, true);
       self.stack.unshift(span);
-      self.updateSpan();
+      if (self.stack.length > 60) self.stack.length = 60;
     })
     .catch(e => {
       self.dateText = e.message;
@@ -122,14 +114,16 @@ let self = {
         const [date, time] = formatTimestamp(Date.now(), true).split(' ');
         self.busyList.unshift({ num: 0, date, time });
         if (self.busyList.length > 500) self.busyList.pop();
+        nextTick(() => {
+          document.querySelector('.busy:last-of-type').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        });
       }
       self.busyList[0].num++;
       self.busy++;
       self.busyText = `${self.busy} 🍺`;
-      if (self.stack.length > 10) self.stack.length = 10;
-      if (!self.stack.length) self.stack.push(1000.0);
-      else self.stack[0] += 1000;
-      self.updateSpan();
       self.drawBusyChart();
       return;
     }
@@ -249,10 +243,16 @@ let self = {
   mute() {
     self.statusText = self.statusText ? '' : 'muted';
   },
-
+};
+Object.assign(self, {
   busyLatests: computed(() => self.busyList.slice(0, 12).map(v => v.time).join('\n')),
   speedLatest: computed(() => formatTimestamp(self.latestSpeed, true)),
-};
+  spanText: computed(() => {
+    if (!self.stack.length) return '🍰';
+    const span = Math.floor(self.stack.reduce((a, b) => a + b, 0)) / self.stack.length;
+    return span.toFixed(1);
+  }),
+});
 self = reactive(self);
 
 createApp({
