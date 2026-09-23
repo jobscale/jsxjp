@@ -41,13 +41,13 @@ let self = {
   },
 
   async serverName() {
-    return fetchApi('/favicon.ico')
+    return self.sign()
     .then(res => {
       const { headers } = res;
       const key = [
         'x-backend-host', 'x-host', 'x-server', 'x-served-by', 'server', 'powered-by',
       ].find(name => headers.get(name));
-      const hostname = headers.get(key) ?? 'anonymous';
+      const hostname = headers.get(key) ?? 'nobody';
       const showName = hostname.split('-').filter(Boolean).slice(-3).join('-');
       return showName;
     })
