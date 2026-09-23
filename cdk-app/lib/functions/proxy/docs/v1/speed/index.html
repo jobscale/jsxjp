@@ -79,8 +79,10 @@
           <canvas :id="`chart-${target.id}`" width="2560" height="720" aria-label="History Graph"
             @mousemove="showChartTooltip($event, target)" @mouseleave="hideChartTooltip(target)"></canvas>
         </div>
-        <div v-if="hiddenTitle" class="badge-left">{{ target.uri }}</div>
-        <div v-if="hiddenTitle" class="badge-footer">{{ averageSpeed(target) }}</div>
+        <div v-if="hiddenTitle" class="badge-footer">
+          <span>{{ target.method }}</span><span>{{ target.uri }}</span>
+          <span>{{ averageSpeed(target) }}</span>
+        </div>
       </div>
 
       <div v-if="!hiddenTitle">

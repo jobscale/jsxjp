@@ -12,14 +12,14 @@ const envConfigs = {
       region: 'us-east-1',
     },
     context: {
-      gateway: {
-        certificateId: 'f55e911f-453e-4e27-8569-276156c987fd',
-        domainName: `${envName}-serverless.jsx.jp`,
-      },
       front: {
         certificateId: 'f55e911f-453e-4e27-8569-276156c987fd',
-        domainName: `${envName}-front.jsx.jp`,
+        domainName: 'www.jsx.jp',
         bucketName: `${envName}-front-static`,
+      },
+      gateway: {
+        certificateId: 'f55e911f-453e-4e27-8569-276156c987fd',
+        domainName: `${envName}-api.jsx.jp`,
       },
     },
   },
@@ -29,14 +29,31 @@ const envConfigs = {
       region: 'ap-northeast-1',
     },
     context: {
-      gateway: {
-        certificateId: '1c06e554-19c4-4cc8-abf0-4dc84803e2f5',
-        domainName: `${envName}-serverless.jsx.jp`,
-      },
       front: {
         certificateId: 'f55e911f-453e-4e27-8569-276156c987fd',
         domainName: `${envName}-front.jsx.jp`,
         bucketName: `${envName}-front-static`,
+      },
+      gateway: {
+        certificateId: '1c06e554-19c4-4cc8-abf0-4dc84803e2f5',
+        domainName: `${envName}-serverless.jsx.jp`,
+      },
+    },
+  },
+  prod: {
+    env: {
+      account: '916921211348',
+      region: 'us-east-1',
+    },
+    context: {
+      front: {
+        certificateId: 'f55e911f-453e-4e27-8569-276156c987fd',
+        domainName: 'jsx.jp',
+        bucketName: `${envName}-front-static`,
+      },
+      gateway: {
+        certificateId: 'f55e911f-453e-4e27-8569-276156c987fd',
+        domainName: 'api.jsx.jp',
       },
     },
   },

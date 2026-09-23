@@ -281,14 +281,12 @@ small {
   right: 0;
   top: 0;
 }
-.badge-left {
-  position: absolute;
-  left: 8px;
-  bottom: 4px;
-}
 .badge-footer {
   position: absolute;
-  right: 8px;
+  display: flex;
+  justify-content: space-between;
+  left: 13px;
+  right: 13px;
   bottom: 4px;
 }
 .chart-tooltip {

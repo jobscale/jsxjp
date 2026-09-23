@@ -32,8 +32,8 @@ let self = {
     '/',
     '/favicon.ico',
     '/v1/img/loading.svg',
-    '/auth/sign',
-    '/api/speed',
+    'https://api.jsx.jp/auth/sign',
+    'https://api.jsx.jp/api/speed',
     'https://esm.sh/etc...',
     'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap',
     'https://cdn.jsdelivr.net/npm/vue/dist/vue.esm-browser.min.js',
@@ -170,6 +170,7 @@ let self = {
   },
 
   averageSpeed(target) {
+    if (!target.history.length) return 'no data';
     const latest = target.history.slice(0, 10);
     const sumDuration = latest.reduce((prev, item) => prev + item.duration, 0);
     const sumMbps = latest.reduce((prev, item) => prev + item.mbps, 0);
