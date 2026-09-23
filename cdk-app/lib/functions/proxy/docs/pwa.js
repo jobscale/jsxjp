@@ -1,18 +1,6 @@
-const logger = console;
-
-const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
-  const timestamp = new Intl.DateTimeFormat('sv-SE', {
-    timeZone: 'Asia/Tokyo',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  }).format(new Date(ts));
-  if (withoutTimezone) return timestamp;
-  return `${timestamp}+09:00`;
-};
+import { logger } from 'https://esm.sh/@jobscale/create-logger';
+import { formatTimestamp } from '/v1/js/timestamp.js';
+import { fetchApi } from '/v1/js/fetch-api.js';
 
 class PWAClient {
   sendToServer(subscription) {
@@ -22,7 +10,7 @@ class PWAClient {
       ts: formatTimestamp(),
     };
     logger.info('subscription', subscription);
-    return fetch('/api/subscription', {
+    return fetchApi('/api/subscription', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(subscription),
@@ -62,7 +50,7 @@ class PWAClient {
     const { pushManager } = await navigator.serviceWorker.ready;
     const exist = await pushManager.getSubscription();
     const subscription = async () => {
-      const publicPem = await fetch('/api/public').then(res => res.text());
+      const publicPem = await fetchApi('/api/public').then(res => res.text());
       const applicationServerKey = this.toUint8Array(publicPem);
       return pushManager.subscribe({
         userVisibleOnly: true,

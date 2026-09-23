@@ -1,19 +1,7 @@
 import { createApp, reactive } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
 import { logger } from 'https://esm.sh/@jobscale/create-logger';
-
-const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
-  const timestamp = new Intl.DateTimeFormat('sv-SE', {
-    timeZone: 'Asia/Tokyo',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  }).format(new Date(ts));
-  if (withoutTimezone) return timestamp;
-  return `${timestamp}+09:00`;
-};
+import { formatTimestamp } from '/v1/js/timestamp.js';
+import { fetchApi } from '/v1/js/fetch-api.js';
 
 let self = {
   signed: undefined,
@@ -33,7 +21,7 @@ let self = {
   },
 
   sign() {
-    return fetch('/auth/sign', {
+    return fetchApi('/auth/sign', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ href: '/v1/user/list/' }),
@@ -54,12 +42,11 @@ let self = {
     const { id } = rest || {};
     self.loading = true;
     self.items = [];
-    const params = ['/user/find', {
+    fetchApi('/user/find', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id }),
-    }];
-    fetch(...params)
+    })
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();
@@ -117,12 +104,11 @@ let self = {
 
   removeId({ id }) {
     self.loading = true;
-    const params = ['/user/remove', {
+    fetchApi('/user/remove', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id }),
-    }];
-    fetch(...params)
+    })
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();

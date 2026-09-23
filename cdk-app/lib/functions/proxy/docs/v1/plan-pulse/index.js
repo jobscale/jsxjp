@@ -1,5 +1,6 @@
 import { createApp, reactive } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
 import { logger } from 'https://esm.sh/@jobscale/create-logger';
+import { fetchApi } from '/v1/js/fetch-api.js';
 
 let self = {
   loading: false,
@@ -28,15 +29,14 @@ let self = {
     if (!self.person.personId) return;
 
     self.loading = true;
-    const params = ['/plan-pulse/removePerson', {
+    fetchApi('/plan-pulse/removePerson', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         hubId: self.hubId,
         personId: self.person.personId,
       }),
-    }];
-    fetch(...params)
+    })
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();
@@ -57,7 +57,7 @@ let self = {
     for (let i = 0; i < self.hub.plan.length; i++) {
       if (!self.person.plan[i]) self.person.plan[i] = '0';
     }
-    const params = ['/plan-pulse/putPerson', {
+    fetchApi('/plan-pulse/putPerson', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -65,8 +65,7 @@ let self = {
         personId: self.person.personId,
         person: self.person,
       }),
-    }];
-    fetch(...params)
+    })
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();
@@ -91,12 +90,11 @@ let self = {
     self.hubId = hubId;
     self.mode = 'hub';
     self.loading = true;
-    const params = ['/plan-pulse/hub', {
+    fetchApi('/plan-pulse/hub', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ hubId: self.hubId }),
-    }];
-    fetch(...params)
+    })
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();
@@ -172,15 +170,14 @@ let self = {
     self.loading = true;
     logger.info('plan', plan);
     self.hub.plan = plan;
-    const params = ['/plan-pulse/putHub', {
+    fetchApi('/plan-pulse/putHub', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         hubId: self.hubId,
         hub: self.hub,
       }),
-    }];
-    fetch(...params)
+    })
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();

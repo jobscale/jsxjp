@@ -1,5 +1,6 @@
 import { createApp, reactive } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
 import { logger } from 'https://esm.sh/@jobscale/create-logger';
+import { fetchApi } from '/v1/js/fetch-api.js';
 
 let self = {
   token: '',
@@ -11,14 +12,13 @@ let self = {
     if (self.token.length < 5) return;
     self.loading = true;
     logger.info('token', self.token);
-    const params = ['/auth/totp', {
+    self.status = '';
+    self.list = [];
+    fetchApi('/auth/totp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ secret: self.token }),
-    }];
-    self.status = '';
-    self.list = [];
-    fetch(...params)
+    })
     .then(res => {
       if (res.status !== 200) throw new Error(`${res.status} ${res.statusText}`);
       return res.json();

@@ -3,6 +3,8 @@ import { createLogger } from 'https://esm.sh/@jobscale/create-logger';
 import { loading } from 'https://esm.sh/@jobscale/loading';
 import { indexStore } from 'https://esm.sh/@jobscale/web-storage';
 import mqtt from 'https://esm.sh/mqtt';
+import { formatTimestamp } from '/v1/js/timestamp.js';
+import { fetchApi } from '/v1/js/fetch-api.js';
 
 const random = (length = 7) => {
   const bytes = crypto.getRandomValues(new Uint8Array(length)).reduce((acc, byte) => `${acc}${byte.toString(16).padStart(2, '0')}`, '');
@@ -16,20 +18,6 @@ const random = (length = 7) => {
     n /= r;
   }
   return result.slice(-length);
-};
-
-const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
-  const timestamp = new Intl.DateTimeFormat('sv-SE', {
-    timeZone: 'Asia/Tokyo',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  }).format(new Date(ts));
-  if (withoutTimezone) return timestamp;
-  return `${timestamp}+09:00`;
 };
 
 const version = 'v=0.5';
@@ -71,7 +59,7 @@ let self = {
   messages: [],
 
   sign() {
-    return fetch('/auth/sign', {
+    return fetchApi('/auth/sign', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ href: '/v1/picts/' }),
@@ -162,13 +150,12 @@ let self = {
   },
 
   async find() {
-    const params = ['/picts/find', {
-      method: 'POST',
-      redirect: 'error',
-    }];
     self.list.length = 0;
     self.preList.length = 0;
-    return fetch(...params)
+    return fetchApi('/picts/find', {
+      method: 'POST',
+      redirect: 'error',
+    })
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();
@@ -213,13 +200,12 @@ let self = {
   },
 
   async getData(list) {
-    const params = ['/picts/getData', {
+    return fetchApi('/picts/getData', {
       method: 'POST',
       redirect: 'error',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(list),
-    }];
-    return fetch(...params)
+    })
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();
@@ -231,13 +217,14 @@ let self = {
   },
 
   async putData(dataset) {
-    const params = ['/picts/putData', {
-      method: 'POST',
-      redirect: 'error',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dataset),
-    }];
-    return loading(fetch(...params))
+    return loading(
+      fetchApi('/picts/putData', {
+        method: 'POST',
+        redirect: 'error',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataset),
+      }),
+    )
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();
@@ -338,12 +325,11 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
   async upload(file) {
     const formData = new FormData();
     formData.append('files', file);
-    const params = ['/picts/upload', {
+    await fetchApi('/picts/upload', {
       method: 'POST',
       redirect: 'error',
       body: formData,
-    }];
-    await fetch(...params)
+    })
     .then(res => {
       logger.debug({ 'upload fetch status': res.status });
       if (res.status !== 200) throw new Error(`${res.status} ${res.statusText}`);
@@ -385,13 +371,12 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
     if (!self.preview) return;
     self.loading = true;
     const { preview } = self;
-    const params = ['/picts/remove', {
+    await fetchApi('/picts/remove', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: preview.name }),
       redirect: 'error',
-    }];
-    await fetch(...params)
+    })
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
       const index = self.list.findIndex(item => item.name === preview.name);

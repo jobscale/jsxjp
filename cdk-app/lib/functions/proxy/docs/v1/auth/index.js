@@ -1,5 +1,6 @@
 import { createApp, reactive } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
 import { logger } from 'https://esm.sh/@jobscale/create-logger';
+import { fetchApi } from '/v1/js/fetch-api.js';
 
 let self = {
   login: '',
@@ -18,12 +19,11 @@ let self = {
     const { login, password } = self;
     self.statusText = '';
     self.loading = true;
-    const params = ['/auth/login', {
+    fetchApi('/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ login, password }),
-    }];
-    fetch(...params)
+    })
     .then(res => {
       self.statusText = `${res.status} ${res.statusText}`;
       if (res.status !== 200) {
@@ -55,12 +55,11 @@ let self = {
     const { login, password, code } = self.auth;
     self.auth.statusText = '';
     self.loading = true;
-    const params = ['/auth/login', {
+    fetchApi('/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ login, password, code }),
-    }];
-    fetch(...params)
+    })
     .then(res => {
       self.auth.statusText = `${res.status} ${res.statusText}`;
       if (res.status !== 200) {

@@ -1,19 +1,7 @@
 import { createApp, reactive } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
 import { logger } from 'https://esm.sh/@jobscale/create-logger';
-
-const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
-  const timestamp = new Intl.DateTimeFormat('sv-SE', {
-    timeZone: 'Asia/Tokyo',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  }).format(new Date(ts));
-  if (withoutTimezone) return timestamp;
-  return `${timestamp}+09:00`;
-};
+import { formatTimestamp } from '/v1/js/timestamp.js';
+import { fetchApi } from '/v1/js/fetch-api.js';
 
 let self = {
   signed: undefined,
@@ -24,7 +12,7 @@ let self = {
   loading: false,
 
   sign() {
-    return fetch('/auth/sign', {
+    return fetchApi('/auth/sign', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ href: '/v1/s/' }),
@@ -45,12 +33,11 @@ let self = {
     if (self.url.length < 20) return;
     self.loading = true;
     logger.info('url', self.url);
-    const params = ['/s/register', {
+    fetchApi('/s/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ html: self.url }),
-    }];
-    fetch(...params)
+    })
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();

@@ -1,20 +1,7 @@
 import { createApp, reactive, computed, nextTick } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
-
-const logger = console;
-
-const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
-  const timestamp = new Intl.DateTimeFormat('sv-SE', {
-    timeZone: 'Asia/Tokyo',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  }).format(new Date(ts));
-  if (withoutTimezone) return timestamp;
-  return `${timestamp}+09:00`;
-};
+import { logger } from 'https://esm.sh/@jobscale/create-logger';
+import { formatTimestamp } from '/v1/js/timestamp.js';
+import { fetchApi } from '/v1/js/fetch-api.js';
 
 let self = {
   statusText: 'muted',
@@ -54,7 +41,7 @@ let self = {
   },
 
   async serverName() {
-    return fetch('/favicon.ico')
+    return fetchApi('/favicon.ico')
     .then(res => {
       const { headers } = res;
       const key = [
@@ -68,7 +55,7 @@ let self = {
   },
 
   sign() {
-    return fetch('/auth/sign', {
+    return fetchApi('/auth/sign', {
       method: 'HEAD',
     });
   },

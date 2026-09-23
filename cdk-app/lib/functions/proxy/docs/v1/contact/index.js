@@ -1,5 +1,6 @@
 import { createApp, reactive, nextTick } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
 import { logger } from 'https://esm.sh/@jobscale/create-logger';
+import { fetchApi } from '/v1/js/fetch-api.js';
 
 let self = {
   image: undefined,
@@ -25,12 +26,11 @@ let self = {
         text: self.text,
       },
     };
-    const params = ['/api/sendmail', {
+    fetchApi('/api/sendmail', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
-    }];
-    fetch(...params)
+    })
     .then(res => {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();
@@ -52,12 +52,11 @@ let self = {
     .then(() => setTimeout(() => { self.loading = false; }, 1000));
   },
   async getNumber() {
-    const params = ['/api/getNumber', {
+    await fetchApi('/api/getNumber', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(''),
-    }];
-    await fetch(...params)
+    })
     .then(res => res.json())
     .catch(e => {
       logger.error(e.message);
