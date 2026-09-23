@@ -35,8 +35,10 @@ function handler(event) {
   response.headers['x-xss-protection'] = { value: '1; mode=block' };
 
   response.headers['access-control-allow-origin'] = { value: '*' };
-  response.headers['access-control-allow-methods'] = { value: 'GET, HEAD' };
+  response.headers['access-control-allow-methods'] = { value: 'GET, HEAD, POST' };
   response.headers['access-control-allow-headers'] = { value: 'Content-Type' };
+  response.headers['access-control-expose-headers'] = { value: 'X-User, X-Address, Date, Server' };
+  response.headers['access-control-allow-credentials'] = { value: 'true' };
   response.headers['access-control-max-age'] = { value: '86400' };
 
   return response; 

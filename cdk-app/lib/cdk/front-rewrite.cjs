@@ -9,8 +9,10 @@ function handler(event) {
       statusDescription: 'No Content',
       headers: {
         'access-control-allow-origin': { value: '*' },
-        'access-control-allow-methods': { value: 'GET, HEAD' },
+        'access-control-allow-methods': { value: 'GET, HEAD, POST' },
         'access-control-allow-headers': { value: 'Content-Type' },
+        'access-control-expose-headers': { value: 'X-User, X-Address, Date, Server' },
+        'access-control-allow-credentials': { value: 'true' },
         'access-control-max-age': { value: '86400' },
       },
     };

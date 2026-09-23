@@ -192,6 +192,9 @@ export class Ingress {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Methods', allowMethods.join(', '));
     res.setHeader('Access-Control-Allow-Headers', allowHeaders.join(', '));
+    res.setHeader('Access-Control-Expose-Headers', 'X-User, X-Address, Date, Server');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Max-Age', '86400');
     if (req.method === 'OPTIONS') {
       res.end('');
       return;

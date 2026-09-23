@@ -41,7 +41,7 @@ let self = {
   },
 
   async serverName() {
-    return self.sign()
+    return fetch('/favicon.ico', { method: 'HEAD' })
     .then(res => {
       const { headers } = res;
       const key = [
