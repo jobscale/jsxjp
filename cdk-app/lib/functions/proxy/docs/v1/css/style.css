@@ -135,26 +135,6 @@ section {
   letter-spacing: 0.1em;
 }
 
-.busy {
-  cursor: default;
-}
-
-.worm {
-  display: inline-flex;
-}
-
-.worm span {
-  font-size: 0.8em;
-  margin: 0 0.2em;
-  opacity: 0.6;
-}
-
-.inline-scroll {
-  display: inline-block;
-  max-width: 50vw;
-  overflow-x: auto;
-}
-
 .link-area {
   margin: 0.5em 2em;
   max-width: 30em;

@@ -49,17 +49,6 @@
         </div>
       </section>
       <section>
-        <div class="worm">
-          <span class="inline-scroll">
-            <span v-for="item of [...busyList].reverse()" class="busy" :title="`${item.date} ${item.time}`">{{ item.num }}</span>
-          </span>
-          <span class="inline-scroll">
-            <span class="busy">{{ busyText }}</span>
-          </span>
-          <span class="inline-scroll">
-            <span class="busy busy-ts" :title="busyLatests">{{ busyList[0]?.time }}</span>
-          </span>
-        </div>
         <div>
           <canvas id="busyChart" class="graph"></canvas>
         </div>
