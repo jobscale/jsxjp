@@ -20,8 +20,9 @@ const random = (length = 7) => {
   return result.slice(-length);
 };
 
-const version = 'v=0.5';
-const client = mqtt.connect('wss://mqtt.jsx.jp/mqtt');
+const without = true;
+const version = 'v0.0.1';
+const client = without || mqtt.connect('wss://mqtt.jsx.jp/mqtt');
 const publish = payload => {
   const topic = `chat/logs-${version}/speak`;
   client.publish(topic, JSON.stringify({
@@ -33,7 +34,7 @@ const publish = payload => {
   }));
 };
 
-const logger = createLogger('debug', {
+const logger = without ? createLogger() : createLogger('debug', {
   callback: (...args) => {
     publish({ message: args.map(arg => JSON.stringify(arg)).join(' ') });
   },
@@ -177,18 +178,9 @@ let self = {
     if (!self.preList.length) return;
     const nextItems = self.preList.splice(0, 1);
     for (const item of nextItems) {
-      const imagePath = `/picts/t/${item.name}`;
-      const cacheImage = self.isPC && await indexStore.getItem(imagePath);
-      if (cacheImage) {
-        item.thumbnail = cacheImage;
-        continue;
-      }
-      item.thumbnail = await self.loadImage(imagePath)
-      .then(async image => {
-        if (self.isPC) await indexStore.setItem(imagePath, image);
-        return image;
-      })
-      .catch(() => `/picts/t/${item.name}`);
+      const thumbPath = `/picts/t/${item.name}`;
+      item.thumbnail = await self.loadImage(thumbPath)
+      .catch(() => thumbPath);
     }
     self.list.unshift(...nextItems);
     self.updateImageTags(self.imageTags);
@@ -391,10 +383,14 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
     self.loading = false;
   },
 
-  loadImage(url) {
-    return fetch(url)
+  async loadImage(url) {
+    if (self.isPC) {
+      const imageData = await indexStore.getItem(url);
+      if (imageData) return imageData;
+    }
+    const imageData = await fetchApi(url)
     .then(res => {
-      if (res.status !== 200) {
+      if (!res.ok || res.status !== 200) {
         throw new Error(`${res.status} ${res.statusText}`);
       }
       return res.blob();
@@ -405,29 +401,8 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       reader.onerror = reject;
       reader.readAsDataURL(blob);
     }));
-  },
-
-  async showImage(target) {
-    if (!target) return;
-    const { name } = target;
-    const imagePath = `i/${name}`;
-    if (self.cacheImage[imagePath]) {
-      target.imgUrl = self.cacheImage[imagePath];
-      return;
-    }
-    const cacheImage = self.isPC && await indexStore.getItem(imagePath)
-    .catch(e => logger.error(e.message));
-    if (cacheImage) {
-      target.imgUrl = cacheImage;
-      self.cacheImage[imagePath] = cacheImage;
-      return;
-    }
-    loading(new Promise(resolve => { setTimeout(resolve, 500); }));
-    self.loadImage(`/picts/${imagePath}`)
-    .catch(() => self.loadImage(`/picts/t/${name}`))
-    .then(async imgUrl => {
-      target.imgUrl = imgUrl;
-      self.cacheImage[imagePath] = imgUrl;
+    if (self.isPC) {
+      await indexStore.setItem(url, imageData);
       if (navigator.storage?.estimate) {
         navigator.storage.estimate().then(estimate => {
           const usageMB = (estimate.usage / 1024 / 1024).toFixed(2);
@@ -435,7 +410,25 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
           logger.info(`use: ${usageMB} MB / max: ${quotaMB} MB`);
         });
       }
-      if (self.isPC) indexStore.setItem(imagePath, imgUrl);
+    }
+    return imageData;
+  },
+
+  async showImage(target) {
+    if (!target) return;
+    const { name } = target;
+    const thumbPath = `/picts/t/${name}`;
+    const imagePath = `/picts/i/${name}`;
+    if (self.cacheImage[imagePath]) {
+      target.imgUrl = self.cacheImage[imagePath];
+      return;
+    }
+    loading(new Promise(resolve => { setTimeout(resolve, 500); }));
+    self.loadImage(imagePath)
+    .catch(() => self.loadImage(thumbPath))
+    .then(async imgUrl => {
+      target.imgUrl = imgUrl;
+      self.cacheImage[imagePath] = imgUrl;
     })
     .catch(e => {
       logger.error(e.message);

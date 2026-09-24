@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@jobscale/eslint-plugin-standard": "^0.1.4",
-    "aws-cdk": "^2.1142.0",
+    "aws-cdk": "^2.1143.0",
     "eslint-plugin-jest": "^29.16.0",
     "jest": "^30.4.2"
   }
