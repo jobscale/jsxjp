@@ -14,7 +14,7 @@ const envConfigs = {
     context: {
       front: {
         certificateId: 'f55e911f-453e-4e27-8569-276156c987fd',
-        domainName: 'www.jsx.jp',
+        domainName: `${envName}.jsx.jp`,
         bucketName: `${envName}-front-static`,
       },
       gateway: {
@@ -31,12 +31,12 @@ const envConfigs = {
     context: {
       front: {
         certificateId: 'f55e911f-453e-4e27-8569-276156c987fd',
-        domainName: `${envName}-front.jsx.jp`,
+        domainName: `${envName}.jsx.jp`,
         bucketName: `${envName}-front-static`,
       },
       gateway: {
         certificateId: '1c06e554-19c4-4cc8-abf0-4dc84803e2f5',
-        domainName: `${envName}-serverless.jsx.jp`,
+        domainName: `${envName}-api.jsx.jp`,
       },
     },
   },
