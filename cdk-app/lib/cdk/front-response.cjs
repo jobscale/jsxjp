@@ -40,6 +40,7 @@ function handler(event) {
   response.headers['access-control-expose-headers'] = { value: 'X-User, X-Address, Date, Server' };
   response.headers['access-control-allow-credentials'] = { value: 'true' };
   response.headers['access-control-max-age'] = { value: '86400' };
+  response.headers['timing-allow-origin'] = { value: '*' };
 
   return response; 
 }

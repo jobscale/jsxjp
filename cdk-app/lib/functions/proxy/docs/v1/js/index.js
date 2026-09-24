@@ -157,9 +157,10 @@ let self = {
     self.realSpeedText = 'measuring...';
     self.speedText = 'measuring...';
     self.speed().catch(e => {
-      logger.error(e.message);
-      self.realSpeedText = e.message;
-      self.speedText = e.message;
+      const message = e.cause?.message ?? e.cause ?? e.message;
+      logger.error(message);
+      self.realSpeedText = message;
+      self.speedText = message;
     });
   },
 
@@ -168,10 +169,9 @@ let self = {
     if (self.latestSpeed + 2_000 > now) throw new Error('... too fast request');
     self.latestSpeed = now;
 
-    const url = '/api/speed';
     performance.clearResourceTimings();
     const start = Date.now();
-    const res = await fetch(url, {
+    const res = await fetchApi('/api/speed', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ timestamp: start }),
@@ -183,12 +183,15 @@ let self = {
     // 全体の経過時間での計算 (RTT含む)
     const safeDuration = Math.max(duration, 1);
     self.realSpeedText = `${(blob.size * 8 / safeDuration / 1000).toFixed(2)} Mbps (${duration} ms) real`;
-    // Performance API での計算 (純粋なダウンロード時間)
-    const entry = performance.getEntriesByName(new URL(url, window.location.origin).href).pop();
-    if (!entry) {
-      self.speedText = 'performance entry not found';
-      return;
+    // resource から探す
+    const resources = performance.getEntriesByType('resource');
+    const entry = resources.findLast(file => file.name.match('/api/speed'));
+    if (!entry) throw new Error('performance entry not found');
+    // CORS制限などで 0 が返ってきた場合のガード節（異常値の防止）
+    if (!(entry.responseStart > 0 && entry.responseEnd > 0)) {
+      throw new Error('Check Timing-Allow-Origin header');
     }
+    // Performance API での計算 (純粋なダウンロード時間)
     const downloadTimeMs = Math.max(Math.round(entry.responseEnd - entry.responseStart), 1);
     const mbps = blob.size * 8 / (downloadTimeMs / 1000) / 1000000;
     const rtt = Math.round(entry.responseStart - entry.startTime);
