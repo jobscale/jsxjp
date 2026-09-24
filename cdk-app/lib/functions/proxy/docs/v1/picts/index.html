@@ -13,7 +13,9 @@
   </head>
   <body>
     <div id="app" class="nav-main">
-      <header class="header">{{ signed.login }}</header>
+      <header class="header">
+        <span>{{ signed.login }}</span>
+      </header>
       <div v-if="signed" v-show="!preview && !editTags.length" class="container">
         <section>
           <h2>Pictures Online</h2>
@@ -31,8 +33,12 @@
                 <div class="thumbnail file">
                   <img :src="item.img.src">
                 </div>
-                <div class="img-head">{{ item.name }}</div>
-                <div class="img-head">{{ item.mb }}</div>
+                <div class="img-head">
+                  <span>{{ item.name }}</span>
+                </div>
+                <div class="img-head">
+                  <span>{{ item.mb }}</span>
+                </div>
               </div>
             </div>
             <div>
@@ -57,7 +63,9 @@
                 <div class="thumbnail">
                   <img :src="item.thumbnail" @load="onImageLoad()" :data-fname="item.name" :alt="item.name">
                 </div>
-                <div class="img-head">{{ item.name }}</div>
+                <div class="img-head">
+                  <span>{{ item.name }}</span>
+                </div>
               </div>
             </div>
           </div>
