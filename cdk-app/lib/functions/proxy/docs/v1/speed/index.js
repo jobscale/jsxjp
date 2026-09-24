@@ -20,16 +20,18 @@ let self = {
     '/',
     '/favicon.ico',
     '/v1/img/loading.svg',
+    '/auth/sign',
+    '/api/speed',
     'https://api.jsx.jp/auth/sign',
     'https://api.jsx.jp/api/speed',
     'https://fly.jsx.jp/auth/sign',
     'https://fly.jsx.jp/api/speed',
+    'https://stg.jsx.jp/auth/sign',
+    'https://stg-api.jsx.jp/auth/sign',
     'https://esm.sh/etc...',
     'https://cdn.jsdelivr.net/npm/vue/dist/vue.esm-browser.js',
     'https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.16.0/mqtt.js',
     'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap',
-    'https://stg.jsx.jp/auth/sign',
-    'https://stg-api.jsx.jp/auth/sign',
   ],
   targets: [],
   chartHover: {},
@@ -40,7 +42,7 @@ let self = {
       id,
       method: self.methods[0],
       uri: self.uriSuggestions[0],
-      interval: 3,
+      interval: 5,
       running: 0, // 0: stopped, 1: running, 2: to be stopped
       error: '',
       history: [],
@@ -82,7 +84,20 @@ let self = {
     });
   },
 
+  startAll() {
+    loading(async () => {
+      if (!self.targets.length) return;
+      const delay = Math.floor(5_000 / self.targets.length);
+      for (const [index, target] of self.targets.entries()) {
+        if (index) await new Promise(resolve => { setTimeout(resolve, delay); });
+        target.interval = 5;
+        self.startTarget(target);
+      }
+    });
+  },
+
   startTarget(target) {
+    if (target.running) return;
     target.interval = Math.max(1, Number.parseInt(target.interval, 10) || 1);
     target.running = 1;
     self.checkTarget(target);
@@ -90,6 +105,7 @@ let self = {
 
   stopTarget(target) {
     loading(Promise.resolve());
+    if (target.running !== 1) return;
     target.running = 2;
   },
 

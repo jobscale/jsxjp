@@ -54,12 +54,20 @@ main {
 }
 
 .page-header {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 34px;
+  display: grid;
+  margin-bottom: 14px;
 }
+.intro-area {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+.intro {
+  margin-top: 12px;
+  color: var(--muted);
+  cursor: default;
+}
+
 .page-footer {
   display: flex;
   align-items: start;
@@ -99,12 +107,6 @@ h3 {
   font-size: 13px;
   letter-spacing: .1em;
   text-transform: uppercase;
-}
-
-.intro {
-  margin-top: 12px;
-  color: var(--muted);
-  cursor: default;
 }
 
 .add-button,
