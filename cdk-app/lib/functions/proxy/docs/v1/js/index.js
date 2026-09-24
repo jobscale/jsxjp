@@ -1,4 +1,4 @@
-import { createApp, reactive, computed, nextTick } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
+import { createApp, reactive, computed } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
 import { logger } from 'https://esm.sh/@jobscale/create-logger';
 import { formatTimestamp } from '/v1/js/timestamp.js';
 import { fetchApi } from '/v1/js/fetch-api.js';
@@ -11,7 +11,6 @@ let self = {
   xAddress: '☃',
   refresh: '☃',
   dateText: '☃',
-  busyText: '',
   busy: undefined,
   busyList: [],
   stack: [],
@@ -98,26 +97,18 @@ let self = {
   checkDate() {
     if (self.busy !== undefined) {
       if (self.busy === 0) {
-        const [date, time] = formatTimestamp(Date.now(), true).split(' ');
-        self.busyList.unshift({ num: 0, date, time });
+        const timestamp = formatTimestamp(Date.now(), true);
+        self.busyList.unshift({ num: 0, timestamp });
         if (self.busyList.length > 500) self.busyList.pop();
-        nextTick(() => {
-          document.querySelector('.busy:last-of-type').scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-          });
-        });
       }
       self.busyList[0].num++;
       self.busy++;
-      self.busyText = `${self.busy} 🍺`;
       self.drawBusyChart();
       return;
     }
     self.busy = 0;
     self.updateDate()
     .then(() => {
-      self.busyText = '';
       self.busy = undefined;
     });
   },
@@ -151,6 +142,26 @@ let self = {
       ctx.fillStyle = colorList[color];
       ctx.fillRect(index * barWidth, height - barHeight, barWidth - 2, barHeight);
     });
+
+    if (!canvas.dataset.hoverBound) {
+      canvas.dataset.hoverBound = '1';
+      canvas.addEventListener('mousemove', event => {
+        const rect = canvas.getBoundingClientRect();
+        if (!rect.width) { canvas.title = ''; return; }
+        const item = self.hoverChart(self.busyList, event.clientX - rect.left, rect.width);
+        if (!item) { canvas.title = ''; return; }
+        canvas.title = `${item.timestamp}\n${item.num}`;
+      });
+      canvas.addEventListener('mouseleave', () => {
+        canvas.title = '';
+      });
+    }
+  },
+
+  hoverChart(list, x, width) {
+    if (!list.length) return undefined;
+    const index = Math.floor(x / width * list.length);
+    return list[list.length - 1 - index];
   },
 
   onSpeed() {
@@ -235,7 +246,6 @@ let self = {
   },
 };
 Object.assign(self, {
-  busyLatests: computed(() => self.busyList.slice(0, 12).map(v => v.time).join('\n')),
   speedLatest: computed(() => formatTimestamp(self.latestSpeed, true)),
   spanText: computed(() => {
     if (!self.stack.length) return '🍰';
