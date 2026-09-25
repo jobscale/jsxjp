@@ -47,6 +47,7 @@ export const frontCache = stack => {
   const httpApiOrigin = new origins.HttpOrigin(gateway.domainName, {
     protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
     originSslProtocols: [cloudfront.OriginSslPolicy.TLS_V1_2],
+    keepaliveTimeout: cdk.Duration.seconds(60),
   });
 
   const s3Behavior = (extras = {}) => ({
@@ -88,6 +89,7 @@ export const frontCache = stack => {
     minimumProtocolVersion: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,
     sslSupportMethod: cloudfront.SSLMethod.SNI,
     certificate, defaultBehavior, additionalBehaviors,
+    priceClass: cloudfront.PriceClass.PRICE_CLASS_200,
   });
 
   new s3deploy.BucketDeployment(stack, 'FrontDocsDeploy', {
