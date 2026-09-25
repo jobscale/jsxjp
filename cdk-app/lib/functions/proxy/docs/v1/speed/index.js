@@ -269,7 +269,10 @@ let self = {
 self = reactive(self);
 
 createApp({
-  setup() { return self; },
+  setup() {
+    return self;
+  },
+
   async mounted() {
     self.targets = await indexStore.getItem('targets') ?? [];
     self.nextId = Math.max(0, ...self.targets.map(item => item.id)) + 1;
