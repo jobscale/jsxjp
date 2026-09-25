@@ -279,6 +279,10 @@ let self = {
       context.stroke();
     }
   },
+
+  goto(href) {
+    Object.assign(location, { href });
+  },
 };
 self = reactive(self);
 
@@ -296,5 +300,6 @@ createApp({
     });
     window.addEventListener('beforeunload', event => self.onBeforeunload(event));
     window.addEventListener('popstate', () => self.onPopstate());
+    document.body.style.visibility = 'inherit';
   },
 }).mount('#app');

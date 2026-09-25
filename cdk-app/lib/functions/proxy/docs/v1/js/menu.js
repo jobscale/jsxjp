@@ -15,6 +15,7 @@ class Menu {
     logger.info('menu navigation');
     event.preventDefault();
     document.body.classList.toggle('nav-open');
+    document.querySelector('.nav-container').scrollTop = 0;
   }
 
   trigger() {
@@ -22,13 +23,15 @@ class Menu {
     this.initMenu()
     .then(() => new Promise(resolve => { setTimeout(resolve, 2000); }))
     .then(() => {
-      document.querySelector('.nav-container').style = 'visibility: inherit';
+      document.querySelector('.nav-container').style.visibility = 'inherit';
     })
     .then(() => new Promise(resolve => { setTimeout(resolve, 100); }))
     .then(() => {
       const trigger = document.querySelector('.nav-trigger');
       trigger.addEventListener('click', event => this.navigation(event));
-      trigger.style = 'visibility: inherit';
+      trigger.style.visibility = 'inherit';
+      const overlay = document.querySelector('.nav-overlay');
+      overlay.addEventListener('click', event => this.navigation(event));
     });
   }
 }

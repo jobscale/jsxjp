@@ -13,11 +13,11 @@
   <link rel="stylesheet" href="./index.css">
 </head>
 
-<body>
+<body style="visibility:hidden">
   <main id="app">
     <header class="page-header">
       <div>
-        <p class="eyebrow">NETWORK TOOL</p>
+        <p @click.prevent="goto('/')" class="eyebrow">JSX.JP > NETWORK TOOL</p>
         <h1>Speed check</h1>
         <div class="intro-area">
           <p @click.prevent="toggleShowMode" class="intro">Graph only view toggle</p>
@@ -42,7 +42,7 @@
         </div>
         <div class="panel-actions">
           <span class="status" :class="{ active: target.running }">{{ target.running ? 'RUNNING' : 'STOPPED' }}</span>
-          <button class="text-button danger" type="button" @click="removeTarget(index)"
+          <button class="text-button danger" type="button" @click.stop.prevent="removeTarget(index)"
             :disabled="target.running || targets.length <= 1">DELETE</button>
         </div>
       </div>
@@ -66,11 +66,11 @@
           <span>Interval <small>(seconds)</small></span>
           <input v-model.number="target.interval" type="number" min="1" step="1">
         </label>
-        <button class="run-button" type="button" @click="toggleTarget(target)"
+        <button class="run-button" type="button" @click.stop.prevent="toggleTarget(target)"
           :disabled="!target.uri || target.running === 2" :class="target.running ? 'check-button' : ''">
           {{ target.running ? 'STOP' : 'START' }}
         </button>
-        <button class="check-button" type="button" @click="startOnce(target)"
+        <button class="check-button" type="button" @click.stop.prevent="startOnce(target)"
           :disabled="!target.uri">
           {{ 'ONCE NOW' }}
         </button>
@@ -114,7 +114,7 @@
 
     <footer v-if="!hiddenTitle" class="page-footer">
       <span @click.prevent="toggleShowMode" class="intro">Graph only view toggle</span>
-      <button class="add-button" type="button" @click="addTarget" :disabled="targets.length >= maxTargets">
+      <button class="add-button" type="button" @click.stop.prevent="addTarget" :disabled="targets.length >= maxTargets">
         <span aria-hidden="true">+</span> ADD URI
       </button>
     </footer>

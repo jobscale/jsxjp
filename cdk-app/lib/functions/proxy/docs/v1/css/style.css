@@ -71,10 +71,6 @@ body {
   overflow: auto;
 }
 
-.nav-trigger, .nav-container, .nav-overlay {
-  visibility: hidden;
-}
-
 #app {
   display: flex;
   align-items: center;

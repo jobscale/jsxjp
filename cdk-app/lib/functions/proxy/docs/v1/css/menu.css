@@ -134,6 +134,9 @@ Overlay
   visibility: visible;
 }
 
+.nav-trigger, .nav-container, .nav-overlay {
+  visibility: hidden;
+}
 
 /********************************
 Navigation

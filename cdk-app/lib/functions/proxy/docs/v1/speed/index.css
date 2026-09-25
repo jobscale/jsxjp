@@ -44,7 +44,7 @@ button:disabled {
 #app {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 52px 0 80px;
+  padding: 32px 0 80px;
 }
 
 main {
@@ -84,6 +84,11 @@ label span,
   font-size: 11px;
   letter-spacing: .12em;
   text-transform: uppercase;
+}
+
+.eyebrow {
+  padding-bottom: 11px;
+  cursor: default;
 }
 
 h1,
