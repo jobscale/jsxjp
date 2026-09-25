@@ -143,6 +143,28 @@ h3 {
   color: var(--accent);
 }
 
+.drag-handle {
+  height: auto;
+  margin-right: 8px;
+  border: 0;
+  padding: 4px;
+  color: var(--muted);
+  background: transparent;
+  vertical-align: middle;
+  cursor: grab;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.drag-handle svg {
+  display: block;
+  width: 12px;
+  height: 18px;
+  fill: currentColor;
+}
+
 .panel-actions {
   display: flex;
   align-items: center;

@@ -26,9 +26,14 @@
       </div>
     </header>
 
-    <section v-for="(target, index) in targets" :key="target.id" class="target-panel fade-animation">
+    <section v-for="(target, index) in targets" :key="target.id" class="target-panel fade-animation"
+      @dragover.prevent @drop.prevent="dropTarget($event, target)">
       <div v-if="!hiddenTitle" class="panel-header">
         <div>
+          <button class="drag-handle" type="button" draggable="true" aria-label="Drag to reorder"
+            title="Drag to reorder" @dragstart="startTargetReorder($event, target)">
+            <svg viewBox="0 0 12 18" aria-hidden="true"><circle cx="3" cy="3" r="1.5"/><circle cx="9" cy="3" r="1.5"/><circle cx="3" cy="9" r="1.5"/><circle cx="9" cy="9" r="1.5"/><circle cx="3" cy="15" r="1.5"/><circle cx="9" cy="15" r="1.5"/></svg>
+          </button>
           <span class="target-number">{{ String(index + 1).padStart(2, '0') }}</span>
           <div class="latest-result">
             <strong v-if="target.error" class="error">{{ target.error }}</strong>

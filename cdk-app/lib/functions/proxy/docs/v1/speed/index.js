@@ -67,6 +67,20 @@ let self = {
     self.targets.splice(index, 1);
   },
 
+  startTargetReorder(event, target) {
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', String(target.id));
+  },
+
+  async dropTarget(event, target) {
+    const draggedId = Number.parseInt(event.dataTransfer.getData('text/plain'), 10);
+    const fromIndex = self.targets.findIndex(item => item.id === draggedId);
+    const toIndex = self.targets.indexOf(target);
+    if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) return;
+    const [dragged] = self.targets.splice(fromIndex, 1);
+    self.targets.splice(toIndex, 0, dragged);
+  },
+
   toggleShowMode() {
     self.hiddenTitle = !self.hiddenTitle;
     nextTick(() => {
