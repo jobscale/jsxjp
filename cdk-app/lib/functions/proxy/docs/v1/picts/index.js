@@ -386,7 +386,8 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
   async loadImage(url) {
     if (self.isPC) {
       const imageData = await indexStore.getItem(url);
-      if (imageData) return imageData;
+      const isText = imageData?.match('data:text/html;');
+      if (!isText && imageData) return imageData;
     }
     const imageData = await fetchApi(url)
     .then(res => {
@@ -401,6 +402,12 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       reader.onerror = reject;
       reader.readAsDataURL(blob);
     }));
+    const isText = imageData?.match('data:text/html;');
+    if (isText) {
+      const text = (await fetch(imageData)).text();
+      logger.error(text);
+      debugger;
+    }
     if (self.isPC) {
       await indexStore.setItem(url, imageData);
       if (navigator.storage?.estimate) {
