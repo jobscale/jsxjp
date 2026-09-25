@@ -383,9 +383,17 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
     self.loading = false;
   },
 
+  async initializeDatabase() {
+    const before = await indexStore.getItem('initialized');
+    if (before === version) return;
+    logger.info(`Initializing database for version ${version} creating all data`);
+    await indexStore.clear();
+    await indexStore.setItem('initialized', version);
+  },
+
   async loadImage(url) {
     if (self.isPC) {
-      const imageData = await indexStore.getItem(url);
+      const imageData = await indexStore.getItem(`${self.signed.login};;${url}`);
       const isText = imageData?.match('data:text/html;');
       if (!isText && imageData) return imageData;
     }
@@ -405,11 +413,10 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
     const isText = imageData?.match('data:text/html;');
     if (isText) {
       const text = await (await fetch(imageData)).text();
-      logger.error(text);
-      debugger;
+      logger.error({ text });
     }
     if (self.isPC) {
-      await indexStore.setItem(url, imageData);
+      await indexStore.setItem(`${self.signed.login};;${url}`, imageData);
       if (navigator.storage?.estimate) {
         navigator.storage.estimate().then(estimate => {
           const usageMB = (estimate.usage / 1024 / 1024).toFixed(2);
@@ -522,6 +529,9 @@ createApp({
   async mounted() {
     self.onColorScheme();
     await self.sign();
+    if (!self.signed?.login) return;
+    logger.info(`User is signed in ${self.signed.login}`);
+    await self.initializeDatabase();
     if (!self.list.length) {
       await self.find();
       await self.onLoad();
