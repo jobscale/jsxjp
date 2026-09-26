@@ -1,4 +1,5 @@
 import createHttpError from 'http-errors';
+import { logger } from '@jobscale/create-logger';
 import { service as authService } from '../auth/service.js';
 import { service } from './service.js';
 
@@ -15,6 +16,7 @@ export class Controller {
       res.json({ images });
     })
     .catch(e => {
+      logger.error(e.cause?.message ?? e.cause ?? e.message);
       if (!e.status) e.status = 500;
       res.status(e.status).end(e.cause?.message ?? e.cause ?? e.message);
     });
@@ -37,6 +39,7 @@ export class Controller {
       });
     })
     .catch(e => {
+      logger.error(e.cause?.message ?? e.cause ?? e.message);
       if (!e.status) e.status = 404;
       res.status(e.status).end(e.cause?.message ?? e.cause ?? e.message);
     });
@@ -52,6 +55,7 @@ export class Controller {
     })
     .then(() => res.json({ ok: true }))
     .catch(e => {
+      logger.error(e.cause?.message ?? e.cause ?? e.message);
       if (!e.status) e.status = 500;
       res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
@@ -67,6 +71,7 @@ export class Controller {
     })
     .then(() => res.json({ ok: true }))
     .catch(e => {
+      logger.error(e.cause?.message ?? e.cause ?? e.message);
       if (!e.status) e.status = 500;
       res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
@@ -82,6 +87,7 @@ export class Controller {
     })
     .then(dataset => res.json(dataset))
     .catch(e => {
+      logger.error(e.cause?.message ?? e.cause ?? e.message);
       if (!e.status) e.status = 500;
       res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });
@@ -97,6 +103,7 @@ export class Controller {
     })
     .then(() => res.json({ ok: true }))
     .catch(e => {
+      logger.error(e.cause?.message ?? e.cause ?? e.message);
       if (!e.status) e.status = 500;
       res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
     });

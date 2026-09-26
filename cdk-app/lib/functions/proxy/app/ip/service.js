@@ -19,6 +19,7 @@ class Service {
         this.refreshIp = Date.now() + 1000 * 60 * 5;
       })
       .catch(e => {
+        logger.error(e.cause?.message ?? e.cause ?? e.message);
         this.refreshIp = Date.now() + 1000 * 60;
         logger.error({ message: e.cause?.message ?? e.cause ?? e.message });
       });

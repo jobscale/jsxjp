@@ -218,7 +218,10 @@ export class Service {
     return {
       hostname: os.hostname(),
       ip: await fetch('https://inet-ip.info/ip')
-      .then(res => res.text()).catch(e => e.message),
+      .then(res => res.text()).catch(e => {
+        logger.error(e.cause?.message ?? e.cause ?? e.message);
+        return e.cause?.message ?? e.cause ?? e.message;
+      }),
     };
   }
 

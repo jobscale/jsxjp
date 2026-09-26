@@ -50,7 +50,7 @@ let self = {
       const showName = hostname.split('-').filter(Boolean).slice(-3).join('-');
       return showName;
     })
-    .catch(e => logger.warn(e.cause?.message ?? e.cause ?? e.message) ?? 'oops');
+    .catch(e => logger.warn(e.cause?.message ?? e.cause ?? e.message));
   },
 
   sign() {
@@ -90,7 +90,7 @@ let self = {
       if (self.stack.length > 60) self.stack.length = 60;
     })
     .catch(e => {
-      self.dateText = e.message;
+      self.dateText = e.cause?.message ?? e.cause ?? e.message;
     });
   },
 
