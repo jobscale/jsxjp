@@ -27,7 +27,7 @@ export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
       },
     }),
     handler: 'index.handler',
-    timeout: cdk.Duration.seconds(12),
+    timeout: cdk.Duration.seconds(8),
     memorySize: 200,
     environment: {
       ENV: ['stg', 'prod'].includes(stack.context.envName) ? 'dev' : stack.context.envName,

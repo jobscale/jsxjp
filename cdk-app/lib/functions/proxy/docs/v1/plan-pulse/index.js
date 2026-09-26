@@ -41,7 +41,7 @@ let self = {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();
     })
-    .catch(e => logger.error(e.message))
+    .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message))
     .then(() => setTimeout(() => {
       window.location.reload();
     }, 1000));
@@ -73,7 +73,7 @@ let self = {
     .then(({ personId }) => {
       self.person.personId = personId;
     })
-    .catch(e => logger.error(e.message))
+    .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message))
     .then(() => setTimeout(() => {
       window.location.reload();
     }, 1000));
@@ -117,7 +117,7 @@ let self = {
       });
     })
     .catch(e => {
-      logger.error(e.message);
+      logger.error(e.cause?.message ?? e.cause ?? e.message);
       window.location.href = '/v1/plan-pulse/';
     })
     .then(() => setTimeout(() => { self.loading = false; }, 1000));
@@ -185,7 +185,7 @@ let self = {
     .then(({ hubId }) => {
       window.location.href = `?hub=${hubId}`;
     })
-    .catch(e => logger.error(e.message))
+    .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message))
     .then(() => setTimeout(() => { self.loading = false; }, 1000));
   },
 

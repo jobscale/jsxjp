@@ -27,27 +27,41 @@ const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   return `${timestamp}+09:00`;
 };
 
+const createRacer = () => {
+  const racer = (opts = {}) => new Promise((_, reject) => {
+    const { timeout = 5_000, runner = {} } = opts;
+    racer.tid = setTimeout(() => { runner.close?.(); reject(createHttpError(504)); }, timeout);
+  });
+  return racer;
+};
+
 export class Service {
   async slack(rest) {
+    const racer = createRacer();
     const env = await configService.getEnv('slack');
-    return new Slack(env).send(rest)
-    .then(res => logger.info(res))
-    .catch(e => logger.error(e));
-  }
-
-  async email({ to, subject, text }) {
-    const env = await configService.getEnv('smtp');
-    const racer = runner => new Promise((_, reject) => {
-      racer.tid = setTimeout(() => { runner.close?.(); reject(createHttpError(504)); }, 10_000);
-    });
-    const smtp = nodemailer.createTransport(env.auth);
     return Promise.race([
-      smtp.sendMail({ to, subject, text, from: env.from }),
-      racer(smtp),
+      new Slack(env).send(rest),
+      racer(),
     ])
     .then(res => logger.info(res))
     .catch(e => {
-      logger.error(e);
+      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      throw e;
+    })
+    .finally(() => { clearTimeout(racer.tid); });
+  }
+
+  async email({ to, subject, text }) {
+    const racer = createRacer();
+    const env = await configService.getEnv('smtp');
+    const smtp = nodemailer.createTransport(env.auth);
+    return Promise.race([
+      smtp.sendMail({ to, subject, text, from: env.from }),
+      racer({ runner: smtp }),
+    ])
+    .then(res => logger.info(res))
+    .catch(e => {
+      logger.error(e.cause?.message ?? e.cause ?? e.message);
       throw e;
     })
     .finally(() => { clearTimeout(racer.tid); });

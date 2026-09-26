@@ -27,8 +27,8 @@ let self = {
       self.list = list;
     })
     .catch(e => {
-      logger.error(e.message);
-      self.status = e.message;
+      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      self.status = e.cause?.message ?? e.cause ?? e.message;
     })
     .then(() => setTimeout(() => { self.loading = false; }, 1000));
   },
@@ -48,7 +48,7 @@ let self = {
       }, 2500);
       logger.debug('Copied to clipboard');
     })
-    .catch(e => logger.error(e.message));
+    .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message));
   },
 
   onColorScheme() {

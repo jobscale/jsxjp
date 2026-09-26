@@ -20,7 +20,7 @@ class PWAClient {
       return res.json();
     })
     .then(res => logger.info(res))
-    .catch(e => logger.error(e));
+    .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message));
   }
 
   toUint8Array(base64String) {

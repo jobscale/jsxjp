@@ -43,7 +43,7 @@ let self = {
         setTimeout(() => document.querySelector('input[name="code"]').focus(), 200);
       }
     })
-    .catch(e => logger.error(e.message))
+    .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message))
     .then(() => setTimeout(() => {
       self.login = '';
       self.password = '';
@@ -73,7 +73,7 @@ let self = {
         });
       }
     })
-    .catch(e => logger.error(e.message))
+    .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message))
     .then(() => setTimeout(() => {
       self.auth.code = '';
       self.loading = false;

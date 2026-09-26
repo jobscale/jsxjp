@@ -167,7 +167,7 @@ let self = {
       });
       self.loadNextBatch();
     })
-    .catch(e => logger.error(e.message));
+    .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message));
   },
 
   onImageLoad() {
@@ -203,8 +203,8 @@ let self = {
       return res.json();
     })
     .catch(e => {
-      logger.error(e.message);
-      self.message.push(e.message);
+      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      self.message.push(e.cause?.message ?? e.cause ?? e.message);
     });
   },
 
@@ -222,8 +222,8 @@ let self = {
       return res.json();
     })
     .catch(e => {
-      logger.error(e.message);
-      self.message.push(e.message);
+      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      self.message.push(e.cause?.message ?? e.cause ?? e.message);
     });
   },
 
@@ -237,15 +237,15 @@ let self = {
         await self.readFile(file)
         .then(item => self.refFiles.push(item))
         .catch(e => {
-          logger.error(e);
-          self.message.push(e.message);
+          logger.error(e.cause?.message ?? e.cause ?? e.message);
+          self.message.push(e.cause?.message ?? e.cause ?? e.message);
         });
       }
     };
     await loading(preUpload)
     .catch(e => {
-      logger.error(e.message);
-      self.message.push(e.message);
+      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      self.message.push(e.cause?.message ?? e.cause ?? e.message);
     });
   },
 
@@ -291,7 +291,7 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       }, file.type, quality);
     });
     reader.addEventListener('error', e => {
-      logger.error(e.message);
+      logger.error(e.cause?.message ?? e.cause ?? e.message);
       prom.reject(e);
     });
     reader.readAsDataURL(file);
@@ -337,8 +337,8 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
     for (const item of [...self.refFiles]) {
       await self.upload(item.file)
       .catch(e => {
-        logger.error(e.message);
-        self.message.push(e.message);
+        logger.error(e.cause?.message ?? e.cause ?? e.message);
+        self.message.push(logger.error(e.cause?.message ?? e.cause ?? e.message));
       });
       const index = self.refFiles.findIndex(v => item.file.name === v.name);
       const [data] = self.refFiles.splice(index, 1);
@@ -379,7 +379,7 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       });
       return res.json();
     })
-    .catch(e => logger.error(e.message));
+    .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message));
     self.loading = false;
   },
 
@@ -445,8 +445,8 @@ toBlob ${(capture.size / 1000).toLocaleString()}`);
       self.cacheImage[imagePath] = imgUrl;
     })
     .catch(e => {
-      logger.error(e.message);
-      target.imgError = e.message;
+      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      target.imgError = e.cause?.message ?? e.cause ?? e.message;
     });
   },
 

@@ -50,7 +50,7 @@ let self = {
       const showName = hostname.split('-').filter(Boolean).slice(-3).join('-');
       return showName;
     })
-    .catch(e => logger.warn(e.message) ?? 'oops');
+    .catch(e => logger.warn(e.cause?.message ?? e.cause ?? e.message) ?? 'oops');
   },
 
   sign() {

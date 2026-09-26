@@ -127,17 +127,17 @@ const createServer = event => {
         body: isBinary ? res.body.toString('base64') : res.body ?? '',
         isBase64Encoded: isBinary,
       };
-      setImmediate(() => {
-        res.removeAllListeners();
-        res.body = null;
-        req.headers = null;
-        req.body = null;
-        req.files = null;
-        emitter = null;
-        req = null;
-        res = null;
-        chunks = null;
-      });
+
+      res.removeAllListeners();
+      res.body = null;
+      req.headers = null;
+      req.body = null;
+      req.files = null;
+      emitter = null;
+      req = null;
+      res = null;
+      chunks = null;
+
       return response;
     },
   });

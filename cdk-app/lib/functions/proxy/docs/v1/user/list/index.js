@@ -64,7 +64,7 @@ let self = {
       }));
       self.onSort();
     })
-    .catch(e => logger.error(e.message))
+    .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message))
     .then(() => setTimeout(() => { self.loading = false; }, 1000));
   },
 
@@ -113,7 +113,7 @@ let self = {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();
     })
-    .catch(e => logger.error(e.message))
+    .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message))
     .then(() => self.onFind());
   },
 

@@ -16,7 +16,7 @@ export class Controller {
     })
     .catch(e => {
       if (!e.status) e.status = 500;
-      res.status(e.status).end(e.message);
+      res.status(e.status).end(e.cause?.message ?? e.cause ?? e.message);
     });
   }
 
@@ -38,7 +38,7 @@ export class Controller {
     })
     .catch(e => {
       if (!e.status) e.status = 404;
-      res.status(e.status).end(e.message);
+      res.status(e.status).end(e.cause?.message ?? e.cause ?? e.message);
     });
   }
 

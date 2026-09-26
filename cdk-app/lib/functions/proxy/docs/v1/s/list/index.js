@@ -65,7 +65,7 @@ let self = {
       }));
       self.onSort();
     })
-    .catch(e => logger.error(e.message))
+    .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message))
     .then(() => setTimeout(() => { self.loading = false; }, 1000));
   },
 
@@ -85,7 +85,7 @@ let self = {
     .then(() => {
       self.showPopup('Shorten URL Copied', el);
     })
-    .catch(e => logger.error(e.message));
+    .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message));
   },
 
   showPopup(text, el) {
@@ -138,7 +138,7 @@ let self = {
       if (res.status !== 200) throw new Error(res.statusText);
       return res.json();
     })
-    .catch(e => logger.error(e.message))
+    .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message))
     .then(() => self.onFind());
   },
 

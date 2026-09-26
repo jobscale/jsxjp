@@ -150,7 +150,7 @@ export class Ingress {
     if (req.method === 'GET') {
       const e = createHttpError(404);
       res.writeHead(e.status, { 'Content-Type': 'text/plain; charset=utf-8' });
-      res.end(e.message);
+      res.end(e.cause?.message ?? e.cause ?? e.message);
       return;
     }
     const e = createHttpError(501);
@@ -163,7 +163,7 @@ export class Ingress {
     if (req.method === 'GET') {
       e = createHttpError(503);
       res.writeHead(e.status, { 'Content-Type': 'text/plain; charset=utf-8' });
-      res.end(e.message);
+      res.end(e.cause?.message ?? e.cause ?? e.message);
       return;
     }
     if (!e.status) e = createHttpError(500);
