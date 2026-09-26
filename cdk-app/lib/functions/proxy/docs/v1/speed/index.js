@@ -42,7 +42,7 @@ let self = {
       id,
       method: self.methods[0],
       uri: self.uriSuggestions[0],
-      interval: 5,
+      interval: 6,
       running: 0, // 0: stopped, 1: running, 2: to be stopped
       error: '',
       history: [],
@@ -104,7 +104,7 @@ let self = {
       const delay = Math.floor(5_000 / self.targets.length);
       for (const [index, target] of self.targets.entries()) {
         if (index) await new Promise(resolve => { setTimeout(resolve, delay); });
-        target.interval = 5;
+        target.interval = 6;
         self.startTarget(target);
       }
     });

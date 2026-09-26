@@ -1,5 +1,4 @@
 import Joi from 'joi';
-import { logger } from '@jobscale/create-logger';
 
 export class Validation {
   slack(req, res) {
@@ -67,7 +66,6 @@ export class Validation {
       ua: Joi.string().required().min(4).max(256),
     }).validate(body);
     if (error) {
-      logger.error(error, JSON.stringify(body, null, 2));
       res.status(400).json({ message: error.message });
     }
   }

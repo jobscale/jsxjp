@@ -50,7 +50,7 @@ const parseMultipart = (body, contentType) => {
 
 const createServer = event => {
   const { http: request } = event.requestContext;
-  let req = { headers: new Headers(event.headers) };
+  const req = { headers: new Headers(event.headers) };
   const contentType = req.headers.get('Content-Type') ?? '';
   const [protocol] = req.headers.get('X-Forwarded-Proto')?.split(/, /) ?? [''];
   Object.assign(req, {
@@ -79,9 +79,9 @@ const createServer = event => {
     req.body = event.body;
   }
 
-  let chunks = [];
-  let emitter = new EventEmitter();
-  let res = Object.assign(emitter, {
+  const chunks = [];
+  const emitter = new EventEmitter();
+  const res = Object.assign(emitter, {
     headers: new Headers(defaultHeaders),
     statusCode: 200,
     writableEnded: false,
@@ -128,15 +128,15 @@ const createServer = event => {
         isBase64Encoded: isBinary,
       };
 
-      res.removeAllListeners();
-      res.body = null;
-      req.headers = null;
-      req.body = null;
-      req.files = null;
-      emitter = null;
-      req = null;
-      res = null;
-      chunks = null;
+      // res.removeAllListeners();
+      // res.body = null;
+      // req.headers = null;
+      // req.body = null;
+      // req.files = null;
+      // emitter = null;
+      // req = null;
+      // res = null;
+      // chunks = null;
 
       return response;
     },
@@ -151,14 +151,6 @@ export const handler = async event => {
   const { req, res } = createServer(event);
   await ingressApp(req, res);
   const response = res.toLambdaResponse();
-  const memory = process.memoryUsage();
-  logger.info('RESPONSE', JSON.stringify({
-    rss: `${Math.round(memory.rss / 1024 / 1024 * 100) / 100} MB`,
-    heapTotal: `${Math.round(memory.heapTotal / 1024 / 1024 * 100) / 100} MB`,
-    heapUsed: `${Math.round(memory.heapUsed / 1024 / 1024 * 100) / 100} MB`,
-    external: `${Math.round(memory.external / 1024 / 1024 * 100) / 100} MB`,
-    arrayBuffers: `${Math.round(memory.arrayBuffers / 1024 / 1024 * 100) / 100} MB`,
-  }, null, 2));
   logger.info('RESPONSE', JSON.stringify(response, null, 2));
   return response;
 };
