@@ -151,6 +151,14 @@ export const handler = async event => {
   const { req, res } = createServer(event);
   await ingressApp(req, res);
   const response = res.toLambdaResponse();
+  const memory = process.memoryUsage();
+  logger.info('RESPONSE', JSON.stringify({
+    rss: `${Math.round(memory.rss / 1024 / 1024 * 100) / 100} MB`,
+    heapTotal: `${Math.round(memory.heapTotal / 1024 / 1024 * 100) / 100} MB`,
+    heapUsed: `${Math.round(memory.heapUsed / 1024 / 1024 * 100) / 100} MB`,
+    external: `${Math.round(memory.external / 1024 / 1024 * 100) / 100} MB`,
+    arrayBuffers: `${Math.round(memory.arrayBuffers / 1024 / 1024 * 100) / 100} MB`,
+  }, null, 2));
   logger.info('RESPONSE', JSON.stringify(response, null, 2));
   return response;
 };
