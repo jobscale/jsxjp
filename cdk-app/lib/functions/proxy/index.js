@@ -50,7 +50,7 @@ const parseMultipart = (body, contentType) => {
 
 const createServer = event => {
   const { http: request } = event.requestContext;
-  const req = { headers: new Headers(event.headers) };
+  let req = { headers: new Headers(event.headers) };
   const contentType = req.headers.get('Content-Type') ?? '';
   const [protocol] = req.headers.get('X-Forwarded-Proto')?.split(/, /) ?? [''];
   Object.assign(req, {
@@ -79,9 +79,9 @@ const createServer = event => {
     req.body = event.body;
   }
 
-  const chunks = [];
-  const emitter = new EventEmitter();
-  const res = Object.assign(emitter, {
+  let chunks = [];
+  let emitter = new EventEmitter();
+  let res = Object.assign(emitter, {
     headers: new Headers(defaultHeaders),
     statusCode: 200,
     writableEnded: false,
@@ -128,15 +128,15 @@ const createServer = event => {
         isBase64Encoded: isBinary,
       };
 
-      // res.removeAllListeners();
-      // res.body = null;
-      // req.headers = null;
-      // req.body = null;
-      // req.files = null;
-      // emitter = null;
-      // req = null;
-      // res = null;
-      // chunks = null;
+      res.removeAllListeners();
+      res.body = null;
+      req.headers = null;
+      req.body = null;
+      req.files = null;
+      emitter = null;
+      req = null;
+      res = null;
+      chunks = null;
 
       return response;
     },

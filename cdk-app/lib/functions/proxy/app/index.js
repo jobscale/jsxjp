@@ -232,7 +232,7 @@ export class Ingress {
       arrayBuffers: (memory.arrayBuffers / 1024 / 1024).toFixed(3),
       duration: (performance.now() - start).toFixed(2),
     }, null, 2));
-    if (memory.rss / 1024 / 1024 > 150) {
+    if (!process.env.JEST_WORKER_ID && memory.rss / 1024 / 1024 > 150) {
       setTimeout(() => { process.exit(0); }, 0);
       setImmediate(() => { process.exit(0); });
     }
