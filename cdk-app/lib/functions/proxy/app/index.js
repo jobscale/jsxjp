@@ -235,7 +235,7 @@ export class Ingress {
       }, null, 2));
       const limitMemory = Number.parseInt(process.env.LIMIT_MEMORY, 10) || 150;
       if (memory.rss / 1024 / 1024 > limitMemory) {
-        setImmediate(() => { process.exit(0); });
+        process.exit(0);
       }
     });
   }
