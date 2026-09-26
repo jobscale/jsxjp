@@ -224,18 +224,20 @@ export class Ingress {
     if (this.opts.logging) this.useLogging(req, res);
     await this.useRoute(req, res);
 
-    logger.info('MEMORY', JSON.stringify({
-      rss: (memory.rss / 1024 / 1024).toFixed(3),
-      heapTotal: (memory.heapTotal / 1024 / 1024).toFixed(3),
-      heapUsed: (memory.heapUsed / 1024 / 1024).toFixed(3),
-      external: (memory.external / 1024 / 1024).toFixed(3),
-      arrayBuffers: (memory.arrayBuffers / 1024 / 1024).toFixed(3),
-      duration: (performance.now() - start).toFixed(2),
-    }, null, 2));
-    if (!process.env.JEST_WORKER_ID && memory.rss / 1024 / 1024 > 150) {
-      setTimeout(() => { process.exit(0); }, 0);
-      setImmediate(() => { process.exit(0); });
-    }
+    setImmediate(() => {
+      logger.info('MEMORY', JSON.stringify({
+        rss: (memory.rss / 1024 / 1024).toFixed(3),
+        heapTotal: (memory.heapTotal / 1024 / 1024).toFixed(3),
+        heapUsed: (memory.heapUsed / 1024 / 1024).toFixed(3),
+        external: (memory.external / 1024 / 1024).toFixed(3),
+        arrayBuffers: (memory.arrayBuffers / 1024 / 1024).toFixed(3),
+        duration: (performance.now() - start).toFixed(2),
+      }, null, 2));
+      const limitMemory = Number.parseInt(process.env.LIMIT_MEMORY, 10) || 150;
+      if (memory.rss / 1024 / 1024 > limitMemory) {
+        setImmediate(() => { process.exit(0); });
+      }
+    });
   }
 
   start() {
