@@ -15,14 +15,6 @@ const { ENV } = process.env;
 const allowMethods = ['GET', 'HEAD', 'POST'];
 const allowHeaders = ['Content-Type'];
 
-const getAvailableMemory = () => {
-  if (!fs.existsSync('/sys/fs/cgroup/memory.max')) return undefined;
-  const memMax = Number.parseInt(fs.readFileSync('/sys/fs/cgroup/memory.max', 'utf8').trim(), 10);
-  if (!memMax) return undefined;
-  const memCurrent = Number.parseInt(fs.readFileSync('/sys/fs/cgroup/memory.current', 'utf8'), 10);
-  return (memMax - memCurrent) / 1024 / 1024;
-};
-
 const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
   const timestamp = new Intl.DateTimeFormat('sv-SE', {
     timeZone: 'Asia/Tokyo',
@@ -226,7 +218,6 @@ export class Ingress {
 
     const start = performance.now();
     const memory = process.memoryUsage();
-    const availableMemory = getAvailableMemory();
 
     this.useHeader(req, res);
     if (this.opts.public && await this.usePublic(req, res)) return;
@@ -234,7 +225,6 @@ export class Ingress {
     await this.useRoute(req, res);
 
     logger.info('MEMORY', JSON.stringify({
-      availableMemory,
       rss: (memory.rss / 1024 / 1024).toFixed(3),
       heapTotal: (memory.heapTotal / 1024 / 1024).toFixed(3),
       heapUsed: (memory.heapUsed / 1024 / 1024).toFixed(3),
@@ -242,11 +232,7 @@ export class Ingress {
       arrayBuffers: (memory.arrayBuffers / 1024 / 1024).toFixed(3),
       duration: (performance.now() - start).toFixed(2),
     }, null, 2));
-    if (availableMemory && availableMemory < 10) {
-      setTimeout(() => { process.exit(0); }, 0);
-      setImmediate(() => { process.exit(0); });
-    }
-    if (!availableMemory && memory.rss / 1024 / 1024 > 150) {
+    if (memory.rss / 1024 / 1024 > 150) {
       setTimeout(() => { process.exit(0); }, 0);
       setImmediate(() => { process.exit(0); });
     }
