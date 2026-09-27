@@ -26,7 +26,7 @@ const envConfigs = {
   stg: {
     env: {
       account: '916921211348',
-      region: 'ap-northeast-1',
+      region: 'ap-northeast-3',
     },
     context: {
       front: {
@@ -35,7 +35,7 @@ const envConfigs = {
         bucketName: `${envName}-front-static`,
       },
       gateway: {
-        certificateId: '1c06e554-19c4-4cc8-abf0-4dc84803e2f5',
+        certificateId: 'd2317e05-cf66-4f84-a138-cbc6ec554105',
         domainName: `${envName}-api.jsx.jp`,
       },
     },
