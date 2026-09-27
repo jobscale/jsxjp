@@ -1,3 +1,5 @@
+import { Temporal } from '@js-temporal/polyfill';
+
 export const formatTimestamp = (opts = {}) => {
   const {
     ts = Date.now(), iso = false, ms = false, tz = true,

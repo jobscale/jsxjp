@@ -138,9 +138,13 @@ const ingressApp = new Ingress({ public: false }).start();
 
 export const handler = async event => {
   logger.info('EVENT', JSON.stringify(event, null, 2));
+  const start = performance.now();
   const { req, res } = createServer(event);
   await ingressApp(req, res);
   const response = res.toLambdaResponse();
-  logger.info('RESPONSE', JSON.stringify(response, null, 2));
+  logger.info('RESPONSE', JSON.stringify({
+    ...response,
+    '#duration': (performance.now() - start).toFixed(2),
+  }, null, 2));
   return response;
 };

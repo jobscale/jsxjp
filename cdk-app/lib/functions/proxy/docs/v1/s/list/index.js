@@ -18,7 +18,7 @@ let self = {
 
   showTS(ts) {
     if (!ts || Number.isNaN(new Date(ts).getTime())) return '';
-    return formatTimestamp(ts, true);
+    return formatTimestamp({ ts, tz: false });
   },
 
   sign() {

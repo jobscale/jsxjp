@@ -10,22 +10,9 @@ import { service as configService } from '../config/service.js';
 import { db } from '../db.js';
 import { store } from '../store.js';
 import { genDigit, verifyDigit } from './index.js';
+import { formatTimestamp } from '../timestamp.js';
 
 const LIMIT_TTL = 5_400; // seconds
-
-const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
-  const timestamp = new Intl.DateTimeFormat('sv-SE', {
-    timeZone: 'Asia/Tokyo',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  }).format(new Date(ts));
-  if (withoutTimezone) return timestamp;
-  return `${timestamp}+09:00`;
-};
 
 const createRacer = () => {
   const racer = (opts = {}) => new Promise((_, reject) => {
@@ -147,7 +134,7 @@ export class Service {
 
   async webPush(rest) {
     const { title } = rest;
-    const expired = formatTimestamp(dayjs().add(22, 'minute'));
+    const expired = formatTimestamp({ ts: dayjs().add(22, 'minute') });
     const body = [
       rest.body,
       '',
@@ -167,7 +154,7 @@ export class Service {
 
   async subscribeUser(text, user) {
     const title = '通知';
-    const expired = formatTimestamp(dayjs().add(22, 'minute'));
+    const expired = formatTimestamp({ ts: dayjs().add(22, 'minute') });
     const body = [
       text,
       '',

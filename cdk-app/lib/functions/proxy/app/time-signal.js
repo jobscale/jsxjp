@@ -4,20 +4,7 @@ import { logger } from '@jobscale/create-logger';
 import { db } from './db.js';
 import { store } from './store.js';
 import { getHoliday } from './holiday.js';
-
-const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
-  const timestamp = new Intl.DateTimeFormat('sv-SE', {
-    timeZone: 'Asia/Tokyo',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  }).format(new Date(ts));
-  if (withoutTimezone) return timestamp;
-  return `${timestamp}+09:00`;
-};
+import { formatTimestamp } from './timestamp.js';
 
 const sliceByUnit = (array, unit) => {
   const count = Math.ceil(array.length / unit);
@@ -44,7 +31,7 @@ export class TimeSignal {
 
   async timeSignal() {
     const now = new Date();
-    const current = formatTimestamp(now);
+    const current = formatTimestamp({ ts: now });
     const [, mm, ss] = current.split(':');
     if (`${mm}:${ss}` === '59:00' || !this.users) {
       this.users = await store.getValue('web/users', 'info');
@@ -61,7 +48,7 @@ export class TimeSignal {
       );
     }
 
-    const timestamp = formatTimestamp(now);
+    const timestamp = formatTimestamp({ ts: now });
     const holidays = await getHoliday();
     const body = [`Time is it ${timestamp}`, '', ...holidays].join('\n');
     const payload = {

@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import createHttpError from 'http-errors';
 import { db } from '../db.js';
+import { formatTimestamp } from '../timestamp.js';
 
 const { ENV } = process.env;
 const tableName = {
@@ -16,20 +17,6 @@ const tableHash = {
 
 const userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
 const headers = { 'accept-language': 'ja', 'user-agent': userAgent };
-
-const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
-  const timestamp = new Intl.DateTimeFormat('sv-SE', {
-    timeZone: 'Asia/Tokyo',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  }).format(new Date(ts));
-  if (withoutTimezone) return timestamp;
-  return `${timestamp}+09:00`;
-};
 
 const random = (length = 7) => {
   const bytes = crypto.randomBytes(16).toString('hex');

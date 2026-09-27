@@ -43,7 +43,7 @@ let self = {
       return res.json();
     })
     .then(item => {
-      self.registerAt = formatTimestamp(item.registerAt, true);
+      self.registerAt = formatTimestamp({ ts: item.registerAt, tz: false });
       self.shorten = `jsx.jp/s/${item.id}`;
       self.url = '';
     })

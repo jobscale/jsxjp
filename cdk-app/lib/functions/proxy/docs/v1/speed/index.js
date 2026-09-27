@@ -203,8 +203,8 @@ let self = {
     return `${item.mbps.toFixed(2)} Mbps (${item.duration} ms)`;
   },
 
-  formatDate(timestamp) {
-    return formatTimestamp(timestamp, true);
+  formatDate(ts) {
+    return formatTimestamp({ ts, tz: false });
   },
 
   badge(target) {

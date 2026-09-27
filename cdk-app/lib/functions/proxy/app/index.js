@@ -9,25 +9,12 @@ import createHttpError from 'http-errors';
 import { parseCookies } from './parse-cookie.js';
 import { route } from './route.js';
 import { parseBody } from './parse-body.js';
+import { formatTimestamp } from './timestamp.js';
 
 const { ENV } = process.env;
 
 const allowMethods = ['GET', 'HEAD', 'POST'];
 const allowHeaders = ['Content-Type'];
-
-const formatTimestamp = (ts = Date.now(), withoutTimezone = false) => {
-  const timestamp = new Intl.DateTimeFormat('sv-SE', {
-    timeZone: 'Asia/Tokyo',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  }).format(new Date(ts));
-  if (withoutTimezone) return timestamp;
-  return `${timestamp}+09:00`;
-};
 
 export class Ingress {
   constructor(opts = {}) {
@@ -121,7 +108,7 @@ export class Ingress {
     const progress = () => {
       const { method, url } = req;
       logger.info(JSON.stringify({
-        ts: formatTimestamp(),
+        ts: formatTimestamp({ ms: true }),
         globalIp, protocol, method, url,
         headers: Object.fromEntries(req.headers.entries()),
       }));
@@ -129,7 +116,7 @@ export class Ingress {
     progress();
     res.on('finish', () => {
       logger.info(JSON.stringify({
-        ts: formatTimestamp(),
+        ts: formatTimestamp({ ms: true }),
         statusCode: res.statusCode,
         headers: res.getHeaders(),
         duration: (performance.now() - start).toFixed(2),

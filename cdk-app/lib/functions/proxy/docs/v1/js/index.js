@@ -73,7 +73,7 @@ let self = {
       const xAddress = res.headers.get('x-address') ?? 'broken';
       if (self.xAddress !== xAddress) {
         self.xAddress = xAddress;
-        self.refresh = formatTimestamp(Date.now(), true);
+        self.refresh = formatTimestamp({ tz: false });
       }
       return res.headers.get('date');
     })
@@ -85,7 +85,7 @@ let self = {
         const diff = Math.floor((Date.now() - serverTime.getTime()) / 100) / 10;
         if (diff) self.actionText += ` ${diff}`;
       }
-      self.dateText = formatTimestamp(serverTime, true);
+      self.dateText = formatTimestamp({ ts: serverTime, tz: false });
       self.stack.unshift(span);
       if (self.stack.length > 60) self.stack.length = 60;
     })
@@ -97,7 +97,7 @@ let self = {
   checkDate() {
     if (self.busy !== undefined) {
       if (self.busy === 0) {
-        const timestamp = formatTimestamp(Date.now(), true);
+        const timestamp = formatTimestamp({ tz: false });
         self.busyList.unshift({ num: 0, timestamp });
         if (self.busyList.length > 500) self.busyList.pop();
       }
@@ -246,7 +246,7 @@ let self = {
   },
 };
 Object.assign(self, {
-  speedLatest: computed(() => formatTimestamp(self.latestSpeed, true)),
+  speedLatest: computed(() => formatTimestamp({ ts: self.latestSpeed, tz: false })),
   spanText: computed(() => {
     if (!self.stack.length) return '🍰';
     const span = Math.floor(self.stack.reduce((a, b) => a + b, 0)) / self.stack.length;
