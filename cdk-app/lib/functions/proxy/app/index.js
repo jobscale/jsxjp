@@ -212,16 +212,22 @@ export class Ingress {
     await this.useRoute(req, res);
 
     setImmediate(() => {
+      const duration = performance.now() - start;
       logger.info('MEMORY', JSON.stringify({
         rss: (memory.rss / 1024 / 1024).toFixed(3),
         heapTotal: (memory.heapTotal / 1024 / 1024).toFixed(3),
         heapUsed: (memory.heapUsed / 1024 / 1024).toFixed(3),
         external: (memory.external / 1024 / 1024).toFixed(3),
         arrayBuffers: (memory.arrayBuffers / 1024 / 1024).toFixed(3),
-        duration: (performance.now() - start).toFixed(2),
+        duration: duration.toFixed(2),
       }, null, 2));
       const limitMemory = Number.parseInt(process.env.LIMIT_MEMORY, 10) || 150;
       if (memory.rss / 1024 / 1024 > limitMemory) {
+        logger.info('memory overflow');
+        process.exit(0);
+      }
+      if (duration > 6_000) {
+        logger.info('duration timeout');
         process.exit(0);
       }
     });

@@ -14,6 +14,7 @@
     "@js-temporal/polyfill": "^0.5.1",
     "@napi-rs/canvas": "^1.0.7",
     "dayjs": "^1.11.21",
+    "google-auth-library": "^11.1.0",
     "http-errors": "^2.0.1",
     "joi": "^18.2.3",
     "jws": "^4.0.1",

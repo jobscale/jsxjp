@@ -11,8 +11,9 @@ import { db } from '../db.js';
 import { store } from '../store.js';
 import { genDigit, verifyDigit } from './index.js';
 import { formatTimestamp } from '../timestamp.js';
+import { GoogleAuth } from 'google-auth-library';
 
-const LIMIT_TTL = 5_400; // seconds
+const LIMIT_TTL = 600; // seconds
 
 const createRacer = () => {
   const racer = (opts = {}) => new Promise((_, reject) => {
@@ -107,9 +108,9 @@ export class Service {
   }
 
   async publishWeb(subscription, notification) {
-    await webPush.sendNotification(subscription, JSON.stringify(notification), { TTL: LIMIT_TTL })
-    .then(res => logger.info('publishWeb', JSON.stringify({ ...res }, notification)))
-    .catch(e => logger.error('publishWeb', JSON.stringify({ ...e }, notification)));
+    await webPush.sendNotification(subscription, JSON.stringify(notification), { ttl: LIMIT_TTL })
+    .then(res => logger.info('publishWeb', JSON.stringify({ ...res, notification })))
+    .catch(e => logger.error('publishWeb', JSON.stringify({ ...e, notification })));
   }
 
   async publishFcm(subscription, notification) {
@@ -128,8 +129,49 @@ export class Service {
       body: JSON.stringify(payload),
     })
     .then(res => res.json())
-    .then(res => logger.info('publishFcm', JSON.stringify({ ...res }, notification)))
-    .catch(e => logger.error('publishFcm', JSON.stringify({ ...e }, notification)));
+    .then(res => logger.info('publishFcm', JSON.stringify({ ...res, notification })))
+    .catch(e => logger.error('publishFcm', JSON.stringify({ ...e, notification })));
+  }
+
+  async publishFcmV1(subscription, notification) {
+    if (!this.gAuthPending) {
+      this.gAuthPending = configService.getEnv('fcm')
+      .then(credentials => new GoogleAuth({
+        credentials,
+        scopes: ['https://www.googleapis.com/auth/firebase.messaging'],
+      }));
+    }
+    const gAuth = await this.gAuthPending;
+    await Promise.all([gAuth.getProjectId(), gAuth.getAccessToken()])
+    .then(([projectId, accessToken]) => {
+      const payload = {
+        message: {
+          token: subscription.token,
+          notification: {
+            title: notification.title,
+            body: notification.body,
+          },
+          webpush: {
+            headers: { TTL: LIMIT_TTL },
+          },
+          android: { ttl: `${LIMIT_TTL}s` },
+        },
+      };
+      return fetch(`https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(payload),
+      });
+    })
+    .then(res => {
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      return res.json();
+    })
+    .then(res => logger.info('publishFcmV1', JSON.stringify({ ...res, notification })))
+    .catch(e => logger.error('publishFcmV1', JSON.stringify({ ...e, notification })));
   }
 
   async webPush(rest) {
