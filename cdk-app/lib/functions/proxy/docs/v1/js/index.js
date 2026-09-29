@@ -135,7 +135,7 @@ let self = {
         3000, Math.max(max, item.num - 60),
       ), 0),
     );
-    const max = Math.max(data.reduce((m, v) => Math.max(m, v), 0), 1);
+    const max = Math.max(data.reduce((m, v) => Math.max(m, v), 0), 1000);
     const barWidth = width / data.length;
     [...data].reverse().forEach((num, index) => {
       const barHeight = num / max * height;
