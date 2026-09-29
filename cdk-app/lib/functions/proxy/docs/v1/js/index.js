@@ -17,7 +17,7 @@ let self = {
   dateText: '☃',
   busy: undefined,
   busyList: [],
-  stack: [],
+  hasSynced: false,
   latestPlay: 0,
   latestSpeed: 0,
   speedText: '☃',
@@ -84,14 +84,15 @@ let self = {
     .then(gmt => {
       clearTimeout(params.warn);
       const span = Math.floor((performance.now() - params.begin) * 10) / 10;
-      const serverTime = new Date(new Date(gmt).getTime() + span);
-      if (!self.stack.length) {
+      const serverTimestamp = new Date(gmt).getTime();
+      if (!Number.isFinite(serverTimestamp)) throw new Error('Invalid server date');
+      const serverTime = new Date(serverTimestamp + span);
+      if (!self.hasSynced) {
         const diff = Math.floor((Date.now() - serverTime.getTime()) / 100) / 10;
         if (diff) self.actionText += ` ${diff}`;
+        self.hasSynced = true;
       }
       self.dateText = formatTimestamp({ ts: serverTime, tz: false });
-      self.stack.unshift(span);
-      if (self.stack.length > 60) self.stack.length = 60;
     })
     .catch(e => {
       self.dateText = e.cause?.message ?? e.cause ?? e.message;
@@ -105,12 +106,14 @@ let self = {
       return;
     }
     const timestamp = formatTimestamp({ tz: false });
-    self.busyList.unshift({ num: 0, timestamp });
+    self.busyList.unshift({ num: 0, timestamp, start: performance.now() });
     if (self.busyList.length > 3600) self.busyList.pop();
     self.busy = 0;
     self.updateDate()
     .then(() => {
       self.busy = undefined;
+      self.busyList[0].num = performance.now() - self.busyList[0].start;
+      delete self.busyList[0].start;
       queueMicrotask(() => self.drawBusyChart());
     });
   },
@@ -146,7 +149,7 @@ let self = {
     const barWidth = width / data.length;
     [...data].reverse().forEach((num, index) => {
       const barHeight = num / max * height;
-      const color = Math.min(Math.floor(num), colorList.length - 1);
+      const color = Math.min(Math.floor(num / 1000), colorList.length - 1);
       ctx.fillStyle = colorList[color];
       ctx.fillRect(index * barWidth, height - barHeight, barWidth - 2, barHeight);
     });
@@ -256,8 +259,11 @@ let self = {
 Object.assign(self, {
   speedLatest: computed(() => formatTimestamp({ ts: self.latestSpeed, tz: false })),
   spanText: computed(() => {
-    if (!self.stack.length) return '🍰';
-    const span = Math.floor(self.stack.reduce((a, b) => a + b, 0)) / self.stack.length;
+    const samples = self.busyList
+    .filter(item => item.start === undefined)
+    .slice(0, 60);
+    if (!samples.length) return '🍰';
+    const span = samples.reduce((sum, item) => sum + item.num, 0) / samples.length;
     return span.toFixed(1);
   }),
 });
