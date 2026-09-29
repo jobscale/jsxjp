@@ -112,7 +112,7 @@ let self = {
     self.updateDate()
     .then(() => {
       self.busy = undefined;
-      self.busyList[0].num = performance.now() - self.busyList[0].start;
+      self.busyList[0].num = Math.ceil(performance.now() - self.busyList[0].start);
       delete self.busyList[0].start;
       queueMicrotask(() => self.drawBusyChart());
     });
@@ -161,7 +161,7 @@ let self = {
         if (!rect.width) { canvas.title = ''; return; }
         const item = self.hoverChart(self.busyList, event.clientX - rect.left, rect.width);
         if (!item) { canvas.title = ''; return; }
-        canvas.title = `${item.timestamp}\n${item.num}`;
+        canvas.title = `${item.timestamp}\n${item.num.toString().padStart(item.timestamp.length - 2, ' ')}`;
       });
       canvas.addEventListener('mouseleave', () => {
         canvas.title = '';
@@ -170,9 +170,15 @@ let self = {
   },
 
   hoverChart(list, x, width) {
-    if (!list.length) return undefined;
-    const index = Math.floor(x / width * list.length);
-    return list[list.length - 1 - index];
+    if (!list.length || width <= 0) return undefined;
+    const digit = Math.max(1, Math.ceil(list.length / 300));
+    const dataList = sliceUnit(list, digit);
+    const index = Math.max(0, Math.min(
+      Math.floor(x / width * dataList.length),
+      dataList.length - 1,
+    ));
+    const unit = dataList[dataList.length - 1 - index];
+    return unit.reduce((max, item) => item.num > max.num ? item : max);
   },
 
   onSpeed() {
