@@ -1,5 +1,6 @@
 import { createApp, reactive, computed } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
 import { logger } from 'https://esm.sh/@jobscale/create-logger';
+import { loading } from 'https://esm.sh/@jobscale/loading';
 import { formatTimestamp } from '/v1/js/timestamp.js';
 import { fetchApi } from '/v1/js/fetch-api.js';
 
@@ -15,8 +16,7 @@ let self = {
   xAddress: '☃',
   refresh: '☃',
   dateText: '☃',
-  busy: undefined,
-  busyList: [],
+  stack: [],
   latestPlay: 0,
   latestSpeed: 0,
   speedText: '☃',
@@ -31,7 +31,7 @@ let self = {
     html.dataset.theme = next;
   },
 
-  async start() {
+  start() {
     logger.info('Start jsx.jp');
     setTimeout(() => self.interval(), 200);
   },
@@ -47,7 +47,7 @@ let self = {
     .then(res => {
       const { headers } = res;
       const key = [
-        'x-backend-host', 'x-host', 'x-server', 'x-served-by', 'server', 'powered-by',
+        'x-backend-host', 'x-host', 'x-server', 'x-served-by', 'powered-by', 'x-amz-cf-pop', 'server',
       ].find(name => headers.get(name));
       const hostname = headers.get(key) ?? 'nobody';
       const showName = hostname.split('-').filter(Boolean).slice(-3).join('-');
@@ -83,8 +83,8 @@ let self = {
       clearTimeout(params.warn);
       const serverTimestamp = new Date(gmt).getTime();
       if (!Number.isFinite(serverTimestamp)) throw new Error('Invalid server date');
-      const serverTime = new Date(serverTimestamp);
-      const diff = Math.floor((Date.now() - serverTime.getTime()) / 100) / 10;
+      const serverTime = new Date(serverTimestamp + 1000);
+      const diff = Math.floor((Date.now() - serverTime.getTime()) / 1000);
       if (diff) self.actionText = `🥃 ${diff} 🍷`;
       else self.actionText = '☃';
       self.dateText = formatTimestamp({ ts: serverTime, tz: false });
@@ -95,28 +95,20 @@ let self = {
   },
 
   checkDate() {
-    if (self.busy !== undefined) {
-      self.busyList[0].num++;
-      self.busy++;
-      return;
-    }
     const timestamp = formatTimestamp({ tz: false });
-    self.busyList.unshift({ num: 0, timestamp, start: performance.now() });
-    if (self.busyList.length > 3600) self.busyList.pop();
-    self.busy = 0;
+    self.stack.unshift({ num: 0, timestamp, start: performance.now() });
+    if (self.stack.length > 3600) self.stack.pop();
     self.updateDate()
     .then(() => {
-      self.busy = undefined;
-      self.busyList[0].num = Math.ceil(performance.now() - self.busyList[0].start);
-      delete self.busyList[0].start;
+      self.stack[0].num = Math.ceil(performance.now() - self.stack[0].start);
+      delete self.stack[0].start;
       queueMicrotask(() => self.drawBusyChart());
-    });
+    })
+    .finally(() => self.interval());
   },
 
   interval() {
-    setTimeout(() => {
-      setInterval(() => self.checkDate(), 1000);
-    }, 1000 - Date.now() % 1000);
+    setTimeout(() => self.checkDate(), 1000 - Date.now() % 1000);
   },
 
   drawBusyChart() {
@@ -129,14 +121,14 @@ let self = {
     const canvas = document.getElementById('busyChart');
     if (!canvas || !canvas.getContext) return;
     const ctx = canvas.getContext('2d');
-    const width = self.busyList.length * 3;
+    const width = self.stack.length * 3;
     const height = 40;
     ctx.canvas.width = width;
     ctx.canvas.height = height;
     ctx.clearRect(0, 0, width, height);
     // データポイント 3600 からグラフの粒度を 300 に落とす
-    const digit = Math.max(1, Math.ceil(self.busyList.length / 300));
-    const dataList = sliceUnit(self.busyList, digit);
+    const digit = Math.max(1, Math.ceil(self.stack.length / 300));
+    const dataList = sliceUnit(self.stack, digit);
     const data = dataList.map(
       unit => unit.reduce((max, item) => Math.max(max, item.num), 0),
     );
@@ -154,7 +146,7 @@ let self = {
       canvas.addEventListener('mousemove', event => {
         const rect = canvas.getBoundingClientRect();
         if (!rect.width) { canvas.title = ''; return; }
-        const item = self.hoverChart(self.busyList, event.clientX - rect.left, rect.width);
+        const item = self.hoverChart(self.stack, event.clientX - rect.left, rect.width);
         if (!item) { canvas.title = ''; return; }
         canvas.title = `${item.timestamp}\n${item.num.toString().padStart(item.timestamp.length - 2, ' ')}`;
       });
@@ -260,7 +252,7 @@ let self = {
 Object.assign(self, {
   speedLatest: computed(() => formatTimestamp({ ts: self.latestSpeed, tz: false })),
   spanText: computed(() => {
-    const samples = self.busyList
+    const samples = self.stack
     .filter(item => item.start === undefined)
     .slice(0, 60);
     if (!samples.length) return '🍰';
@@ -276,11 +268,13 @@ createApp({
   },
 
   async mounted() {
-    self.onColorScheme();
-    await self.start();
-    setTimeout(() => { self.action(); }, 2000);
-    document.addEventListener('click', () => { self.statusText = ''; });
-    // unmute via user interaction for audio autoplay policy
-    setTimeout(() => { document.querySelector('.muted')?.focus(); }, 1000);
+    loading(new Promise(resolve => {
+      self.onColorScheme();
+      self.start();
+      setTimeout(() => self.action().then(() => resolve()), 2000);
+      document.addEventListener('click', () => { self.statusText = ''; });
+      // unmute via user interaction for audio autoplay policy
+      setTimeout(() => { document.querySelector('.muted')?.focus(); }, 1000);
+    }));
   },
 }).mount('#app');
