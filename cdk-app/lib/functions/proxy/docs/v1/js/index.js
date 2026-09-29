@@ -129,8 +129,9 @@ let self = {
     // データポイント 3600 からグラフの粒度を 300 に落とす
     const digit = Math.max(1, Math.ceil(self.stack.length / 300));
     const dataList = sliceUnit(self.stack, digit);
+    // 50ms 未満は非表示
     const data = dataList.map(
-      unit => unit.reduce((max, item) => Math.max(max, item.num), 0),
+      unit => unit.reduce((max, item) => Math.max(max, item.num - 50), 0),
     );
     const max = Math.max(data.reduce((m, v) => Math.max(m, v), 0), 1);
     const barWidth = width / data.length;
