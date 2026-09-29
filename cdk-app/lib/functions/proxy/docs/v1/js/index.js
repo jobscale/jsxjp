@@ -84,7 +84,7 @@ let self = {
       const serverTimestamp = new Date(gmt).getTime();
       if (!Number.isFinite(serverTimestamp)) throw new Error('Invalid server date');
       const serverTime = new Date(serverTimestamp + 1000);
-      const diff = Math.floor((Date.now() - serverTime.getTime()) / 1000);
+      const diff = Math.trunc((Date.now() - serverTime.getTime()) / 1000);
       if (diff) self.actionText = `🥃 ${diff} 🍷`;
       else self.actionText = '☃';
       self.dateText = formatTimestamp({ ts: serverTime, tz: false });
