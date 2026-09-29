@@ -107,7 +107,7 @@ let self = {
     self.updateDate()
     .then(() => {
       self.busy = undefined;
-      setImmediate(() => self.drawBusyChart());
+      queueMicrotask(() => self.drawBusyChart());
     });
   },
 
