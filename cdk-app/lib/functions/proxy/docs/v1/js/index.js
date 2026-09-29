@@ -46,10 +46,9 @@ let self = {
     return fetch('/favicon.ico', { method: 'HEAD' })
     .then(res => {
       const { headers } = res;
-      const key = [
-        'x-backend-host', 'x-host', 'x-server', 'x-served-by', 'powered-by', 'x-amz-cf-pop', 'server',
-      ].find(name => headers.get(name));
-      const hostname = headers.get(key) ?? 'nobody';
+      const hostname = [
+        'X-Backend-Host', 'X-Host', 'X-Server', 'X-Served-By', 'X-Powered-By', 'X-Amz-Cf-Pop', 'Server',
+      ].map(name => headers.get(name)).find(Boolean) ?? 'nobody';
       const showName = hostname.split('-').filter(Boolean).slice(-3).join('-');
       return showName;
     })
