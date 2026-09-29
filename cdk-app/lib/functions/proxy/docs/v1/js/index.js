@@ -96,20 +96,18 @@ let self = {
 
   checkDate() {
     if (self.busy !== undefined) {
-      if (self.busy === 0) {
-        const timestamp = formatTimestamp({ tz: false });
-        self.busyList.unshift({ num: 0, timestamp });
-        if (self.busyList.length > 500) self.busyList.pop();
-      }
       self.busyList[0].num++;
       self.busy++;
-      self.drawBusyChart();
       return;
     }
+    const timestamp = formatTimestamp({ tz: false });
+    self.busyList.unshift({ num: 0, timestamp });
+    if (self.busyList.length > 1500) self.busyList.pop();
     self.busy = 0;
     self.updateDate()
     .then(() => {
       self.busy = undefined;
+      setImmediate(() => self.drawBusyChart());
     });
   },
 
@@ -121,9 +119,10 @@ let self = {
 
   drawBusyChart() {
     const colorList = [];
-    for (let i = 0; i < 5; i++) {
-      const r = i * 3;
-      colorList.push(`#${r.toString(16)}8${(15 - r).toString(16)}`);
+    const steps = 7;
+    for (let i = 0; i < steps; i++) {
+      const hue = 120 - i * 20;
+      colorList.push(`hsl(${hue}, 75%, 50%)`);
     }
     const canvas = document.getElementById('busyChart');
     if (!canvas || !canvas.getContext) return;
