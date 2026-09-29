@@ -9,7 +9,7 @@ const sliceUnit = (list, digit) => Array.from({ length: Math.ceil(list.length / 
 
 let self = {
   statusText: 'muted',
-  actionText: '[⛄ 🍻]',
+  actionText: '[🍻]',
   welcomeText: 'welcome',
   xUser: '☃',
   xAddress: '☃',
@@ -17,7 +17,6 @@ let self = {
   dateText: '☃',
   busy: undefined,
   busyList: [],
-  hasSynced: false,
   latestPlay: 0,
   latestSpeed: 0,
   speedText: '☃',
@@ -39,7 +38,7 @@ let self = {
 
   async action() {
     self.actionText = 'loading...';
-    await self.preloadContext().then(() => { self.actionText = '☃'; })
+    await self.preloadContext().then(() => { self.actionText = '🍷'; })
     .then(self.serverName).then(host => { self.welcomeText = host; });
   },
 
@@ -65,7 +64,6 @@ let self = {
 
   async updateDate() {
     const params = {
-      begin: performance.now(),
       warn: setTimeout(() => {
         self.onSpeed();
         self.play();
@@ -83,15 +81,12 @@ let self = {
     })
     .then(gmt => {
       clearTimeout(params.warn);
-      const span = Math.floor((performance.now() - params.begin) * 10) / 10;
       const serverTimestamp = new Date(gmt).getTime();
       if (!Number.isFinite(serverTimestamp)) throw new Error('Invalid server date');
-      const serverTime = new Date(serverTimestamp + span);
-      if (!self.hasSynced) {
-        const diff = Math.floor((Date.now() - serverTime.getTime()) / 100) / 10;
-        if (diff) self.actionText += ` ${diff}`;
-        self.hasSynced = true;
-      }
+      const serverTime = new Date(serverTimestamp);
+      const diff = Math.floor((Date.now() - serverTime.getTime()) / 100) / 10;
+      if (diff) self.actionText = `🥃 ${diff} 🍷`;
+      else self.actionText = '☃';
       self.dateText = formatTimestamp({ ts: serverTime, tz: false });
     })
     .catch(e => {
