@@ -139,7 +139,7 @@ let self = {
     const barWidth = width / data.length;
     [...data].reverse().forEach((num, index) => {
       const barHeight = num / max * height;
-      const color = Math.min(Math.floor(num / 5000), colorList.length - 1);
+      const color = Math.min(Math.floor(num / 200), colorList.length - 1);
       ctx.fillStyle = colorList[color];
       ctx.fillRect(index * barWidth, height - barHeight, barWidth - 2, barHeight);
     });
