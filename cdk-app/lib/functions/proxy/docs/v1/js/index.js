@@ -82,11 +82,11 @@ let self = {
       clearTimeout(params.warn);
       const serverTimestamp = new Date(gmt).getTime();
       if (!Number.isFinite(serverTimestamp)) throw new Error('Invalid server date');
+      self.dateText = formatTimestamp({ ts: serverTimestamp, tz: false });
       const serverTime = new Date(serverTimestamp + 1000);
       const diff = Math.trunc((Date.now() - serverTime.getTime()) / 1000);
       if (diff) self.actionText = `🥃 ${diff} 🍷`;
       else self.actionText = '☃';
-      self.dateText = formatTimestamp({ ts: serverTime, tz: false });
     })
     .catch(e => {
       self.dateText = e.cause?.message ?? e.cause ?? e.message;
@@ -253,7 +253,7 @@ let self = {
   },
 };
 Object.assign(self, {
-  speedLatest: computed(() => formatTimestamp({ ts: self.latestSpeed, tz: false })),
+  speedLatest: computed(() => self.latestSpeed ? formatTimestamp({ ts: self.latestSpeed, tz: false }) : '🍷'),
   spanText: computed(() => {
     const samples = self.stack
     .filter(item => item.start === undefined)
