@@ -241,11 +241,11 @@ let self = {
   drawChart(target) {
     const limited = 1500;
     const strokeColor = v => [
-      { value: 300, color: '#8a6' },
-      { value: 600, color: '#aa6' },
-      { value: 900, color: '#f74' },
-      { value: 1200, color: '#f20' },
-      { value: 0, color: '#a00' },
+      { color: 'hsla(80, 100%, 50%, 0.6)', value: 300 },
+      { color: 'hsla(60, 100%, 50%, 0.7)', value: 600 },
+      { color: 'hsla(40, 100%, 50%, 0.8)', value: 900 },
+      { color: 'hsla(20, 100%, 50%, 0.9)', value: 1200 },
+      { color: 'hsla(0, 100%, 50%, 1)', value: 0 },
     ].find(base => !base.value || v < base.value).color;
     const canvas = document.getElementById(`chart-${target.id}`);
     if (!canvas) return;
