@@ -114,8 +114,9 @@ let self = {
     const colorList = [];
     const steps = 7;
     for (let i = 0; i < steps; i++) {
+      const alpha = Math.min(0.4 + i * 0.1, 1);
       const hue = 120 - i * 20;
-      colorList.push(`hsl(${hue}, 75%, 50%)`);
+      colorList.push(`hsla(${hue}, 75%, 50%, ${alpha})`);
     }
     const canvas = document.getElementById('busyChart');
     if (!canvas || !canvas.getContext) return;
