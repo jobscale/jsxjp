@@ -3,6 +3,10 @@ import { logger } from 'https://esm.sh/@jobscale/create-logger';
 import { formatTimestamp } from '/v1/js/timestamp.js';
 import { fetchApi } from '/v1/js/fetch-api.js';
 
+const sliceUnit = (list, digit) => Array.from({ length: Math.ceil(list.length / digit) }, (_, i) =>
+  list.slice(i * digit, i * digit + digit),
+);
+
 let self = {
   statusText: 'muted',
   actionText: '[⛄ 🍻]',
@@ -102,7 +106,7 @@ let self = {
     }
     const timestamp = formatTimestamp({ tz: false });
     self.busyList.unshift({ num: 0, timestamp });
-    if (self.busyList.length > 1500) self.busyList.pop();
+    if (self.busyList.length > 3600) self.busyList.pop();
     self.busy = 0;
     self.updateDate()
     .then(() => {
@@ -132,12 +136,17 @@ let self = {
     ctx.canvas.width = width;
     ctx.canvas.height = height;
     ctx.clearRect(0, 0, width, height);
-    const data = self.busyList.map(item => Math.min(20, item.num));
-    const max = Math.max(...data, 1);
+    // データポイント 3600 からグラフの粒度を 300 に落とす
+    const digit = Math.max(1, Math.ceil(self.busyList.length / 300));
+    const dataList = sliceUnit(self.busyList, digit);
+    const data = dataList.map(
+      unit => unit.reduce((max, item) => Math.max(max, item.num), 0),
+    );
+    const max = Math.max(data.reduce((m, v) => Math.max(m, v), 0), 1);
     const barWidth = width / data.length;
     [...data].reverse().forEach((num, index) => {
       const barHeight = num / max * height;
-      const color = Math.min(Math.floor(num / 3), colorList.length - 1);
+      const color = Math.min(Math.floor(num), colorList.length - 1);
       ctx.fillStyle = colorList[color];
       ctx.fillRect(index * barWidth, height - barHeight, barWidth - 2, barHeight);
     });
