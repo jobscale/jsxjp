@@ -45,7 +45,10 @@ const mockNodemailer = {
 };
 
 jest.unstable_mockModule('../app/db.js', () => ({ db: mockDb }));
-jest.unstable_mockModule('@jobscale/create-logger', () => ({ createLogger: () => mockLogger }));
+jest.unstable_mockModule('@jobscale/create-logger', () => ({
+  createLogger: () => mockLogger,
+  logger: mockLogger,
+}));
 jest.unstable_mockModule('../app/store.js', () => ({ store: mockStore }));
 jest.unstable_mockModule('../app/config/service.js', () => ({ service: mockConfigService }));
 jest.unstable_mockModule('../app/auth/service.js', () => ({ service: mockAuthService }));

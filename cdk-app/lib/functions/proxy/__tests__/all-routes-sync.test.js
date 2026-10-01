@@ -10,7 +10,10 @@ process.env.AWS_ACCESS_KEY_ID = 'test-key';
 process.env.AWS_SECRET_ACCESS_KEY = 'test-secret';
 
 const mockLogger = { info: jest.fn(), error: jest.fn(), debug: jest.fn() };
-jest.unstable_mockModule('@jobscale/create-logger', () => ({ createLogger: () => mockLogger }));
+jest.unstable_mockModule('@jobscale/create-logger', () => ({
+  createLogger: () => mockLogger,
+  logger: mockLogger,
+}));
 
 const mockS3Client = { send: jest.fn().mockResolvedValue({}) };
 jest.unstable_mockModule('@aws-sdk/client-s3', () => ({

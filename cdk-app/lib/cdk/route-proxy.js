@@ -19,7 +19,10 @@ export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
       logGroupName: `/aws/lambda/${stack.stackName}-proxy`,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       retention: logs.RetentionDays.SIX_MONTHS,
+      logGroupClass: logs.LogGroupClass.INFREQUENT_ACCESS,
     }),
+    loggingFormat: lambda.LoggingFormat.JSON,
+    systemLogLevelV2: lambda.SystemLogLevel.INFO,
     code: lambda.Code.fromAsset(path.join(process.cwd(), 'lib/functions/proxy'), {
       bundling: {
         image: lambda.Runtime.NODEJS_LATEST.bundlingImage,
@@ -31,6 +34,7 @@ export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
     memorySize: 200,
     environment: {
       ENV: ['stg', 'prod'].includes(stack.context.envName) ? 'dev' : stack.context.envName,
+      LOG_LEVEL: 'debug',
     },
   });
 

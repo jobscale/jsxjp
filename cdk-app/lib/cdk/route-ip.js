@@ -19,7 +19,10 @@ export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
       logGroupName: `/aws/lambda/${stack.stackName}-ip`,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       retention: logs.RetentionDays.SIX_MONTHS,
+      logGroupClass: logs.LogGroupClass.INFREQUENT_ACCESS,
     }),
+    loggingFormat: lambda.LoggingFormat.JSON,
+    systemLogLevelV2: lambda.SystemLogLevel.INFO,
     code: lambda.Code.fromAsset(path.join(process.cwd(), 'lib/functions/ip'), {
       bundling: {
         image: lambda.Runtime.NODEJS_LATEST.bundlingImage,
@@ -31,6 +34,7 @@ export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
     memorySize: 128,
     environment: {
       ENV: stack.context.envName,
+      LOG_LEVEL: 'debug',
     },
   });
 

@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@jobscale/create-logger": "^1.0.5",
-    "@jobscale/slack": "^0.3.2",
+    "@jobscale/slack": "^0.3.3",
     "@js-temporal/polyfill": "^0.5.1",
     "@napi-rs/canvas": "^1.0.7",
     "dayjs": "^1.11.21",
