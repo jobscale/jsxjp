@@ -14,13 +14,12 @@ const mockConfigService = {
   }),
 };
 
-jest.unstable_mockModule('@jobscale/create-logger', () => ({
-  logger: {
-    info: jest.fn(),
-    error: jest.fn(),
-    debug: jest.fn(),
-  },
-}));
+const mockLogger = {
+  info: jest.fn(),
+  error: jest.fn(),
+  debug: jest.fn(),
+};
+jest.unstable_mockModule('@jobscale/create-logger', () => ({ createLogger: () => mockLogger }));
 jest.unstable_mockModule('../app/config/service.js', () => ({ service: mockConfigService }));
 
 // Mock AWS SDK clients

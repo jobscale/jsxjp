@@ -8,8 +8,11 @@ export const getEnv = () => {
   if (['stg.jsx.jp'].includes(location.hostname)) {
     return 'stg';
   }
-  if (['jsx.jp', 'www.jsx.jp'].includes(location.hostname)) {
+  if (['jsx.jp'].includes(location.hostname)) {
     return 'prod';
+  }
+  if (['www.jsx.jp'].includes(location.hostname)) {
+    return 'www';
   }
   return 'test';
 };
@@ -20,6 +23,7 @@ const endpointApi = {
   dev: 'https://dev-api.jsx.jp',
   stg: 'https://stg-api.jsx.jp',
   prod: 'https://api.jsx.jp',
+  www: 'https://api.jsx.jp',
 }[getEnv()];
 
 export const fetchApi = (path, opts = {}) => {

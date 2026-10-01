@@ -4,8 +4,9 @@ import { loading } from 'https://esm.sh/@jobscale/loading';
 import { formatTimestamp } from '/v1/js/timestamp.js';
 import { fetchApi } from '/v1/js/fetch-api.js';
 
-const sliceUnit = (list, digit) => Array.from({ length: Math.ceil(list.length / digit) }, (_, i) =>
-  list.slice(i * digit, i * digit + digit),
+const sliceByUnit = (list, digit) => Array.from(
+  { length: Math.ceil(list.length / digit) },
+  (_, i) => list.slice(i * digit, i * digit + digit),
 );
 
 let self = {
@@ -38,8 +39,8 @@ let self = {
 
   async action() {
     self.actionText = 'loading...';
-    await self.preloadContext().then(() => { self.actionText = '🍷'; })
-    .then(self.serverName).then(host => { self.welcomeText = host; });
+    await self.preloadContext().then(() => { self.actionText = '🍷'; });
+    await self.serverName().then(host => { self.welcomeText = host; });
   },
 
   async serverName() {
@@ -128,7 +129,7 @@ let self = {
     ctx.clearRect(0, 0, width, height);
     // データポイント 3600 からグラフの粒度を 300 に落とす
     const digit = Math.max(1, Math.ceil(self.stack.length / 300));
-    const dataList = sliceUnit(self.stack, digit);
+    const dataList = sliceByUnit(self.stack, digit);
     // 60ms 未満か 2000ms 以上は非表示
     const data = dataList.map(
       unit => unit.reduce((max, item) => Math.min(
@@ -162,7 +163,7 @@ let self = {
   hoverChart(list, x, width) {
     if (!list.length || width <= 0) return undefined;
     const digit = Math.max(1, Math.ceil(list.length / 300));
-    const dataList = sliceUnit(list, digit);
+    const dataList = sliceByUnit(list, digit);
     const index = Math.max(0, Math.min(
       Math.floor(x / width * dataList.length),
       dataList.length - 1,
@@ -171,14 +172,18 @@ let self = {
     return unit.reduce((max, item) => item.num > max.num ? item : max);
   },
 
-  onSpeed() {
+  async onSpeed() {
+    self.welcomeText = 'measuring...';
     self.realSpeedText = 'measuring...';
     self.speedText = 'measuring...';
-    self.speed().catch(e => {
-      const message = e.cause?.message ?? e.cause ?? e.message;
-      logger.error(message);
-      self.realSpeedText = message;
-      self.speedText = message;
+    loading(async () => {
+      await self.serverName().then(host => { self.welcomeText = host; });
+      await self.speed().catch(e => {
+        const message = e.cause?.message ?? e.cause ?? e.message;
+        logger.error(message);
+        self.realSpeedText = message;
+        self.speedText = message;
+      });
     });
   },
 

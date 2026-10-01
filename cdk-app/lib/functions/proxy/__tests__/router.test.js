@@ -8,7 +8,7 @@ const mockLogger = {
   error: jest.fn(),
   debug: jest.fn(),
 };
-jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
+jest.unstable_mockModule('@jobscale/create-logger', () => ({ createLogger: () => mockLogger }));
 
 const auth = {
   sign: jest.fn((req, res) => {

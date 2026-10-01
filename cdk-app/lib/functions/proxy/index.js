@@ -1,6 +1,9 @@
 import { EventEmitter } from 'events';
-import { logger } from '@jobscale/create-logger';
+import { createLogger } from '@jobscale/create-logger';
 import { Ingress } from './app/index.js';
+
+const { LOG_LEVEL } = process.env;
+const logger = createLogger({ level: LOG_LEVEL });
 
 const defaultHeaders = {
   Server: 'jsx.jp',

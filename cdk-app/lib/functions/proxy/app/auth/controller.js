@@ -1,9 +1,12 @@
 import dayjs from 'dayjs';
 import createHttpError from 'http-errors';
-import { logger } from '@jobscale/create-logger';
+import { createLogger } from '@jobscale/create-logger';
 import { service as apiService } from '../api/service.js';
 import { service as ipService } from '../ip/service.js';
 import { service as authService } from './service.js';
+
+const { LOG_LEVEL } = process.env;
+const logger = createLogger({ level: LOG_LEVEL });
 
 export class Controller {
   login(req, res) {

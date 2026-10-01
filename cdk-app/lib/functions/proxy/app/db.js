@@ -1,11 +1,12 @@
-import { logger } from '@jobscale/create-logger';
+import { createLogger } from '@jobscale/create-logger';
 import {
   SSMClient, GetParameterCommand, PutParameterCommand,
   GetParametersByPathCommand, DeleteParameterCommand,
 } from '@aws-sdk/client-ssm';
 import { connect } from './connect.js';
 
-const { ENV } = process.env;
+const { ENV, LOG_LEVEL } = process.env;
+const logger = createLogger({ level: LOG_LEVEL });
 
 const config = {
   stg: { region: 'us-east-1' },

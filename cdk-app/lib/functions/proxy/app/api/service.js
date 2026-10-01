@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import webPush from 'web-push';
 import nodemailer from 'nodemailer';
 import createHttpError from 'http-errors';
-import { logger } from '@jobscale/create-logger';
+import { createLogger } from '@jobscale/create-logger';
 import { Slack } from '@jobscale/slack';
 import { service as configService } from '../config/service.js';
 import { db } from '../db.js';
@@ -12,6 +12,9 @@ import { store } from '../store.js';
 import { genDigit, verifyDigit } from './index.js';
 import { formatTimestamp } from '../timestamp.js';
 import { GoogleAuth } from 'google-auth-library';
+
+const { LOG_LEVEL } = process.env;
+const logger = createLogger({ level: LOG_LEVEL });
 
 const LIMIT_TTL = 600; // seconds
 

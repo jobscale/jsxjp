@@ -3,10 +3,12 @@ import {
   S3Client, PutObjectCommand, GetObjectCommand,
   ListObjectsV2Command, DeleteObjectCommand, CreateBucketCommand,
 } from '@aws-sdk/client-s3';
-import { logger } from '@jobscale/create-logger';
+import { createLogger } from '@jobscale/create-logger';
 import { service as configService } from '../config/service.js';
 
-const { ENV } = process.env;
+const { ENV, LOG_LEVEL } = process.env;
+const logger = createLogger({ level: LOG_LEVEL });
+
 const { Bucket, forceCreate } = {
   stg: { Bucket: 'stg-store-jsx-picture' },
   dev: { Bucket: 'dev-store-jsx-picture' },

@@ -1,5 +1,8 @@
-import { logger } from '@jobscale/create-logger';
+import { createLogger } from '@jobscale/create-logger';
 import { service } from './service.js';
+
+const { LOG_LEVEL } = process.env;
+const logger = createLogger({ level: LOG_LEVEL });
 
 export class Controller {
   hub(req, res) {

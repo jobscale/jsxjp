@@ -1,4 +1,7 @@
-import { logger } from '@jobscale/create-logger';
+import { createLogger } from '@jobscale/create-logger';
+
+const { LOG_LEVEL } = process.env;
+const logger = createLogger({ level: LOG_LEVEL });
 
 class Service {
   async ip(req) {

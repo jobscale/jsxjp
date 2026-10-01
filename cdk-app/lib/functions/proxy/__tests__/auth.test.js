@@ -25,7 +25,7 @@ const mockIpService = {
 };
 
 jest.unstable_mockModule('../app/db.js', () => ({ db: mockDb }));
-jest.unstable_mockModule('@jobscale/create-logger', () => ({ logger: mockLogger }));
+jest.unstable_mockModule('@jobscale/create-logger', () => ({ createLogger: () => mockLogger }));
 jest.unstable_mockModule('../app/api/service.js', () => ({ service: mockApiService }));
 jest.unstable_mockModule('../app/ip/service.js', () => ({ service: mockIpService }));
 

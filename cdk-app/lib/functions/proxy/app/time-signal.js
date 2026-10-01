@@ -1,16 +1,18 @@
 import crypto from 'crypto';
 import webPush from 'web-push';
-import { logger } from '@jobscale/create-logger';
+import { createLogger } from '@jobscale/create-logger';
 import { db } from './db.js';
 import { store } from './store.js';
 import { getHoliday } from './holiday.js';
 import { formatTimestamp } from './timestamp.js';
 
-const sliceByUnit = (array, unit) => {
-  const count = Math.ceil(array.length / unit);
-  return new Array(count).fill()
-  .map((_, i) => array.slice(unit * i, unit * (i + 1)));
-};
+const { LOG_LEVEL } = process.env;
+const logger = createLogger({ level: LOG_LEVEL });
+
+const sliceByUnit = (list, digit) => Array.from(
+  { length: Math.ceil(list.length / digit) },
+  (_, i) => list.slice(i * digit, i * digit + digit),
+);
 
 export class TimeSignal {
   async pushSignal(payload, users) {

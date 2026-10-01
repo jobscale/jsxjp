@@ -4,14 +4,15 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import mime from 'mime';
-import { logger } from '@jobscale/create-logger';
+import { createLogger } from '@jobscale/create-logger';
 import createHttpError from 'http-errors';
 import { parseCookies } from './parse-cookie.js';
 import { route } from './route.js';
 import { parseBody } from './parse-body.js';
 import { formatTimestamp } from './timestamp.js';
 
-const { ENV } = process.env;
+const { ENV, LOG_LEVEL } = process.env;
+const logger = createLogger({ level: LOG_LEVEL });
 
 const allowMethods = ['GET', 'HEAD', 'POST'];
 const allowHeaders = ['Content-Type'];

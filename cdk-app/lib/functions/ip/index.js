@@ -1,6 +1,7 @@
-import { logger } from '@jobscale/create-logger';
+import { createLogger } from '@jobscale/create-logger';
 
-const { ENV } = process.env;
+const { ENV, LOG_LEVEL } = process.env;
+const logger = createLogger({ level: LOG_LEVEL });
 
 const headers = {
   'Content-Type': 'application/json; charset=utf-8',
