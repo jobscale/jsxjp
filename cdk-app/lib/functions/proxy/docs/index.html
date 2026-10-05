@@ -44,7 +44,7 @@
             <div>{{ dateText }}</div>
           </div>
           <div class="title m-b-md">
-            <div :title="refresh">{{ xUser }} @ {{ xAddress }}</div>
+            <div :title="xApi.timestamp">{{ xApi.xUser }} @ {{ xApi.xAddress }}</div>
           </div>
         </div>
       </section>
@@ -56,8 +56,8 @@
       <section>
         <div class="ib small" @click.prevent="onSpeed">
           <div :title="speedLatest">
-            <div><small class="fit">{{ speedText }}</small></div>
-            <div>{{ realSpeedText }}</div>
+            <div><small class="fit">{{ xSpeed.speedText }}</small></div>
+            <div>{{ xSpeed.realSpeedText }}</div>
           </div>
         </div>
       </section>

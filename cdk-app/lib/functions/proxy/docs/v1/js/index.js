@@ -13,15 +13,19 @@ let self = {
   statusText: 'muted',
   actionText: '[🍻]',
   welcomeText: 'welcome',
-  xUser: '☃',
-  xAddress: '☃',
-  refresh: '☃',
   dateText: '☃',
+  xApi: {
+    xUser: '☃',
+    xAddress: '☃',
+    timestamp: '☃',
+  },
   stack: [],
   latestPlay: 0,
-  latestSpeed: 0,
-  speedText: '☃',
-  realSpeedText: '☃',
+  xSpeed: {
+    latestSpeed: 0,
+    speedText: '☃',
+    realSpeedText: '☃',
+  },
 
   onColorScheme() {
     const html = document.documentElement;
@@ -71,11 +75,11 @@ let self = {
     };
     return self.sign()
     .then(res => {
-      self.xUser = res.headers.get('x-user') ?? 'guest';
+      self.xApi.xUser = res.headers.get('x-user') ?? 'guest';
       const xAddress = res.headers.get('x-address') ?? 'broken';
-      if (self.xAddress !== xAddress) {
-        self.xAddress = xAddress;
-        self.refresh = formatTimestamp({ tz: false });
+      if (self.xApi.xAddress !== xAddress) {
+        self.xApi.xAddress = xAddress;
+        self.xApi.timestamp = formatTimestamp({ tz: false });
       }
       return res.headers.get('date');
     })
@@ -189,8 +193,8 @@ let self = {
 
   async speed() {
     const now = Date.now();
-    if (self.latestSpeed + 2_000 > now) throw new Error('... too fast request');
-    self.latestSpeed = now;
+    if (self.xSpeed.latestSpeed + 2_000 > now) throw new Error('... too fast request');
+    self.xSpeed.latestSpeed = now;
 
     performance.clearResourceTimings();
     const start = Date.now();
@@ -205,7 +209,7 @@ let self = {
     logger.debug(`received size: ${blob.size} / ${2 ** 20 / 8} bytes in ${duration} ms`);
     // 全体の経過時間での計算 (RTT含む)
     const safeDuration = Math.max(duration, 1);
-    self.realSpeedText = `${(blob.size * 8 / safeDuration / 1000).toFixed(2)} Mbps (${duration} ms) real`;
+    self.xSpeed.realSpeedText = `${(blob.size * 8 / safeDuration / 1000).toFixed(2)} Mbps (${duration} ms) real`;
     // resource から探す
     const resources = performance.getEntriesByType('resource');
     const entry = resources.findLast(file => file.name.match('/api/speed'));
@@ -218,7 +222,7 @@ let self = {
     const downloadTimeMs = Math.max(Math.round(entry.responseEnd - entry.responseStart), 1);
     const mbps = blob.size * 8 / (downloadTimeMs / 1000) / 1000000;
     const rtt = Math.round(entry.responseStart - entry.startTime);
-    self.speedText = `${mbps.toFixed(2)} Mbps (${downloadTimeMs} ms), RTT: ${rtt} ms`;
+    self.xSpeed.speedText = `${mbps.toFixed(2)} Mbps (${downloadTimeMs} ms), RTT: ${rtt} ms`;
   },
 
   async preloadContext() {
@@ -258,7 +262,7 @@ let self = {
   },
 };
 Object.assign(self, {
-  speedLatest: computed(() => self.latestSpeed ? formatTimestamp({ ts: self.latestSpeed, tz: false }) : '🍷'),
+  speedLatest: computed(() => self.xSpeed.latestSpeed ? formatTimestamp({ ts: self.xSpeed.latestSpeed, tz: false }) : '🍷'),
   spanText: computed(() => {
     const samples = self.stack
     .filter(item => item.start === undefined)
