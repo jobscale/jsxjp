@@ -57,7 +57,11 @@ let self = {
       const showName = hostname.split('-').filter(Boolean).slice(-3).join('-');
       return showName;
     })
-    .catch(e => logger.warn(e.cause?.message ?? e.cause ?? e.message));
+    .catch(e => {
+      const message = e.cause?.message ?? e.cause ?? e.message;
+      logger.warn(message);
+      return message;
+    });
   },
 
   sign() {
@@ -177,7 +181,6 @@ let self = {
   },
 
   async onSpeed() {
-    self.welcomeText = 'measuring...';
     self.realSpeedText = 'measuring...';
     self.speedText = 'measuring...';
     loading(async () => {
