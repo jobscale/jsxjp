@@ -14,7 +14,7 @@ function handler(event) {
         'access-control-expose-headers': { value: 'X-User, X-Address, Date, Server' },
         'access-control-allow-credentials': { value: 'true' },
         'access-control-max-age': { value: '86400' },
-        'timing-allow-origin': '*',
+        'timing-allow-origin': { value: '*' },
       },
     };
   }
