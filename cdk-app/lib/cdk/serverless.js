@@ -50,14 +50,14 @@ export const serverlessGateway = stack => {
     description: 'API Gateway domain for CNAME',
   });
   new cdk.CfnOutput(stack, 'Serverless CustomDomain Endpoint', {
-    value: cdk.Fn.join('', ['https://', httpApiDomain.domainName]),
+    value: cdk.Fn.join('', ['https://', gateway.domainName]),
     description: 'Serverless custom domain endpoint',
   });
   new cdk.CfnOutput(stack, 'Serverless Domainname', {
     value: cdk.Fn.join(' ', [
-      'TYPE=CNAME',
-      `DOMAIN="${httpApiDomain.domainName.replace('.jsx.jp', '')}"`,
-      `R_DATA="${httpApiDomain.attrRegionalDomainName}."`,
+      'domain', 'upsert', 'jsx.jp', 'CNAME',
+      gateway.domainName,
+      `${httpApiDomain.attrRegionalDomainName}. --proxied`,
     ]),
     description: 'Custom domain Environment',
   });

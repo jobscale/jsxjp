@@ -111,9 +111,9 @@ export const frontCache = stack => {
   });
   new cdk.CfnOutput(stack, 'Front Domainname', {
     value: cdk.Fn.join(' ', [
-      'TYPE=CNAME',
-      `DOMAIN="${front.domainName.replace('.jsx.jp', '')}"`,
-      `R_DATA="${distribution.distributionDomainName}."`,
+      'domain', 'upsert', 'jsx.jp', 'CNAME',
+      front.domainName,
+      `${distribution.distributionDomainName}. --proxied`,
     ]),
     description: 'Custom domain Environment',
   });
