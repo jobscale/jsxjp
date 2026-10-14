@@ -272,7 +272,7 @@ Object.assign(self, {
     .slice(0, 60);
     if (!samples.length) return '🍰';
     const span = samples.reduce((sum, item) => sum + item.num, 0) / samples.length;
-    return span.toFixed(1);
+    return `${samples[0].num} ${span.toFixed(0)}`;
   }),
 });
 self = reactive(self);
