@@ -195,7 +195,8 @@ let self = {
     const latest = target.history.slice(0, 10);
     const sumDuration = latest.reduce((prev, item) => prev + item.duration, 0);
     const sumMbps = latest.reduce((prev, item) => prev + item.mbps, 0);
-    const mbps = sumMbps ? `${(sumMbps / latest.length).toFixed(2)} Mbps` : `${latest[0]?.duration} ms`;
+    const mbps = sumMbps ? `${(sumMbps / latest.length).toFixed(2)} Mbps`
+    : `${latest[2]?.duration ?? ''} ${latest[1]?.duration ?? ''} ${latest[0].duration}`;
     return `${mbps} (${Math.ceil(sumDuration / latest.length)} ms)`;
   },
 

@@ -272,8 +272,8 @@ Object.assign(self, {
     .slice(0, 60);
     if (!samples.length) return '🍰';
     const span = samples.reduce((sum, item) => sum + item.num, 0) / samples.length;
-    const last = `${samples[2]?.num} ${samples[1]?.num} ${samples[0].num}`;
-    return `${last} ${span.toFixed(0)}`;
+    const last = `${samples[2]?.num ?? ''} ${samples[1]?.num ?? ''} ${samples[0].num}`;
+    return `${last} (${span.toFixed(0)} ms)`;
   }),
 });
 self = reactive(self);
