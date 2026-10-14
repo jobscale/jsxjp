@@ -22,7 +22,8 @@ export const route = (stack, { httpApi, integrationArn, sourceArn }) => {
       logGroupClass: logs.LogGroupClass.INFREQUENT_ACCESS,
     }),
     loggingFormat: lambda.LoggingFormat.JSON,
-    systemLogLevelV2: lambda.SystemLogLevel.INFO,
+    systemLogLevelV2: lambda.SystemLogLevel.WARN,
+    applicationLogLevelV2: lambda.ApplicationLogLevel.WARN,
     code: lambda.Code.fromAsset(path.join(process.cwd(), 'lib/functions/ip'), {
       bundling: {
         image: lambda.Runtime.NODEJS_LATEST.bundlingImage,
