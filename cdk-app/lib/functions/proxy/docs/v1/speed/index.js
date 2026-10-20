@@ -14,7 +14,8 @@ const conf = {
 let self = {
   nextId: 1,
   maxTargets: 20,
-  maxHistory: 2000,
+  maxHistory: 2100,
+  view: { type: [2100, 1800, 1500, 1200, 900, 600, 300], select: 0 },
   methods: ['HEAD', 'GET', 'POST', 'OPTIONS'],
   uriSuggestions: [
     '/',
@@ -215,15 +216,28 @@ let self = {
     return max > 10 ? max : '';
   },
 
+  viewType() {
+    self.view.select = (self.view.select + 1) % self.view.type.length;
+    self.targets.forEach(target => self.drawChart(target));
+    self.chartHover = {};
+  },
+
+  getViewHistory(target) {
+    const num = self.view.type[self.view.select];
+    return target.history.filter(v => v.duration).slice(0, num);
+  },
+
   showChartTooltip(event, target) {
-    if (!target.history.length) return;
+    const history = self.getViewHistory(target);
+    if (!history.length) return;
     const canvas = event.currentTarget;
-    const rect = canvas.getBoundingClientRect();
-    const index = Math.round((event.clientX - rect.left) / rect.width * (target.history.length - 1));
-    const item = target.history[target.history.length - 1 - Math.max(0, Math.min(index, target.history.length - 1))];
+    const canvasRect = canvas.getBoundingClientRect();
+    const chartRect = canvas.parentElement.getBoundingClientRect();
+    const index = Math.round((event.clientX - canvasRect.left) / canvasRect.width * (history.length - 1));
+    const item = history[history.length - 1 - Math.max(0, Math.min(index, history.length - 1))];
     self.chartHover[target.id] = {
       item,
-      left: event.clientX - rect.left,
+      left: event.clientX - chartRect.left,
     };
     nextTick(() => {
       const tooltip = canvas.previousElementSibling;
@@ -231,7 +245,7 @@ let self = {
       const halfWidth = tooltip.offsetWidth / 2;
       const hover = self.chartHover[target.id];
       if (!hover) return;
-      const boundedLeft = Math.max(halfWidth + 8, Math.min(hover.left, rect.width - halfWidth - 8));
+      const boundedLeft = Math.max(halfWidth + 8, Math.min(hover.left, chartRect.width - halfWidth - 8));
       if (hover.left !== boundedLeft) hover.left = boundedLeft;
     });
   },
@@ -255,7 +269,8 @@ let self = {
     const { width } = canvas;
     const { height } = canvas;
     context.clearRect(0, 0, width, height);
-    const values = target.history.map(item => item.duration).reverse();
+    const history = self.getViewHistory(target);
+    const values = history.map(item => item.duration).reverse();
     const max = Math.min(Math.max(...values, 1), limited);
     context.strokeStyle = '#3a484d';
     context.beginPath();

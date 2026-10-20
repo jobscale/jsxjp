@@ -85,7 +85,9 @@
             <span>{{ chartHover[target.id].item.duration }} ms</span>
           </div>
           <canvas :id="`chart-${target.id}`" width="2560" height="720" aria-label="History Graph"
-            @mousemove="showChartTooltip($event, target)" @mouseleave="hideChartTooltip(target)"></canvas>
+            @mousemove="showChartTooltip($event, target)" @mouseleave="hideChartTooltip(target)"
+            @click.prevent.stop="viewType"
+          ></canvas>
         </div>
         <div v-if="hiddenTitle" class="badge-footer">
           <span>{{ target.method }}</span><span>{{ target.uri }}</span>
