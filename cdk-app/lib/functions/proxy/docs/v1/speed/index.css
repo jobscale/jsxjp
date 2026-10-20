@@ -425,6 +425,26 @@ canvas {
   }
 }
 
+.horizontal-folder {
+  position: fixed;
+  left: 10em;
+  bottom: 1em;
+  width: 6em;
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(60, 60, 120, 0.8);
+  padding: 0.2em 0.5em;
+  border-radius: 1em;
+
+  a {
+    cursor: pointer;
+  }
+  svg {
+    color: rgb(200, 222, 255);
+    width: 1.5em;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -436,12 +456,11 @@ html {
   background: rgba(118, 138, 158, 0.3);
   border-radius: 0.5em;
   z-index: 5;
-
   visibility: hidden;
   animation: fade-in linear both;
+
   svg {
     width: 1.5em;
-    height: 1.5em;
   }
 }
 @supports (animation-timeline: scroll()) {

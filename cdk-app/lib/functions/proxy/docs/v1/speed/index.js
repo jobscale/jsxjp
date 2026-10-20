@@ -216,8 +216,15 @@ let self = {
     return max > 10 ? max : '';
   },
 
-  viewType() {
-    self.view.select = (self.view.select + 1) % self.view.type.length;
+  viewType(hold) {
+    if (hold) {
+      self.view.select = self.view.select + hold;
+      const limit = self.view.type.length - 1;
+      if (self.view.select > limit) self.view.select = limit;
+      if (self.view.select < 0) self.view.select = 0;
+    } else {
+      self.view.select = (self.view.select + 1) % self.view.type.length;
+    }
     self.targets.forEach(target => self.drawChart(target));
     self.chartHover = {};
   },

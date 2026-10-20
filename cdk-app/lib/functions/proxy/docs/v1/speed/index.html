@@ -86,7 +86,7 @@
           </div>
           <canvas :id="`chart-${target.id}`" width="2560" height="720" aria-label="History Graph"
             @mousemove="showChartTooltip($event, target)" @mouseleave="hideChartTooltip(target)"
-            @click.prevent.stop="viewType"
+            @click.prevent.stop="viewType()"
           ></canvas>
         </div>
         <div v-if="hiddenTitle" class="badge-footer">
@@ -113,6 +113,15 @@
         </div>
       </div>
     </section>
+
+    <div class="horizontal-folder">
+      <a @click.prevent.stop="viewType(-1)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-fold-horizontal preview-icon"><path d="M2 12h6"/><path d="M22 12h-6"/><path d="M12 2v2"/><path d="M12 8v2"/><path d="M12 14v2"/><path d="M12 20v2"/><path d="m19 9-3 3 3 3"/><path d="m5 15 3-3-3-3"/></svg>
+      </a>
+      <a @click.prevent.stop="viewType(1)">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-unfold-horizontal preview-icon"><path d="M16 12h6"/><path d="M8 12H2"/><path d="M12 2v2"/><path d="M12 8v2"/><path d="M12 14v2"/><path d="M12 20v2"/><path d="m19 15 3-3-3-3"/><path d="m5 9-3 3 3 3"/></svg>
+      </a>
+    </div>
 
     <footer v-if="!hiddenTitle" class="page-footer">
       <span @click.prevent="toggleShowMode" class="intro">Graph only view toggle</span>
