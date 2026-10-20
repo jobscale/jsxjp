@@ -119,11 +119,6 @@ input {
   margin: 0.5em;
 }
 
-.pos-abs.xvideos {
-  position: absolute;
-  right: 8em;
-}
-
 .list-wrapper,
 .list-wrapper * {
   font-size: 0.5rem;
@@ -180,46 +175,36 @@ input {
   opacity: 0.3;
 }
 
-.tag.shorten::after {
-  content: "Shorten";
+.tag.guest::after {
+  content: "Guest";
 }
 
-.tag.personal::after {
-  content: "Personal";
+.tag.staff::after {
+  content: "Staff";
 }
 
-.tag.github::after {
-  content: "GitHub";
+.tag.admin::after {
+  content: "Admin";
 }
 
-.tag.xvideos::after {
-  content: "Videos";
-}
-
-.shorten,
-.note:has(.shorten) {
+.guest,
+.note:has(.guest) {
   --tagColor: #875;
 }
 
-.personal,
-.note:has(.personal) {
+.staff,
+.note:has(.staff) {
   --tagColor: #579;
 }
 
-.github,
-.note:has(.github) {
+.admin,
+.note:has(.admin) {
   --tagColor: #858;
 }
 
-.xvideos,
-.note:has(.xvideos) {
-  --tagColor: #302;
-}
-
-.shorten,
-.personal,
-.github,
-.xvideos {
+.guest,
+.staff,
+.admin {
   background-color: var(--tagColor);
 }
 
@@ -229,10 +214,6 @@ label input[type="checkbox"] {
 
 label:has(input[type="checkbox"]) div {
   border: 1px solid var(--border-color);
-}
-
-label:has(#xvideos-box) {
-  opacity: 0;
 }
 
 label:has(input[type="checkbox"]) {
@@ -274,21 +255,18 @@ div .note:has(.tag) a {
   display: none;
 }
 
-.ctl-area:has(#shorten-box:checked) ~ div .note:has(.shorten) button,
-.ctl-area:has(#shorten-box:checked) ~ div .note:has(.shorten) a,
-.ctl-area:has(#personal-box:checked) ~ div .note:has(.personal) button,
-.ctl-area:has(#personal-box:checked) ~ div .note:has(.personal) a,
-.ctl-area:has(#github-box:checked) ~ div .note:has(.github) button,
-.ctl-area:has(#github-box:checked) ~ div .note:has(.github) a,
-.ctl-area:has(#xvideos-box:checked) ~ div .note:has(.xvideos) button,
-.ctl-area:has(#xvideos-box:checked) ~ div .note:has(.xvideos) a {
+.ctl-area:has(#guest-box:checked) ~ div .note:has(.guest) button,
+.ctl-area:has(#guest-box:checked) ~ div .note:has(.guest) a,
+.ctl-area:has(#staff-box:checked) ~ div .note:has(.staff) button,
+.ctl-area:has(#staff-box:checked) ~ div .note:has(.staff) a,
+.ctl-area:has(#admin-box:checked) ~ div .note:has(.admin) button,
+.ctl-area:has(#admin-box:checked) ~ div .note:has(.admin) a {
   display: inherit;
 }
 
-.ctl-area:has(#shorten-box:checked) ~ div .note:has(.shorten),
-.ctl-area:has(#personal-box:checked) ~ div .note:has(.personal),
-.ctl-area:has(#github-box:checked) ~ div .note:has(.github),
-.ctl-area:has(#xvideos-box:checked) ~ div .note:has(.xvideos) {
+.ctl-area:has(#guest-box:checked) ~ div .note:has(.guest),
+.ctl-area:has(#staff-box:checked) ~ div .note:has(.staff),
+.ctl-area:has(#admin-box:checked) ~ div .note:has(.admin) {
   width: 32%;
   height: 11em;
   padding: 0.3em;
