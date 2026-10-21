@@ -6,6 +6,9 @@
   "display": "standalone",
   "gcm_sender_id": "103953800507",
   "start_url": "/",
+  "display_override": [
+    "window-controls-overlay"
+  ],
   "short_name": "jsx.jp",
   "theme_color": "transparent",
   "description": "jsx.jp",
