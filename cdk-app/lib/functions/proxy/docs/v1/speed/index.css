@@ -435,7 +435,7 @@ canvas.little {
 
 .horizontal-folder {
   position: fixed;
-  left: 80px;
+  left: 95px;
   bottom: 8px;
   min-width: 12px;
   display: flex;
@@ -443,12 +443,20 @@ canvas.little {
   background-color: rgba(60, 60, 120, 0.8);
   border-radius: 9px;
 
+  >div {
+    padding: 4px 2px 0;
+  }
   a {
     cursor: pointer;
     margin: 4px 7px;
+    font-size: 0.8em;
+    margin-bottom: 0.2em;
+  }
+  a.on svg {
+    color: rgb(255, 200, 180);
   }
   svg {
-    color: rgb(200, 222, 255);
+    color: rgb(220, 180, 255);
     width: 14px;
   }
 }

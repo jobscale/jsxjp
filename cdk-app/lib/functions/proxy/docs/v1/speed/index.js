@@ -13,6 +13,7 @@ const conf = {
 
 let self = {
   nextId: 1,
+  router: '',
   maxTargets: 20,
   maxHistory: 2100,
   view: { type: [2100, 1800, 1500, 1200, 900, 600, 300], select: 0, chevron: false },
@@ -302,6 +303,11 @@ let self = {
       context.lineTo(end.x, end.y);
       context.stroke();
     }
+  },
+
+  async getIntranet() {
+    if (!window.getRouterTitle) return;
+    self.router = await window.getRouterTitle();
   },
 
   goto(href) {
