@@ -15,7 +15,7 @@ let self = {
   nextId: 1,
   maxTargets: 20,
   maxHistory: 2100,
-  view: { type: [2100, 1800, 1500, 1200, 900, 600, 300], select: 0 },
+  view: { type: [2100, 1800, 1500, 1200, 900, 600, 300], select: 0, chevron: false },
   methods: ['HEAD', 'GET', 'POST', 'OPTIONS'],
   uriSuggestions: [
     '/',

@@ -11,6 +11,11 @@
   --accent: #f2b84b;
   --accent-strong: #ffd27b;
   --danger: #f2826f;
+  --font-size: 13px;
+}
+
+:root:has(.little) {
+  --font-size: 11px;
 }
 
 * {
@@ -22,7 +27,7 @@ body {
   margin: 0;
   background: radial-gradient(circle at 90% 0, #263b3a 0, var(--bg) 35rem);
   color: var(--text);
-  font: 15px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font: 0.9375rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 button,
@@ -81,7 +86,7 @@ main {
 label span,
 .history-header span {
   color: var(--accent);
-  font-size: 11px;
+  font-size: 0.6875rem;
   letter-spacing: .12em;
   text-transform: uppercase;
 }
@@ -99,17 +104,17 @@ p {
 }
 
 h1 {
-  font: 700 clamp(34px, 6vw, 62px)/1.05 'Mochiy Pop P One', Georgia, 'Times New Roman', serif;
+  font: 700 1.3rem 'Mochiy Pop P One', Georgia, 'Times New Roman', serif;
   letter-spacing: 0;
 }
 
 h2 {
   display: inline;
-  font-size: 18px;
+  font-size: 1.125rem;
 }
 
 h3 {
-  font-size: 13px;
+  font-size: 0.8125rem;
   letter-spacing: .1em;
   text-transform: uppercase;
 }
@@ -125,7 +130,7 @@ h3 {
 }
 
 .add-button span {
-  font-size: 20px;
+  font-size: 1.25rem;
   vertical-align: -1px;
 }
 
@@ -178,7 +183,7 @@ h3 {
 
 .status {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 
 .status.active {
@@ -256,7 +261,7 @@ select:disabled {
 
 small {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 0.625rem;
   text-transform: none;
   letter-spacing: 0;
 }
@@ -283,14 +288,14 @@ small {
 }
 
 .latest-result strong {
-  font: 700 26px 'Mochiy Pop P One', Georgia, 'Times New Roman', serif;
+  font: 700 1.625rem 'Mochiy Pop P One', Georgia, 'Times New Roman', serif;
   letter-spacing: 0.25em;
   overflow-wrap: anywhere;
 }
 
 .latest-result>span:last-child {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 
 .error {
@@ -301,7 +306,7 @@ small {
 .chart-wrap {
   position: relative;
   min-width: 0;
-  min-height: 150px;
+  min-height: 5em;
   padding: 10px;
   background: #131a1d;
 }
@@ -329,7 +334,7 @@ small {
   color: var(--text);
   background: rgba(16, 20, 22, .92);
   border: 1px solid var(--accent);
-  font-size: 11px;
+  font-size: 0.6875rem;
   pointer-events: none;
   transform: translateX(-50%);
 }
@@ -344,7 +349,10 @@ small {
 canvas {
   display: block;
   width: 100%;
-  height: 150px;
+  height: 10em;
+}
+canvas.little {
+  height: 5em;
 }
 
 .history-header {
@@ -366,7 +374,7 @@ canvas {
   padding: 9px 20px;
   border-bottom: 1px solid rgba(58, 72, 77, .55);
   color: var(--muted);
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .history-row span:nth-child(3) {
@@ -427,25 +435,26 @@ canvas {
 
 .horizontal-folder {
   position: fixed;
-  left: 10em;
-  bottom: 1em;
-  width: 6em;
+  left: 80px;
+  bottom: 8px;
+  min-width: 12px;
   display: flex;
   justify-content: space-between;
   background-color: rgba(60, 60, 120, 0.8);
-  padding: 0.2em 0.5em;
-  border-radius: 1em;
+  border-radius: 9px;
 
   a {
     cursor: pointer;
+    margin: 4px 7px;
   }
   svg {
     color: rgb(200, 222, 255);
-    width: 1.5em;
+    width: 14px;
   }
 }
 
 html {
+  font-size: var(--font-size);
   scroll-behavior: smooth;
 }
 .back-to-top {
