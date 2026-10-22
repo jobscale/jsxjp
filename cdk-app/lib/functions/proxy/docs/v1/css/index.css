@@ -110,6 +110,9 @@ section {
   font-size: 1.8em;
   letter-spacing: 0.1em;
 }
+.title.little {
+  scale: 0.8;
+}
 .title span {
   margin: 0 0.5em;
 }

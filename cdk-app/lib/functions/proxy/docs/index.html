@@ -30,7 +30,7 @@
             <div class="title">
               <div>{{ welcomeText }}</div>
             </div>
-            <div class="title">
+            <div class="title little">
               <span>{{ actionText }}</span>
               <span>{{ spanText }}</span>
             </div>
@@ -50,7 +50,7 @@
       </section>
       <section>
         <div>
-          <canvas id="busyChart" class="graph"></canvas>
+          <canvas id="busyChart" @click.prevent="changeView" class="graph"></canvas>
         </div>
       </section>
       <section>

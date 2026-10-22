@@ -19,6 +19,7 @@ let self = {
     xAddress: '☃',
     timestamp: '☃',
   },
+  view: { type: [3600, 1800, 900, 450], select: 0 },
   stack: [],
   latestPlay: 0,
   xSpeed: {
@@ -119,7 +120,18 @@ let self = {
     setTimeout(() => self.checkDate(), 1000 - Date.now() % 1000);
   },
 
+  changeView() {
+    self.view.select = (self.view.select + 1) % self.view.type.length;
+    self.drawBusyChart();
+  },
+
+  getHistory() {
+    const num = self.view.type[self.view.select];
+    return self.stack.filter(item => item.start === undefined).slice(0, num);
+  },
+
   drawBusyChart() {
+    const history = self.getHistory();
     const colorList = [];
     const steps = 7;
     for (let i = 0; i < steps; i++) {
@@ -130,14 +142,14 @@ let self = {
     const canvas = document.getElementById('busyChart');
     if (!canvas || !canvas.getContext) return;
     const ctx = canvas.getContext('2d');
-    const width = self.stack.length * 3;
+    const width = history.length * 3;
     const height = 40;
     ctx.canvas.width = width;
     ctx.canvas.height = height;
     ctx.clearRect(0, 0, width, height);
-    // データポイント 3600 からグラフの粒度を 300 に落とす
-    const digit = Math.max(1, Math.ceil(self.stack.length / 300));
-    const dataList = sliceByUnit(self.stack, digit);
+    // データポイントからグラフの粒度を 300 に落とす
+    const digit = Math.max(1, Math.ceil(history.length / 300));
+    const dataList = sliceByUnit(history, digit);
     // 60ms 未満か 2000ms 以上は非表示
     const data = dataList.map(
       unit => unit.reduce((max, item) => Math.min(
@@ -158,7 +170,7 @@ let self = {
       canvas.addEventListener('mousemove', event => {
         const rect = canvas.getBoundingClientRect();
         if (!rect.width) { canvas.title = ''; return; }
-        const item = self.hoverChart(self.stack, event.clientX - rect.left, rect.width);
+        const item = self.hoverChart(self.getHistory(), event.clientX - rect.left, rect.width);
         if (!item) { canvas.title = ''; return; }
         canvas.title = `${item.timestamp}\n${item.num.toString().padStart(item.timestamp.length - 2, ' ')}`;
       });
@@ -267,9 +279,7 @@ let self = {
 Object.assign(self, {
   speedLatest: computed(() => self.xSpeed.latestSpeed ? formatTimestamp({ ts: self.xSpeed.latestSpeed, tz: false }) : '🍷'),
   spanText: computed(() => {
-    const samples = self.stack
-    .filter(item => item.start === undefined)
-    .slice(0, 60);
+    const samples = self.getHistory().slice(0, 60);
     if (!samples.length) return '🍰';
     const span = samples.reduce((sum, item) => sum + item.num, 0) / samples.length;
     const last = `${samples[2]?.num ?? ''} ${samples[1]?.num ?? ''} ${samples[0].num}`;
