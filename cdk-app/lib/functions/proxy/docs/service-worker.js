@@ -35,7 +35,7 @@ class ServiceWorker {
   async push(event) {
     const notifyAction = async () => {
       const data = await Promise.resolve().then(() => event.data.json()).catch(async e => {
-        logger.info(',,Ծ‸Ծ,,', e.cause?.message ?? e.cause ?? e.message, VERSION);
+        logger.info(',,Ծ‸Ծ,,', e.cause?.message ?? e.message, VERSION);
         return { title: ',,Ծ‸Ծ,,', body: await event.data.text() };
       });
       const { title, body, icon, image, expired } = data;
@@ -81,18 +81,24 @@ class ServiceWorker {
     if (request.method !== 'GET' || url.origin !== self.location.origin
       || url.pathname.startsWith('/api/')) return;
 
-    event.respondWith(caches.open(CACHE_NAME).then(cache => self.fetch(request).then(async res => {
-      if (res.ok) {
-        await cache.put(request, res.clone());
+    event.respondWith(caches.open(CACHE_NAME).then(cache => self.fetch(request)
+    .then(res => {
+      if (!res.ok) return res;
+      return cache.put(request, res.clone())
+      .then(() => {
         logger.debug(`[PWA Builder] Network request cached. '${url.pathname}'`);
-      }
-      return res;
-    }).catch(async e => {
+        return res;
+      })
+      .catch(e => {
+        logger.error(`[PWA Builder] Cache '${url.pathname}'`, e.cause?.message ?? e.message, VERSION);
+        return res;
+      });
+    })
+    .catch(e => {
       logger.error(`[PWA Builder] Network request '${url.pathname}'`, e.cause?.message ?? e.message, VERSION);
-      const res = await cache.match(request)
-        ?? await cache.match('/')
-        ?? new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
-      return res;
+      return cache.match(request)
+      .then(res => res ?? cache.match('/'))
+      .then(res => res ?? new Response('Offline', { status: 503, statusText: 'Service Unavailable' }));
     })));
   }
 

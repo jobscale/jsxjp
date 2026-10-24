@@ -47,13 +47,13 @@ export class Service {
     });
     if (forceCreate) {
       await s3.send(new CreateBucketCommand({ Bucket }))
-      .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message));
+      .catch(e => logger.error(e.cause?.message ?? e.message));
     }
     const Prefix = `${login}/thumbnail/`;
     const { Contents } = await s3.send(new ListObjectsV2Command({
       Bucket, Prefix,
     }))
-    .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message) || {});
+    .catch(e => logger.error(e.cause?.message ?? e.message) || {});
     const images = Contents?.map(obj => obj.Key.replace(Prefix, '')) || [];
     return { images };
   }
@@ -136,7 +136,7 @@ export class Service {
       .then(body => JSON.parse(body.toString()))
       .catch(e => {
         if (e.Code === 'NoSuchKey') return;
-        logger.error(e.cause?.message ?? e.cause ?? e.message);
+        logger.error(e.cause?.message ?? e.message);
       });
       logger.info({ login, name, size: (dataset[name] || '').length });
     }

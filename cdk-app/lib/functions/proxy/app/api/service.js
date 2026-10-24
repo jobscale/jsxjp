@@ -36,7 +36,7 @@ export class Service {
     ])
     .then(res => logger.info(res))
     .catch(e => {
-      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      logger.error(e.cause?.message ?? e.message);
       throw e;
     })
     .finally(() => { clearTimeout(racer.tid); });
@@ -52,7 +52,7 @@ export class Service {
     ])
     .then(res => logger.info(res))
     .catch(e => {
-      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      logger.error(e.cause?.message ?? e.message);
       throw e;
     })
     .finally(() => { clearTimeout(racer.tid); });
@@ -251,8 +251,8 @@ export class Service {
       hostname: os.hostname(),
       ip: await fetch('https://inet-ip.info/ip')
       .then(res => res.text()).catch(e => {
-        logger.error(e.cause?.message ?? e.cause ?? e.message);
-        return e.cause?.message ?? e.cause ?? e.message;
+        logger.error(e.cause?.message ?? e.message);
+        return e.cause?.message ?? e.message;
       }),
     };
   }

@@ -1,8 +1,8 @@
 https://jsx.jp/
-https://jsx.jp/totp
-https://jsx.jp/plan-pulse
-https://jsx.jp/auth
-https://jsx.jp/account
-https://jsx.jp/user
-https://jsx.jp/profile
-https://jsx.jp/s
+https://jsx.jp/v1/totp/
+https://jsx.jp/v1/plan-pulse/
+https://jsx.jp/v1/auth/
+https://jsx.jp/v1/account/password/
+https://jsx.jp/v1/user/list/
+https://jsx.jp/v1/profile/
+https://jsx.jp/v1/s/

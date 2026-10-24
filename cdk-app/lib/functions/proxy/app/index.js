@@ -138,12 +138,12 @@ export class Ingress {
     if (req.method === 'GET') {
       const e = createHttpError(404);
       res.writeHead(e.status, { 'Content-Type': 'text/plain; charset=utf-8' });
-      res.end(e.cause?.message ?? e.cause ?? e.message);
+      res.end(e.cause?.message ?? e.message);
       return;
     }
     const e = createHttpError(501);
     res.writeHead(e.status, { 'Content-Type': 'application/json; charset=utf-8' });
-    res.end(JSON.stringify({ message: e.cause?.message ?? e.cause ?? e.message }));
+    res.end(JSON.stringify({ message: e.cause?.message ?? e.message }));
   }
 
   errorHandler(e, req, res) {
@@ -151,12 +151,12 @@ export class Ingress {
     if (req.method === 'GET') {
       e = createHttpError(503);
       res.writeHead(e.status, { 'Content-Type': 'text/plain; charset=utf-8' });
-      res.end(e.cause?.message ?? e.cause ?? e.message);
+      res.end(e.cause?.message ?? e.message);
       return;
     }
     if (!e.status) e = createHttpError(500);
     res.writeHead(e.status, { 'Content-Type': 'application/json; charset=utf-8' });
-    res.end(JSON.stringify({ message: e.cause?.message ?? e.cause ?? e.message }));
+    res.end(JSON.stringify({ message: e.cause?.message ?? e.message }));
   }
 
   async requestHandler(req, res) {
@@ -164,7 +164,7 @@ export class Ingress {
       const e = createHttpError(405);
       res.setHeader('Allow', allowMethods.join(', '));
       res.writeHead(e.status, { 'Content-Type': 'application/json; charset=utf-8' });
-      res.end(JSON.stringify({ message: e.cause?.message ?? e.cause ?? e.message }));
+      res.end(JSON.stringify({ message: e.cause?.message ?? e.message }));
       return;
     }
 

@@ -183,7 +183,7 @@ let self = {
       target.history.unshift(result);
       if (target.history.length > self.maxHistory) target.history.pop();
     }).catch(e => {
-      target.error = e.cause?.message ?? e.cause ?? e.message;
+      target.error = e.cause?.message ?? e.message;
     });
     self.drawChart(target);
     if (target.running === 2) { target.running = 0; return; }

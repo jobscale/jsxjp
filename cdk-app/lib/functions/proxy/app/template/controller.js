@@ -12,9 +12,9 @@ export class Controller {
       res.end(html);
     })
     .catch(e => {
-      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      logger.error(e.cause?.message ?? e.message);
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.message });
     });
   }
 }

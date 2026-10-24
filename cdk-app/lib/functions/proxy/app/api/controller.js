@@ -11,9 +11,9 @@ export class Controller {
     return service.slack(body)
     .then(result => res.json(result))
     .catch(e => {
-      logger.error({ message: e.cause?.message ?? e.cause ?? e.message });
+      logger.error({ message: e.cause?.message ?? e.message });
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.message });
     });
   }
 
@@ -26,9 +26,9 @@ export class Controller {
     return service.email({ to, subject, text })
     .then(result => res.json(result))
     .catch(e => {
-      logger.error({ message: e.cause?.message ?? e.cause ?? e.message });
+      logger.error({ message: e.cause?.message ?? e.message });
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.message });
     });
   }
 
@@ -37,9 +37,9 @@ export class Controller {
     return service.webPush(body)
     .then(result => res.json(result))
     .catch(e => {
-      logger.error({ message: e.cause?.message ?? e.cause ?? e.message });
+      logger.error({ message: e.cause?.message ?? e.message });
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.message });
     });
   }
 
@@ -47,9 +47,9 @@ export class Controller {
     return service.getNumber()
     .then(result => res.json(result))
     .catch(e => {
-      logger.error({ message: e.cause?.message ?? e.cause ?? e.message });
+      logger.error({ message: e.cause?.message ?? e.message });
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.message });
     });
   }
 
@@ -62,9 +62,9 @@ export class Controller {
     return service.sendmail({ secret, digit, content: { ...content, to } })
     .then(result => res.json(result))
     .catch(e => {
-      logger.error({ message: e.cause?.message ?? e.cause ?? e.message });
+      logger.error({ message: e.cause?.message ?? e.message });
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.message });
     });
   }
 
@@ -72,7 +72,7 @@ export class Controller {
     return service.public()
     .then(result => res.end(result))
     .catch(e => {
-      logger.error({ message: e.cause?.message ?? e.cause ?? e.message });
+      logger.error({ message: e.cause?.message ?? e.message });
       if (!e.status) e.status = 500;
       res.status(e.status).end();
     });
@@ -85,9 +85,9 @@ export class Controller {
     return service.subscription({ ...body, host }, login)
     .then(result => res.json(result))
     .catch(e => {
-      logger.error({ message: e.cause?.message ?? e.cause ?? e.message });
+      logger.error({ message: e.cause?.message ?? e.message });
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.message });
     });
   }
 
@@ -95,9 +95,9 @@ export class Controller {
     return service.hostname()
     .then(result => res.json(result))
     .catch(e => {
-      logger.error({ message: e.cause?.message ?? e.cause ?? e.message });
+      logger.error({ message: e.cause?.message ?? e.message });
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.message });
     });
   }
 
@@ -113,9 +113,9 @@ export class Controller {
       res.end(result);
     })
     .catch(e => {
-      logger.error({ message: e.cause?.message ?? e.cause ?? e.message });
+      logger.error({ message: e.cause?.message ?? e.message });
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.message });
     });
   }
 }

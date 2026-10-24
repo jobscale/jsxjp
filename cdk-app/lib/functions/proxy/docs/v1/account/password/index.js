@@ -49,7 +49,7 @@ let self = {
         });
       }
     })
-    .catch(e => logger.error(e.cause?.message ?? e.cause ?? e.message))
+    .catch(e => logger.error(e.cause?.message ?? e.message))
     .then(() => setTimeout(() => {
       document.location.href = '/auth/logout';
     }, 1000));

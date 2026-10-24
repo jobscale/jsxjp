@@ -59,7 +59,7 @@ let self = {
       return showName;
     })
     .catch(e => {
-      const message = e.cause?.message ?? e.cause ?? e.message;
+      const message = e.cause?.message ?? e.message;
       logger.warn(message);
       return message;
     });
@@ -99,7 +99,7 @@ let self = {
       else self.actionText = '☃';
     })
     .catch(e => {
-      self.dateText = e.cause?.message ?? e.cause ?? e.message;
+      self.dateText = e.cause?.message ?? e.message;
     });
   },
 
@@ -198,7 +198,7 @@ let self = {
     loading(async () => {
       await self.serverName().then(host => { self.welcomeText = host; });
       await self.speed().catch(e => {
-        const message = e.cause?.message ?? e.cause ?? e.message;
+        const message = e.cause?.message ?? e.message;
         logger.error(message);
         self.realSpeedText = message;
         self.speedText = message;

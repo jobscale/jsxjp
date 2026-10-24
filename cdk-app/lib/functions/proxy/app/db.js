@@ -45,7 +45,7 @@ export class DB {
       WithDecryption: true,
     }))
     .catch(e => {
-      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      logger.error(e.cause?.message ?? e.message);
       return {};
     });
     if (!Parameter) return undefined;

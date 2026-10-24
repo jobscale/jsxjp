@@ -19,9 +19,9 @@ export class Controller {
       res.json({ images });
     })
     .catch(e => {
-      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      logger.error(e.cause?.message ?? e.message);
       if (!e.status) e.status = 500;
-      res.status(e.status).end(e.cause?.message ?? e.cause ?? e.message);
+      res.status(e.status).end(e.cause?.message ?? e.message);
     });
   }
 
@@ -42,9 +42,9 @@ export class Controller {
       });
     })
     .catch(e => {
-      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      logger.error(e.cause?.message ?? e.message);
       if (!e.status) e.status = 404;
-      res.status(e.status).end(e.cause?.message ?? e.cause ?? e.message);
+      res.status(e.status).end(e.cause?.message ?? e.message);
     });
   }
 
@@ -58,9 +58,9 @@ export class Controller {
     })
     .then(() => res.json({ ok: true }))
     .catch(e => {
-      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      logger.error(e.cause?.message ?? e.message);
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.message });
     });
   }
 
@@ -74,9 +74,9 @@ export class Controller {
     })
     .then(() => res.json({ ok: true }))
     .catch(e => {
-      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      logger.error(e.cause?.message ?? e.message);
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.message });
     });
   }
 
@@ -90,9 +90,9 @@ export class Controller {
     })
     .then(dataset => res.json(dataset))
     .catch(e => {
-      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      logger.error(e.cause?.message ?? e.message);
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.message });
     });
   }
 
@@ -106,9 +106,9 @@ export class Controller {
     })
     .then(() => res.json({ ok: true }))
     .catch(e => {
-      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      logger.error(e.cause?.message ?? e.message);
       if (!e.status) e.status = 500;
-      res.status(e.status).json({ message: e.cause?.message ?? e.cause ?? e.message });
+      res.status(e.status).json({ message: e.cause?.message ?? e.message });
     });
   }
 }

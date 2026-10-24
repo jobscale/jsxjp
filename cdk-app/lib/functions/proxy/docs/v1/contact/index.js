@@ -46,8 +46,8 @@ let self = {
       });
     })
     .catch(e => {
-      logger.error(e.cause?.message ?? e.cause ?? e.message);
-      self.status = e.cause?.message ?? e.cause ?? e.message;
+      logger.error(e.cause?.message ?? e.message);
+      self.status = e.cause?.message ?? e.message;
     })
     .then(() => setTimeout(() => { self.loading = false; }, 1000));
   },
@@ -59,7 +59,7 @@ let self = {
     })
     .then(res => res.json())
     .catch(e => {
-      logger.error(e.cause?.message ?? e.cause ?? e.message);
+      logger.error(e.cause?.message ?? e.message);
       self.status = 'Failed';
     })
     .then(res => {
