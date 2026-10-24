@@ -138,52 +138,6 @@ class PWAClient {
 
     await this.trigger();
   }
-
-  setupInstallPrompt() {
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) return;
-
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-      || navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
-    let installPrompt;
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.textContent = 'アプリをインストール';
-    button.hidden = !isIOS;
-    Object.assign(button.style, {
-      position: 'fixed',
-      right: '1rem',
-      bottom: '1rem',
-      zIndex: '1000',
-      padding: '.7rem 1rem',
-      border: '0',
-      borderRadius: '999px',
-      backgroundColor: '#222',
-      color: '#fff',
-      boxShadow: '0 2px 8px #0006',
-    });
-    button.addEventListener('click', async () => {
-      if (!installPrompt) {
-        if (isIOS) window.alert('共有ボタンから「ホーム画面に追加」を選択してください。');
-        return;
-      }
-      const prompt = installPrompt;
-      installPrompt = null;
-      button.hidden = true;
-      await prompt.prompt();
-      const { outcome } = await prompt.userChoice;
-      logger.info('PWA install prompt:', outcome);
-    });
-    window.addEventListener('beforeinstallprompt', event => {
-      event.preventDefault();
-      installPrompt = event;
-      button.hidden = false;
-    });
-    window.addEventListener('appinstalled', () => {
-      installPrompt = null;
-      button.remove();
-    });
-    document.body.append(button);
-  }
 }
 
 const entry = async () => {
@@ -192,7 +146,6 @@ const entry = async () => {
     return;
   }
   window.pwa = new PWAClient();
-  window.pwa.setupInstallPrompt();
   window.pwa.register();
 };
 
