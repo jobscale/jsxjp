@@ -1,17 +1,9 @@
 import { createLogger } from 'https://esm.sh/@jobscale/create-logger';
 // import { indexStore } from 'https://esm.sh/@jobscale/web-storage';
 
-const VERSION = '0.1.5';
+const VERSION = '0.1.6';
+const CACHE_NAME = `jsxjp-pwa-${VERSION}`;
 const logger = createLogger('info');
-
-const parseData = async data => {
-  try {
-    return data.json();
-  } catch (e) {
-    logger.info(',,Ծ‸Ծ,,', e.cause?.message ?? e.cause ?? e.message, VERSION);
-    return { title: ',,Ծ‸Ծ,,', body: await data.text() };
-  }
-};
 
 class ServiceWorker {
   constructor() {
@@ -31,12 +23,21 @@ class ServiceWorker {
   }
 
   activate(event) {
-    event.waitUntil(self.clients.claim());
+    event.waitUntil(caches.keys().then(async cacheNames => {
+      await Promise.all(cacheNames
+      .filter(name => name === 'pwa-builder-offline'
+        || name.startsWith('jsxjp-pwa-') && name !== CACHE_NAME)
+      .map(name => caches.delete(name)));
+      await self.clients.claim();
+    }));
   }
 
   async push(event) {
     const notifyAction = async () => {
-      const data = await parseData(event.data);
+      const data = await Promise.resolve().then(() => event.data.json()).catch(async e => {
+        logger.info(',,Ծ‸Ծ,,', e.cause?.message ?? e.cause ?? e.message, VERSION);
+        return { title: ',,Ծ‸Ծ,,', body: await event.data.text() };
+      });
       const { title, body, icon, image, expired } = data;
       if (expired && new Date(expired) < new Date()) {
         logger.info('[PWA Builder] receive expired message', expired);
@@ -56,7 +57,7 @@ class ServiceWorker {
   }
 
   async notificationclick(event) {
-    const clickAction = async () => {
+    event.waitUntil(Promise.resolve().then(async () => {
       event.notification.close();
       const { notification: { title, body, data } } = event;
       if (!data || !data.url) return;
@@ -65,61 +66,34 @@ class ServiceWorker {
       const exist = windowClients.find(client => client.url === targetUrl);
       const client = exist ?? await self.clients.openWindow(data.url);
       client?.postMessage({ type: 'push-clicked', title, body, version: VERSION });
-    };
-    event.waitUntil(clickAction());
+    }));
   }
 
   async install(event) {
-    const installAction = async () => {
-      const cache = await caches.open('pwa-builder-offline');
-      await Promise.all(
-        ['GET /', 'GET /favicon.ico'].map(async path => {
-          const [method, pathname] = path.split(' ');
-          await self.fetch(pathname, { method })
-          .then(async res => {
-            logger.debug(`[PWA Builder] Cached offline page during Install ${res.url}`);
-            await cache.put(path, res);
-          })
-          .catch(e => {
-            logger.error(`[PWA Builder] Cache '${path}'`, e.cause?.message ?? e.cause ?? e.message, VERSION);
-          });
-        }),
-      );
-    };
-    event.waitUntil(self.skipWaiting().then(installAction));
+    event.waitUntil(caches.open(CACHE_NAME).then(async cache => {
+      await cache.addAll(['/', '/favicon.ico']);
+    }).then(() => self.skipWaiting()));
   }
 
   fetch(event) {
     const { request } = event;
-    if (request.cache === 'only-if-cached' && request.mode !== 'same-origin') {
-      const busyAction = async () => {
-        const walkerBody = 'walker busy';
-        logger.info({ walkerBody });
-        return new Response(walkerBody, { status: 503 });
-      };
-      event.respondWith(busyAction());
-      return;
-    }
-    const cacheAction = cache => {
-      const url = new URL(request.url);
-      const path = `${request.method} ${url.pathname}`;
-      return self.fetch(request)
-      .then(res => {
-        const allowCache = url.pathname.startsWith('/s/');
-        const allowMethod = ['GET', 'HEAD'];
-        if (!allowMethod.includes(request.method) && !allowCache) return res;
-        if (!res.ok) return res;
-        cache.put(path, res.clone());
-        logger.debug(`[PWA Builder] Network request cached. '${path}'`);
-        return res.clone();
-      })
-      .catch(e => {
-        logger.error(`[PWA Builder] Network request '${path}'`, e.cause?.message ?? e.cause ?? e.message, VERSION);
-      })
-      .then(res => res ?? cache.match(path).then(r => r && r.clone()))
-      .then(res => res ?? cache.match('GET /').then(r => r && r.clone()));
-    };
-    event.respondWith(caches.open('pwa-builder-offline').then(cacheAction));
+    const url = new URL(request.url);
+    if (request.method !== 'GET' || url.origin !== self.location.origin
+      || url.pathname.startsWith('/api/')) return;
+
+    event.respondWith(caches.open(CACHE_NAME).then(cache => self.fetch(request).then(async res => {
+      if (res.ok) {
+        await cache.put(request, res.clone());
+        logger.debug(`[PWA Builder] Network request cached. '${url.pathname}'`);
+      }
+      return res;
+    }).catch(async e => {
+      logger.error(`[PWA Builder] Network request '${url.pathname}'`, e.cause?.message ?? e.message, VERSION);
+      const res = await cache.match(request)
+        ?? await cache.match('/')
+        ?? new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
+      return res;
+    })));
   }
 
   addEventListener(type, listener) {

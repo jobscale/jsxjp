@@ -1,9 +1,8 @@
-https://mqtt.jsx.jp
-https://mqtt.jsx.jp/investment/
-https://zipcode-jp.jsx.jp
+https://jsx.jp/
+https://jsx.jp/totp
+https://jsx.jp/plan-pulse
+https://jsx.jp/auth
+https://jsx.jp/account
+https://jsx.jp/user
+https://jsx.jp/profile
 https://jsx.jp/s
-https://timer.cdn.jsx.jp
-https://shop.jsx.jp
-https://wiki.jsx.jp
-https://redmine.jsx.jp
-https://todo.jsx.jp

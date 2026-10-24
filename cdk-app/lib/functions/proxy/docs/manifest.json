@@ -1,23 +1,26 @@
 {
   "dir": "ltr",
-  "lang": "en",
+  "lang": "ja",
   "name": "jsx.jp",
+  "id": "/",
   "scope": "/",
-  "display": "standalone",
-  "gcm_sender_id": "103953800507",
   "start_url": "/",
+  "gcm_sender_id": "103953800507",
+  "display": "standalone",
   "display_override": [
     "window-controls-overlay"
   ],
   "short_name": "jsx.jp",
-  "theme_color": "transparent",
+  "theme_color": "#222222",
   "description": "jsx.jp",
   "orientation": "any",
-  "background_color": "transparent",
-  "related_applications": [],
-  "prefer_related_applications": false,
-  "icons": [{
-    "src": "/favicon.ico",
-    "sizes": "256x256 192x192 128x128 64x64 48x48 32x32 16x16"
-  }]
+  "background_color": "#222222",
+  "icons": [
+    {
+      "src": "/v1/icon/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }
