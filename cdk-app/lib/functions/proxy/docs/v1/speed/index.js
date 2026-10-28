@@ -37,6 +37,9 @@ let self = {
   ],
   targets: [],
   chartHover: {},
+  traffic: {
+    earliest: 0,
+  },
   hiddenTitle: false,
 
   createTarget(id) {
@@ -134,6 +137,12 @@ let self = {
     else self.startTarget(target);
   },
 
+  async trafficGuard(ms) {
+    const tick = Math.max(self.traffic.earliest - Date.now(), 0);
+    self.traffic.earliest = Date.now() + tick + ms;
+    await new Promise(resolve => { setTimeout(resolve, tick); });
+  },
+
   async onSave() {
     const saved = { running: 0 };
     const targets = self.targets.map(item => ({ ...item, ...saved }));
@@ -150,6 +159,7 @@ let self = {
 
   async checkTarget(target, once = false) {
     if (!target.uri) return;
+    await self.trafficGuard(300);
     if (target.running === 2) { target.running = 0; return; }
     target.error = '';
     const startedAt = performance.now();
