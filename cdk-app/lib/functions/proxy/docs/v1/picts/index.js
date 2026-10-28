@@ -3,7 +3,7 @@ import { createLogger } from 'https://esm.sh/@jobscale/create-logger';
 import { loading } from 'https://esm.sh/@jobscale/loading';
 import { indexStore } from 'https://esm.sh/@jobscale/web-storage';
 import mqtt from 'https://esm.sh/mqtt';
-import { formatTimestamp } from '/v1/js/timestamp.js';
+import { formatTimestamp } from 'https://esm.sh/@jobscale/timestamp';
 import { fetchApi } from '/v1/js/fetch-api.js';
 
 const random = (length = 7) => {

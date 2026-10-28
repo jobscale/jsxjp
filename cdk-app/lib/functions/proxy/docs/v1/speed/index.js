@@ -1,7 +1,7 @@
 import { createApp, reactive, nextTick } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
 import { indexStore } from 'https://esm.sh/@jobscale/web-storage';
 import { loading } from 'https://esm.sh/@jobscale/loading';
-import { formatTimestamp } from '/v1/js/timestamp.js';
+import { formatTimestamp } from 'https://esm.sh/@jobscale/timestamp';
 
 const conf = {
   esmList: [

@@ -1,6 +1,6 @@
 import { createApp, reactive } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
 import { logger } from 'https://esm.sh/@jobscale/create-logger';
-import { formatTimestamp } from '/v1/js/timestamp.js';
+import { formatTimestamp } from 'https://esm.sh/@jobscale/timestamp';
 import { fetchApi } from '/v1/js/fetch-api.js';
 
 let self = {

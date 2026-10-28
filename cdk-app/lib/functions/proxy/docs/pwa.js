@@ -1,5 +1,5 @@
 import { logger } from 'https://esm.sh/@jobscale/create-logger';
-import { formatTimestamp } from '/v1/js/timestamp.js';
+import { formatTimestamp } from 'https://esm.sh/@jobscale/timestamp';
 import { fetchApi } from '/v1/js/fetch-api.js';
 
 class PWAClient {

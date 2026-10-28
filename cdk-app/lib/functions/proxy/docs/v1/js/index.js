@@ -1,7 +1,7 @@
 import { createApp, reactive, computed } from 'https://esm.sh/vue/dist/vue.esm-browser.js';
 import { logger } from 'https://esm.sh/@jobscale/create-logger';
 import { loading } from 'https://esm.sh/@jobscale/loading';
-import { formatTimestamp } from '/v1/js/timestamp.js';
+import { formatTimestamp } from 'https://esm.sh/@jobscale/timestamp';
 import { fetchApi } from '/v1/js/fetch-api.js';
 
 const sliceByUnit = (list, digit) => Array.from(
