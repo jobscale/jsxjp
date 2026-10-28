@@ -106,6 +106,7 @@ let self = {
   startAll() {
     loading(async () => {
       if (!self.targets.length) return;
+      await self.stopAll();
       const delay = Math.floor(5_000 / self.targets.length);
       for (const [index, target] of self.targets.entries()) {
         if (index) await new Promise(resolve => { setTimeout(resolve, delay); });
@@ -113,6 +114,21 @@ let self = {
         self.startTarget(target);
       }
     });
+  },
+
+  async stopAll() {
+    for (const target of self.targets) {
+      self.stopTarget(target);
+    }
+    const mem = {};
+    while (true) {
+      mem.stopped = 0;
+      for (const target of self.targets) {
+        if (target.running === 0) mem.stopped++;
+      }
+      if (mem.stopped === self.targets.length) break;
+      await new Promise(resolve => { setTimeout(resolve, 500); });
+    }
   },
 
   startTarget(target) {
@@ -158,7 +174,7 @@ let self = {
   },
 
   async checkTarget(target, once = false) {
-    if (!target.uri) return;
+    if (!target.uri) { target.running = 0; return; }
     await self.trafficGuard(300);
     if (target.running === 2) { target.running = 0; return; }
     target.error = '';
