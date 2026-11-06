@@ -165,6 +165,8 @@ let self = {
       ctx.fillRect(index * barWidth, height - barHeight, barWidth - 2, barHeight);
     });
 
+    self.drawScale({ canvas, ctx, width, height });
+
     if (!canvas.dataset.hoverBound) {
       canvas.dataset.hoverBound = '1';
       canvas.addEventListener('mousemove', event => {
@@ -177,6 +179,30 @@ let self = {
       canvas.addEventListener('mouseleave', () => {
         canvas.title = '';
       });
+    }
+  },
+
+  drawScale({ canvas, ctx, width, height }) {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      ctx.save();
+      ctx.setTransform(width / rect.width, 0, 0, height / rect.height, 0, 0);
+      const options = self.view.type;
+      const stripHeight = Math.min(16, rect.height);
+      const size = Math.min(7, stripHeight - 4, rect.width / (options.length * 1.5));
+      const sizeY = size / 2;
+      const gap = Math.min(2, size * 0.35);
+      const totalWidth = options.length * size + (options.length - 1) * gap;
+      let x = (rect.width - totalWidth) / 2;
+      const startY = (stripHeight - size) / 2;
+      ctx.strokeStyle = getComputedStyle(canvas).color;
+      ctx.fillStyle = ctx.strokeStyle;
+      ctx.lineWidth = Math.min(1, size / 4);
+      for (let index = 0; index < options.length; index++) {
+        if (index >= self.view.select) ctx.fillRect(x, startY, size, sizeY);
+        x += size + gap;
+      }
+      ctx.restore();
     }
   },
 
