@@ -1,6 +1,7 @@
 {
+  "private": true,
   "name": "proxy",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "keywords": [],
   "type": "module",
@@ -12,16 +13,16 @@
     "@jobscale/create-logger": "^1.0.5",
     "@jobscale/slack": "^0.3.3",
     "@js-temporal/polyfill": "^0.5.1",
-    "@napi-rs/canvas": "^1.0.7",
-    "dayjs": "^1.11.21",
-    "google-auth-library": "^11.1.0",
+    "@napi-rs/canvas": "^1.1.0",
+    "dayjs": "^1.11.23",
+    "google-auth-library": "^11.3.4",
     "http-errors": "^2.0.1",
-    "joi": "^18.2.3",
+    "joi": "^18.3.2",
     "jws": "^4.0.1",
-    "mime": "^4.1.0",
-    "nodemailer": "^9.0.3",
-    "sharp": "^0.35.3",
+    "mime": "^4.1.2",
+    "nodemailer": "^10.5.0",
+    "sharp": "^0.35.5",
     "speakeasy": "^2.0.0",
-    "web-push": "^3.6.7"
+    "web-push": "^4.0.0"
   }
 }
