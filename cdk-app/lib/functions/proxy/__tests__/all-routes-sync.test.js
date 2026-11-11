@@ -48,10 +48,8 @@ jest.unstable_mockModule('sharp', () => ({
   })),
 }));
 jest.unstable_mockModule('web-push', () => ({
-  default: {
-    setVapidDetails: jest.fn(),
-    sendNotification: jest.fn().mockResolvedValue({}),
-  },
+  setVapidDetails: jest.fn(),
+  sendNotification: jest.fn().mockResolvedValue({}),
 }));
 jest.unstable_mockModule('nodemailer', () => ({
   default: {

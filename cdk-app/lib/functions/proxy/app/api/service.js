@@ -1,7 +1,7 @@
 import os from 'os';
 import crypto, { randomBytes } from 'crypto';
 import dayjs from 'dayjs';
-import webPush from 'web-push';
+import { sendNotification, setVapidDetails } from 'web-push';
 import nodemailer from 'nodemailer';
 import createHttpError from 'http-errors';
 import { createLogger } from '@jobscale/create-logger';
@@ -85,7 +85,7 @@ export class Service {
   async publish(payload, users) {
     if (!this.cert) {
       this.cert = await db.getValue('config/certificate', 'secret');
-      webPush.setVapidDetails(
+      setVapidDetails(
         'mailto:jobscale@example.com',
         this.cert.public,
         this.cert.key,
@@ -111,7 +111,7 @@ export class Service {
   }
 
   async publishWeb(subscription, notification) {
-    await webPush.sendNotification(subscription, JSON.stringify(notification), { ttl: LIMIT_TTL })
+    await sendNotification(subscription, JSON.stringify(notification), { ttl: LIMIT_TTL })
     .then(res => logger.info('publishWeb', JSON.stringify({ ...res, notification })))
     .catch(e => logger.error('publishWeb', JSON.stringify({ ...e, notification })));
   }

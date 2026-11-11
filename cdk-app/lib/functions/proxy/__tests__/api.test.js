@@ -53,7 +53,7 @@ jest.unstable_mockModule('../app/store.js', () => ({ store: mockStore }));
 jest.unstable_mockModule('../app/config/service.js', () => ({ service: mockConfigService }));
 jest.unstable_mockModule('../app/auth/service.js', () => ({ service: mockAuthService }));
 jest.unstable_mockModule('@jobscale/slack', () => ({ Slack: mockSlack }));
-jest.unstable_mockModule('web-push', () => ({ default: mockWebPush }));
+jest.unstable_mockModule('web-push', () => mockWebPush);
 jest.unstable_mockModule('nodemailer', () => ({ default: mockNodemailer }));
 
 // Mock other routes
