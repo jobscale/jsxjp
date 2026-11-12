@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "jsxjp",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "description": "nodejs http and vue custom template SSR MVC",
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
     "pretest": "date -Iseconds",
     "posttest": "npm run lint",
     "test:docs": "node scripts/check-docs-pages.js",
-    "test": "LIMIT_MEMORY=1024 NODE_OPTIONS=--experimental-vm-modules jest --runInBand --coverage --collectCoverage --verbose"
+    "test": "LIMIT_MEMORY=1024 NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "pre-commit": [
     "test"

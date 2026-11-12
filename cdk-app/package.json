@@ -1,11 +1,10 @@
 {
   "private": true,
   "name": "cdk-app",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "type": "module",
   "scripts": {
     "watch": "echo \"No watch configured for JavaScript ESM\"",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand --coverage --collectCoverage --verbose",
     "lint": "eslint",
     "prelint": "npm config set script-shell bash",
     "predeploy": "npm run lint",
@@ -17,7 +16,8 @@
     "deploy": "ENV=${ENV:-dev} && time cdk --context env=$ENV deploy",
     "deploy:force": "ENV=${ENV:-dev} && time cdk --context env=$ENV deploy --require-approval never",
     "ls": "ENV=${ENV:-dev} && time cdk --context env=$ENV ls",
-    "cdk": "ENV=${ENV:-dev} && time cdk --context env=$ENV"
+    "cdk": "ENV=${ENV:-dev} && time cdk --context env=$ENV",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "dependencies": {
     "@jobscale/create-logger": "^1.0.5",
