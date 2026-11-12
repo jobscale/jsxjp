@@ -27,7 +27,10 @@ export const codeBuild = (stack, {
       phases: {
         install: {
           'runtime-versions': { nodejs: 26 },
-          commands: ['npm version'],
+          commands: [
+            'apt-get update && apt-get install -y apt-transport-https git curl vim tmux jq',
+            'npm version',
+          ],
         },
         build: {
           commands: [
