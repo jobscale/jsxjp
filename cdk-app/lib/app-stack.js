@@ -2,6 +2,7 @@ import * as cdk from 'aws-cdk-lib/core';
 import { logger } from '@jobscale/create-logger';
 import { serverlessGateway } from './cdk/serverless.js';
 import { frontCache } from './cdk/front.js';
+import { codeBuild } from './cdk/code-build.js';
 
 export class AppStack extends cdk.Stack {
   constructor(scope, id, props = {}) {
@@ -23,5 +24,6 @@ export class AppStack extends cdk.Stack {
 
     serverlessGateway(this);
     frontCache(this);
+    codeBuild(this);
   }
 }

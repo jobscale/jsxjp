@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -eu
+
+export AWS_REGION=ap-northeast-3
+PROJECT_NAME=stg-app-build
+
+ssm-start() {
+  local BUILD_ID=$(aws codebuild start-build --project-name "$PROJECT_NAME" \
+  --debug-session-enabled --environment-variables-override name=DEBUG,value=1,type=PLAINTEXT \
+  --query "build.id" --output text)
+  echo "BUILD_ID=$BUILD_ID"
+  local TARGET=None
+  local MAX_ATTEMPT=7
+  local ATTEMPT=$MAX_ATTEMPT
+  while [[ "$TARGET" == "None" && $ATTEMPT -gt 0 ]]; do
+    echo "$(date -Iseconds) Attempt $((MAX_ATTEMPT - ATTEMPT + 1)) / ${MAX_ATTEMPT} to get target"
+    sleep 11
+    TARGET=$(aws codebuild batch-get-builds --ids "$BUILD_ID" \
+    --query "builds[0].debugSession.sessionTarget" --output text)
+    ATTEMPT=$((ATTEMPT - 1))
+  done
+  echo "TARGET=$TARGET"
+  if [[ "$TARGET" == "None" ]]; then
+    echo "Failed to get TARGET after $MAX_ATTEMPT attempts"
+    return 1
+  fi
+
+  echo "resume use command 'codebuild-resume'"
+  aws ssm start-session --target "$TARGET" \
+  --document-name AWS-StartInteractiveCommand --parameters command="bash -l"
+}
+
+ssm-start
