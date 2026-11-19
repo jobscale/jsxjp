@@ -99,7 +99,7 @@ export class Controller {
       });
     })
     .catch(e => {
-      logger.info({ ...e });
+      logger.info({ message: e.cause?.message ?? e.message });
       if (req.method === 'GET') {
         res.redirect('/v1/auth/');
         return;

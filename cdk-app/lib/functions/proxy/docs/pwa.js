@@ -58,7 +58,7 @@ class PWAClient {
       });
     };
     this.sendToServer(exist || await subscription())
-    .catch(e => logger.warn({ ...e }));
+    .catch(e => logger.warn({ message: e.cause?.message ?? e.message }));
   }
 
   async notification(info = {}) {

@@ -111,9 +111,9 @@ export class Service {
   }
 
   async publishWeb(subscription, notification) {
-    await sendNotification(subscription, JSON.stringify(notification), { ttl: LIMIT_TTL })
+    await sendNotification(subscription, JSON.stringify(notification), { TTL: LIMIT_TTL })
     .then(res => logger.info('publishWeb', JSON.stringify({ ...res, notification })))
-    .catch(e => logger.error('publishWeb', JSON.stringify({ ...e, notification })));
+    .catch(e => logger.error('publishWeb', JSON.stringify({ message: e.cause?.message ?? e.message, notification })));
   }
 
   async publishFcm(subscription, notification) {
@@ -133,7 +133,7 @@ export class Service {
     })
     .then(res => res.json())
     .then(res => logger.info('publishFcm', JSON.stringify({ ...res, notification })))
-    .catch(e => logger.error('publishFcm', JSON.stringify({ ...e, notification })));
+    .catch(e => logger.error('publishFcm', JSON.stringify({ message: e.cause?.message ?? e.message, notification })));
   }
 
   async publishFcmV1(subscription, notification) {
@@ -174,7 +174,7 @@ export class Service {
       return res.json();
     })
     .then(res => logger.info('publishFcmV1', JSON.stringify({ ...res, notification })))
-    .catch(e => logger.error('publishFcmV1', JSON.stringify({ ...e, notification })));
+    .catch(e => logger.error('publishFcmV1', JSON.stringify({ message: e.cause?.message ?? e.message, notification })));
   }
 
   async webPush(rest) {
