@@ -332,7 +332,11 @@ let self = {
   },
 
   async getIntranet() {
-    if (!window.getRouterTitle) return;
+    self.router = 'now loading...';
+    if (!window.getRouterTitle) {
+      self.router = 'not supported';
+      return;
+    }
     self.router = await window.getRouterTitle();
   },
 
